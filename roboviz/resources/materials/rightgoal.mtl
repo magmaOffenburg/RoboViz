@@ -1,0 +1,33 @@
+# Blender3D MTL File: rightgoal.blend
+# Material Count: 3
+newmtl white
+Ns 96.078431
+Ka 0.800000 0.800000 0.800000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+
+newmtl grey_naogoalnet.png
+Ns 96.078431
+Ka 0.560000 0.560000 0.560000
+Kd 0.560000 0.560000 0.560000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd naogoalnet.png
+
+
+newmtl sky-blue
+Ns 96.078431
+Ka 0.1500000 0.600000 0.800000
+Kd 0.1500000 0.600000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+

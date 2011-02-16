@@ -1,0 +1,23 @@
+Graphics Settings:
+Bloom                : true
+Phong                : true
+Shadows              : true
+Soft Shadows         : true
+Shadow Resolution    : 1024
+Stereo 3D            : false
+V-Sync               : false
+FSAA                 : false
+FSAA Samples         : 8
+Target FPS           : 60
+Frame Width          : 800
+Frame Height         : 600
+
+Networking Settings:
+Auto-Connect         : true
+Auto-Connect Delay   : 1000
+Server Host          : localhost
+Server Port          : 3200
+Drawing Port         : 32769
+
+General Settings:
+Record Logfiles      : false
