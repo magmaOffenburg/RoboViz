@@ -63,11 +63,14 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     private ConnectionOverlay connectionOverlay;
     private Field2DOverlay    fieldOverlay;
     private List<Screen>      overlays       = new ArrayList<Screen>();
+    private List<TextOverlay> textOverlays   = new ArrayList<TextOverlay>();
     private boolean           moveObjectMode = false;
     private boolean           showPlayerIDs  = false;
     private TextRenderer      tr;
+    private TextRenderer      overlayTextRenderer;
     private RobotVantage      robotVantage   = null;
-    private CameraSetting[]   cameras;
+    private int               prevScoreL     = -1;
+    private int               prevScoreR     = -1;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
@@ -80,6 +83,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
 
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new TextRenderer(font, true, false);
+        overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48),
+                true, false);
+
         viewer.getNetManager().getServer().addChangeListener(this);
         viewer.getWorldModel().addSceneGraphListener(this);
 
@@ -141,6 +147,23 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         for (Screen overlay : overlays)
             overlay.render(gl, glu, glut, vp);
 
+        vp.apply(gl);
+        if (textOverlays.size() > 0)
+            renderTextOverlays(vp.w, vp.h);
+    }
+    
+    private void renderTextOverlays(int w, int h) {
+        overlayTextRenderer.beginRendering(w, h);
+        for (int i = 0; i < textOverlays.size(); i++) {
+            TextOverlay overlay = textOverlays.get(i);
+            if (overlay.isExpired()) {
+                textOverlays.remove(i);
+                i--;
+            } else {
+                overlay.render(overlayTextRenderer, w, h);
+            }
+        }
+        overlayTextRenderer.endRendering();
     }
 
     private void renderBillboardText(String text, Vec3f pos3D, float[] color) {
@@ -162,12 +185,7 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
-        int keyChar = e.getKeyChar();
-
-        // key is a number 1 through 9
-        if (keyChar > 48 && keyChar < 58 && cameras != null)
-            setCamera(keyChar - 49);
+        
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_K:
@@ -228,35 +246,6 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         }
     }
 
-    private void initCameras(GameState gs) {
-        float fl = gs.getFieldLength();
-        float fw = gs.getFieldWidth();
-
-        cameras = new CameraSetting[] {
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 90)),
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 - 50)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 + 35.8f)),
-                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f),
-                        new Vec2f(-45, 180)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 - 35.8f)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 + 50)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 180 + 90)), };
-    }
-
-    private void setCamera(int i) {
-        if (i >= cameras.length || i < 0)
-            return;
-
-        FPCamera camera = viewer.getUI().getCamera();
-        camera.setPosition(cameras[i].getPosition().clone());
-        camera.setRotation(cameras[i].getRotation().clone());
-    }
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -383,18 +372,25 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void gsMeasuresAndRulesChanged(GameState gs) {
-        initCameras(gs);
     }
 
     @Override
     public void gsPlayStateChanged(GameState gs) {
-        // TODO Auto-generated method stub
-
+        if (prevScoreL != -1 && prevScoreR != -1) {
+            if (gs.getScoreLeft() > prevScoreL)
+                textOverlays.add(new TextOverlay(String.format("Goal %s!",
+                        gs.getTeamLeft()), 4000, new float[]{1,1,1,1}));
+            if (gs.getScoreRight() > prevScoreR)
+                textOverlays.add(new TextOverlay(String.format("Goal %s!",
+                        gs.getTeamRight()), 4000, new float[]{1,1,1,1}));
+        }
+  
+        prevScoreL = gs.getScoreLeft();
+        prevScoreR = gs.getScoreRight();
     }
 
     @Override
     public void gsTimeChanged(GameState gs) {
-        // TODO Auto-generated method stub
 
     }
 }

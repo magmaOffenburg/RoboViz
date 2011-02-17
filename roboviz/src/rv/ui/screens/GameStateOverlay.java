@@ -50,8 +50,8 @@ public class GameStateOverlay implements Screen {
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         gl.glColor4f(0.2f, 0.2f, 0.2f, 0.3f);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(0, viewer.getScreen().h - 10);
-        gl.glVertex2f(viewer.getScreen().w, viewer.getScreen().h - 10);
+        gl.glVertex2f(0, viewer.getScreen().h);
+        gl.glVertex2f(viewer.getScreen().w, viewer.getScreen().h);
         gl.glVertex2f(viewer.getScreen().w, viewer.getScreen().h - 70);
         gl.glVertex2f(0, viewer.getScreen().h - 70);
         gl.glEnd();

@@ -246,7 +246,7 @@ public class Viewer implements GLEventListener {
         // print OpenGL renderer info
         glInfo = new GLInfo(drawable.getGL());
         glInfo.print();
-
+        
         // initialize / load content
         contentManager = new ContentManager();
         if (!contentManager.init(drawable, glInfo, config)) {
@@ -272,7 +272,7 @@ public class Viewer implements GLEventListener {
         ui = new UserInterface(this);
         ui.init();
         renderer = new Renderer(this);
-        renderer.init(drawable, contentManager);
+        renderer.init(drawable, contentManager, glInfo);
 
         world.addSceneGraphListener(contentManager);
 

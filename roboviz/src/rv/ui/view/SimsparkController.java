@@ -25,6 +25,9 @@ import javax.media.opengl.awt.GLCanvas;
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
+import rv.comm.rcssserver.GameState;
+import rv.comm.rcssserver.GameState.GameStateChangeListener;
+import rv.ui.CameraSetting;
 import rv.ui.UserInterface;
 
 /**
@@ -32,7 +35,7 @@ import rv.ui.UserInterface;
  * 
  * @author justin
  */
-public class SimsparkController implements CameraController {
+public class SimsparkController implements CameraController, GameStateChangeListener {
 
     private UserInterface ui;
 
@@ -43,11 +46,14 @@ public class SimsparkController implements CameraController {
     protected boolean     moveR;                   // camera is moving right
     protected boolean     moveU;
     protected boolean     moveD;
+    protected boolean     shift = false;
     protected Vec2f       lastMouse = new Vec2f(0);
 
     float                 dL, dR, dF, dB, dU, dD = 0;
     float                 dMax      = 1;
     float                 dChange   = 0.08f;
+
+    private CameraSetting[]   cameras;
 
     public SimsparkController(UserInterface ui) {
         this.ui = ui;
@@ -100,7 +106,42 @@ public class SimsparkController implements CameraController {
             cam.moveLocal(tLocal);
         if (tWorld.lengthSquared() > 0)
             cam.moveWorld(tWorld);
+    }
+    
+    private void setCamera(int i) {
+        if (i >= cameras.length || i < 0)
+            return;
 
+        FPCamera camera = ui.getCamera();
+        camera.setPosition(cameras[i].getPosition().clone());
+        camera.setRotation(cameras[i].getRotation().clone());
+    }
+    
+    /** Initialize saved camera positions */
+    private void initCameras(GameState gs) {
+        float fl = gs.getFieldLength();
+        float fw = gs.getFieldWidth();
+
+        double fov = Math.toRadians(ui.getCamera().getFOVY());
+        float aerialHeight = (float) (0.5 * fw / Math.tan(fov * 0.5) * 1.1);
+
+        cameras = new CameraSetting[] {
+                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0),
+                        new Vec2f(-35, 90)),
+                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw),
+                        new Vec2f(-30, 180 - 50)),
+                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
+                        180 + 35.8f)),
+                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f),
+                        new Vec2f(-45, 180)),
+                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
+                        180 - 35.8f)),
+                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw),
+                        new Vec2f(-30, 180 + 50)),
+                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0),
+                        new Vec2f(-35, 180 + 90)),
+                new CameraSetting(new Vec3f(0, aerialHeight, 0), new Vec2f(-90,
+                        180)) };
     }
 
     @Override
@@ -114,7 +155,10 @@ public class SimsparkController implements CameraController {
             rotate = true;
             break;
         case MouseEvent.BUTTON3:
-            moveU = true;
+            if (shift)
+                moveD = true;
+            else
+                moveU = true;
             break;
         }
     }
@@ -126,6 +170,7 @@ public class SimsparkController implements CameraController {
             rotate = false;
             break;
         case MouseEvent.BUTTON3:
+            moveD = false;
             moveU = false;
             break;
         }
@@ -165,6 +210,11 @@ public class SimsparkController implements CameraController {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
+        // key is a number 1 through 9
+        int keyChar = e.getKeyChar();
+        if (keyChar > 48 && keyChar < 58 && cameras != null)
+            setCamera(keyChar - 49);
+        
         switch (key) {
         case KeyEvent.VK_W:
         case KeyEvent.VK_UP:
@@ -187,6 +237,9 @@ public class SimsparkController implements CameraController {
             break;
         case KeyEvent.VK_PAGE_UP:
             moveU = true;
+            break;
+        case KeyEvent.VK_SHIFT:
+            shift = true;
             break;
         }
     }
@@ -218,6 +271,9 @@ public class SimsparkController implements CameraController {
         case KeyEvent.VK_PAGE_UP:
             moveU = false;
             break;
+        case KeyEvent.VK_SHIFT:
+            shift = false;
+            break;
         }
     }
 
@@ -244,5 +300,15 @@ public class SimsparkController implements CameraController {
         } else {
             ui.getCamera().moveLocal(Vec3f.unitZ());
         }
+    }
+
+    public void gsMeasuresAndRulesChanged(GameState gs) {
+        initCameras(gs);
+    }
+
+    public void gsPlayStateChanged(GameState gs) {
+    }
+
+    public void gsTimeChanged(GameState gs) {
     }
 }

@@ -100,7 +100,8 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
         gl.glPopMatrix();
     }
 
-    private void drawPoints(GL2 gl, boolean manualColor) {
+    private void drawPoints(GL2 gl, int pSize, boolean manualColor) {
+        gl.glPointSize(pSize);
         gl.glBegin(GL2.GL_POINTS);
         Team left = world.getLeftTeam();
         if (!manualColor)
@@ -120,6 +121,9 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
                 gl.glVertex3f(p.x, p.y, p.z);
             }
         }
+        gl.glEnd();
+        gl.glPointSize(pSize * 0.75f);
+        gl.glBegin(GL2.GL_POINTS);
         Vec3f p = world.getBall().getPosition();
         if (p != null) {
             if (!manualColor)
@@ -151,10 +155,8 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
 
             gl.glEnable(GL2.GL_POINT_SMOOTH);
             gl.glColor3f(0, 0, 0);
-            gl.glPointSize(pSize);
-            drawPoints(gl, true);
-            gl.glPointSize(pSize - 2);
-            drawPoints(gl, false);
+            drawPoints(gl, pSize, true);
+            drawPoints(gl, pSize - 2, false);
             gl.glDisable(GL2.GL_POINT_SMOOTH);
 
             unsetView(gl);

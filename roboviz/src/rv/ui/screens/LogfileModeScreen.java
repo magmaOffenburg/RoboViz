@@ -43,7 +43,6 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
     private GameStateOverlay gsOverlay;
     private LogPlayerOverlay lpOverlay;
     private Viewer           viewer;
-    private CameraSetting[]  cameras;
 
     public LogfileModeScreen(Viewer viewer) {
         this.viewer = viewer;
@@ -108,6 +107,7 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void keyPressed(KeyEvent e) {
+        
         switch (e.getKeyCode()) {
         case KeyEvent.VK_ESCAPE:
             viewer.shutdown();
@@ -124,36 +124,6 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
         }
     }
 
-    private void initCameras(GameState gs) {
-        float fl = gs.getFieldLength();
-        float fw = gs.getFieldWidth();
-
-        cameras = new CameraSetting[] {
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 90)),
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 - 50)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 + 35.8f)),
-                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f),
-                        new Vec2f(-45, 180)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 - 35.8f)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 + 50)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 180 + 90)), };
-    }
-
-    private void setCamera(int i) {
-        if (i >= cameras.length || i < 0)
-            return;
-
-        FPCamera camera = viewer.getUI().getCamera();
-        camera.setPosition(cameras[i].getPosition().clone());
-        camera.setRotation(cameras[i].getRotation().clone());
-    }
-
     @Override
     public void keyReleased(KeyEvent e) {
     }
@@ -164,7 +134,6 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void gsMeasuresAndRulesChanged(GameState gs) {
-        initCameras(gs);
     }
 
     @Override
@@ -175,7 +144,6 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void gsTimeChanged(GameState gs) {
-        // TODO Auto-generated method stub
 
     }
 }

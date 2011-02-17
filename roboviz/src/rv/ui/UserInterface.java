@@ -130,7 +130,9 @@ public class UserInterface {
             camera.setEyeSeparation(3 / 20.0f);
         }
 
-        cameraControl = new SimsparkController(this);
+        SimsparkController ctrl = new SimsparkController(this);
+        cameraControl = ctrl;
+        viewer.getWorldModel().getGameState().addListener(ctrl);
 
         return camera;
     }
