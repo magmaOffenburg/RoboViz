@@ -22,7 +22,7 @@ import javax.media.opengl.GL2;
 
 import js.io.ByteUtil;
 
-import rv.comm.drawing.Command;
+import rv.comm.drawing.commands.Command;
 
 public class Polygon extends Shape {
 

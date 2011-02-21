@@ -218,4 +218,25 @@ public class RVDraw {
 
         return buf.array();
     }
+    
+    public static byte[] newAnnotation(String text, float[] pos, Color color, String set) {
+        // header bytes                        = 2
+        // pos  = 3 floats * 6 bytes per float = 18
+        // color                               = 3
+        // text                                = text.length + 1
+        // set                                 = set.length + 1
+        int numBytes = 25 + text.length() + set.length();
+        ByteBuffer buf = ByteBuffer.allocate(numBytes);
+
+        buf.put((byte) 2);
+        buf.put((byte) 0);
+        writeStringToBuffer(buf, text);
+        writeFloatToBuffer(buf, pos[0]);
+        writeFloatToBuffer(buf, pos[1]);
+        writeFloatToBuffer(buf, pos[2]);
+        writeColorToBuffer(buf, color, false);
+        writeStringToBuffer(buf, set);
+
+        return buf.array();
+    }
 }

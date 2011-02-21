@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
-import rv.comm.drawing.Command;
+import rv.comm.drawing.commands.Command;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 

@@ -18,12 +18,16 @@ package rv;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.DebugGL2;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -202,6 +206,13 @@ public class Viewer implements GLEventListener {
         canvas.addGLEventListener(this);
         frame = new JFrame("RoboViz");
 
+        try {
+            Image iconImg = ImageIO.read(getClass().getClassLoader()
+                    .getResourceAsStream("resources/icon.png"));
+            frame.setIconImage(iconImg);
+        } catch (IOException e1) {
+        }
+        
         frame.setSize(w, h);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

@@ -66,11 +66,11 @@ public class RVTester {
         angle += 0.05;
 
         // draw points wave
-        for (int i = 0; i < 60; i++) {
-            float p = i / 60.0f;
+        for (int i = 0; i < 30; i++) {
+            float p = i / 30.0f;
             float height = Math.max(0, (float) (Math.sin(angle + p * 18)));
-            drawPoint(new float[] { -9 + 18 * p, p * 12 - 6, height }, 5,
-                    Color.BLACK, "animated.points");
+            float[] pos = new float[] { -9 + 18 * p, p * 12 - 6, height };
+            drawPoint(pos, 5, Color.BLACK, "animated.points");
         }
 
         // draw spinning triangle
@@ -81,6 +81,8 @@ public class RVTester {
         drawLine(a, b, 5.0f, Color.YELLOW, "animated.spinner");
         drawLine(b, c, 5.0f, Color.YELLOW, "animated.spinner");
         drawLine(a, c, 5.0f, Color.YELLOW, "animated.spinner");
+        
+        drawAnnotation(String.format("%.1f", b[2]), b, Color.GREEN, "animated.annotation");
 
         // swap all sets starting with "animated"
         swapBuffers("animated");
@@ -114,6 +116,8 @@ public class RVTester {
         drawSphere(new float[] { -5, 0, 2 }, 0.5f, Color.PINK, "static.spheres");
         drawSphere(new float[] { 5, 0, 2 }, 0.5f, Color.PINK, "static.spheres");
 
+        drawAnnotation("hello world", new float[]{0,0,2}, Color.GREEN, "static.annotations");
+        
         // draw a polygon
         float[][] v = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 3, 0 },
                 { -2, -2, 0 }, };
@@ -159,6 +163,12 @@ public class RVTester {
     public void drawPolygon(float[][] v, Color color, String set)
             throws IOException {
         byte[] buf = RVDraw.newPolygon(v, color, set);
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+    }
+    
+    public void drawAnnotation(String text, float[] pos, Color color, String set)
+            throws IOException {
+        byte[] buf = RVDraw.newAnnotation(text, pos, color, set);
         socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
     }
 

@@ -24,8 +24,7 @@ import java.util.HashMap;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
-import js.jogl.Texture2D;
-
+import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
 
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -40,15 +39,21 @@ public class Drawings {
     /** Event object launched when the list of sets is modified */
     public class SetListChangeEvent extends EventObject {
 
-        private ArrayList<ShapeSet> sets;
+        private ArrayList<BufferedSet<Shape>>      shapeSets;
+        private ArrayList<BufferedSet<Annotation>> annotationSets;
 
-        public ArrayList<ShapeSet> getSets() {
-            return sets;
+        public ArrayList<BufferedSet<Shape>> getShapeSets() {
+            return shapeSets;
+        }
+
+        public ArrayList<BufferedSet<Annotation>> getAnnotationSets() {
+            return annotationSets;
         }
 
         public SetListChangeEvent(Drawings source) {
             super(source);
-            this.sets = source.shapeSets;
+            this.shapeSets = source.shapeSets;
+            this.annotationSets = source.annotationSets;
         }
     }
 
@@ -57,12 +62,13 @@ public class Drawings {
         public void setListChanged(SetListChangeEvent evt);
     }
 
-    private ArrayList<ShapeListListener> listeners       = new ArrayList<Drawings.ShapeListListener>();
-    private HashMap<String, ShapeSet>    shapeSetListing = new HashMap<String, ShapeSet>();
-    private ArrayList<ShapeSet>          shapeSets       = new ArrayList<ShapeSet>();
-    private boolean                      changed         = false;
-
-    private boolean                      visible         = true;
+    private ArrayList<ShapeListListener>             listeners            = new ArrayList<Drawings.ShapeListListener>();
+    private HashMap<String, BufferedSet<Shape>>      shapeSetListing      = new HashMap<String, BufferedSet<Shape>>();
+    private HashMap<String, BufferedSet<Annotation>> annotationSetListing = new HashMap<String, BufferedSet<Annotation>>();
+    private ArrayList<BufferedSet<Shape>>            shapeSets            = new ArrayList<BufferedSet<Shape>>();
+    private ArrayList<BufferedSet<Annotation>>       annotationSets       = new ArrayList<BufferedSet<Annotation>>();
+    private boolean                                  changed              = false;
+    private boolean                                  visible              = true;
 
     public boolean isVisible() {
         return visible;
@@ -70,6 +76,10 @@ public class Drawings {
 
     public void toggle() {
         visible = !visible;
+    }
+    
+    public ArrayList<BufferedSet<Annotation>> getAnnotationSets() {
+        return annotationSets;
     }
 
     public void addShapeSetListener(ShapeListListener listener) {
@@ -85,14 +95,32 @@ public class Drawings {
         for (ShapeListListener listener : listeners)
             listener.setListChanged(evt);
     }
-
-    public void addShape(Shape shape) {
-        String setName = shape.getSetName();
-        ShapeSet set = shapeSetListing.get(setName);
+    
+    public void addAnnotation(Annotation annotation) {
+        String setName = annotation.getSet();
+        BufferedSet<Annotation> set = annotationSetListing.get(setName);
 
         if (set == null) {
             // shape has a set name that hasn't been seen, so create a new set
-            ShapeSet newSet = new ShapeSet(setName);
+            BufferedSet<Annotation> newSet = new BufferedSet<Annotation>(setName);
+            newSet.put(annotation);
+            synchronized (this) {
+                annotationSets.add(newSet);
+            }
+            annotationSetListing.put(setName, newSet);
+            changed = true;
+        } else {
+            set.put(annotation);
+        }
+    }
+
+    public void addShape(Shape shape) {
+        String setName = shape.getSetName();
+        BufferedSet<Shape> set = shapeSetListing.get(setName);
+
+        if (set == null) {
+            // shape has a set name that hasn't been seen, so create a new set
+            BufferedSet<Shape> newSet = new BufferedSet<Shape>(setName);
             newSet.put(shape);
             synchronized (this) {
                 shapeSets.add(newSet);
@@ -108,12 +136,18 @@ public class Drawings {
     public synchronized void clearAllShapeSets() {
         shapeSetListing.clear();
         shapeSets.clear();
+        annotationSetListing.clear();
+        annotationSets.clear();
         fireShapeChangeListener();
     }
 
     /** Retrieves a shape set by name */
-    public ShapeSet getShapeSet(String name) {
+    public BufferedSet<Shape> getShapeSet(String name) {
         return shapeSetListing.get(name);
+    }
+    
+    public BufferedSet<Annotation> getAnnotationSet(String name) {
+        return annotationSetListing.get(name);
     }
 
     /**
@@ -122,10 +156,15 @@ public class Drawings {
      */
     public void swapBuffers(String name) {
         if (name.isEmpty()) {
-            for (ShapeSet set : shapeSets)
+            for (BufferedSet<Shape> set : shapeSets)
+                set.swapBuffers();
+            for (BufferedSet<Annotation> set : annotationSets)
                 set.swapBuffers();
         } else {
-            for (ShapeSet p : shapeSets)
+            for (BufferedSet<Shape> p : shapeSets)
+                if (p.getName().startsWith(name))
+                    p.swapBuffers();
+            for (BufferedSet<Annotation> p : annotationSets)
                 if (p.getName().startsWith(name))
                     p.swapBuffers();
         }
@@ -135,15 +174,13 @@ public class Drawings {
         gl.glPushAttrib(GL2.GL_ENABLE_BIT);
         gl.glEnable(GL.GL_BLEND);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        // gl.glEnable(GL.GL_LINE_SMOOTH);
-        // gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glDisable(GL2.GL_LIGHTING);
         gl.glDisable(GL.GL_TEXTURE_2D);
         gl.glDisable(GL2.GL_LIGHTING);
 
-        for (ShapeSet set : shapeSets) {
-            if (set.isVisible()) {
-                ArrayList<Shape> shapes = set.getShapes();
+        for (BufferedSet<Shape> setBuffer : shapeSets) {
+            if (setBuffer.isVisible()) {
+                ArrayList<Shape> shapes = setBuffer.getFrontSet();
                 for (Shape s : shapes) {
                     if (s != null) {
                         s.draw(gl);
@@ -151,6 +188,7 @@ public class Drawings {
                 }
             }
         }
+        
         gl.glPopAttrib();
 
     }

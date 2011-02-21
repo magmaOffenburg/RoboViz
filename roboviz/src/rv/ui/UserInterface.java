@@ -48,7 +48,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class UserInterface {
     private Viewer            viewer;
     private FPCamera          camera;
-    private PoolListPanel     poolPanel;
+    private DrawingListPanel     poolPanel;
     private CameraController  cameraControl;
 
     private SceneObjectPicker picker;
@@ -85,7 +85,7 @@ public class UserInterface {
         this.activeScreen.setEnabled(canvas, true);
     }
 
-    public PoolListPanel getShapeSetPanel() {
+    public DrawingListPanel getShapeSetPanel() {
         return poolPanel;
     }
 
@@ -101,7 +101,7 @@ public class UserInterface {
 
         camera = initCamera(drawable.getChosenGLCapabilities());
         picker = new SceneObjectPicker(viewer.getWorldModel(), camera);
-        poolPanel = new PoolListPanel(viewer.getDrawings());
+        poolPanel = new DrawingListPanel(viewer.getDrawings());
     }
 
     public void init() {

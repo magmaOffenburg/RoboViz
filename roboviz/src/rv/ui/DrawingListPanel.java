@@ -40,10 +40,12 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
+import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
 import rv.comm.drawing.Drawings.ShapeListListener;
-import rv.comm.drawing.ShapeSet;
+import rv.comm.drawing.annotations.Annotation;
+import rv.comm.drawing.shapes.Shape;
 
 /**
  * TODO: lots of work on this class; should use a JTree instead of JList
@@ -51,7 +53,7 @@ import rv.comm.drawing.ShapeSet;
  * @author justin
  * 
  */
-public class PoolListPanel extends JPanel implements ShapeListListener {
+public class DrawingListPanel extends JPanel implements ShapeListListener {
 
     static class CheckListRenderer extends JCheckBox implements
             ListCellRenderer {
@@ -69,13 +71,13 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
     }
 
     static class CheckListItem {
-        private ShapeSet pool;
-        private String   label;
-        private boolean  isSelected = false;
+        private BufferedSet bufferedSet;
+        private String      label;
+        private boolean     isSelected = false;
 
-        public CheckListItem(ShapeSet pool) {
-            this.pool = pool;
-            this.label = pool.getName();
+        public CheckListItem(BufferedSet set) {
+            this.bufferedSet = set;
+            this.label = set.getName();
         }
 
         public boolean isSelected() {
@@ -84,7 +86,7 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
 
         public void setSelected(boolean isSelected) {
             this.isSelected = isSelected;
-            pool.setVisible(isSelected);
+            bufferedSet.setVisible(isSelected);
         }
 
         @Override
@@ -94,21 +96,25 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
     }
 
     private class Cell extends JComponent {
-        private String    pool;
+        private String    setName;
         private JLabel    text;
         private JCheckBox checkbox;
 
         public Cell(String text, boolean state) {
-            this.pool = text;
+            this.setName = text;
             this.text = new JLabel(text);
             this.checkbox = new JCheckBox();
             checkbox.setSelected(state);
             checkbox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ShapeSet p = drawings.getShapeSet(pool);
+                    BufferedSet<Shape> p = drawings.getShapeSet(setName);
                     if (p != null)
                         p.setVisible(!p.isVisible());
+                    
+                    BufferedSet<Annotation> p1 = drawings.getAnnotationSet(setName);
+                    if (p1 != null)
+                        p1.setVisible(!p1.isVisible());
                 }
             });
 
@@ -128,11 +134,12 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
         poolFrame.setVisible(true);
     }
 
-    public PoolListPanel(Drawings drawings) {
+    public DrawingListPanel(Drawings drawings) {
 
         poolFrame = new JFrame("Drawings");
         poolFrame.setAlwaysOnTop(true);
         list = new JList(model);
+        setSize(300, 600);
 
         list.setCellRenderer(new CheckListRenderer());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -157,7 +164,7 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
 
         poolFrame.add(new JScrollPane(list), BorderLayout.CENTER);
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 2));
+        p.setLayout(new GridLayout(1, 3));
         regexField = new JTextField();
 
         p.add(regexField);
@@ -186,10 +193,20 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
         });
         poolFrame.add(p, BorderLayout.SOUTH);
 
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                DrawingListPanel.this.drawings.clearAllShapeSets();
+            }
+        });
+        p.add(clearButton);
+        
+        
         this.drawings = drawings;
         drawings.addShapeSetListener(this);
 
         poolFrame.pack();
+        poolFrame.setSize(300,600);
         // TODO: shouldnt do this, just grab pools on init
         drawings.clearAllShapeSets();
     }
@@ -197,21 +214,30 @@ public class PoolListPanel extends JPanel implements ShapeListListener {
     private void regexList(String s) {
         for (int i = 0; i < model.getSize(); i++) {
             CheckListItem cli = ((CheckListItem) model.getElementAt(i));
-            cli.setSelected(cli.pool.getName().matches(s));
+            cli.setSelected(cli.bufferedSet.getName().matches(s));
         }
         list.repaint();
     }
 
     @Override
     public void setListChanged(SetListChangeEvent evt) {
-        // TODO Sort
         model.clear();
-        ArrayList<ShapeSet> pools = evt.getSets();
-        int size = pools.size();
+        ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
+        int size = shapeSets.size();
         for (int i = 0; i < size; i++) {
-            if (pools.get(i) != null) {
-                CheckListItem item = new CheckListItem(pools.get(i));
-                item.setSelected(pools.get(i).isVisible());
+            if (shapeSets.get(i) != null) {
+                CheckListItem item = new CheckListItem(shapeSets.get(i));
+                item.setSelected(shapeSets.get(i).isVisible());
+                model.addElement(item);
+            }
+        }
+        
+        ArrayList<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
+        int size2 = annotationSets.size();
+        for (int i = 0; i < size2; i++) {
+            if (annotationSets.get(i) != null) {
+                CheckListItem item = new CheckListItem(annotationSets.get(i));
+                item.setSelected(annotationSets.get(i).isVisible());
                 model.addElement(item);
             }
         }

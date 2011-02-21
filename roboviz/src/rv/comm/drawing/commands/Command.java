@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package rv.comm.drawing;
+package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
 
@@ -32,8 +32,9 @@ import rv.world.objects.Agent;
  */
 public abstract class Command {
     // packet command IDs
-    public static final int DRAW_OPTION = 0; // 0
-    public static final int DRAW_SHAPE  = 1; // 1
+    public static final int DRAW_OPTION     = 0;
+    public static final int DRAW_SHAPE      = 1;
+    public static final int DRAW_ANNOTATION = 2;
 
     /** Performs the command's function */
     public abstract void execute();
@@ -127,6 +128,8 @@ public abstract class Command {
             return new DrawOption(buf, viewer);
         case Command.DRAW_SHAPE:
             return new DrawShape(buf, viewer);
+        case Command.DRAW_ANNOTATION:
+            return new DrawAnnotation(buf, viewer);
         default:
             return null;
         }

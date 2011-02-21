@@ -93,12 +93,23 @@ void drawPoint(float x, float y, float z, float size, float r, float g, float b,
   delete[] buf;
 }
 
-void drawPolygon(const float* v, int numVerts, float r, float g, float b, float a,
-    const string* setName) {
+void drawPolygon(const float* v, int numVerts, float r, float g, float b,
+    float a, const string* setName) {
   float color[4] = {r,g,b,a};
 
   int bufSize = -1;
   unsigned char* buf = newPolygon(v, numVerts, color, setName, &bufSize);
+  sendto(sockfd, buf, bufSize, 0, p->ai_addr, p->ai_addrlen);
+  delete[] buf;
+}
+
+void drawAnnotation(const string* text, float x, float y, float z, float r,
+    float g, float b, const string* setName) {
+  float color[3] = {r,g,b};
+  float pos[3] = {x,y,z};
+
+  int bufSize = -1;
+  unsigned char* buf = newAnnotation(text, pos, color, setName, &bufSize);
   sendto(sockfd, buf, bufSize, 0, p->ai_addr, p->ai_addrlen);
   delete[] buf;
 }
@@ -125,6 +136,12 @@ void renderAnimatedShapes() {
   drawLine(0,0,0,bx,by,bz,5,1,1,0,&n2);
   drawLine(bx,by,bz,bx,by,0,5,1,1,0,&n2);
   drawLine(0,0,0,bx,by,0,5,1,1,0,&n2);
+
+  string n3("animated.annotation");
+  char tbuf[4];
+  int result = snprintf(tbuf, 4, "%.1f", bz);
+  string aText(tbuf);
+  drawAnnotation(&aText, bx, by, bz, 0, 1, 0, &n3);
 
   string staticSets("animated");
   swapBuffers(&staticSets);

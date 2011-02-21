@@ -37,6 +37,8 @@ import js.math.BoundingBox;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 import rv.Viewer;
+import rv.comm.drawing.BufferedSet;
+import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
@@ -130,14 +132,33 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             renderBillboardText(text, p, color);
         }
     }
+    
+    private void renderAnnotations() {
+        List<BufferedSet<Annotation>> sets = viewer.getDrawings().getAnnotationSets();
+        if (sets.size() > 0) {
+            for (BufferedSet<Annotation> set : sets) {
+                if (set.isVisible()) {
+                    ArrayList<Annotation> annotations = set.getFrontSet();
+                    for (Annotation a : annotations) {
+                        if (a != null) {
+                            renderBillboardText(a.getText(), new Vec3f(a.getPos()), a.getColor());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-
+        // text overlays
+        tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
         if (showPlayerIDs) {
             renderPlayerIDs(viewer.getWorldModel().getLeftTeam());
             renderPlayerIDs(viewer.getWorldModel().getRightTeam());
         }
+        renderAnnotations();
+        tr.endRendering();
 
         if (!viewer.getNetManager().getServer().isConnected())
             connectionOverlay.render(gl, glu, glut, vp);
@@ -174,13 +195,14 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
 
         if (screenPos.z > 1)
             return;
-
-        tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
+        
         tr.setColor(0, 0, 0, 1);
         tr.draw(text, x - 1, y - 1);
-        tr.setColor(color[0], color[1], color[2], color[3]);
+        if (color.length == 4)
+            tr.setColor(color[0], color[1], color[2], color[3]);
+        else
+            tr.setColor(color[0], color[1], color[2], 1);
         tr.draw(text, x, y);
-        tr.endRendering();
     }
 
     @Override

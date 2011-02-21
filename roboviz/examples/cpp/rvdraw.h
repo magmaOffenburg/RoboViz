@@ -164,4 +164,23 @@ unsigned char* newPolygon(const float* v, int numVerts, const float* color,
   return buf;
 }
 
+unsigned char* newAnnotation(const string* text, const float* p,
+    const float* color, const string* setName, int* bufSize) {
+  
+  *bufSize = 25 + text->length() + setName->length();
+  unsigned char* buf = new unsigned char[*bufSize];
+
+  long i = 0;
+  i += writeCharToBuf(buf+i, 2);
+  i += writeCharToBuf(buf+i, 0);
+  i += writeStringToBuf(buf+i, text);
+  i += writeFloatToBuf(buf+i, p[0]);
+  i += writeFloatToBuf(buf+i, p[1]);
+  i += writeFloatToBuf(buf+i, p[2]);
+  i += writeColorToBuf(buf+i, color, 3);
+  i += writeStringToBuf(buf+i, setName);
+
+  return buf;
+}
+
 #endif

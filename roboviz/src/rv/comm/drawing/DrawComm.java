@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import js.io.ByteUtil;
 import rv.Configuration;
 import rv.Viewer;
+import rv.comm.drawing.commands.Command;
 
 /**
  * Communication interface between clients sending draw commands and RoboVis
