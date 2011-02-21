@@ -118,7 +118,7 @@ public class DrawComm {
             if (cmd == null) {
                 if (showWarnings) {
                     System.out.printf(
-                            "Exception parsing command (start index %d)\n",
+                            "Null command (start index %d)\n",
                             buf.position());
                     printPacket(packet);
                 }

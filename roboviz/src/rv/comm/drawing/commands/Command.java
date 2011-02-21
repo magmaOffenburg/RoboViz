@@ -185,4 +185,15 @@ public abstract class Command {
         Vec3f v = n == 2 ? new Vec3f(vals[0], vals[1], 0) : new Vec3f(vals);
         return WorldModel.COORD_TFN.transform(v).getVals();
     }
+    
+    public static Agent readAgent(ByteBuffer buf, WorldModel world) {
+        int agentTeam = ByteUtil.uValue(buf.get());
+        Team team = (agentTeam / 128 == Team.LEFT) ? world.getLeftTeam()
+                : world.getRightTeam();
+        Agent agent = null;
+        int agentIndex = agentTeam % 128;
+        if (agentIndex < team.getAgents().size())
+            agent = team.getAgents().get(agentIndex);
+        return agent;
+    }
 }

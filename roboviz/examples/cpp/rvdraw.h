@@ -173,12 +173,34 @@ unsigned char* newAnnotation(const string* text, const float* p,
   long i = 0;
   i += writeCharToBuf(buf+i, 2);
   i += writeCharToBuf(buf+i, 0);
-  i += writeStringToBuf(buf+i, text);
   i += writeFloatToBuf(buf+i, p[0]);
   i += writeFloatToBuf(buf+i, p[1]);
   i += writeFloatToBuf(buf+i, p[2]);
   i += writeColorToBuf(buf+i, color, 3);
+  i += writeStringToBuf(buf+i, text);
   i += writeStringToBuf(buf+i, setName);
+
+  return buf;
+}
+
+unsigned char* newAgentAnnotation(const string* text, bool leftTeam,
+    int agentNum, const float* color, int* bufSize) {
+
+  *bufSize = (text == NULL) ? 3 : 7 + text->length;
+  unsigned char* buf = new unsigned char[*bufSize];
+
+  long i = 0;
+  i += writeCharToBuf(buf+i, 2);
+  
+  if (text == NULL) {
+    i += writeCharToBuf(buf+i, 2);
+    i += writeCharToBuf(buf+i, (leftTeam ? agentNum - 1 : agentNum + 127));
+  } else {
+    i += writeCharToBuf(buf+i, 1);
+    i += writeCharToBuf(buf+i, (leftTeam ? agentNum - 1 : agentNum + 127));
+    i += writeColorToBuf(buf+i, color, 3);
+    i += writeStringToBuf(buf+i, text);
+  }
 
   return buf;
 }

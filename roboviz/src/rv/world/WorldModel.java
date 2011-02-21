@@ -141,14 +141,13 @@ public class WorldModel {
         field = new Field(cm.getModel("models/newfield.obj"), cm);
         gameState.addListener(field);
 
-        leftTeam = new Team("<Left>", new float[] { .5f, .5f, 1.0f, 1.0f },
-                Team.LEFT, cm);
-        rightTeam = new Team("<Right>", new float[] { 1.0f, .5f, .5f, 1.0f },
-                Team.RIGHT, cm);
+        leftTeam = new Team(new float[] { .5f, .5f, 1.0f, 1.0f }, Team.LEFT, cm);
+        gameState.addListener(leftTeam);
+        rightTeam = new Team(new float[] { 1.0f, .5f, .5f, 1.0f }, Team.RIGHT,cm);
+        gameState.addListener(rightTeam);
         if (mode == Mode.LIVE) {
             // teams and agents try to locate themselves in scene graph for
-            // selection
-            // purposes; not useful if using logfiles
+            // selection purposes; not useful if using logfiles
             sgItems.add(leftTeam);
             sgItems.add(rightTeam);
         }
@@ -180,7 +179,6 @@ public class WorldModel {
         }
 
         skyBox.setPosition(ui.getCamera().getPosition());
-
     }
 
     public void dispose(GL gl) {

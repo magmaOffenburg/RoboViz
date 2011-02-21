@@ -22,13 +22,8 @@ import js.io.ByteUtil;
 
 import rv.Viewer;
 import rv.comm.drawing.Drawings;
-import rv.comm.drawing.annotations.Annotation;
-import rv.comm.drawing.shapes.Circle;
-import rv.comm.drawing.shapes.Line;
-import rv.comm.drawing.shapes.Point;
-import rv.comm.drawing.shapes.Polygon;
-import rv.comm.drawing.shapes.Shape;
-import rv.comm.drawing.shapes.Sphere;
+import rv.comm.drawing.annotations.*;
+import rv.world.objects.Agent;
 
 /**
  * Text annotation drawing
@@ -36,7 +31,9 @@ import rv.comm.drawing.shapes.Sphere;
  */
 public class DrawAnnotation extends Command {
 
-    public static final int SIMPLE = 0;
+    public static final int STANDARD    = 0;
+    public static final int AGENT_ADD   = 1;
+    public static final int AGENT_CLEAR = 2;
     
     private Drawings drawings;
     private Annotation annotation;
@@ -47,8 +44,16 @@ public class DrawAnnotation extends Command {
         int type = ByteUtil.uValue(buf.get());
 
         switch (type) {
-        case SIMPLE:
-            annotation = Annotation.parse(buf);
+        case STANDARD:
+            annotation = StandardAnnotation.parse(buf);
+            break;
+        case AGENT_ADD:
+            annotation = AgentAnnotation.parse(buf, viewer.getWorldModel());
+            break;
+        case AGENT_CLEAR:
+            Agent agent = Command.readAgent(buf, viewer.getWorldModel());
+            if (agent != null)
+                agent.setAnnotation(null);
             break;
         default:
             System.err.println("Unknown annotation : " + type);
@@ -58,6 +63,5 @@ public class DrawAnnotation extends Command {
     
     @Override
     public void execute() {
-        drawings.addAnnotation(annotation);
     }
 }

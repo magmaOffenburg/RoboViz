@@ -16,24 +16,18 @@
 
 package rv.comm.drawing.annotations;
 
-import java.nio.ByteBuffer;
-
 import com.jogamp.opengl.util.awt.TextRenderer;
-
-import js.io.ByteUtil;
-import rv.comm.drawing.commands.Command;
 
 /**
  * Text overlay
  * @author justin
- *
  */
-public class Annotation {
+public abstract class Annotation {
 
-    private float[] pos;
-    private float[] color;
-    private String text;
-    private String set;
+    protected float[] pos;
+    protected float[] color;
+    protected String text;
+    protected String set;
     
     public float[] getPos() {
         return pos;
@@ -56,16 +50,6 @@ public class Annotation {
         this.pos = pos;
         this.color = color;
         this.set = set;
-    }
-    
-    public static Annotation parse(ByteBuffer buf) {
-
-        String text = Command.getString(buf);
-        float[] pos = Command.readCoords(buf, 3);
-        float[] color = Command.readRGB(buf);
-        String set = Command.getString(buf);
-        
-        return new Annotation(text, pos, color, set);
     }
     
     public void render(TextRenderer tr) {

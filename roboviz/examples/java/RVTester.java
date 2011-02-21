@@ -84,6 +84,8 @@ public class RVTester {
         
         drawAnnotation(String.format("%.1f", b[2]), b, Color.GREEN, "animated.annotation");
 
+        drawAgentAnnotation(String.format("%.2f", b[0]), true, 1, Color.CYAN);
+        
         // swap all sets starting with "animated"
         swapBuffers("animated");
     }
@@ -123,6 +125,9 @@ public class RVTester {
                 { -2, -2, 0 }, };
         drawPolygon(v, new Color(1.0f, 1.0f, 1.0f, 0.5f), "static.polygons");
 
+        drawAgentAnnotation("testing", true, 1, Color.red);
+        drawAgentAnnotation("I'm agent #2", true, 2, Color.yellow);
+        
         swapBuffers("static");
     }
 
@@ -171,11 +176,18 @@ public class RVTester {
         byte[] buf = RVDraw.newAnnotation(text, pos, color, set);
         socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
     }
+    
+    public void drawAgentAnnotation(String text, boolean leftTeam,
+            int agentNum, Color color) throws IOException {
+        byte[] buf = RVDraw.newAgentAnnotation(text, leftTeam, agentNum, color);
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+    }
 
     public static void main(String[] args) throws Exception {
         RVTester tester = new RVTester();
         tester.runTest();
         Thread.sleep(TEST_DURATION);
+        tester.drawAgentAnnotation(null, true, 1, Color.CYAN);
         tester.animationTimer.stop();
     }
 }

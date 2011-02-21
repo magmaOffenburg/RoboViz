@@ -20,7 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import js.jogl.model.ObjMaterial;
+import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ISceneGraphItem;
+import rv.comm.rcssserver.GameState.GameStateChangeListener;
+import rv.comm.rcssserver.ServerComm;
+import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
@@ -32,10 +36,12 @@ import rv.world.objects.Agent;
  * 
  * @author Justin Stoecker
  */
-public class Team implements ISceneGraphItem {
+public class Team implements ISceneGraphItem, GameStateChangeListener {
     public static final int LEFT  = 0;
     public static final int RIGHT = 1;
 
+    private static final int MAX_AGENTS = 11;
+    
     private ContentManager  content;
     private final int       id;
     private String          name;
@@ -82,11 +88,12 @@ public class Team implements ISceneGraphItem {
         agents.clear();
     }
 
-    public Team(String name, float[] color, int id, ContentManager content) {
+    public Team(float[] color, int id, ContentManager content) {
         this.id = id;
-        this.name = name;
         this.content = content;
         agents = new ArrayList<Agent>();
+        
+        name = (id == LEFT) ? "<left>" : "<right>";
 
         teamColor = new ObjMaterial(name);
         teamColor.setDiffuse(color);
@@ -100,14 +107,20 @@ public class Team implements ISceneGraphItem {
         agents.clear();
 
         // Add agents from scene graph to this team
-        Node agentNode = null;
-        do {
-            int agentID = agents.size() + 1;
-            agentNode = findAgent(agentID, sg);
-            if (agentNode != null) {
-                agents.add(new Agent(this, agentID, agentNode, sg, content));
-            }
-        } while (agentNode != null);
+        // TODO: hopefully we can have the scene graph store agent IDs directly
+        // to avoid this computation and guessing
+        for (int i = 1; i <= MAX_AGENTS; i++) {
+            Node agentNode = findAgent(i, sg);
+            if (agentNode != null)
+                agents.add(new Agent(this, i, agentNode, sg, content));
+        }
+        
+//        do {
+//            int agentID = agents.size() + 1;
+//            agentNode = findAgent(agentID, sg);
+//            if (agentNode != null)
+//                agents.add(new Agent(this, agentID, agentNode, sg, content));
+//        } while (agentNode != null);
     }
 
     @Override
@@ -143,5 +156,25 @@ public class Team implements ISceneGraphItem {
             root = root.getParent();
         }
         return root;
+    }
+
+    @Override
+    public void gsMeasuresAndRulesChanged(GameState gs) {
+    }
+
+    @Override
+    public void gsPlayStateChanged(GameState gs) {
+        // update team name & score
+        if (id == LEFT) {
+            name = gs.getTeamLeft() == null ? "<left>" : gs.getTeamLeft();
+            score = gs.getScoreLeft();
+        } else {
+            name = gs.getTeamRight() == null ? "<right>" : gs.getTeamRight();
+            score = gs.getScoreRight();
+        }
+    }
+
+    @Override
+    public void gsTimeChanged(GameState gs) {
     }
 }

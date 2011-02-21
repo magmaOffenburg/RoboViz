@@ -24,6 +24,7 @@ import javax.media.opengl.GL2;
 import js.math.BoundingBox;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
+import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
@@ -57,7 +58,17 @@ public class Agent implements ISelectable {
 
     private Vec3f                headCenter;
     private Vec3f                headDirection;
+    
+    private AgentAnnotation      annotation = null;
 
+    public void setAnnotation(AgentAnnotation annotation) {
+        this.annotation = annotation;
+    }
+    
+    public AgentAnnotation getAnnotation() {
+        return annotation;
+    }
+    
     public Matrix getHeadTransform() {
         return headTransform;
     }

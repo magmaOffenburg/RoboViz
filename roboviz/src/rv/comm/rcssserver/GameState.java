@@ -19,6 +19,7 @@ package rv.comm.rcssserver;
 import java.util.ArrayList;
 import java.util.List;
 
+import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
 
 /**
@@ -27,7 +28,7 @@ import rv.world.WorldModel;
  * 
  * @author Justin Stoecker
  */
-public class GameState {
+public class GameState implements ServerChangeListener {
 
     public interface GameStateChangeListener {
         /** Called when measurements (field dimensions, etc.) or rules change */
@@ -188,7 +189,7 @@ public class GameState {
     public void removeListener(GameStateChangeListener l) {
         listeners.remove(l);
     }
-
+    
     /**
      * Parses expression and updates state
      */
@@ -264,19 +265,15 @@ public class GameState {
                     playStateChanges++;
                 } else if (atomName.equals(TEAM_LEFT)) {
                     teamLeft = atoms[1];
-                    world.getLeftTeam().setName(atoms[1]);
                     playStateChanges++;
                 } else if (atomName.equals(TEAM_RIGHT)) {
                     teamRight = atoms[1];
-                    world.getRightTeam().setName(atoms[1]);
                     playStateChanges++;
                 } else if (atomName.equals(SCORE_LEFT)) {
                     scoreLeft = Integer.parseInt(atoms[1]);
-                    world.getLeftTeam().setScore(scoreLeft);
                     playStateChanges++;
                 } else if (atomName.equals(SCORE_RIGHT)) {
                     scoreRight = Integer.parseInt(atoms[1]);
-                    world.getRightTeam().setScore(scoreRight);
                     playStateChanges++;
                 }
             }
@@ -292,6 +289,16 @@ public class GameState {
                 if (measureOrRuleChanges > 0)
                     l.gsMeasuresAndRulesChanged(this);
             }
+        }
+    }
+
+    @Override
+    public void connectionChanged(ServerComm server) {
+        if (!server.isConnected()) {
+            scoreLeft = 0;
+            scoreRight = 0;
+            teamLeft = null;
+            teamRight = null;
         }
     }
 }

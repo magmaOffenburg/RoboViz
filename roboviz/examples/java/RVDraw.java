@@ -230,12 +230,36 @@ public class RVDraw {
 
         buf.put((byte) 2);
         buf.put((byte) 0);
-        writeStringToBuffer(buf, text);
         writeFloatToBuffer(buf, pos[0]);
         writeFloatToBuffer(buf, pos[1]);
         writeFloatToBuffer(buf, pos[2]);
         writeColorToBuffer(buf, color, false);
+        writeStringToBuffer(buf, text);
         writeStringToBuffer(buf, set);
+
+        return buf.array();
+    }
+
+    /**
+     * Adds an overhead annotation to a specified agent; if the text is null,
+     * this will clear the existing annotation from the agent.
+     */
+    public static byte[] newAgentAnnotation(String text, boolean leftTeam,
+            int agentNum, Color color) {
+
+        int numBytes = (text == null) ? 3 : 7 + text.length();
+        ByteBuffer buf = ByteBuffer.allocate(numBytes);
+        
+        buf.put((byte) 2);
+        if (text == null) {
+            buf.put((byte) 2);
+            buf.put((byte)(leftTeam ? agentNum - 1 : agentNum + 127));
+        } else {
+            buf.put((byte) 1);
+            buf.put((byte)(leftTeam ? agentNum - 1 : agentNum + 127));
+            writeColorToBuffer(buf, color, false);
+            writeStringToBuffer(buf, text);
+        }
 
         return buf.array();
     }

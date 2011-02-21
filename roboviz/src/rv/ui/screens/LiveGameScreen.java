@@ -38,6 +38,7 @@ import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
+import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerComm;
@@ -124,12 +125,17 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             p.y = 1;
             String text = "" + a.getID();
 
-            float[] color;
-            if (selected != null && selected == a) {
-                color = new float[] { 1, 1, 1, 1 };
-            } else
-                color = team.getTeamMaterial().getDiffuse();
-            renderBillboardText(text, p, color);
+            AgentAnnotation aa = a.getAnnotation();
+            if (aa != null) {
+                renderBillboardText(aa.getText(), p, aa.getColor());
+            } else {
+                float[] color;
+                if (selected != null && selected == a) {
+                    color = new float[] { 1, 1, 1, 1 };
+                } else
+                    color = team.getTeamMaterial().getDiffuse();
+                renderBillboardText(text, p, color);
+            }
         }
     }
     
@@ -157,7 +163,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             renderPlayerIDs(viewer.getWorldModel().getLeftTeam());
             renderPlayerIDs(viewer.getWorldModel().getRightTeam());
         }
-        renderAnnotations();
+        if (viewer.getDrawings().isVisible())
+            renderAnnotations();
         tr.endRendering();
 
         if (!viewer.getNetManager().getServer().isConnected())

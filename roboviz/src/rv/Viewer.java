@@ -271,6 +271,8 @@ public class Viewer implements GLEventListener {
         if (mode == Mode.LIVE) {
             netManager = new NetworkManager();
             netManager.init(this, config);
+            
+            netManager.getServer().addChangeListener(world.getGameState());
         } else {
             File log = new File(logFileName);
             if (log.exists())
