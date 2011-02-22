@@ -92,9 +92,9 @@ public class SimsparkController implements CameraController, GameStateChangeList
             tWorld.add(v.normalize().times(dB));
         }
         if (dU > 0)
-            tLocal.add(Vec3f.unitY().times(dU));
+            tWorld.add(Vec3f.unitY().times(dU));
         if (dD > 0)
-            tLocal.add(Vec3f.unitY().times(-dD));
+            tWorld.add(Vec3f.unitY().times(-dD));
 
         float scale = (float) (elapsedMS / 1000.0f * ui.getCamera()
                 .getTranslatedSpeed());

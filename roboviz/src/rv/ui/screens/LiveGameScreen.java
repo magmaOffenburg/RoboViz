@@ -387,7 +387,6 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     @Override
     public void connectionChanged(ServerComm server) {
         changeSelection(null);
-        viewer.getDrawings().clearAllShapeSets();
     }
 
     @Override

@@ -165,8 +165,8 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
         poolFrame.add(new JScrollPane(list), BorderLayout.CENTER);
         JPanel p = new JPanel();
         p.setLayout(new GridLayout(1, 3));
-        regexField = new JTextField();
-
+        regexField = new JTextField(".*");
+        
         p.add(regexField);
         JButton regexSearch = new JButton("Regex");
         regexSearch.addActionListener(new ActionListener() {
@@ -221,13 +221,18 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
 
     @Override
     public void setListChanged(SetListChangeEvent evt) {
+        String regex = regexField.getText();
+        
         model.clear();
         ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
         int size = shapeSets.size();
         for (int i = 0; i < size; i++) {
             if (shapeSets.get(i) != null) {
                 CheckListItem item = new CheckListItem(shapeSets.get(i));
-                item.setSelected(shapeSets.get(i).isVisible());
+                boolean visible = shapeSets.get(i).isVisible();
+                boolean matchRegex = regex == null ? true : shapeSets
+                        .get(i).getName().matches(regex);
+                item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }
         }
@@ -237,7 +242,10 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
         for (int i = 0; i < size2; i++) {
             if (annotationSets.get(i) != null) {
                 CheckListItem item = new CheckListItem(annotationSets.get(i));
-                item.setSelected(annotationSets.get(i).isVisible());
+                boolean visible = annotationSets.get(i).isVisible();
+                boolean matchRegex = regex == null ? true : annotationSets
+                        .get(i).getName().matches(regex);
+                item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }
         }
