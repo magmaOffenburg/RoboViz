@@ -129,6 +129,13 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
             agents.get(i).update(sg);
     }
 
+    public Agent getAgentByID(int id) {
+        for (Agent a : agents)
+            if (a.getID() == id)
+                return a;
+        return null;
+    }
+    
     /**
      * Check scene graph to see if an agent on this team with given agentID can
      * be located. Returns the root node containing that agent's mesh nodes if

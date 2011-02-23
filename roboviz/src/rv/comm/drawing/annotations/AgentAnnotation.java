@@ -1,17 +1,3 @@
-package rv.comm.drawing.annotations;
-
-import java.nio.ByteBuffer;
-
-import com.jogamp.opengl.util.awt.TextRenderer;
-
-import js.io.ByteUtil;
-import js.math.vector.Vec3f;
-
-import rv.comm.drawing.commands.Command;
-import rv.world.Team;
-import rv.world.WorldModel;
-import rv.world.objects.Agent;
-
 /*
  *  Copyright 2011 RoboViz
  *
@@ -27,6 +13,20 @@ import rv.world.objects.Agent;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package rv.comm.drawing.annotations;
+
+import java.nio.ByteBuffer;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
+
+import js.io.ByteUtil;
+import js.math.vector.Vec3f;
+
+import rv.comm.drawing.commands.Command;
+import rv.world.Team;
+import rv.world.WorldModel;
+import rv.world.objects.Agent;
 
 /**
  * This is a special annotation type that is attached to an agent.
@@ -48,7 +48,7 @@ public class AgentAnnotation extends Annotation {
     }
     
     public AgentAnnotation(String text, Agent agent, float[] color) {
-        super(text, agent.getHeadCenter().getVals(), color, null);
+        super(text, agent.getHeadCenter().getVals(), color, agent.getShortName() + ".Annotation");
         this.agent = agent;
         agent.setAnnotation(this);
     }

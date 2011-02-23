@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * 
  * @author justin
  */
-public class BufferedSet<T> {
+public class BufferedSet<T> implements VisibleNamedObject {
 
     private boolean            visible  = true;
     private final String       name;

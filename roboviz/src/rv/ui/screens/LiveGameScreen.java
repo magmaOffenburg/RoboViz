@@ -60,6 +60,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         MouseMotionListener, ServerChangeListener, SceneGraphListener,
         GameStateChangeListener {
+    
+    enum AgentOverheadType { NONE, ANNOTATIONS, IDS }
 
     private Viewer            viewer;
     private GameStateOverlay  gsOverlay;
@@ -68,7 +70,7 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     private List<Screen>      overlays       = new ArrayList<Screen>();
     private List<TextOverlay> textOverlays   = new ArrayList<TextOverlay>();
     private boolean           moveObjectMode = false;
-    private boolean           showPlayerIDs  = false;
+    private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private TextRenderer      tr;
     private TextRenderer      overlayTextRenderer;
     private RobotVantage      robotVantage   = null;
@@ -113,7 +115,7 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         }
     }
 
-    private void renderPlayerIDs(Team team) {
+    private void renderAgentOverheads(Team team) {
         ISelectable selected = viewer.getWorldModel().getSelectedObject();
 
         for (int i = 0; i < team.getAgents().size(); i++) {
@@ -126,9 +128,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             String text = "" + a.getID();
 
             AgentAnnotation aa = a.getAnnotation();
-            if (aa != null) {
+            if (aa != null && agentOverheadType == AgentOverheadType.ANNOTATIONS) {
                 renderBillboardText(aa.getText(), p, aa.getColor());
-            } else {
+            } else if (agentOverheadType == AgentOverheadType.IDS) {
                 float[] color;
                 if (selected != null && selected == a) {
                     color = new float[] { 1, 1, 1, 1 };
@@ -159,9 +161,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         // text overlays
         tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
-        if (showPlayerIDs) {
-            renderPlayerIDs(viewer.getWorldModel().getLeftTeam());
-            renderPlayerIDs(viewer.getWorldModel().getRightTeam());
+        if (agentOverheadType != AgentOverheadType.NONE) {
+            renderAgentOverheads(viewer.getWorldModel().getLeftTeam());
+            renderAgentOverheads(viewer.getWorldModel().getRightTeam());
         }
         if (viewer.getDrawings().isVisible())
             renderAnnotations();
@@ -247,7 +249,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             moveObjectMode = true;
             break;
         case KeyEvent.VK_I:
-            showPlayerIDs = !showPlayerIDs;
+            AgentOverheadType[] vals = AgentOverheadType.values();
+            agentOverheadType = vals[(agentOverheadType.ordinal()+1)%vals.length];
             break;
         case KeyEvent.VK_F:
             fieldOverlay.setVisible(!fieldOverlay.isVisible());

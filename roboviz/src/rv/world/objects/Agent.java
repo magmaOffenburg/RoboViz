@@ -184,4 +184,9 @@ public class Agent implements ISelectable {
         ContentManager.renderSelection(gl, getPosition(), 0.25f, team
                 .getTeamMaterial().getDiffuse());
     }
+    
+    /** Returns identifier for agent based on team and ID (ex. L.1 for left 1) */
+    public String getShortName() {
+        return String.format("%c.%d", (team.getID() == Team.LEFT) ? 'L' : 'R', id);
+    }
 }

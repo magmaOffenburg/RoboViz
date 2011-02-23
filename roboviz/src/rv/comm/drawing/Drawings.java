@@ -24,6 +24,7 @@ import java.util.HashMap;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
+import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
 
@@ -96,8 +97,16 @@ public class Drawings {
             listener.setListChanged(evt);
     }
     
+    
     public void addAnnotation(Annotation annotation) {
         String setName = annotation.getSet();
+        
+        if (annotation instanceof AgentAnnotation) {
+            // agent annotations are not added to bufferedsets, so they must
+            // be treated specially
+            return;
+        }
+        
         BufferedSet<Annotation> set = annotationSetListing.get(setName);
 
         if (set == null) {

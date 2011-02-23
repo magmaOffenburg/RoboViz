@@ -6,7 +6,6 @@ mkdir %BIN%
 
 :COMPILE
 javac -d %BIN% -cp $CLASSPATH;%JOGL%\gluegen-rt.jar;%JOGL%\jogl.all.jar;%JOGL%\nativewindow.all.jar;%JOGL%\newt.all.jar;lib\jsgl.jar;src\ src\rv\Viewer.java
-javac -d %BIN% -cp $CLASSPATH;%JOGL%\gluegen-rt.jar;%JOGL%\jogl.all.jar;%JOGL%\nativewindow.all.jar;%JOGL%\newt.all.jar;lib\jsgl.jar;src\ src\rv\test\RVTester.java
 
 xcopy /E resources %BIN%\resources\
 xcopy /E %JOGL% %BIN%\lib\

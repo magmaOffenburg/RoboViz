@@ -63,5 +63,7 @@ public class DrawAnnotation extends Command {
     
     @Override
     public void execute() {
+        if (annotation != null)
+            drawings.addAnnotation(annotation);
     }
 }

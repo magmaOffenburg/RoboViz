@@ -44,6 +44,8 @@ import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
 import rv.comm.drawing.Drawings.ShapeListListener;
+import rv.comm.drawing.VisibleNamedObject;
+import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
 
@@ -71,13 +73,13 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
     }
 
     static class CheckListItem {
-        private BufferedSet bufferedSet;
-        private String      label;
-        private boolean     isSelected = false;
+        private VisibleNamedObject item;
+        private String             label;
+        private boolean            isSelected = false;
 
-        public CheckListItem(BufferedSet set) {
-            this.bufferedSet = set;
-            this.label = set.getName();
+        public CheckListItem(VisibleNamedObject item) {
+            this.item = item;
+            this.label = item.getName();
         }
 
         public boolean isSelected() {
@@ -86,7 +88,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
 
         public void setSelected(boolean isSelected) {
             this.isSelected = isSelected;
-            bufferedSet.setVisible(isSelected);
+            item.setVisible(isSelected);
         }
 
         @Override
@@ -108,6 +110,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
             checkbox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    
                     BufferedSet<Shape> p = drawings.getShapeSet(setName);
                     if (p != null)
                         p.setVisible(!p.isVisible());
@@ -214,7 +217,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
     private void regexList(String s) {
         for (int i = 0; i < model.getSize(); i++) {
             CheckListItem cli = ((CheckListItem) model.getElementAt(i));
-            cli.setSelected(cli.bufferedSet.getName().matches(s));
+            cli.setSelected(cli.item.getName().matches(s));
         }
         list.repaint();
     }
