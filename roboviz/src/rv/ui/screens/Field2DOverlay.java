@@ -93,11 +93,12 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
         gl.glViewport(20, 20, displayWidth, displayHeight);
     }
 
-    private void unsetView(GL2 gl) {
+    private void unsetView(GL2 gl, Viewport vp) {
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glPopMatrix();
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glPopMatrix();
+        vp.apply(gl);
     }
 
     private void drawPoints(GL2 gl, int pSize, boolean manualColor) {
@@ -150,7 +151,8 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
             gl.glColor4f(1, 1, 1, 1);
             setView(gl, glu);
             world.getField().render(gl);
-
+            
+            
             int pSize = (int) (screenWidth * 0.01125);
 
             gl.glEnable(GL2.GL_POINT_SMOOTH);
@@ -159,7 +161,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
             drawPoints(gl, pSize - 2, false);
             gl.glDisable(GL2.GL_POINT_SMOOTH);
 
-            unsetView(gl);
+            unsetView(gl, vp);
         }
     }
 
