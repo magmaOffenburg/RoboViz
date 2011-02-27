@@ -118,7 +118,7 @@ public class RVTester {
         drawSphere(new float[] { -5, 0, 2 }, 0.5f, Color.PINK, "static.spheres");
         drawSphere(new float[] { 5, 0, 2 }, 0.5f, Color.PINK, "static.spheres");
 
-        drawAnnotation("hello world", new float[]{0,0,2}, Color.GREEN, "static.annotations");
+        drawAnnotation("hello\nworld", new float[]{0,0,2}, Color.GREEN, "static.annotations");
         
         // draw a polygon
         float[][] v = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 3, 0 },

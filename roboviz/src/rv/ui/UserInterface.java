@@ -16,6 +16,7 @@
 
 package rv.ui;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.media.opengl.GL;
@@ -45,7 +46,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
  * 
  * @author Justin Stoecker
  */
-public class UserInterface {
+public class UserInterface implements KeyListener {
     private Viewer            viewer;
     private FPCamera          camera;
     private DrawingListPanel     poolPanel;
@@ -83,6 +84,7 @@ public class UserInterface {
 
         this.activeScreen = activeScreen;
         this.activeScreen.setEnabled(canvas, true);
+        canvas.addKeyListener(this);
     }
 
     public DrawingListPanel getShapeSetPanel() {
@@ -171,5 +173,24 @@ public class UserInterface {
         } catch (Exception e) {
             // If Nimbus is not available
         }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_F12) {
+            viewer.takeScreenShot();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }

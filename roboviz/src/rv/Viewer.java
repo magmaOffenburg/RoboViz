@@ -21,9 +21,11 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.EventObject;
 import java.util.List;
 
@@ -48,6 +50,7 @@ import rv.ui.UserInterface;
 import rv.world.WorldModel;
 
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.awt.Screenshot;
 
 /**
  * Program entry point / main class. Creates a window and delegates OpenGL
@@ -112,7 +115,7 @@ public class Viewer implements GLEventListener {
     private GLInfo                     glInfo;
     private Configuration              config;
     private GLCanvas                   canvas;
-
+    private String                     ssName                = null;
     private double                     elapsedMS             = 0;
     private long                       lastNanoTime          = 0;
     private double                     fpsTimer              = 0;
@@ -231,6 +234,24 @@ public class Viewer implements GLEventListener {
 
         animator.start();
     }
+    
+    public void takeScreenShot() {
+        String s = Calendar.getInstance().getTime().toString();
+        s = s.replaceAll("\\s+", "_");
+        ssName = String.format("%s_%s.png", "roboviz", s);
+    }
+    
+    private void takeScreenshot(String fileName) {
+        BufferedImage ss = Screenshot.readToBufferedImage(0,0, screen.w, screen.h, false); 
+        File ssFile = new File(fileName); 
+        try {
+            ImageIO.write(ss, "png", ssFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+        
+        System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
+    }
 
     /** Enter or exit full-screen exclusive mode depending on current mode */
     public void toggleFullScreen() {
@@ -332,6 +353,11 @@ public class Viewer implements GLEventListener {
     public void display(GLAutoDrawable drawable) {
         if (!init)
             return;
+        
+        if (ssName != null) {
+            takeScreenshot(ssName);
+            ssName = null;
+        }
 
         long nanoTime = System.nanoTime();
         if (lastNanoTime > 0)
