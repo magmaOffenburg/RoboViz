@@ -287,6 +287,10 @@ public class ServerComm {
     public void freeKick(boolean left) {
         setPlayMode(left ? "free_kick_left" : "free_kick_right");
     }
+    
+    public void killServer() {
+        sendMessage("(killsim)");
+    }
 
     public void moveAgent(Vec3f pos, boolean leftTeam, int agentID) {
         // - (agent (team [Right,Left])(unum <n>)(pos <x y z>)):

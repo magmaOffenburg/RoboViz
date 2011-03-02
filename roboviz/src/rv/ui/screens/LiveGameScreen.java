@@ -76,6 +76,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     private RobotVantage      robotVantage   = null;
     private int               prevScoreL     = -1;
     private int               prevScoreR     = -1;
+    
+    private boolean shift = false;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
@@ -216,11 +218,13 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
 
         switch (e.getKeyCode()) {
+        case KeyEvent.VK_X:
+            if (shift)
+                viewer.getNetManager().getServer().killServer();
         case KeyEvent.VK_K:
-            viewer.getNetManager().getServer().kickOff(true);
+                viewer.getNetManager().getServer().kickOff(true);
             break;
         case KeyEvent.VK_ESCAPE:
             viewer.shutdown();
@@ -275,6 +279,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         case KeyEvent.VK_SPACE:
             viewer.getUI().getBallTracker().toggleEnabled();
             break;
+        case KeyEvent.VK_SHIFT:
+            shift = true;
+            break;
         }
     }
 
@@ -284,6 +291,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         switch (e.getKeyCode()) {
         case KeyEvent.VK_CONTROL:
             moveObjectMode = false;
+            break;
+        case KeyEvent.VK_SHIFT:
+            shift = false;
             break;
         }
     }
