@@ -30,17 +30,15 @@ import java.util.EventObject;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.media.opengl.DebugGL2;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLCanvas;
-import javax.swing.JFrame;
 
 import js.jogl.GLInfo;
+import js.jogl.prog.GLProgramSwing;
 import js.jogl.view.Viewport;
 import rv.comm.NetworkManager;
 import rv.comm.drawing.Drawings;
@@ -58,12 +56,7 @@ import com.jogamp.opengl.util.awt.Screenshot;
  * 
  * @author Justin Stoecker
  */
-public class Viewer implements GLEventListener {
-
-    // necessary for JOGL/Swing interaction
-    static {
-        GLProfile.initSingleton(true);
-    }
+public class Viewer extends GLProgramSwing implements GLEventListener {
 
     public enum Mode {
         LOGFILE, LIVE,
@@ -86,7 +79,7 @@ public class Viewer implements GLEventListener {
         public WindowResizeEvent(Object src, Viewport window) {
             super(src);
             this.window = window;
-            this.drawable = Viewer.this.canvas;
+            this.drawable = getCanvas();
         }
     }
 
@@ -100,7 +93,6 @@ public class Viewer implements GLEventListener {
 
     private List<WindowResizeListener> windowResizeListeners = new ArrayList<WindowResizeListener>();
 
-    private Viewport                   screen;
     private WorldModel                 world;
     private UserInterface              ui;
     private NetworkManager             netManager;
@@ -110,19 +102,10 @@ public class Viewer implements GLEventListener {
     private LogPlayer                  logPlayer;
     boolean                            init                  = false;
     private boolean                    fullscreen            = false;
-    private JFrame                     frame;
-    private final FPSAnimator          animator;
     private GLInfo                     glInfo;
     private Configuration              config;
-    private GLCanvas                   canvas;
     private String                     ssName                = null;
-    private double                     elapsedMS             = 0;
-    private long                       lastNanoTime          = 0;
-    private double                     fpsTimer              = 0;
-    private double                     fps                   = 0;
-
     private String                     logFileName;
-
     private Mode                       mode                  = Mode.LIVE;
 
     public LogPlayer getLogPlayer() {
@@ -139,10 +122,6 @@ public class Viewer implements GLEventListener {
 
     public Configuration getConfig() {
         return config;
-    }
-
-    public GLAutoDrawable getDrawable() {
-        return canvas;
     }
 
     public Viewport getScreen() {
@@ -174,7 +153,7 @@ public class Viewer implements GLEventListener {
     }
 
     public void shutdown() {
-        frame.dispose();
+        getFrame().dispose();
         System.exit(0);
     }
 
@@ -183,56 +162,23 @@ public class Viewer implements GLEventListener {
     }
 
     /** Creates a new RoboVis viewer */
-    public Viewer(Configuration config, String[] args) {
-        this.config = config;
+    public Viewer(Configuration config, GLCapabilities caps, String[] args) {
+    	super("RoboViz", config.getGraphics().getFrameWidth(), config.getGraphics().getFrameHeight(), caps);
 
+    	this.config = config;
+    	
         // check command-line args
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("--logfile") && i < args.length - 1)
                 logFileName = args[i + 1];
         }
 
-        // configure OpenGL context
-        GLProfile glp = GLProfile.get(GLProfile.GL2);
-        GLCapabilities caps = new GLCapabilities(glp);
-        caps.setStereo(config.getGraphics().useStereo());
-        if (config.getGraphics().useFSAA()) {
-            caps.setSampleBuffers(true);
-            caps.setNumSamples(config.getGraphics().getFSAASamples());
-        }
-
-        // create window
-        int w = config.getGraphics().getFrameWidth();
-        int h = config.getGraphics().getFrameHeight();
-        screen = new Viewport(0, 0, w, h);
-        canvas = new GLCanvas(caps);
-        canvas.addGLEventListener(this);
-        frame = new JFrame("RoboViz");
-
         try {
             Image iconImg = ImageIO.read(getClass().getClassLoader()
                     .getResourceAsStream("resources/icon.png"));
-            frame.setIconImage(iconImg);
+            getFrame().setIconImage(iconImg);
         } catch (IOException e1) {
         }
-        
-        frame.setSize(w, h);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        frame.add(canvas);
-
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                frame.dispose();
-                System.exit(0);
-            }
-        });
-
-        // start render loop
-        int fps = config.getGraphics().getTargetFPS();
-        animator = new FPSAnimator(canvas, fps);
-
-        animator.start();
     }
     
     public void takeScreenShot() {
@@ -258,13 +204,13 @@ public class Viewer implements GLEventListener {
         fullscreen = !fullscreen;
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice();
-        gd.setFullScreenWindow(fullscreen ? frame : null);
+        gd.setFullScreenWindow(fullscreen ? getFrame() : null);
     }
 
     public void exitError(String msg) {
         System.err.println(msg);
         animator.stop();
-        frame.dispose();
+        getFrame().dispose();
         System.exit(1);
     }
 
@@ -330,9 +276,17 @@ public class Viewer implements GLEventListener {
     }
 
     public static void main(String[] args) {
-
         Configuration config = Configuration.loadFromFile();
-        new Viewer(config, args);
+        
+        GLProfile glp = GLProfile.get(GLProfile.GL2);
+        GLCapabilities caps = new GLCapabilities(glp);
+        caps.setStereo(config.getGraphics().useStereo());
+        if (config.getGraphics().useFSAA()) {
+            caps.setSampleBuffers(true);
+            caps.setNumSamples(config.getGraphics().getFSAASamples());
+        }
+        
+        new Viewer(config, caps, args);
     }
 
     @Override
@@ -350,7 +304,16 @@ public class Viewer implements GLEventListener {
     }
 
     @Override
-    public void display(GLAutoDrawable drawable) {
+    public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+        super.reshape(drawable, x, y, w, h);
+
+        WindowResizeEvent event = new WindowResizeEvent(this, screen);
+        for (WindowResizeListener l : windowResizeListeners)
+            l.windowResized(event);
+    }
+
+	@Override
+	public void render(GL gl) {
         if (!init)
             return;
         
@@ -358,28 +321,7 @@ public class Viewer implements GLEventListener {
             takeScreenshot(ssName);
             ssName = null;
         }
-
-        long nanoTime = System.nanoTime();
-        if (lastNanoTime > 0)
-            elapsedMS = (nanoTime - lastNanoTime) / 10e5;
-        lastNanoTime = nanoTime;
-
-        fpsTimer += elapsedMS;
-        if (fpsTimer >= 1000.0) {
-            fps = 1000.0 / elapsedMS;
-            fpsTimer -= 1000.0;
-        }
-
-        update(drawable.getGL());
+		
         renderer.render(drawable, config.getGraphics());
-    }
-
-    @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
-        screen = new Viewport(x, y, w, h);
-
-        WindowResizeEvent event = new WindowResizeEvent(this, screen);
-        for (WindowResizeListener l : windowResizeListeners)
-            l.windowResized(event);
-    }
+	}
 }

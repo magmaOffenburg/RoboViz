@@ -78,7 +78,7 @@ public class UserInterface implements KeyListener {
     }
 
     public void setActiveScreen(Screen activeScreen) {
-        GLCanvas canvas = (GLCanvas) viewer.getDrawable();
+        GLCanvas canvas = (GLCanvas)viewer.getCanvas();
         if (this.activeScreen != null)
             this.activeScreen.setEnabled(canvas, false);
 
@@ -99,7 +99,7 @@ public class UserInterface implements KeyListener {
         setLookFeel();
         this.viewer = viewer;
 
-        GLAutoDrawable drawable = viewer.getDrawable();
+        GLAutoDrawable drawable = viewer.getCanvas();
 
         camera = initCamera(drawable.getChosenGLCapabilities());
         picker = new SceneObjectPicker(viewer.getWorldModel(), camera);

@@ -47,7 +47,7 @@ public class PlaymodeOverlay implements Screen, KeyListener {
         tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
 
         // temporarily disable active screen
-        masterScreen.setEnabled((GLCanvas) viewer.getDrawable(), false);
+        masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), false);
     }
 
     @Override
@@ -88,12 +88,12 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             index = Math.max(index - 1, 0);
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             viewer.getNetManager().getServer().setPlayMode(modes[index]);
-            setEnabled((GLCanvas) viewer.getDrawable(), false);
-            masterScreen.setEnabled((GLCanvas) viewer.getDrawable(), true);
+            setEnabled((GLCanvas) viewer.getCanvas(), false);
+            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
             masterScreen.removeOverlay(this);
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            setEnabled((GLCanvas) viewer.getDrawable(), false);
-            masterScreen.setEnabled((GLCanvas) viewer.getDrawable(), true);
+            setEnabled((GLCanvas) viewer.getCanvas(), false);
+            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
             masterScreen.removeOverlay(this);
         }
     }

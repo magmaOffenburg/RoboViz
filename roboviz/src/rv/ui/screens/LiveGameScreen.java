@@ -237,7 +237,7 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
                     && viewer.getWorldModel().getGameState().getPlayModes() != null) {
                 PlaymodeOverlay pmo = new PlaymodeOverlay(viewer, this);
                 overlays.add(pmo);
-                pmo.setEnabled((GLCanvas) viewer.getDrawable(), true);
+                pmo.setEnabled((GLCanvas) viewer.getCanvas(), true);
             }
             break;
         case KeyEvent.VK_B:
@@ -358,14 +358,14 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
             robotVantage = null;
             viewer.getRenderer().setVantage(viewer.getUI().getCamera());
             viewer.getUI().getCameraControl()
-                    .attachToCanvas((GLCanvas) viewer.getDrawable());
+                    .attachToCanvas((GLCanvas) viewer.getCanvas());
         } else if (viewer.getWorldModel().getSelectedObject() != null
                 && viewer.getWorldModel().getSelectedObject() instanceof Agent) {
             Agent a = (Agent) viewer.getWorldModel().getSelectedObject();
             robotVantage = new RobotVantage(a, 0.1f, 300);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl()
-                    .detachFromCanvas((GLCanvas) viewer.getDrawable());
+                    .detachFromCanvas((GLCanvas) viewer.getCanvas());
         }
     }
 
