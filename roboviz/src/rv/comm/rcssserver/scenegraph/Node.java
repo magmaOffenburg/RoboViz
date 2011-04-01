@@ -81,7 +81,7 @@ public abstract class Node {
     }
 
     protected void update(SExp exp) {
-        if (exp.getChildren() == null)
+        if (exp.getChildren() == null || children == null)
             return;
 
         // updates in expression should follow same structure as the
