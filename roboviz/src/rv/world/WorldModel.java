@@ -141,9 +141,9 @@ public class WorldModel {
         field = new Field(cm.getModel("models/newfield.obj"), cm);
         gameState.addListener(field);
 
-        leftTeam = new Team(new float[] { .5f, .5f, 1.0f, 1.0f }, Team.LEFT, cm);
+        leftTeam = new Team(new float[] { .3f, .3f, 1.0f, 1.0f }, Team.LEFT, cm);
         gameState.addListener(leftTeam);
-        rightTeam = new Team(new float[] { 1.0f, .5f, .5f, 1.0f }, Team.RIGHT,cm);
+        rightTeam = new Team(new float[] { 1.0f, .3f, .3f, 1.0f }, Team.RIGHT,cm);
         gameState.addListener(rightTeam);
         if (mode == Mode.LIVE) {
             // teams and agents try to locate themselves in scene graph for

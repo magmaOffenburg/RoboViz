@@ -36,6 +36,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
+import javax.swing.SwingUtilities;
 
 import js.jogl.GLInfo;
 import js.jogl.prog.GLProgramSwing;
@@ -276,17 +277,24 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     }
 
     public static void main(String[] args) {
-        Configuration config = Configuration.loadFromFile();
+    	
+        final Configuration config = Configuration.loadFromFile();
         
         GLProfile glp = GLProfile.get(GLProfile.GL2);
-        GLCapabilities caps = new GLCapabilities(glp);
+        final GLCapabilities caps = new GLCapabilities(glp);
         caps.setStereo(config.getGraphics().useStereo());
         if (config.getGraphics().useFSAA()) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(config.getGraphics().getFSAASamples());
         }
         
-        new Viewer(config, caps, args);
+        final String[] arguments = args;
+        
+        SwingUtilities.invokeLater(new Runnable() {
+        	public void run() {
+        		new Viewer(config, caps, arguments);
+        	}
+        });
     }
 
     @Override

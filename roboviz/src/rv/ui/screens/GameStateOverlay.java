@@ -34,79 +34,148 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class GameStateOverlay implements Screen {
 
+    private class GameStateBar {
+        private static final int barHeight     = 24;
+        private static final int nameWidth     = 160;
+        private static final int timeWidth     = 78;
+        private static final int timepad       = 11;
+        private static final int scoreBoxWidth = 56;
+        private static final int ypad          = 4;
+        private static final int playModeWidth = 2 * nameWidth + scoreBoxWidth + timeWidth + 6;
+
+        private TextRenderer     tr1;
+        private TextRenderer     tr2;
+
+        private int              x, y;
+
+        public GameStateBar(int x, int y) {
+            this.x = x;
+            this.y = y;
+            tr1 = new TextRenderer(new Font("Arial", Font.PLAIN, 22), true,
+                    false);
+            tr2 = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true,
+                    false);
+        }
+
+        void render(GL2 gl, GameState gs, int screenW, int screenH) {
+
+            String teamL = gs.getTeamLeft() == null ? "<Left>" : gs
+                    .getTeamLeft();
+            String teamR = gs.getTeamRight() == null ? "<Right>" : gs
+                    .getTeamRight();
+            
+            String scoreText = gs.getScoreLeft() + ":" + gs.getScoreRight();
+            String timeText = String.format("%.1f", gs.getTime());
+            double lxpad = (nameWidth - tr1.getBounds(teamL).getWidth()) / 2;
+            double rxpad = (nameWidth - tr1.getBounds(teamR).getWidth()) / 2;
+            double sxpad = (scoreBoxWidth - tr1.getBounds(scoreText).getWidth()) / 2;
+
+            drawGradientBar(gl, x - 3, y - 24, playModeWidth, 24, 0.5f, new float[]{0,0,0,0.5f}, new float[]{0,0,0,0}, false);
+            
+            gl.glBegin(GL2.GL_QUADS);
+            gl.glColor4f(0, 0, 0, 0.5f);
+            drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6, barHeight + 6);
+            drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6, barHeight * 0.6f);
+            gl.glColor4f(.3f, .3f, 1, 0.5f);
+            drawBox(gl, x, y, nameWidth, barHeight);
+            gl.glColor4f(0.2f, 0.2f, 0.2f, 0.65f);
+            drawBox(gl, x + nameWidth, y, scoreBoxWidth, barHeight);
+            gl.glColor4f(1, .3f, .3f, 0.65f);
+            drawBox(gl, x + nameWidth + scoreBoxWidth, y, nameWidth, barHeight);
+            gl.glEnd();
+
+            tr1.beginRendering(screenW, screenH);
+            tr1.draw(teamL, (int) (x + lxpad), y + ypad);
+            tr1.draw(scoreText, (int) (x + nameWidth + sxpad), y + ypad);
+            tr1.draw(teamR, (int) (x + nameWidth + scoreBoxWidth + rxpad), y
+                    + ypad);
+            tr1.draw(timeText, x + 2 * nameWidth + scoreBoxWidth
+                    + timepad, y + ypad);
+            tr1.endRendering();
+            
+            tr2.setColor(0.9f, 0.9f, 0.9f, 1);
+            tr2.beginRendering(screenW, screenH);
+            tr2.draw("Playmode: " + gs.getPlayMode(), x, y - 20);
+            tr2.endRendering();
+        }
+    }
+
     private Viewer       viewer;
     private TextRenderer textRenderer;
+    private GameStateBar gsBar;
 
     public GameStateOverlay(Viewer viewer) {
         this.viewer = viewer;
         Font font = new Font("Arial", Font.PLAIN, 20);
         textRenderer = new TextRenderer(font, true, false);
+        gsBar = new GameStateBar(20, 20);
     }
 
     public void setEnabled(GLCanvas canvas, boolean enabled) {
     }
 
+    /**
+     * Draws a rectangle with a single linear gradient
+     * 
+     * @param x
+     *            - left coordinate of rectangle
+     * @param y
+     *            - bottom coordinate of rectangle
+     * @param w
+     *            - width in pixels
+     * @param h
+     *            - height in pixels
+     * @param gStart
+     *            - percentage of bar width to start gradient at (0 - 1)
+     */
+    void drawGradientBar(GL2 gl, float x, float y, float w, float h,
+            float gStart, float[] startColor, float[] endColor,
+            boolean flipVertical) {
+
+        gStart = 1 - gStart;
+        float gx = w * gStart;
+
+        float[][] v = { { x, y }, { x + gx, y }, { x + w, y },
+                { x + w, y + h }, { x + gx, y + h }, { x, y + h } };
+
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glColor4fv(startColor, 0);
+        if (flipVertical) {
+            gl.glVertex2fv(v[4], 0);
+            gl.glVertex2fv(v[1], 0);
+            gl.glVertex2fv(v[2], 0);
+            gl.glVertex2fv(v[3], 0);
+            gl.glVertex2fv(v[1], 0);
+            gl.glVertex2fv(v[4], 0);
+            gl.glColor4fv(endColor, 0);
+            gl.glVertex2fv(v[5], 0);
+            gl.glVertex2fv(v[0], 0);
+        } else {
+            gl.glVertex2fv(v[5], 0);
+            gl.glVertex2fv(v[0], 0);
+            gl.glVertex2fv(v[1], 0);
+            gl.glVertex2fv(v[4], 0);
+            gl.glVertex2fv(v[4], 0);
+            gl.glVertex2fv(v[1], 0);
+            gl.glColor4fv(endColor, 0);
+            gl.glVertex2fv(v[2], 0);
+            gl.glVertex2fv(v[3], 0);
+        }
+        gl.glEnd();
+    }
+
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        gl.glColor4f(0.2f, 0.2f, 0.2f, 0.3f);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(0, viewer.getScreen().h);
-        gl.glVertex2f(viewer.getScreen().w, viewer.getScreen().h);
-        gl.glVertex2f(viewer.getScreen().w, viewer.getScreen().h - 70);
-        gl.glVertex2f(0, viewer.getScreen().h - 70);
-        gl.glEnd();
 
-        WorldModel wm = viewer.getWorldModel();
-        textRenderer.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
+        gsBar.y = vp.h - gsBar.barHeight - 20;
+        gsBar.render(gl, viewer.getWorldModel().getGameState(), vp.w, vp.h);
 
-        Team left = wm.getLeftTeam();
-        float[] leftColor = left.getTeamMaterial().getDiffuse();
+    }
 
-        String leftTeamText = String.format("(%d) %s", left.getScore(),
-                left.getName());
-        Rectangle2D bounds = textRenderer.getBounds(leftTeamText);
-        textRenderer.setColor(0, 0, 0, 1);
-        textRenderer.draw(leftTeamText, -1, viewer.getScreen().h - 41);
-        textRenderer.setColor(leftColor[0], leftColor[1], leftColor[2], 1);
-        textRenderer.draw(leftTeamText, 0, viewer.getScreen().h - 40);
-
-        Team right = wm.getRightTeam();
-        float[] rightColor = right.getTeamMaterial().getDiffuse();
-
-        String rtText = String.format("%s (%d)", right.getName(),
-                right.getScore());
-        textRenderer.setColor(0, 0, 0, 1);
-        textRenderer.draw(rtText, (int) (viewer.getScreen().w - textRenderer
-                .getBounds(rtText).getWidth()) - 1, viewer.getScreen().h - 41);
-        textRenderer.setColor(rightColor[0], rightColor[1], rightColor[2], 1);
-        textRenderer.draw(rtText, (int) (viewer.getScreen().w - textRenderer
-                .getBounds(rtText).getWidth()), viewer.getScreen().h - 40);
-
-        GameState gs = wm.getGameState();
-        textRenderer.setColor(1, 1, 1, 1);
-        String timeText = String.format("Time: %.1f   Half: %d", gs.getTime(),
-                gs.getHalf());
-        textRenderer.setColor(0, 0, 0, 1);
-        textRenderer.draw(timeText, (int) (viewer.getScreen().w - textRenderer
-                .getBounds(timeText).getWidth()) / 2 - 1,
-                viewer.getScreen().h - 31);
-        textRenderer.setColor(1, 1, 1, 1);
-        textRenderer
-                .draw(timeText, (int) (viewer.getScreen().w - textRenderer
-                        .getBounds(timeText).getWidth()) / 2, viewer
-                        .getScreen().h - 30);
-
-        String playmode = gs.getPlayMode();
-        textRenderer.setColor(0, 0, 0, 1);
-        textRenderer.draw(playmode, (int) (viewer.getScreen().w - textRenderer
-                .getBounds(playmode).getWidth()) / 2 - 1,
-                viewer.getScreen().h - 61);
-        textRenderer.setColor(1, 1, 1, 1);
-        textRenderer
-                .draw(playmode, (int) (viewer.getScreen().w - textRenderer
-                        .getBounds(playmode).getWidth()) / 2, viewer
-                        .getScreen().h - 60);
-
-        textRenderer.endRendering();
+    static void drawBox(GL2 gl, float x, float y, float w, float h) {
+        gl.glVertex2f(x, y);
+        gl.glVertex2f(x + w, y);
+        gl.glVertex2f(x + w, y + h);
+        gl.glVertex2f(x, y + h);
     }
 }

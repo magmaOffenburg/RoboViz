@@ -48,6 +48,14 @@ public class Configuration {
         private int     frameHeight      = 600;
         private int     shadowResolution = 1024;
 
+        public void setFSAASamples(int samples) {
+            this.fsaaSamples = samples;
+        }
+        
+        public void setShadowResolution(int shadowResolution) {
+            this.shadowResolution = shadowResolution;
+        }
+        
         public int getTargetFPS() {
             return targetFPS;
         }
@@ -59,6 +67,14 @@ public class Configuration {
         public void setTargetFPS(int targetFPS) {
             this.targetFPS = targetFPS;
         }
+        
+        public void setSoftShadow(boolean softShadow) {
+			this.softShadow = softShadow;
+		}
+        
+        public void setFSAA(boolean fsaa) {
+			this.fsaa = fsaa;
+		}
 
         public void setUseBloom(boolean useBloom) {
             this.useBloom = useBloom;
@@ -123,6 +139,8 @@ public class Configuration {
         public boolean isVsync() {
             return vsync;
         }
+        
+
 
         private void read(BufferedReader in) throws IOException {
             in.readLine();
@@ -147,19 +165,20 @@ public class Configuration {
             out.write(String.format("%-20s : %b\n", "Phong", usePhong));
             out.write(String.format("%-20s : %b\n", "Shadows", useShadows));
             out.write(String.format("%-20s : %b\n", "Soft Shadows", softShadow));
-            out.write(String.format("%-20s : %b\n", "Shadow Resolution",
+            out.write(String.format("%-20s : %d\n", "Shadow Resolution",
                     shadowResolution));
             out.write(String.format("%-20s : %b\n", "Stereo 3D", useStereo));
             out.write(String.format("%-20s : %b\n", "V-Sync", vsync));
             out.write(String.format("%-20s : %b\n", "FSAA", fsaa));
             out.write(String
-                    .format("%-20s : %b\n", "FSAA Samples", fsaaSamples));
+                    .format("%-20s : %d\n", "FSAA Samples", fsaaSamples));
             out.write(String.format("%-20s : %d\n", "Target FPS", targetFPS));
             out.write(String.format("%-20s : %d\n", "Frame Width", frameWidth));
             out.write(String
                     .format("%-20s : %d\n", "Frame Height", frameHeight));
             out.write("\n");
         }
+
     }
 
     public class Networking {

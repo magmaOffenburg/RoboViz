@@ -31,14 +31,17 @@ import javax.swing.Timer;
 import js.math.Maths;
 import rv.world.WorldModel;
 
+/**
+ * Reads simulation messages from a logfile instead of rcssserver3d
+ * @author justin
+ *
+ */
 public class LogPlayer {
 
+    private Logfile       logfile;
     private MessageParser parser;
     private final Timer   timer;
-    int                   frame   = 0;
-    int                   offset  = 1;
     int                   delay   = 150;
-    private String[]      serverMessages;
     private boolean       playing = false;
 
     public boolean isPlaying() {
@@ -46,14 +49,25 @@ public class LogPlayer {
     }
 
     public int getFrame() {
-        return frame;
+        return logfile.getCurrentFrame();
     }
 
     public int getNumFrames() {
-        return serverMessages.length;
+        return logfile.getNumFrames();
+    }
+    
+    public Logfile getLogfile() {
+        return logfile;
     }
 
     public LogPlayer(File file, WorldModel world) {
+
+        try {
+            logfile = new Logfile(file);
+        } catch (Exception e3) {
+            e3.printStackTrace();
+        }
+
         timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -70,22 +84,6 @@ public class LogPlayer {
         timer.setRepeats(true);
         timer.setDelay(delay);
 
-        BufferedReader br;
-        try {
-            br = new BufferedReader(new FileReader(file));
-            ArrayList<String> input = new ArrayList<String>();
-            String l;
-            while ((l = br.readLine()) != null)
-                input.add(l);
-
-            serverMessages = new String[input.size()];
-            input.toArray(serverMessages);
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         parser = new MessageParser(world);
 
         timer.start();
@@ -99,14 +97,24 @@ public class LogPlayer {
     public void stop() {
         playing = false;
         timer.stop();
+        if (logfile.isOpen())
+            logfile.close();
     }
 
     public void resume() {
-        timer.start();
+        if (!playing)
+            timer.start();
     }
 
     public void rewind() {
-        setFrame(0);
+        logfile.close();
+        try {
+            logfile.open();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addDelay(int ms) {
@@ -115,17 +123,40 @@ public class LogPlayer {
         System.out.printf("Player FPS: %.1f\n", 1000.0f / timer.getDelay());
     }
 
-    public void setFrame(int frame) {
-        this.frame = Maths.clamp(frame, 0, serverMessages.length - 1);
+    private void parseFrame() throws ParseException {
+        String msg = logfile.getCurrrentFrameMessage();
+        if (msg != null)
+            parser.parse(msg);
     }
 
     public void play() throws IOException, ParseException {
         playing = true;
-        if (frame >= serverMessages.length || frame < 0)
+
+        if (logfile.isAtEndOfLog())
             stop();
         else {
-            parser.parse(serverMessages[frame]);
-            frame += offset;
+            if (!logfile.isOpen())
+                logfile.open();
+            logfile.stepForward();
+            parseFrame();
+        }
+    }
+    
+    public void stepBackward() {
+        try {
+            logfile.stepBackward();
+            parseFrame();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void stepForward() {
+        try {
+            logfile.stepForward();
+            parseFrame();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

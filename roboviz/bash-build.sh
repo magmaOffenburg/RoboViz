@@ -18,6 +18,7 @@ if [ ! -d $BIN ]; then
 fi
 
 javac -d $BIN -cp $CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:lib/jsgl.jar:src/ src/rv/Viewer.java
+javac -d $BIN -cp $CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:lib/jsgl.jar:src/ src/config/RVConfigure.java
 
 # copy over resources and libraries to bin folder
 rsync -r --exclude=.svn resources $BIN/
@@ -25,5 +26,12 @@ rsync -r --exclude=.svn $JOGL $BIN/lib/
 rsync -r --exclude=.svn src/shaders $BIN/
 cp lib/jsgl.jar $BIN/lib/
 cp scripts/roboviz.sh $BIN/
+cp scripts/config.sh $BIN/
 cp LICENSE $BIN/
 cp NOTICE $BIN/
+
+# create JAR and delete bytecode directories
+cd $BIN/
+jar cf RoboViz.jar config rv
+rm -rf config
+rm -rf rv
