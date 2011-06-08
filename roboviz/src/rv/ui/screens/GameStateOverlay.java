@@ -76,11 +76,14 @@ public class GameStateOverlay implements Screen {
             gl.glColor4f(0, 0, 0, 0.5f);
             drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6, barHeight + 6);
             drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6, barHeight * 0.6f);
-            gl.glColor4f(.3f, .3f, 1, 0.5f);
+            float[] lc = viewer.getWorldModel().getLeftTeam().getTeamMaterial().getDiffuse();
+            gl.glColor4f(lc[0] * 0.8f, lc[1]* 0.8f, lc[2]* 0.8f, 0.65f);
             drawBox(gl, x, y, nameWidth, barHeight);
             gl.glColor4f(0.2f, 0.2f, 0.2f, 0.65f);
             drawBox(gl, x + nameWidth, y, scoreBoxWidth, barHeight);
             gl.glColor4f(1, .3f, .3f, 0.65f);
+            float[] rc = viewer.getWorldModel().getRightTeam().getTeamMaterial().getDiffuse();
+            gl.glColor4f(rc[0]* 0.8f, rc[1]* 0.8f, rc[2]* 0.8f, 0.65f);
             drawBox(gl, x + nameWidth + scoreBoxWidth, y, nameWidth, barHeight);
             gl.glEnd();
 

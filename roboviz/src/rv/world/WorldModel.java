@@ -133,17 +133,18 @@ public class WorldModel {
     }
 
     public void init(GL glObj, ContentManager cm,
-            Configuration.Graphics config, Viewer.Mode mode) {
-        this.config = config;
+            Configuration config, Viewer.Mode mode) {
+        this.config = config.getGraphics();
 
         GL2 gl = glObj.getGL2();
 
         field = new Field(cm.getModel("models/newfield.obj"), cm);
         gameState.addListener(field);
+        gameState.addListener(cm);
 
-        leftTeam = new Team(new float[] { .3f, .3f, 1.0f, 1.0f }, Team.LEFT, cm);
+        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm, config.getTeamColors());
         gameState.addListener(leftTeam);
-        rightTeam = new Team(new float[] { 1.0f, .3f, .3f, 1.0f }, Team.RIGHT,cm);
+        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT,cm, config.getTeamColors());
         gameState.addListener(rightTeam);
         if (mode == Mode.LIVE) {
             // teams and agents try to locate themselves in scene graph for

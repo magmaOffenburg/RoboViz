@@ -175,12 +175,24 @@ public class UserInterface implements KeyListener {
         }
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_F12) {
-            viewer.takeScreenShot();
-        }
-    }
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_F12:
+			viewer.takeScreenShot();
+			break;
+		case KeyEvent.VK_HOME:
+			ballTracker.changeMinTetherDist(-0.5f);
+			break;
+		case KeyEvent.VK_END:
+			ballTracker.changeMinTetherDist(0.5f);
+			ballTracker.update();
+			break;
+		default:
+			break;
+		}
+	}
 
     @Override
     public void keyReleased(KeyEvent arg0) {

@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Configuration parameters for RoboVis startup
@@ -272,9 +273,48 @@ public class Configuration {
         }
     }
 
+    public class TeamColors {
+        private HashMap<String, float[]> colorByTeamName = new HashMap<String, float[]>();
+
+        public float[] find(String teamName) {
+            return colorByTeamName.get(teamName);
+        }
+
+        private void read(BufferedReader in) throws IOException {
+            in.readLine();
+            String line;
+            while (true) {
+                line = in.readLine();
+                if (line == null || line.trim().length() == 0)
+                    break;
+                String key = getKey(line);
+                String val = getVal(line);
+                String[] bits = val.split("\\s+");
+                if (bits!=null && bits.length==3) {
+                    float[] color = new float[3];
+                    color[0] = Float.parseFloat(bits[0]);
+                    color[1] = Float.parseFloat(bits[1]);
+                    color[2] = Float.parseFloat(bits[2]);
+                    colorByTeamName.put(key, color);
+                }
+            }
+        }
+
+        private void write(BufferedWriter out) throws IOException {
+            out.write("Team Colors:\n");
+            for (String teamName : colorByTeamName.keySet()) {
+                float[] color = colorByTeamName.get(teamName);
+                out.write(String.format("%-20s : %f %f %f\n",
+                        teamName, color[0], color[1], color[2]));
+            }
+            out.write("\n");
+        }
+    }
+
     private Graphics   graphics   = new Graphics();
     private Networking networking = new Networking();
     private General    general    = new General();
+    private TeamColors teamColors = new TeamColors();
 
     public Graphics getGraphics() {
         return graphics;
@@ -286,6 +326,14 @@ public class Configuration {
 
     public General getGeneral() {
         return general;
+    }
+
+    public TeamColors getTeamColors() {
+        return teamColors;
+    }
+
+    private static String getKey(String line) {
+        return line.substring(0, line.indexOf(":") - 1).trim();
     }
 
     private static String getVal(String line) {
@@ -300,6 +348,7 @@ public class Configuration {
             graphics.write(out);
             networking.write(out);
             general.write(out);
+            teamColors.write(out);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -321,6 +370,7 @@ public class Configuration {
                 graphics.read(in);
                 networking.read(in);
                 general.read(in);
+                teamColors.read(in);
             } catch (IOException e) {
                 System.err.println("Error reading values from config file");
                 e.printStackTrace();

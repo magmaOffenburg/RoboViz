@@ -21,3 +21,10 @@ Drawing Port         : 32769
 
 General Settings:
 Record Logfiles      : false
+
+Team Colors:
+BoldHearts           : 1 0.5 0.5
+magmaOffenburg       : 0.117647059 0.196078431 0.529411765
+TinManBots           : 0.3 1 0.3
+KarachiKoalas        : 0.3 1 1
+RoboCanes	         : 1.0 0.3 0.0

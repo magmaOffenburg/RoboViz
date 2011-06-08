@@ -48,9 +48,16 @@ public class CamTargetTracker {
     }
 
     public void setMinTetherDist(float minTetherDist) {
-        this.minTetherDist = minTetherDist;
-        slowTetherRange = (tetherDist - minTetherDist) / 2 + minTetherDist;
-    }
+       this.minTetherDist = minTetherDist;
+       slowTetherRange = (tetherDist - minTetherDist) / 2 + minTetherDist;
+   }
+
+	public void changeMinTetherDist(float delta) {
+		if (this.minTetherDist + delta >= 0) {
+			setMinTetherDist(this.minTetherDist + delta);
+			setTetherDist(this.minTetherDist + delta);
+		}
+	}
 
     public void setTetherDist(float tetherDist) {
         this.tetherDist = tetherDist;

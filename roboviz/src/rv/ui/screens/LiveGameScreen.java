@@ -78,6 +78,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
     private int               prevScoreR     = -1;
     
     private boolean shift = false;
+	private boolean alt = false;
+	private boolean control = false;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
@@ -226,8 +228,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         case KeyEvent.VK_K:
                 viewer.getNetManager().getServer().kickOff(true);
             break;
-        case KeyEvent.VK_ESCAPE:
-            viewer.shutdown();
+        case KeyEvent.VK_J:
+      	 	viewer.getNetManager().getServer().kickOff(false);
             break;
         case KeyEvent.VK_P:
             viewer.getUI().getShapeSetPanel().showFrame();
@@ -243,21 +245,31 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         case KeyEvent.VK_B:
             viewer.getNetManager().getServer().dropBall();
             break;
-        case KeyEvent.VK_F1:
-            viewer.toggleFullScreen();
-            break;
+        case KeyEvent.VK_ENTER:
+      	   if (alt) {
+      	   	 viewer.toggleFullScreen();
+      	   }
+      	   break;
+        case KeyEvent.VK_F11:
+      	   viewer.toggleFullScreen();
+      	   break;
+        case KeyEvent.VK_F:
+      	   if (control) {
+      	   	 viewer.toggleFullScreen();
+      	   } else {
+      	   	 fieldOverlay.setVisible(!fieldOverlay.isVisible());
+      	   }
+      	   break;
         case KeyEvent.VK_T:
             viewer.getDrawings().toggle();
             break;
         case KeyEvent.VK_CONTROL:
             moveObjectMode = true;
+      	   control = true;
             break;
         case KeyEvent.VK_I:
             AgentOverheadType[] vals = AgentOverheadType.values();
             agentOverheadType = vals[(agentOverheadType.ordinal()+1)%vals.length];
-            break;
-        case KeyEvent.VK_F:
-            fieldOverlay.setVisible(!fieldOverlay.isVisible());
             break;
         case KeyEvent.VK_V:
             setRobotVantage();
@@ -282,6 +294,9 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         case KeyEvent.VK_SHIFT:
             shift = true;
             break;
+		  case KeyEvent.VK_ALT:
+			  alt = true;
+           break;
         }
     }
 
@@ -291,10 +306,14 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         switch (e.getKeyCode()) {
         case KeyEvent.VK_CONTROL:
             moveObjectMode = false;
+            control = false;
             break;
         case KeyEvent.VK_SHIFT:
             shift = false;
             break;
+        case KeyEvent.VK_ALT:
+      	  	alt = false;
+      	  	break;
         }
     }
 

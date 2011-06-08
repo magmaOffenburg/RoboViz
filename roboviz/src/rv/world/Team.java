@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import js.jogl.model.ObjMaterial;
+import rv.Configuration;
+import rv.Objects;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ISceneGraphItem;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
@@ -42,7 +44,9 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
     private static final int MAX_AGENTS = 11;
     
+    private final Configuration.TeamColors config;
     private ContentManager  content;
+    private final float[]   defaultColor;
     private final int       id;
     private String          name;
     private List<Agent>     agents;
@@ -74,7 +78,17 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     }
 
     public void setName(String name) {
+        if (Objects.equals(this.name, name))
+            return;
+
         this.name = name;
+
+        float[] color = config.find(name);
+        if (color == null) {
+            color = defaultColor;
+        }
+        teamColor.setDiffuse(color);
+        teamColor.setAmbient(color);
     }
 
     public void setScore(int score) {
@@ -88,16 +102,18 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         agents.clear();
     }
 
-    public Team(float[] color, int id, ContentManager content) {
+    public Team(float[] defaultColor, int id, ContentManager content, Configuration.TeamColors config) {
+        this.defaultColor = defaultColor;
         this.id = id;
         this.content = content;
+        this.config = config;
         agents = new ArrayList<Agent>();
         
         name = (id == LEFT) ? "<left>" : "<right>";
 
         teamColor = new ObjMaterial(name);
-        teamColor.setDiffuse(color);
-        teamColor.setAmbient(color);
+        teamColor.setDiffuse(defaultColor);
+        teamColor.setAmbient(defaultColor);
         teamColor.setShininess(96);
         teamColor.setSpecular(1, 1, 1, 1);
     }
@@ -173,10 +189,10 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     public void gsPlayStateChanged(GameState gs) {
         // update team name & score
         if (id == LEFT) {
-            name = gs.getTeamLeft() == null ? "<left>" : gs.getTeamLeft();
+            setName(gs.getTeamLeft() == null ? "<left>" : gs.getTeamLeft());
             score = gs.getScoreLeft();
         } else {
-            name = gs.getTeamRight() == null ? "<right>" : gs.getTeamRight();
+            setName(gs.getTeamRight() == null ? "<right>" : gs.getTeamRight());
             score = gs.getScoreRight();
         }
     }

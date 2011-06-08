@@ -49,7 +49,7 @@ public class Field extends ModelObject implements GameStateChangeListener,
     private static final float PENALTY_LENGTH       = 1.8f;
     private static final float GOAL_BOX_WIDTH       = 3.9f;
     private static final float GOAL_BOX_LENGTH      = 1.8f;
-    private static final float LINE_THICKNESS       = 0.04f;
+    private static final float LINE_THICKNESS       = 0.02f;
 
     private Material           lineMaterial         = new Material();
     private float[][]          circleVerts;

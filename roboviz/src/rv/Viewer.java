@@ -19,8 +19,6 @@ package rv;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +46,6 @@ import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.world.WorldModel;
 
-import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.Screenshot;
 
 /**
@@ -227,13 +224,13 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         glInfo.print();
         
         // initialize / load content
-        contentManager = new ContentManager();
-        if (!contentManager.init(drawable, glInfo, config)) {
+        contentManager = new ContentManager(config.getTeamColors());
+        if (!contentManager.init(drawable, glInfo)) {
             exitError("Problems loading resource files!");
         }
 
         world = new WorldModel();
-        world.init(drawable.getGL(), contentManager, config.getGraphics(), mode);
+        world.init(drawable.getGL(), contentManager, config, mode);
         drawings = new Drawings();
 
         if (mode == Mode.LIVE) {

@@ -28,7 +28,6 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.glu.GLU;
 
 import js.jogl.GLInfo;
 import js.jogl.ShaderProgram;
@@ -40,20 +39,20 @@ import js.jogl.model.ObjMaterialLibrary;
 import js.jogl.model.ObjMeshImporter;
 import js.math.vector.Vec3f;
 import rv.Configuration;
+import rv.Objects;
+import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
 import rv.ui.DebugInfo;
 
-import com.jogamp.opengl.util.gl2.GLUT;
-
 /**
  * Loads shaders and meshes used in scene graph.
  * 
  * @author justin
  */
-public class ContentManager implements SceneGraphListener {
+public class ContentManager implements SceneGraphListener, GameState.GameStateChangeListener {
 
     public static final String CONTENT_ROOT  = "resources/";
     public static final String MODEL_ROOT    = CONTENT_ROOT + "models/";
@@ -78,8 +77,10 @@ public class ContentManager implements SceneGraphListener {
         }
     }
 
-    GLU                        glu                = new GLU();
-    GLUT                       glut               = new GLUT();
+    private final Configuration.TeamColors config;
+
+//    GLU                        glu                = new GLU();
+//    GLUT                       glut               = new GLUT();
     private Mesh.RenderMode    meshRenderMode     = Mesh.RenderMode.IMMEDIATE;
     private Texture2D          whiteTexture;
     public static Texture2D    selectionTexture;
@@ -127,6 +128,10 @@ public class ContentManager implements SceneGraphListener {
         return model;
     }
 
+    public ContentManager(Configuration.TeamColors config) {
+        this.config = config;
+    }
+
     public synchronized void update(GL2 gl) {
         // meshes need a current OpenGL context to finish initializing, so this
         // update pass checks all models that are waiting to initialize and then
@@ -160,8 +165,7 @@ public class ContentManager implements SceneGraphListener {
         // gl.glPopAttrib();
     }
 
-    public boolean init(GLAutoDrawable drawable, GLInfo glInfo,
-            Configuration config) {
+    public boolean init(GLAutoDrawable drawable, GLInfo glInfo) {
 
         // use VBOs if they are supported
         if (glInfo.extSupported("GL_ARB_vertex_buffer_object")) {
@@ -278,5 +282,41 @@ public class ContentManager implements SceneGraphListener {
 
     @Override
     public void updatedSceneGraph(SceneGraph sg) {
+    }
+
+    private String teamNameLeft;
+    private String teamNameRight;
+
+    @Override
+    public void gsPlayStateChanged(GameState gs) {
+        // if team name changed, update the materials
+        String teamNameLeft = gs.getTeamLeft();
+        if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
+            updateTeamColor(teamNameLeft, "matLeft", new float[] { 0.15f, 0.15f, 1.0f });
+            this.teamNameLeft = teamNameLeft;
+        }
+        String teamNameRight = gs.getTeamRight();
+        if (!Objects.equals(teamNameRight, this.teamNameRight)) {
+            updateTeamColor(teamNameRight, "matRight", new float[] { 1f, 0.15f, 0.15f });
+            this.teamNameRight = teamNameRight;
+        }
+    }
+
+    private void updateTeamColor(String teamName, String materialName, float[] defaultColor) {
+        ObjMaterial mat = getMaterial(materialName);
+        float[] color = config.find(teamName);
+        if (color == null) {
+            color = defaultColor;
+        }
+        mat.setDiffuse(color);
+        mat.setAmbient(color);
+    }
+
+    @Override
+    public void gsMeasuresAndRulesChanged(GameState gs) {
+    }
+
+    @Override
+    public void gsTimeChanged(GameState gs) {
     }
 }
