@@ -225,6 +225,7 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener,
         case KeyEvent.VK_X:
             if (shift)
                 viewer.getNetManager().getServer().killServer();
+            break;
         case KeyEvent.VK_K:
                 viewer.getNetManager().getServer().kickOff(true);
             break;
