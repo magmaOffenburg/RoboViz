@@ -49,7 +49,10 @@ public class WorldModel {
     /** Transforms SimSpark coordinates to RoboVis coordinates (and reverse) */
     public static final Matrix            COORD_TFN   = new Matrix(
                                                               new double[] {
-            -1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1  });
+            -1, 0, 0, 0, 
+            0, 0, 1, 0, 
+            0, 1, 0, 0, 
+            0, 0, 0, 1  });
 
     private GameState                     gameState   = new GameState();
     private SceneGraph                    sceneGraph  = null;

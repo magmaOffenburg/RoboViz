@@ -75,7 +75,7 @@ void main()
 	vec3 h = normalize(halfVector);
 	
 	float I_diffuse = max(dot(n, lightDir), 0.0);
-	float I_shadow = calcShadowFactor();
+	float I_shadow = min(calcShadowFactor() + 0.6, 1.0);
     float I_specular = pow(max(dot(n, h), 0.0), gl_FrontMaterial.shininess);
 
     C_light += I_shadow * (I_diffuse * C_diffuse + I_specular * C_specular);
