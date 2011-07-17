@@ -17,7 +17,6 @@
 package rv;
 
 import javax.media.opengl.GL2;
-
 import rv.ui.UserInterface;
 import rv.world.WorldModel;
 
@@ -39,6 +38,5 @@ public interface IUpdatable {
      * @param elapsedMS
      *            - milliseconds since previous update
      */
-    public void update(GL2 gl, WorldModel world, UserInterface ui,
-            double elapsedMS);
+    public void update(GL2 gl, WorldModel world, UserInterface ui, double elapsedMS);
 }

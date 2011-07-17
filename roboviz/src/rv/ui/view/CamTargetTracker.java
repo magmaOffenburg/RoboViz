@@ -17,14 +17,12 @@
 package rv.ui.view;
 
 import java.util.ArrayList;
-
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec3f;
 import rv.world.ISelectable;
 
 /**
- * Smooths out camera tracking of an object by taking previous positions into
- * consideration
+ * Smooths out camera tracking of an object by taking previous positions into consideration
  * 
  * @author justin
  * 
@@ -48,16 +46,16 @@ public class CamTargetTracker {
     }
 
     public void setMinTetherDist(float minTetherDist) {
-       this.minTetherDist = minTetherDist;
-       slowTetherRange = (tetherDist - minTetherDist) / 2 + minTetherDist;
-   }
+        this.minTetherDist = minTetherDist;
+        slowTetherRange = (tetherDist - minTetherDist) / 2 + minTetherDist;
+    }
 
-	public void changeMinTetherDist(float delta) {
-		if (this.minTetherDist + delta >= 0) {
-			setMinTetherDist(this.minTetherDist + delta);
-			setTetherDist(this.minTetherDist + delta);
-		}
-	}
+    public void changeMinTetherDist(float delta) {
+        if (this.minTetherDist + delta >= 0) {
+            setMinTetherDist(this.minTetherDist + delta);
+            setTetherDist(this.minTetherDist + delta);
+        }
+    }
 
     public void setTetherDist(float tetherDist) {
         this.tetherDist = tetherDist;
@@ -118,8 +116,7 @@ public class CamTargetTracker {
             } else {
                 scale = (d - minTetherDist) / (slowTetherRange - minTetherDist);
             }
-            tetherVelocity = Math.min(scale * (tetherVelocity + tetherChange),
-                    maxTetherVelocity);
+            tetherVelocity = Math.min(scale * (tetherVelocity + tetherChange), maxTetherVelocity);
             camera.moveWorld(v.normalize().times(tetherVelocity));
         }
         tetherVelocity = Math.max(tetherVelocity - tetherChange, 0);

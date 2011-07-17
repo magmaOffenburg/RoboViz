@@ -17,7 +17,6 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
-
 import js.io.ByteUtil;
 import rv.Viewer;
 import rv.comm.drawing.Drawings;
@@ -29,8 +28,8 @@ import rv.comm.drawing.shapes.Shape;
 import rv.comm.drawing.shapes.Sphere;
 
 /**
- * Parses a draw shape packet and, when executing, adds the shape to the
- * intended agent's list of shapes
+ * Parses a draw shape packet and, when executing, adds the shape to the intended agent's list of
+ * shapes
  * 
  * @author Justin Stoecker
  */

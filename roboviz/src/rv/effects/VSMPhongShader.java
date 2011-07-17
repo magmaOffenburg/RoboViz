@@ -18,24 +18,22 @@ package rv.effects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.ShaderProgram;
 import js.jogl.Texture2D;
 import js.jogl.Uniform;
 import js.math.vector.Matrix;
 
 /**
- * Variance shadow mapping w/ Phong illumination shader. Wraps underlying
- * ShaderProgram and gives access to its uniform variables.
+ * Variance shadow mapping w/ Phong illumination shader. Wraps underlying ShaderProgram and gives
+ * access to its uniform variables.
  * 
  * @author justin
  */
 public class VSMPhongShader {
 
     // Used to transform normalized device coordinates in [-1,1] to [0,1]
-    private static final Matrix BIAS_MATRIX = new Matrix(new double[] { 0.5,
-            0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5,
-            0.5, 1.0,                      });
+    private static final Matrix BIAS_MATRIX = new Matrix(new double[] { 0.5, 0.0, 0.0, 0.0, 0.0,
+            0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0, });
 
     private ShaderProgram       prog;
     private Uniform.Mat4        modelMatrix;
@@ -65,9 +63,8 @@ public class VSMPhongShader {
     }
 
     public static VSMPhongShader create(GL2 gl) {
-        ShaderProgram prog = ShaderProgram
-                .create(gl, "shaders/vsm_phong.vert", "shaders/vsm_phong.frag",
-                        VSMPhongShader.class.getClassLoader());
+        ShaderProgram prog = ShaderProgram.create(gl, "shaders/vsm_phong.vert",
+                "shaders/vsm_phong.frag", VSMPhongShader.class.getClassLoader());
 
         if (prog == null)
             return null;
@@ -77,8 +74,7 @@ public class VSMPhongShader {
         Matrix i = Matrix.createIdentity();
         prog.enable(gl);
         shader.modelMatrix = new Uniform.Mat4(gl, prog, "modelMatrix", i);
-        shader.lvpbMatrix = new Uniform.Mat4(gl, prog,
-                "lightViewProjectionBias", i);
+        shader.lvpbMatrix = new Uniform.Mat4(gl, prog, "lightViewProjectionBias", i);
         gl.glUniform1i(prog.getUniform(gl, "diffuseTexture"), 0);
         gl.glUniform1i(prog.getUniform(gl, "shadowTexture"), 1);
         prog.disable(gl);

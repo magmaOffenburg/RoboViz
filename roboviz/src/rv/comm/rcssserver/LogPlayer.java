@@ -25,16 +25,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-
 import javax.swing.Timer;
-
 import js.math.Maths;
 import rv.world.WorldModel;
 
 /**
  * Reads simulation messages from a logfile instead of rcssserver3d
+ * 
  * @author justin
- *
+ * 
  */
 public class LogPlayer {
 
@@ -55,7 +54,7 @@ public class LogPlayer {
     public int getNumFrames() {
         return logfile.getNumFrames();
     }
-    
+
     public Logfile getLogfile() {
         return logfile;
     }
@@ -141,7 +140,7 @@ public class LogPlayer {
             parseFrame();
         }
     }
-    
+
     public void stepBackward() {
         try {
             logfile.stepBackward();
@@ -150,7 +149,7 @@ public class LogPlayer {
             e.printStackTrace();
         }
     }
-    
+
     public void stepForward() {
         try {
             logfile.stepForward();

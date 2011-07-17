@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EventObject;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -35,7 +34,6 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.swing.SwingUtilities;
-
 import js.jogl.GLInfo;
 import js.jogl.prog.GLProgramSwing;
 import js.jogl.view.Viewport;
@@ -45,12 +43,11 @@ import rv.comm.rcssserver.LogPlayer;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.world.WorldModel;
-
 import com.jogamp.opengl.util.awt.Screenshot;
 
 /**
- * Program entry point / main class. Creates a window and delegates OpenGL
- * rendering the Renderer object.
+ * Program entry point / main class. Creates a window and delegates OpenGL rendering the Renderer
+ * object.
  * 
  * @author Justin Stoecker
  */
@@ -161,10 +158,11 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
     /** Creates a new RoboVis viewer */
     public Viewer(Configuration config, GLCapabilities caps, String[] args) {
-    	super("RoboViz", config.getGraphics().getFrameWidth(), config.getGraphics().getFrameHeight(), caps);
+        super("RoboViz", config.getGraphics().getFrameWidth(), config.getGraphics()
+                .getFrameHeight(), caps);
 
-    	this.config = config;
-    	
+        this.config = config;
+
         // check command-line args
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("--logfile") && i < args.length - 1)
@@ -172,28 +170,28 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         }
 
         try {
-            Image iconImg = ImageIO.read(getClass().getClassLoader()
-                    .getResourceAsStream("resources/icon.png"));
+            Image iconImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream(
+                    "resources/icon.png"));
             getFrame().setIconImage(iconImg);
         } catch (IOException e1) {
         }
     }
-    
+
     public void takeScreenShot() {
         String s = Calendar.getInstance().getTime().toString();
         s = s.replaceAll("\\s+", "_");
         ssName = String.format("%s_%s.png", "roboviz", s);
     }
-    
+
     private void takeScreenshot(String fileName) {
-        BufferedImage ss = Screenshot.readToBufferedImage(0,0, screen.w, screen.h, false); 
-        File ssFile = new File(fileName); 
+        BufferedImage ss = Screenshot.readToBufferedImage(0, 0, screen.w, screen.h, false);
+        File ssFile = new File(fileName);
         try {
             ImageIO.write(ss, "png", ssFile);
         } catch (IOException e) {
             e.printStackTrace();
-        } 
-        
+        }
+
         System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
     }
 
@@ -222,7 +220,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         // print OpenGL renderer info
         glInfo = new GLInfo(drawable.getGL());
         glInfo.print();
-        
+
         // initialize / load content
         contentManager = new ContentManager(config.getTeamColors());
         if (!contentManager.init(drawable, glInfo)) {
@@ -236,7 +234,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         if (mode == Mode.LIVE) {
             netManager = new NetworkManager();
             netManager.init(this, config);
-            
+
             netManager.getServer().addChangeListener(world.getGameState());
         } else {
             File log = new File(logFileName);
@@ -274,9 +272,9 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     }
 
     public static void main(String[] args) {
-    	
+
         final Configuration config = Configuration.loadFromFile();
-        
+
         GLProfile glp = GLProfile.get(GLProfile.GL2);
         final GLCapabilities caps = new GLCapabilities(glp);
         caps.setStereo(config.getGraphics().useStereo());
@@ -284,13 +282,13 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             caps.setSampleBuffers(true);
             caps.setNumSamples(config.getGraphics().getFSAASamples());
         }
-        
+
         final String[] arguments = args;
-        
+
         SwingUtilities.invokeLater(new Runnable() {
-        	public void run() {
-        		new Viewer(config, caps, arguments);
-        	}
+            public void run() {
+                new Viewer(config, caps, arguments);
+            }
         });
     }
 
@@ -317,16 +315,16 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             l.windowResized(event);
     }
 
-	@Override
-	public void render(GL gl) {
+    @Override
+    public void render(GL gl) {
         if (!init)
             return;
-        
+
         if (ssName != null) {
             takeScreenshot(ssName);
             ssName = null;
         }
-		
+
         renderer.render(drawable, config.getGraphics());
-	}
+    }
 }

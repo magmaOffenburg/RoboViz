@@ -20,7 +20,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
-
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
 import js.math.vector.Matrix;
@@ -52,8 +51,8 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         forward = agent.getHeadDirection();
         up = m.transform(new Vec3f(0, 1, 0));
         right = forward.cross(up).normalize();
-        viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y
-                + forward.y, c.z + forward.z, 0, 1, 0);
+        viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z
+                + forward.z, 0, 1, 0);
     }
 
     @Override
@@ -76,10 +75,8 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         double wd2 = near * Math.tan(Math.toRadians(fovX) / 2);
         double top = wd2;
         double bottom = -wd2;
-        double left = -screen.getAspect() * wd2 + 0.5 * eyeSep * near
-                / focalLength;
-        double right = screen.getAspect() * wd2 + 0.5 * eyeSep * near
-                / focalLength;
+        double left = -screen.getAspect() * wd2 + 0.5 * eyeSep * near / focalLength;
+        double right = screen.getAspect() * wd2 + 0.5 * eyeSep * near / focalLength;
         gl.glFrustum(left, right, bottom, top, near, far);
 
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
@@ -102,10 +99,8 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         double wd2 = near * Math.tan(Math.toRadians(fovX) / 2);
         double top = wd2;
         double bottom = -wd2;
-        double left = -screen.getAspect() * wd2 - 0.5 * eyeSep * near
-                / focalLength;
-        double right = screen.getAspect() * wd2 - 0.5 * eyeSep * near
-                / focalLength;
+        double left = -screen.getAspect() * wd2 - 0.5 * eyeSep * near / focalLength;
+        double right = screen.getAspect() * wd2 - 0.5 * eyeSep * near / focalLength;
         gl.glFrustum(left, right, bottom, top, near, far);
 
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
@@ -114,8 +109,8 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         Vec3f t = eyeR.plus(forward);
 
         Vec3f c = agent.getHeadCenter().minus(this.right.times(eyeSep / 2));
-        Matrix viewL = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y
-                + forward.y, c.z + forward.z, 0, 1, 0);
+        Matrix viewL = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z
+                + forward.z, 0, 1, 0);
         gl.glLoadIdentity();
         gl.glLoadMatrixd(viewMatrix.wrap());
     }

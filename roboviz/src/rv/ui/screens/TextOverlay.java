@@ -17,7 +17,6 @@
 package rv.ui.screens;
 
 import java.awt.geom.Rectangle2D;
-
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
@@ -62,8 +61,8 @@ public class TextOverlay {
         lastTime = curTime;
 
         if (fadeDuration > 0 && elapsed > duration)
-            a = color[3] * Math.max(1 - (float)(elapsed - duration) / fadeDuration, 0);
-        
+            a = color[3] * Math.max(1 - (float) (elapsed - duration) / fadeDuration, 0);
+
         if (a == 0)
             done = true;
     }
@@ -79,7 +78,7 @@ public class TextOverlay {
             update();
         calcXY(tr, w, h);
         tr.setColor(0, 0, 0, a);
-        tr.draw(text, x-1, y-1);
+        tr.draw(text, x - 1, y - 1);
         tr.setColor(color[0], color[1], color[2], a);
         tr.draw(text, x, y);
     }

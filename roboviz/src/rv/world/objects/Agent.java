@@ -18,9 +18,7 @@ package rv.world.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.opengl.GL2;
-
 import js.math.BoundingBox;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
@@ -35,9 +33,8 @@ import rv.world.Team;
 import rv.world.WorldModel;
 
 /**
- * A single RoboCup agent. This object contains references to all the mesh parts
- * for a specific agent in the simulation. It maintains a bounding box for all
- * the parts, collectively.
+ * A single RoboCup agent. This object contains references to all the mesh parts for a specific
+ * agent in the simulation. It maintains a bounding box for all the parts, collectively.
  * 
  * @author Justin Stoecker
  */
@@ -47,28 +44,28 @@ public class Agent implements ISelectable {
         public void transformChanged(Matrix headTransform);
     }
 
-    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private List<ChangeListener> listeners  = new ArrayList<ChangeListener>();
     private List<StaticMeshNode> meshNodes;
     private BoundingBox          bounds;
     private ContentManager       content;
     private Team                 team;
     private int                  id;
-    private boolean              selected  = false;
+    private boolean              selected   = false;
     private Matrix               headTransform;
 
     private Vec3f                headCenter;
     private Vec3f                headDirection;
-    
+
     private AgentAnnotation      annotation = null;
 
     public void setAnnotation(AgentAnnotation annotation) {
         this.annotation = annotation;
     }
-    
+
     public AgentAnnotation getAnnotation() {
         return annotation;
     }
-    
+
     public Matrix getHeadTransform() {
         return headTransform;
     }
@@ -103,8 +100,7 @@ public class Agent implements ISelectable {
         listeners.remove(l);
     }
 
-    public Agent(Team team, int id, Node rootNode, SceneGraph sg,
-            ContentManager cm) {
+    public Agent(Team team, int id, Node rootNode, SceneGraph sg, ContentManager cm) {
         this.team = team;
         this.id = id;
         this.content = cm;
@@ -125,15 +121,14 @@ public class Agent implements ISelectable {
             Model model = content.getModel(node.getName());
             if (model.isLoaded()) {
                 Vec3f[] corners = model.getMesh().getBounds().getCorners();
-                Matrix modelMat = WorldModel.COORD_TFN.times(node
-                        .getWorldTransform());
+                Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
 
                 // store head transformation for "robot perspective" camera mode
                 if (node.getName().endsWith("head.obj")) {
                     headTransform = modelMat;
                     headCenter = headTransform.transform(new Vec3f(0));
-                    headDirection = headTransform.transform(new Vec3f(0, 0, 1))
-                            .minus(headCenter).normalize();
+                    headDirection = headTransform.transform(new Vec3f(0, 0, 1)).minus(headCenter)
+                            .normalize();
                 }
 
                 for (int j = 0; j < 8; j++) {
@@ -181,10 +176,10 @@ public class Agent implements ISelectable {
 
     @Override
     public void renderSelected(GL2 gl) {
-        ContentManager.renderSelection(gl, getPosition(), 0.25f, team
-                .getTeamMaterial().getDiffuse());
+        ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getTeamMaterial()
+                .getDiffuse());
     }
-    
+
     /** Returns identifier for agent based on team and ID (ex. L.1 for left 1) */
     public String getShortName() {
         return String.format("%c.%d", (team.getID() == Team.LEFT) ? 'L' : 'R', id);

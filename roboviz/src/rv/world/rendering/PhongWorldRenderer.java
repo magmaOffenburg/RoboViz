@@ -18,10 +18,8 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.ShaderProgram;
 import js.math.vector.Matrix;
 import rv.Configuration.Graphics;
@@ -66,8 +64,7 @@ public class PhongWorldRenderer implements SceneRenderer {
         return true;
     }
 
-    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node,
-            ContentManager content) {
+    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content) {
         Model model = content.getModel(node.getName());
         if (model.isLoaded()) {
 
@@ -81,8 +78,7 @@ public class PhongWorldRenderer implements SceneRenderer {
 
             BasicSceneRenderer.applyAgentMats(model, node, content);
 
-            Matrix modelMat = WorldModel.COORD_TFN.times(node
-                    .getWorldTransform());
+            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
             model.getMesh().render(gl, modelMat);
         }
     }

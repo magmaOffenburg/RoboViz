@@ -20,27 +20,28 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  * Text overlay
+ * 
  * @author justin
  */
 public abstract class Annotation {
 
     protected float[] pos;
     protected float[] color;
-    protected String text;
-    protected String set;
-    
+    protected String  text;
+    protected String  set;
+
     public float[] getPos() {
         return pos;
     }
-    
+
     public float[] getColor() {
         return color;
     }
-    
+
     public String getText() {
         return text;
     }
-    
+
     public String getSet() {
         return set;
     }
@@ -51,7 +52,7 @@ public abstract class Annotation {
         this.color = color;
         this.set = set;
     }
-    
+
     public void render(TextRenderer tr) {
         tr.draw3D(text, pos[0], pos[1], pos[2], 1);
     }

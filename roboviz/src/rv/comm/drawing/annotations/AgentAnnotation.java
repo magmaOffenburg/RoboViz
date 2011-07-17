@@ -17,12 +17,9 @@
 package rv.comm.drawing.annotations;
 
 import java.nio.ByteBuffer;
-
 import com.jogamp.opengl.util.awt.TextRenderer;
-
 import js.io.ByteUtil;
 import js.math.vector.Vec3f;
-
 import rv.comm.drawing.commands.Command;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -35,18 +32,18 @@ public class AgentAnnotation extends Annotation {
 
     private static final Vec3f OFFSET = new Vec3f(0, 0.7f, 0);
     private Agent              agent;
-    
+
     public Agent getAgent() {
         return agent;
     }
-    
+
     @Override
     public float[] getPos() {
         if (agent.getPosition() == null)
-            return new float[]{0,0,0};
+            return new float[] { 0, 0, 0 };
         return agent.getPosition().plus(OFFSET).getVals();
     }
-    
+
     public AgentAnnotation(String text, Agent agent, float[] color) {
         super(text, agent.getHeadCenter().getVals(), color, agent.getShortName() + ".Annotation");
         this.agent = agent;
@@ -54,7 +51,7 @@ public class AgentAnnotation extends Annotation {
     }
 
     public static AgentAnnotation parse(ByteBuffer buf, WorldModel world) {
-        
+
         Agent agent = Command.readAgent(buf, world);
         float[] color = Command.readRGB(buf);
         String text = Command.getString(buf);

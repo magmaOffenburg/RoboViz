@@ -17,15 +17,14 @@
 package rv.comm.rcssserver.scenegraph;
 
 import java.util.ArrayList;
-
 import js.math.vector.Matrix;
 import rv.comm.rcssserver.SExp;
 
 /**
- * Element of the scene graph that may have children nodes. Used to organize the
- * arrangement of objects in the server simulation, so each node contains a
- * local transformation matrix. Subclasses may have other properties that define
- * objects, shapes, lights, or other features relevant to the scene.
+ * Element of the scene graph that may have children nodes. Used to organize the arrangement of
+ * objects in the server simulation, so each node contains a local transformation matrix. Subclasses
+ * may have other properties that define objects, shapes, lights, or other features relevant to the
+ * scene.
  * 
  * @author Justin Stoecker
  */
@@ -61,8 +60,8 @@ public abstract class Node {
     }
 
     /**
-     * The absolute transformation for this node in the graph. This is the
-     * combination of all local transformations from each node above this node
+     * The absolute transformation for this node in the graph. This is the combination of all local
+     * transformations from each node above this node
      */
     public Matrix getWorldTransform() {
         if (parent == null) {

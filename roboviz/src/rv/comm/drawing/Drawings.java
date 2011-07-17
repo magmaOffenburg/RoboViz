@@ -20,14 +20,11 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -78,7 +75,7 @@ public class Drawings {
     public void toggle() {
         visible = !visible;
     }
-    
+
     public ArrayList<BufferedSet<Annotation>> getAnnotationSets() {
         return annotationSets;
     }
@@ -96,17 +93,16 @@ public class Drawings {
         for (ShapeListListener listener : listeners)
             listener.setListChanged(evt);
     }
-    
-    
+
     public void addAnnotation(Annotation annotation) {
         String setName = annotation.getSet();
-        
+
         if (annotation instanceof AgentAnnotation) {
             // agent annotations are not added to bufferedsets, so they must
             // be treated specially
             return;
         }
-        
+
         BufferedSet<Annotation> set = annotationSetListing.get(setName);
 
         if (set == null) {
@@ -154,14 +150,13 @@ public class Drawings {
     public BufferedSet<Shape> getShapeSet(String name) {
         return shapeSetListing.get(name);
     }
-    
+
     public BufferedSet<Annotation> getAnnotationSet(String name) {
         return annotationSetListing.get(name);
     }
 
     /**
-     * Swaps buffers on set with specified name; if name is empty, all buffers
-     * are swapped.
+     * Swaps buffers on set with specified name; if name is empty, all buffers are swapped.
      */
     public void swapBuffers(String name) {
         if (name.isEmpty()) {
@@ -197,7 +192,7 @@ public class Drawings {
                 }
             }
         }
-        
+
         gl.glPopAttrib();
 
     }

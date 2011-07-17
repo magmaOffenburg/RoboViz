@@ -18,7 +18,6 @@ package rv.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
 import js.math.Plane;
@@ -57,8 +56,7 @@ public class SceneObjectPicker {
     }
 
     /**
-     * Selects object nearest to the camera whose bounding box intersects
-     * picking ray
+     * Selects object nearest to the camera whose bounding box intersects picking ray
      */
     public ISelectable pickObject() {
         if (pickRay == null)
@@ -83,8 +81,7 @@ public class SceneObjectPicker {
             if (o.getBoundingBox() == null)
                 continue;
             Vec3f[] x = o.getBoundingBox().intersect(pickRay);
-            if (x != null
-                    && (d = getMinDepth(x, pickRay.getPosition())) < minDepth) {
+            if (x != null && (d = getMinDepth(x, pickRay.getPosition())) < minDepth) {
                 closest = o;
                 minDepth = d;
             }

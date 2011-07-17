@@ -18,7 +18,6 @@ package rv.world;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import js.jogl.model.ObjMaterial;
 import rv.Configuration;
 import rv.Objects;
@@ -39,19 +38,19 @@ import rv.world.objects.Agent;
  * @author Justin Stoecker
  */
 public class Team implements ISceneGraphItem, GameStateChangeListener {
-    public static final int LEFT  = 0;
-    public static final int RIGHT = 1;
+    public static final int                LEFT       = 0;
+    public static final int                RIGHT      = 1;
 
-    private static final int MAX_AGENTS = 11;
-    
+    private static final int               MAX_AGENTS = 11;
+
     private final Configuration.TeamColors config;
-    private ContentManager  content;
-    private final float[]   defaultColor;
-    private final int       id;
-    private String          name;
-    private List<Agent>     agents;
-    private ObjMaterial     teamColor;
-    private int             score;
+    private ContentManager                 content;
+    private final float[]                  defaultColor;
+    private final int                      id;
+    private String                         name;
+    private List<Agent>                    agents;
+    private ObjMaterial                    teamColor;
+    private int                            score;
 
     public ObjMaterial getTeamMaterial() {
         return teamColor;
@@ -70,8 +69,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     }
 
     /**
-     * Returns the team's ID number where left is Team.LEFT and right is
-     * Team.RIGHT
+     * Returns the team's ID number where left is Team.LEFT and right is Team.RIGHT
      */
     public int getID() {
         return id;
@@ -102,13 +100,14 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         agents.clear();
     }
 
-    public Team(float[] defaultColor, int id, ContentManager content, Configuration.TeamColors config) {
+    public Team(float[] defaultColor, int id, ContentManager content,
+            Configuration.TeamColors config) {
         this.defaultColor = defaultColor;
         this.id = id;
         this.content = content;
         this.config = config;
         agents = new ArrayList<Agent>();
-        
+
         name = (id == LEFT) ? "<left>" : "<right>";
 
         teamColor = new ObjMaterial(name);
@@ -130,13 +129,13 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
             if (agentNode != null)
                 agents.add(new Agent(this, i, agentNode, sg, content));
         }
-        
-//        do {
-//            int agentID = agents.size() + 1;
-//            agentNode = findAgent(agentID, sg);
-//            if (agentNode != null)
-//                agents.add(new Agent(this, agentID, agentNode, sg, content));
-//        } while (agentNode != null);
+
+        // do {
+        // int agentID = agents.size() + 1;
+        // agentNode = findAgent(agentID, sg);
+        // if (agentNode != null)
+        // agents.add(new Agent(this, agentID, agentNode, sg, content));
+        // } while (agentNode != null);
     }
 
     @Override
@@ -151,11 +150,10 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
                 return a;
         return null;
     }
-    
+
     /**
-     * Check scene graph to see if an agent on this team with given agentID can
-     * be located. Returns the root node containing that agent's mesh nodes if
-     * it can be found; otherwise, returns null.
+     * Check scene graph to see if an agent on this team with given agentID can be located. Returns
+     * the root node containing that agent's mesh nodes if it can be found; otherwise, returns null.
      */
     private Node findAgent(int agentID, SceneGraph sg) {
         // the agents might be added in any order (two teams joining at once),

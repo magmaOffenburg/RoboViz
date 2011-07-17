@@ -20,7 +20,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-
 import javax.media.opengl.awt.GLCanvas;
 
 /**
@@ -29,8 +28,8 @@ import javax.media.opengl.awt.GLCanvas;
  * @author justin
  * 
  */
-public interface CameraController extends MouseListener, MouseMotionListener,
-        MouseWheelListener, KeyListener {
+public interface CameraController extends MouseListener, MouseMotionListener, MouseWheelListener,
+        KeyListener {
     public void attachToCanvas(GLCanvas canvas);
 
     public void detachFromCanvas(GLCanvas canvas);

@@ -17,9 +17,7 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
-
 import js.io.ByteUtil;
-
 import rv.Viewer;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.annotations.*;
@@ -27,6 +25,7 @@ import rv.world.objects.Agent;
 
 /**
  * Text annotation drawing
+ * 
  * @author justin
  */
 public class DrawAnnotation extends Command {
@@ -34,10 +33,10 @@ public class DrawAnnotation extends Command {
     public static final int STANDARD    = 0;
     public static final int AGENT_ADD   = 1;
     public static final int AGENT_CLEAR = 2;
-    
-    private Drawings drawings;
-    private Annotation annotation;
-    
+
+    private Drawings        drawings;
+    private Annotation      annotation;
+
     public DrawAnnotation(ByteBuffer buf, Viewer viewer) {
         this.drawings = viewer.getDrawings();
 
@@ -60,7 +59,7 @@ public class DrawAnnotation extends Command {
             annotation = null;
         }
     }
-    
+
     @Override
     public void execute() {
         if (annotation != null)

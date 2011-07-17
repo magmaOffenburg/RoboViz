@@ -18,7 +18,6 @@ package rv.effects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.FrameBufferObject;
 import js.jogl.GLDisposable;
 import js.jogl.ShaderProgram;
@@ -69,8 +68,7 @@ public class Bloom implements GLDisposable, WindowResizeListener {
     public Bloom() {
     }
 
-    public boolean init(GL2 gl, Viewport screen, ContentManager cm,
-            Configuration.Graphics config) {
+    public boolean init(GL2 gl, Viewport screen, ContentManager cm, Configuration.Graphics config) {
 
         luminosityShader = cm.loadShader(gl, "luminosity");
         if (luminosityShader == null) {
@@ -92,8 +90,7 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         }
 
         luminosityShader.enable(gl);
-        luminosityThreshold = new Uniform.Float(gl, luminosityShader,
-                "threshold", threshold);
+        luminosityThreshold = new Uniform.Float(gl, luminosityShader, "threshold", threshold);
         luminosityShader.disable(gl);
 
         blurShader.enable(gl);
@@ -102,8 +99,7 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         blurShader.disable(gl);
 
         compositeShader.enable(gl);
-        compositeIntensity = new Uniform.Float(gl, compositeShader,
-                "intensity", intensity);
+        compositeIntensity = new Uniform.Float(gl, compositeShader, "intensity", intensity);
         compositeTex1 = new Uniform.Int(gl, compositeShader, "inputTexture1", 0);
         compositeTex1 = new Uniform.Int(gl, compositeShader, "inputTexture2", 1);
         compositeShader.disable(gl);
@@ -151,10 +147,8 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         halfSizeFBOs[1].bind(gl);
         halfSizeFBOs[1].clear(gl);
         blurShader.enable(gl);
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2,
-                blurParams[0].offsets, 0);
-        gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length,
-                blurParams[0].weights, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets, 0);
+        gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
         input.bind(gl);
         EffectManager.renderScreenQuad(gl);
         input.unbind(gl);
@@ -235,12 +229,10 @@ public class Bloom implements GLDisposable, WindowResizeListener {
                 fbo.dispose(gl);
 
         for (int i = 0; i < fullSizeFBOs.length; i++)
-            fullSizeFBOs[i] = FrameBufferObject.create(gl, screen.w, screen.h,
-                    GL.GL_RGB);
+            fullSizeFBOs[i] = FrameBufferObject.create(gl, screen.w, screen.h, GL.GL_RGB);
 
         for (int i = 0; i < halfSizeFBOs.length; i++)
-            halfSizeFBOs[i] = FrameBufferObject.create(gl, screen.w / 2,
-                    screen.h / 2, GL.GL_RGB);
+            halfSizeFBOs[i] = FrameBufferObject.create(gl, screen.w / 2, screen.h / 2, GL.GL_RGB);
 
         setBlurParams(screen.w / 2, screen.h / 2);
     }

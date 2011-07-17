@@ -23,7 +23,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-
 import js.io.ByteUtil;
 import rv.Configuration;
 import rv.Viewer;
@@ -74,8 +73,7 @@ public class DrawComm {
     private int            sendPort;
 
     /** Creates a new AgentComm */
-    public DrawComm(Viewer viewer, int port) throws SocketException,
-            UnknownHostException {
+    public DrawComm(Viewer viewer, int port) throws SocketException, UnknownHostException {
         this.viewer = viewer;
         packetReceiver = new ReceiveThread(port);
         packetReceiver.start();
@@ -87,8 +85,7 @@ public class DrawComm {
 
     /** Sends a UDP packet to all clients */
     public void sendPktToAgents(byte[] buf) throws IOException {
-        DatagramPacket pkt = new DatagramPacket(buf, buf.length, sendAddress,
-                sendPort);
+        DatagramPacket pkt = new DatagramPacket(buf, buf.length, sendAddress, sendPort);
         outSocket.send(pkt);
     }
 
@@ -97,8 +94,7 @@ public class DrawComm {
      * */
     public void handle(DatagramPacket packet) {
         byte[] pktData = new byte[packet.getLength()];
-        System.arraycopy(packet.getData(), packet.getOffset(), pktData, 0,
-                pktData.length);
+        System.arraycopy(packet.getData(), packet.getOffset(), pktData, 0, pktData.length);
         ByteBuffer buf = ByteBuffer.wrap(pktData);
 
         while (buf.hasRemaining()) {
@@ -107,8 +103,7 @@ public class DrawComm {
                 cmd = Command.parse(buf, viewer);
             } catch (Exception e) {
                 if (showWarnings) {
-                    System.out.printf(
-                            "Exception parsing command (start index %d)\n",
+                    System.out.printf("Exception parsing command (start index %d)\n",
                             buf.position());
                     printPacket(packet);
                 }
@@ -117,9 +112,7 @@ public class DrawComm {
 
             if (cmd == null) {
                 if (showWarnings) {
-                    System.out.printf(
-                            "Null command (start index %d)\n",
-                            buf.position());
+                    System.out.printf("Null command (start index %d)\n", buf.position());
                     printPacket(packet);
                 }
                 return;

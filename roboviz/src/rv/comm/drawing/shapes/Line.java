@@ -17,12 +17,9 @@
 package rv.comm.drawing.shapes;
 
 import java.nio.ByteBuffer;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import rv.comm.drawing.commands.Command;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -33,8 +30,7 @@ public class Line extends Shape {
     private float[] end;
     private float   thickness;
 
-    public Line(String set, float[] start, float[] end, float[] color,
-            float thickness) {
+    public Line(String set, float[] start, float[] end, float[] color, float thickness) {
         super(set, color);
         this.start = start;
         this.end = end;

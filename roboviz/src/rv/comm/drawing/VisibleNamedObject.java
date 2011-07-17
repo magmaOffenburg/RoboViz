@@ -21,6 +21,6 @@ public interface VisibleNamedObject {
     public boolean isVisible();
 
     public void setVisible(boolean visible);
-    
+
     public String getName();
 }

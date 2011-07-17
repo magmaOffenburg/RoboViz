@@ -17,12 +17,9 @@
 package rv.comm.drawing.shapes;
 
 import java.nio.ByteBuffer;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import rv.comm.drawing.commands.Command;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Point extends Shape {

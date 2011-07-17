@@ -17,7 +17,6 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
-
 import js.io.ByteUtil;
 import js.math.vector.Vec3f;
 import rv.Viewer;
@@ -40,8 +39,7 @@ public abstract class Command {
     public abstract void execute();
 
     /**
-     * Reads bytes from buffer until 0 is reached, then returns the string of
-     * all previous bytes.
+     * Reads bytes from buffer until 0 is reached, then returns the string of all previous bytes.
      */
     public static String getString(ByteBuffer buf) {
         StringBuilder sb = new StringBuilder();
@@ -88,8 +86,7 @@ public abstract class Command {
         int teamID = uTeamAgent / 128;
         int agent = teamID == 0 ? uTeamAgent : uTeamAgent - 128;
 
-        Team team = teamID == Team.LEFT ? world.getLeftTeam() : world
-                .getRightTeam();
+        Team team = teamID == Team.LEFT ? world.getLeftTeam() : world.getRightTeam();
 
         return team.getAgents().get(agent - 1);
     }
@@ -156,40 +153,35 @@ public abstract class Command {
     }
 
     /**
-     * Retrives RGB colors as floats in [0,1] from 3 sequential bytes of RGB in
-     * a ByteBuffer
+     * Retrives RGB colors as floats in [0,1] from 3 sequential bytes of RGB in a ByteBuffer
      */
     public static float[] readRGB(ByteBuffer buf) {
         return new float[] { ByteUtil.uValue(buf.get()) / 255.0f,
-                ByteUtil.uValue(buf.get()) / 255.0f,
-                ByteUtil.uValue(buf.get()) / 255.0f, };
+                ByteUtil.uValue(buf.get()) / 255.0f, ByteUtil.uValue(buf.get()) / 255.0f, };
     }
 
     /**
-     * Retrives RGBA colors as floats in [0,1] from 4 sequential bytes in a
-     * ByteBuffer
+     * Retrives RGBA colors as floats in [0,1] from 4 sequential bytes in a ByteBuffer
      */
     public static float[] readRGBA(ByteBuffer buf) {
         return new float[] { ByteUtil.uValue(buf.get()) / 255.0f,
-                ByteUtil.uValue(buf.get()) / 255.0f,
-                ByteUtil.uValue(buf.get()) / 255.0f,
+                ByteUtil.uValue(buf.get()) / 255.0f, ByteUtil.uValue(buf.get()) / 255.0f,
                 ByteUtil.uValue(buf.get()) / 255.0f, };
     }
 
     /**
-     * Reads a series of floats from a buffer and converts them from SimSpark
-     * coordinates to RoboVis coordinates
+     * Reads a series of floats from a buffer and converts them from SimSpark coordinates to RoboVis
+     * coordinates
      */
     public static float[] readCoords(ByteBuffer buf, int n) {
         float[] vals = readFloats(buf, n);
         Vec3f v = n == 2 ? new Vec3f(vals[0], vals[1], 0) : new Vec3f(vals);
         return WorldModel.COORD_TFN.transform(v).getVals();
     }
-    
+
     public static Agent readAgent(ByteBuffer buf, WorldModel world) {
         int agentTeam = ByteUtil.uValue(buf.get());
-        Team team = (agentTeam / 128 == Team.LEFT) ? world.getLeftTeam()
-                : world.getRightTeam();
+        Team team = (agentTeam / 128 == Team.LEFT) ? world.getLeftTeam() : world.getRightTeam();
         Agent agent = null;
         int agentIndex = agentTeam % 128;
         if (agentIndex < team.getAgents().size())

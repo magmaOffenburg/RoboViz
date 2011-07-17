@@ -18,15 +18,13 @@ package rv.comm.rcssserver;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraphHeader;
 import rv.world.WorldModel;
 
 /**
- * Reads a message from server, converts it into s-expressions, determines the
- * type of message from the structure of the expressions, then parses the
- * expressions to update the world state
+ * Reads a message from server, converts it into s-expressions, determines the type of message from
+ * the structure of the expressions, then parses the expressions to update the world state
  * 
  * @author Justin Stoecker
  */

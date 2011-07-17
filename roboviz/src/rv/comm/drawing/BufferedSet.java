@@ -19,18 +19,18 @@ package rv.comm.drawing;
 import java.util.ArrayList;
 
 /**
- * Contains two buffers of the same data type that can be used for asynchronous
- * reading and writing of data
+ * Contains two buffers of the same data type that can be used for asynchronous reading and writing
+ * of data
  * 
  * @author justin
  */
 public class BufferedSet<T> implements VisibleNamedObject {
 
-    private boolean            visible  = true;
-    private final String       name;
-    private int                frontBuf = 0;
-    private int                backBuf  = 1;
-    
+    private boolean        visible  = true;
+    private final String   name;
+    private int            frontBuf = 0;
+    private int            backBuf  = 1;
+
     @SuppressWarnings("unchecked")
     private ArrayList<T>[] buffers  = new ArrayList[2];
 
@@ -67,9 +67,8 @@ public class BufferedSet<T> implements VisibleNamedObject {
     }
 
     /**
-     * Adds data to the back buffer set. This method is not synchronized as the
-     * only thread that should be using it is the one that is also responsible
-     * for swapping the buffers.
+     * Adds data to the back buffer set. This method is not synchronized as the only thread that
+     * should be using it is the one that is also responsible for swapping the buffers.
      */
     public void put(T data) {
         buffers[backBuf].add(data);

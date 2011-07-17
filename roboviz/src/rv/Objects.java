@@ -18,15 +18,16 @@ package rv;
 
 /**
  * A collection of utility methods applicable to all objects.
- *
+ * 
  * @author Drew Noakes
  */
 public class Objects {
     /**
-     * Determines whether two object references are equal.  If both values are <tt>null</tt>, true is returned.
+     * Determines whether two object references are equal. If both values are <tt>null</tt>, true is
+     * returned.
      */
     public static boolean equals(Object a, Object b) {
         // Note that this method will be included in version 1.7 of the Java class library
-        return (a==null && b==null) || (a!=null && a.equals(b));
+        return (a == null && b == null) || (a != null && a.equals(b));
     }
 }

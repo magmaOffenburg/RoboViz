@@ -19,7 +19,6 @@ package rv.effects;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
-
 import js.jogl.GLDisposable;
 import js.jogl.light.DirLight;
 import js.jogl.view.Viewport;
@@ -31,8 +30,7 @@ import rv.world.rendering.ShadowMapRenderer;
 import rv.world.rendering.ShadowMapRenderer.LightShadowVolume;
 
 /**
- * Applies post-processing effects to an input texture; merge this with
- * RENDERER?
+ * Applies post-processing effects to an input texture; merge this with RENDERER?
  * 
  * @author Justin Stoecker
  */
@@ -50,15 +48,15 @@ public class EffectManager implements GLDisposable {
         return shadowRenderer;
     }
 
-    public void init(GL2 gl, Viewer viewer, Viewport screen,
-            Configuration.Graphics config, ContentManager cm) {
+    public void init(GL2 gl, Viewer viewer, Viewport screen, Configuration.Graphics config,
+            ContentManager cm) {
 
         // configure sun
         Vec3f lightPos = new Vec3f(-8, 7, -6);
         Vec3f lightDir = lightPos.times(-1).normalize();
         DirLight light = new DirLight(lightDir);
-        LightShadowVolume sun = new LightShadowVolume(light, lightPos,
-                new Vec3f(0, 0, 0), Vec3f.unitY(), 24, 24, 30);
+        LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0),
+                Vec3f.unitY(), 24, 24, 30);
 
         if (config.useBloom()) {
             bloom = new Bloom();

@@ -17,15 +17,14 @@
 package rv.world;
 
 import javax.media.opengl.GL2;
-
 import js.math.BoundingBox;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.content.Model;
 
 /**
- * An abstract class that represents an object that contains a mesh loaded by
- * the content manager that may be transformed by its model matrix.
+ * An abstract class that represents an object that contains a mesh loaded by the content manager
+ * that may be transformed by its model matrix.
  * 
  * @author Justin Stoecker
  */
@@ -40,8 +39,8 @@ public class ModelObject {
     }
 
     /**
-     * Gets a an axis-aligned box that surrounds all mesh vertices. The box
-     * returned is in world space.
+     * Gets a an axis-aligned box that surrounds all mesh vertices. The box returned is in world
+     * space.
      */
     public BoundingBox getBoundingBox() {
         return bounds;
@@ -56,8 +55,7 @@ public class ModelObject {
     }
 
     /**
-     * Sets the transformation matrix for the mesh. Also updates the bounding
-     * box for the object.
+     * Sets the transformation matrix for the mesh. Also updates the bounding box for the object.
      */
     public void setModelMatrix(Matrix m) {
         this.modelMatrix = m;

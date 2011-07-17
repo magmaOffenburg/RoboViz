@@ -21,7 +21,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.glu.GLU;
-
 import js.jogl.FrameBufferObject;
 import js.jogl.GLInfo;
 import js.jogl.Texture2D;
@@ -37,7 +36,6 @@ import rv.world.rendering.PhongWorldRenderer;
 import rv.world.rendering.SceneRenderer;
 import rv.world.rendering.ShadowMapRenderer;
 import rv.world.rendering.VSMPhongWorldRenderer;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -47,8 +45,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public class Renderer implements WindowResizeListener {
 
-    public static GLU              glu  = new GLU();
-    public static GLUT             glut = new GLUT();
+    public static GLU              glu        = new GLU();
+    public static GLUT             glut       = new GLUT();
     private FrameBufferObject      sceneFBO;
     private EffectManager          effectManager;
     private Viewer                 viewer;
@@ -71,8 +69,7 @@ public class Renderer implements WindowResizeListener {
      * @param modelview
      * @param projection
      */
-    public void overrideViewProjection(int eye, Matrix modelview,
-            Matrix projection) {
+    public void overrideViewProjection(int eye, Matrix modelview, Matrix projection) {
 
     }
 
@@ -89,10 +86,9 @@ public class Renderer implements WindowResizeListener {
 
         boolean supportAAFBO = info.extSupported("GL_EXT_framebuffer_multisample")
                 && info.extSupported("GL_EXT_framebuffer_blit");
-        
+
         if (graphics.useFSAA() && !supportAAFBO)
-            System.out
-                    .println("Warning: no support for FSAA while bloom enabled");
+            System.out.println("Warning: no support for FSAA while bloom enabled");
         boolean useFSAA = graphics.useFSAA()
                 && (supportAAFBO && graphics.useBloom() || !graphics.useBloom());
 
@@ -100,11 +96,11 @@ public class Renderer implements WindowResizeListener {
             drawable.getGL().setSwapInterval(1);
         if (useFSAA)
             drawable.getGL().glEnable(GL.GL_MULTISAMPLE);
-        
+
         effectManager = new EffectManager();
         viewer.addWindowResizeListener(this);
-        effectManager.init(drawable.getGL().getGL2(), viewer,
-                viewer.getScreen(), viewer.getConfig().getGraphics(), cm);
+        effectManager.init(drawable.getGL().getGL2(), viewer, viewer.getScreen(), viewer
+                .getConfig().getGraphics(), cm);
 
         if (graphics.useBloom()) {
             if (useFSAA)
@@ -115,8 +111,7 @@ public class Renderer implements WindowResizeListener {
 
         selectRenderer(drawable.getGL().getGL2(), cm);
 
-        drawable.getGL().setSwapInterval(
-                viewer.getConfig().getGraphics().isVsync() ? 1 : 0);
+        drawable.getGL().setSwapInterval(viewer.getConfig().getGraphics().isVsync() ? 1 : 0);
 
         vantage = viewer.getUI().getCamera();
     }
@@ -153,10 +148,8 @@ public class Renderer implements WindowResizeListener {
         GL2 gl = drawable.getGL().getGL2();
 
         if (config.useShadows()) {
-            ShadowMapRenderer shadowRenderer = effectManager
-                    .getShadowRenderer();
-            shadowRenderer.render(gl, viewer.getWorldModel(),
-                    viewer.getDrawings());
+            ShadowMapRenderer shadowRenderer = effectManager.getShadowRenderer();
+            shadowRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
         }
 
         if (graphics.useStereo()) {
@@ -186,14 +179,13 @@ public class Renderer implements WindowResizeListener {
 
     private void drawScene(GL2 gl) {
         if (graphics.useBloom()) {
-            
+
             if (msSceneFBO != null) {
                 msSceneFBO.bind(gl);
                 msSceneFBO.clear(gl);
                 sceneFBO.setViewport(gl);
-                sceneRenderer.render(gl, viewer.getWorldModel(),
-                        viewer.getDrawings());
-               
+                sceneRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
+
                 int w = sceneFBO.getColorTexture(0).getWidth();
                 int h = sceneFBO.getColorTexture(0).getHeight();
                 gl.glBindFramebuffer(GL2.GL_READ_FRAMEBUFFER, msSceneFBO.getID());
@@ -204,16 +196,14 @@ public class Renderer implements WindowResizeListener {
                 sceneFBO.bind(gl);
                 sceneFBO.clear(gl);
                 sceneFBO.setViewport(gl);
-                sceneRenderer.render(gl, viewer.getWorldModel(),
-                        viewer.getDrawings());
+                sceneRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
                 sceneFBO.unbind(gl);
             }
 
             // post processing
             gl.glDisable(GLLightingFunc.GL_LIGHTING);
             gl.glEnable(GL.GL_TEXTURE_2D);
-            Texture2D output = effectManager.getBloom().process(gl,
-                    sceneFBO.getColorTexture(0));
+            Texture2D output = effectManager.getBloom().process(gl, sceneFBO.getColorTexture(0));
             gl.glColor4f(1, 1, 1, 1);
 
             // render result to window
@@ -223,8 +213,7 @@ public class Renderer implements WindowResizeListener {
             Texture2D.unbind(gl);
         } else {
             viewer.getScreen().apply(gl);
-            sceneRenderer.render(gl, viewer.getWorldModel(),
-                    viewer.getDrawings());
+            sceneRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
         }
     }
 

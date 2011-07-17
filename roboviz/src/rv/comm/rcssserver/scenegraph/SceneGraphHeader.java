@@ -19,11 +19,10 @@ package rv.comm.rcssserver.scenegraph;
 import rv.comm.rcssserver.SExp;
 
 /**
- * Identifies the type of scene graph information contained in a message. A full
- * scene graph contains full descriptions for every node and may have a
- * different structure than a previous scene graph. A "diff" scene graph has the
- * same structure as the currently stored scene graph, but only nodes that have
- * changed will have non-empty descriptions.
+ * Identifies the type of scene graph information contained in a message. A full scene graph
+ * contains full descriptions for every node and may have a different structure than a previous
+ * scene graph. A "diff" scene graph has the same structure as the currently stored scene graph, but
+ * only nodes that have changed will have non-empty descriptions.
  * 
  * @author Justin Stoecker
  */

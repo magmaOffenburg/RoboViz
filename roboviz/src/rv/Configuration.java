@@ -52,11 +52,11 @@ public class Configuration {
         public void setFSAASamples(int samples) {
             this.fsaaSamples = samples;
         }
-        
+
         public void setShadowResolution(int shadowResolution) {
             this.shadowResolution = shadowResolution;
         }
-        
+
         public int getTargetFPS() {
             return targetFPS;
         }
@@ -68,14 +68,14 @@ public class Configuration {
         public void setTargetFPS(int targetFPS) {
             this.targetFPS = targetFPS;
         }
-        
+
         public void setSoftShadow(boolean softShadow) {
-			this.softShadow = softShadow;
-		}
-        
+            this.softShadow = softShadow;
+        }
+
         public void setFSAA(boolean fsaa) {
-			this.fsaa = fsaa;
-		}
+            this.fsaa = fsaa;
+        }
 
         public void setUseBloom(boolean useBloom) {
             this.useBloom = useBloom;
@@ -140,8 +140,6 @@ public class Configuration {
         public boolean isVsync() {
             return vsync;
         }
-        
-
 
         private void read(BufferedReader in) throws IOException {
             in.readLine();
@@ -166,17 +164,14 @@ public class Configuration {
             out.write(String.format("%-20s : %b\n", "Phong", usePhong));
             out.write(String.format("%-20s : %b\n", "Shadows", useShadows));
             out.write(String.format("%-20s : %b\n", "Soft Shadows", softShadow));
-            out.write(String.format("%-20s : %d\n", "Shadow Resolution",
-                    shadowResolution));
+            out.write(String.format("%-20s : %d\n", "Shadow Resolution", shadowResolution));
             out.write(String.format("%-20s : %b\n", "Stereo 3D", useStereo));
             out.write(String.format("%-20s : %b\n", "V-Sync", vsync));
             out.write(String.format("%-20s : %b\n", "FSAA", fsaa));
-            out.write(String
-                    .format("%-20s : %d\n", "FSAA Samples", fsaaSamples));
+            out.write(String.format("%-20s : %d\n", "FSAA Samples", fsaaSamples));
             out.write(String.format("%-20s : %d\n", "Target FPS", targetFPS));
             out.write(String.format("%-20s : %d\n", "Frame Width", frameWidth));
-            out.write(String
-                    .format("%-20s : %d\n", "Frame Height", frameHeight));
+            out.write(String.format("%-20s : %d\n", "Frame Height", frameHeight));
             out.write("\n");
         }
 
@@ -241,10 +236,8 @@ public class Configuration {
 
         private void write(BufferedWriter out) throws IOException {
             out.write("Networking Settings:\n");
-            out.write(String
-                    .format("%-20s : %b\n", "Auto-Connect", autoConnect));
-            out.write(String.format("%-20s : %d\n", "Auto-Connect Delay",
-                    autoConnectDelay));
+            out.write(String.format("%-20s : %b\n", "Auto-Connect", autoConnect));
+            out.write(String.format("%-20s : %d\n", "Auto-Connect Delay", autoConnectDelay));
             out.write(String.format("%-20s : %s\n", "Server Host", serverHost));
             out.write(String.format("%-20s : %d\n", "Server Port", serverPort));
             out.write(String.format("%-20s : %d\n", "Drawing Port", listenPort));
@@ -267,8 +260,7 @@ public class Configuration {
 
         private void write(BufferedWriter out) throws IOException {
             out.write("General Settings:\n");
-            out.write(String.format("%-20s : %b\n", "Record Logfiles",
-                    recordLogs));
+            out.write(String.format("%-20s : %b\n", "Record Logfiles", recordLogs));
             out.write("\n");
         }
     }
@@ -290,7 +282,7 @@ public class Configuration {
                 String key = getKey(line);
                 String val = getVal(line);
                 String[] bits = val.split("\\s+");
-                if (bits!=null && bits.length==3) {
+                if (bits != null && bits.length == 3) {
                     float[] color = new float[3];
                     color[0] = Float.parseFloat(bits[0]);
                     color[1] = Float.parseFloat(bits[1]);
@@ -304,8 +296,8 @@ public class Configuration {
             out.write("Team Colors:\n");
             for (String teamName : colorByTeamName.keySet()) {
                 float[] color = colorByTeamName.get(teamName);
-                out.write(String.format("%-20s : %f %f %f\n",
-                        teamName, color[0], color[1], color[2]));
+                out.write(String.format("%-20s : %f %f %f\n", teamName, color[0], color[1],
+                        color[2]));
             }
             out.write("\n");
         }

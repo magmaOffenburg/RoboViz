@@ -18,7 +18,6 @@ package rv.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -27,7 +26,6 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
@@ -38,7 +36,6 @@ import rv.ui.screens.Screen;
 import rv.ui.view.CamTargetTracker;
 import rv.ui.view.CameraController;
 import rv.ui.view.SimsparkController;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -49,7 +46,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class UserInterface implements KeyListener {
     private Viewer            viewer;
     private FPCamera          camera;
-    private DrawingListPanel     poolPanel;
+    private DrawingListPanel  poolPanel;
     private CameraController  cameraControl;
 
     private SceneObjectPicker picker;
@@ -78,7 +75,7 @@ public class UserInterface implements KeyListener {
     }
 
     public void setActiveScreen(Screen activeScreen) {
-        GLCanvas canvas = (GLCanvas)viewer.getCanvas();
+        GLCanvas canvas = (GLCanvas) viewer.getCanvas();
         if (this.activeScreen != null)
             this.activeScreen.setEnabled(canvas, false);
 
@@ -112,8 +109,7 @@ public class UserInterface implements KeyListener {
         else
             setActiveScreen(new LogfileModeScreen(viewer));
 
-        ballTracker = new CamTargetTracker(viewer.getWorldModel().getBall(),
-                camera);
+        ballTracker = new CamTargetTracker(viewer.getWorldModel().getBall(), camera);
         ballTracker.setTetherDist(7);
         ballTracker.setMinTetherDist(4);
     }
@@ -175,34 +171,33 @@ public class UserInterface implements KeyListener {
         }
     }
 
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_F12:
-			viewer.takeScreenShot();
-			break;
-		case KeyEvent.VK_HOME:
-			ballTracker.changeMinTetherDist(-0.5f);
-			break;
-		case KeyEvent.VK_END:
-			ballTracker.changeMinTetherDist(0.5f);
-			ballTracker.update();
-			break;
-		default:
-			break;
-		}
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_F12:
+            viewer.takeScreenShot();
+            break;
+        case KeyEvent.VK_HOME:
+            ballTracker.changeMinTetherDist(-0.5f);
+            break;
+        case KeyEvent.VK_END:
+            ballTracker.changeMinTetherDist(0.5f);
+            ballTracker.update();
+            break;
+        default:
+            break;
+        }
+    }
 
     @Override
     public void keyReleased(KeyEvent arg0) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
         // TODO Auto-generated method stub
-        
+
     }
 }

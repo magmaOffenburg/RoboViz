@@ -23,12 +23,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-
 import js.jogl.GLInfo;
 import js.jogl.ShaderProgram;
 import js.jogl.Texture2D;
@@ -72,21 +70,20 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
             synchronized (ContentManager.this) {
                 modelsToInitialize.add(model);
             }
-            DebugInfo.println(getClass(),
-                    String.format("Loaded %s", model.getName()));
+            DebugInfo.println(getClass(), String.format("Loaded %s", model.getName()));
         }
     }
 
     private final Configuration.TeamColors config;
 
-//    GLU                        glu                = new GLU();
-//    GLUT                       glut               = new GLUT();
-    private Mesh.RenderMode    meshRenderMode     = Mesh.RenderMode.IMMEDIATE;
-    private Texture2D          whiteTexture;
-    public static Texture2D    selectionTexture;
-    private List<Model>        modelsToInitialize = new ArrayList<Model>();
-    private List<Model>        models             = new ArrayList<Model>();
-    private ObjMaterialLibrary naoMaterialLib;
+    // GLU glu = new GLU();
+    // GLUT glut = new GLUT();
+    private Mesh.RenderMode                meshRenderMode     = Mesh.RenderMode.IMMEDIATE;
+    private Texture2D                      whiteTexture;
+    public static Texture2D                selectionTexture;
+    private List<Model>                    modelsToInitialize = new ArrayList<Model>();
+    private List<Model>                    models             = new ArrayList<Model>();
+    private ObjMaterialLibrary             naoMaterialLib;
 
     public Texture2D getSelectionTexture() {
         return selectionTexture;
@@ -108,8 +105,8 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
     }
 
     /**
-     * Retrieves model from content manager. If model is not found in set of
-     * loaded models, it is added to a queue and loaded.
+     * Retrieves model from content manager. If model is not found in set of loaded models, it is
+     * added to a queue and loaded.
      */
     public synchronized Model getModel(String name) {
         for (int i = 0; i < models.size(); i++) {
@@ -220,16 +217,14 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
         String modelPath = "resources/models/";
         String texturePath = "resources/textures/";
         String materialPath = "resources/materials/";
-        ObjMeshImporter importer = new ObjMeshImporter(modelPath, materialPath,
-                texturePath);
+        ObjMeshImporter importer = new ObjMeshImporter(modelPath, materialPath, texturePath);
         ClassLoader cl = this.getClass().getClassLoader();
 
         importer.setClassLoader(cl);
         InputStream is = cl.getResourceAsStream(modelPath + name);
         Mesh mesh = null;
         try {
-            mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(
-                    is)));
+            mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
         } catch (IOException e) {
             e.printStackTrace();
         }

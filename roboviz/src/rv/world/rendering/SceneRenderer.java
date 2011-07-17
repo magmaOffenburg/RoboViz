@@ -18,7 +18,6 @@ package rv.world.rendering;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import rv.Configuration;
 import rv.comm.drawing.Drawings;
 import rv.content.ContentManager;
@@ -32,16 +31,15 @@ import rv.world.WorldModel;
 public interface SceneRenderer {
 
     /**
-     * Initializes renderer to be prepared for rendering; must be called once
-     * before render method.
+     * Initializes renderer to be prepared for rendering; must be called once before render method.
      * 
      * @return true if initialization successful
      */
     public boolean init(GL2 gl, Configuration.Graphics conf, ContentManager cm);
 
     /**
-     * Renders world model scene to currently bound frame buffer according to
-     * this renderer's implementation
+     * Renders world model scene to currently bound frame buffer according to this renderer's
+     * implementation
      * 
      * @param gl
      * @param world

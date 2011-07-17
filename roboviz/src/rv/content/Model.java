@@ -20,10 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.model.Mesh;
 import js.jogl.model.MeshPart;
 import js.jogl.model.ObjMaterial;
@@ -58,8 +56,7 @@ public class Model {
      * @param name
      *            - path to model within content root directory. For example:<br>
      *            "../resources/models/lfoot.obj" should be "models/lfoot.obj"<br>
-     *            "../resources/models/new/rfoot.obj" should be
-     *            "models/new/rfoot.obj"
+     *            "../resources/models/new/rfoot.obj" should be "models/new/rfoot.obj"
      */
     public Model(String name) {
         this.name = name;
@@ -69,18 +66,15 @@ public class Model {
      * Reads mesh data
      */
     public void readMeshData(ContentManager cm) {
-        ObjMeshImporter importer = new ObjMeshImporter(
-                ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT,
-                ContentManager.TEXTURE_ROOT);
+        ObjMeshImporter importer = new ObjMeshImporter(ContentManager.MODEL_ROOT,
+                ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
         ClassLoader cl = this.getClass().getClassLoader();
         importer.setClassLoader(cl);
 
-        InputStream is = cl.getResourceAsStream(ContentManager.CONTENT_ROOT
-                + name);
+        InputStream is = cl.getResourceAsStream(ContentManager.CONTENT_ROOT + name);
         mesh = null;
         try {
-            mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(
-                    is)));
+            mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
         } catch (IOException e) {
             e.printStackTrace();
         }

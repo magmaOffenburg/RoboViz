@@ -18,10 +18,8 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.math.vector.Matrix;
 import rv.Configuration;
 import rv.Renderer;
@@ -51,8 +49,7 @@ public class BasicSceneRenderer implements SceneRenderer {
         return true;
     }
 
-    public static void applyAgentMats(Model model, StaticMeshNode node,
-            ContentManager content) {
+    public static void applyAgentMats(Model model, StaticMeshNode node, ContentManager content) {
         // NOTE: this is a hack to get the player meshes to render with the
         // correct
         // team colors. The materials should be explicitly listed by the scene
@@ -71,16 +68,14 @@ public class BasicSceneRenderer implements SceneRenderer {
         if (isAgent) {
             for (String matName : node.getMaterials()) {
                 if (matName.startsWith("matNum")) {
-                    model.replaceMaterial("matNum",
-                            content.getMaterial(matName));
+                    model.replaceMaterial("matNum", content.getMaterial(matName));
                     break;
                 }
             }
         }
     }
 
-    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node,
-            ContentManager content) {
+    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content) {
         Model model = content.getModel(node.getName());
         if (model.isLoaded()) {
 
@@ -94,8 +89,7 @@ public class BasicSceneRenderer implements SceneRenderer {
 
             applyAgentMats(model, node, content);
 
-            Matrix modelMat = WorldModel.COORD_TFN.times(node
-                    .getWorldTransform());
+            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
             model.getMesh().render(gl, modelMat);
         }
     }

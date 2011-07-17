@@ -21,11 +21,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-
 import js.jogl.view.FPCamera;
 import js.jogl.view.Viewport;
 import js.math.vector.Vec2f;
@@ -34,11 +32,10 @@ import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.ui.CameraSetting;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
-        MouseMotionListener, GameStateChangeListener {
+public class LogfileModeScreen implements Screen, KeyListener, MouseListener, MouseMotionListener,
+        GameStateChangeListener {
 
     private GameStateOverlay gsOverlay;
     private LogPlayerOverlay lpOverlay;
@@ -107,7 +104,7 @@ public class LogfileModeScreen implements Screen, KeyListener, MouseListener,
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
+
         switch (e.getKeyCode()) {
         case KeyEvent.VK_ESCAPE:
             viewer.shutdown();

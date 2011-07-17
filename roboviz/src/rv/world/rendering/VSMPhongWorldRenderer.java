@@ -18,10 +18,8 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.Texture2D;
 import js.math.vector.Matrix;
 import rv.Configuration;
@@ -68,8 +66,8 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
         }
 
         shader.enable(gl);
-        shader.setLightViewProjection(gl, effects.getShadowRenderer()
-                .getLight().getViewProjection());
+        shader.setLightViewProjection(gl, effects.getShadowRenderer().getLight()
+                .getViewProjection());
         shader.disable(gl);
 
         suppressedMeshes.add("field.obj");
@@ -78,8 +76,7 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
         return true;
     }
 
-    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node,
-            ContentManager content) {
+    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content) {
         Model model = content.getModel(node.getName());
         if (model.isLoaded()) {
 
@@ -93,8 +90,7 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
 
             BasicSceneRenderer.applyAgentMats(model, node, content);
 
-            Matrix modelMat = WorldModel.COORD_TFN.times(node
-                    .getWorldTransform());
+            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
             shader.setModelMatrix(gl, modelMat);
 
             model.getMesh().render(gl, modelMat);

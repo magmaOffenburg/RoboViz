@@ -20,14 +20,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.text.ParseException;
-
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-
 import js.jogl.view.Viewport;
 import rv.comm.rcssserver.LogPlayer;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogPlayerOverlay implements Screen, KeyListener {
@@ -93,13 +90,13 @@ public class LogPlayerOverlay implements Screen, KeyListener {
             player.addDelay(25);
             break;
         case KeyEvent.VK_COMMA:
-        	if (!player.isPlaying())
-				player.stepBackward();
-        	break;
+            if (!player.isPlaying())
+                player.stepBackward();
+            break;
         case KeyEvent.VK_PERIOD:
-        	if (!player.isPlaying())
-				player.stepForward();
-        	break;
+            if (!player.isPlaying())
+                player.stepForward();
+            break;
         }
     }
 

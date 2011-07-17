@@ -19,9 +19,7 @@ package rv.ui.view;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
 import javax.media.opengl.awt.GLCanvas;
-
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
@@ -37,23 +35,23 @@ import rv.ui.UserInterface;
  */
 public class SimsparkController implements CameraController, GameStateChangeListener {
 
-    private UserInterface ui;
+    private UserInterface   ui;
 
-    protected boolean     rotate;
-    protected boolean     moveF;                   // camera is moving
-    protected boolean     moveB;                   // camera is moving back
-    protected boolean     moveL;                   // camera is moving left
-    protected boolean     moveR;                   // camera is moving right
-    protected boolean     moveU;
-    protected boolean     moveD;
-    protected boolean     shift = false;
-    protected Vec2f       lastMouse = new Vec2f(0);
+    protected boolean       rotate;
+    protected boolean       moveF;                   // camera is moving
+    protected boolean       moveB;                   // camera is moving back
+    protected boolean       moveL;                   // camera is moving left
+    protected boolean       moveR;                   // camera is moving right
+    protected boolean       moveU;
+    protected boolean       moveD;
+    protected boolean       shift     = false;
+    protected Vec2f         lastMouse = new Vec2f(0);
 
-    float                 dL, dR, dF, dB, dU, dD = 0;
-    float                 dMax      = 1;
-    float                 dChange   = 0.08f;
+    float                   dL, dR, dF, dB, dU, dD = 0;
+    float                   dMax      = 1;
+    float                   dChange   = 0.08f;
 
-    private CameraSetting[]   cameras;
+    private CameraSetting[] cameras;
 
     public SimsparkController(UserInterface ui) {
         this.ui = ui;
@@ -96,8 +94,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         if (dD > 0)
             tWorld.add(Vec3f.unitY().times(-dD));
 
-        float scale = (float) (elapsedMS / 1000.0f * ui.getCamera()
-                .getTranslatedSpeed());
+        float scale = (float) (elapsedMS / 1000.0f * ui.getCamera().getTranslatedSpeed());
 
         tLocal.mul(scale);
         tWorld.mul(scale);
@@ -107,7 +104,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         if (tWorld.lengthSquared() > 0)
             cam.moveWorld(tWorld);
     }
-    
+
     private void setCamera(int i) {
         if (i >= cameras.length || i < 0)
             return;
@@ -116,7 +113,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         camera.setPosition(cameras[i].getPosition().clone());
         camera.setRotation(cameras[i].getRotation().clone());
     }
-    
+
     /** Initialize saved camera positions */
     private void initCameras(GameState gs) {
         float fl = gs.getFieldLength();
@@ -126,22 +123,14 @@ public class SimsparkController implements CameraController, GameStateChangeList
         float aerialHeight = (float) (0.5 * fw / Math.tan(fov * 0.5) * 1.1);
 
         cameras = new CameraSetting[] {
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 90)),
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 - 50)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 + 35.8f)),
-                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f),
-                        new Vec2f(-45, 180)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40,
-                        180 - 35.8f)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw),
-                        new Vec2f(-30, 180 + 50)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0),
-                        new Vec2f(-35, 180 + 90)),
-                new CameraSetting(new Vec3f(0, aerialHeight, 0), new Vec2f(-90,
-                        180)) };
+                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 90)),
+                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 - 50)),
+                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 + 35.8f)),
+                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f), new Vec2f(-45, 180)),
+                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 - 35.8f)),
+                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 + 50)),
+                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 180 + 90)),
+                new CameraSetting(new Vec3f(0, aerialHeight, 0), new Vec2f(-90, 180)) };
     }
 
     @Override
@@ -190,8 +179,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
     public void mouseDragged(MouseEvent e) {
         if (rotate) {
             Vec2f mouseMove = new Vec2f(e.getX(), e.getY()).minus(lastMouse);
-            ui.getCamera().rotate(
-                    mouseMove.times(ui.getCamera().getRotateSpeed()));
+            ui.getCamera().rotate(mouseMove.times(ui.getCamera().getRotateSpeed()));
         }
         lastMouse = new Vec2f(e.getX(), e.getY());
     }
@@ -214,7 +202,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         int keyChar = e.getKeyChar();
         if (keyChar > 48 && keyChar < 58 && cameras != null)
             setCamera(keyChar - 49);
-        
+
         switch (key) {
         case KeyEvent.VK_W:
         case KeyEvent.VK_UP:

@@ -25,13 +25,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import config.RVConfigure.SaveListener;
-
 import rv.Configuration;
 
 /**
@@ -72,8 +69,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
         add(initDrawingControls(), c);
     }
 
-    void addLabel(String name, JComponent component, GridBagConstraints c,
-            int x, int y) {
+    void addLabel(String name, JComponent component, GridBagConstraints c, int x, int y) {
         c.gridx = x;
         c.gridy = y;
         JLabel l = new JLabel(name, SwingConstants.RIGHT);
@@ -113,8 +109,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 3;
-        final JCheckBox autoConnectCB = new JCheckBox("Auto-Connect",
-                config.isAutoConnect());
+        final JCheckBox autoConnectCB = new JCheckBox("Auto-Connect", config.isAutoConnect());
         autoConnectCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 config.setAutoConnect(autoConnectCB.isSelected());
@@ -155,14 +150,14 @@ public class NetworkPanel extends JPanel implements SaveListener {
         } catch (Exception e) {
             serverPortTF.setText("" + config.getServerPort());
         }
-        
+
         try {
             int delay = Integer.parseInt(autoConnectDelayTF.getText());
             config.setAutoConnectDelay(delay);
         } catch (Exception e) {
             autoConnectDelayTF.setText("" + config.getAutoConnectDelay());
         }
-        
+
         try {
             int drawport = Integer.parseInt(drawingPortTF.getText());
             config.setListenPort(drawport);

@@ -29,9 +29,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import javax.swing.Timer;
-
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
@@ -47,8 +45,8 @@ import rv.world.WorldModel;
 public class ServerComm {
 
     /**
-     * Receives messages from rcssserver3d and hands them off to a message
-     * parser to handle the data contained in each message
+     * Receives messages from rcssserver3d and hands them off to a message parser to handle the data
+     * contained in each message
      */
     private class MessageReceiver extends Thread {
 
@@ -78,8 +76,7 @@ public class ServerComm {
 
                 // If the thread gets to this point the server has stopped
                 // sending messages by closing the connection
-                DebugInfo.println(getClass(),
-                        "rcssserver3d closed TCP connection");
+                DebugInfo.println(getClass(), "rcssserver3d closed TCP connection");
                 disconnect();
                 if (autoConnectTimer != null)
                     autoConnectTimer.start();
@@ -141,8 +138,7 @@ public class ServerComm {
         return connected;
     }
 
-    public ServerComm(WorldModel world, Configuration config,
-            Viewer.Mode viewerMode) {
+    public ServerComm(WorldModel world, Configuration config, Viewer.Mode viewerMode) {
         this.world = world;
 
         Configuration.Networking net = config.getNetworking();
@@ -152,21 +148,19 @@ public class ServerComm {
 
         // automatically attempt connection with server while not connected
         if (net.isAutoConnect()) {
-            autoConnectTimer = new Timer(net.getAutoConnectDelay(),
-                    new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (socket == null) {
-                                connect(serverHost, serverPort);
-                            }
-                        }
-                    });
+            autoConnectTimer = new Timer(net.getAutoConnectDelay(), new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (socket == null) {
+                        connect(serverHost, serverPort);
+                    }
+                }
+            });
             autoConnectTimer.setRepeats(true);
             autoConnectTimer.start();
         }
 
-        recordLogs = viewerMode != Viewer.Mode.LOGFILE
-                && config.getGeneral().isRecordLogs();
+        recordLogs = viewerMode != Viewer.Mode.LOGFILE && config.getGeneral().isRecordLogs();
     }
 
     private void setupNewLogfile() {
@@ -176,8 +170,7 @@ public class ServerComm {
         System.out.println("Recording to new logfile: " + logFile.getName());
         if (logFile != null) {
             try {
-                logfileOutput = new PrintWriter(new BufferedWriter(
-                        new FileWriter(logFile)));
+                logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -199,8 +192,8 @@ public class ServerComm {
             in = new DataInputStream(socket.getInputStream());
             inThread = new MessageReceiver();
             inThread.start();
-            DebugInfo.println(getClass(), "connected with rcssserver3d "
-                    + socket.getInetAddress() + ":" + socket.getPort());
+            DebugInfo.println(getClass(), "connected with rcssserver3d " + socket.getInetAddress()
+                    + ":" + socket.getPort());
             if (autoConnectTimer != null)
                 autoConnectTimer.stop();
             setConnected(true);
@@ -220,8 +213,7 @@ public class ServerComm {
             try {
                 in.close();
             } catch (IOException e) {
-                System.err.println("Error: closing input stream with server"
-                        + e.getMessage());
+                System.err.println("Error: closing input stream with server" + e.getMessage());
                 e.printStackTrace();
             }
             out.close();
@@ -230,8 +222,7 @@ public class ServerComm {
                 if (socket != null)
                     socket.close();
             } catch (IOException e) {
-                System.err.println("Error: closing input stream with server"
-                        + e.getMessage());
+                System.err.println("Error: closing input stream with server" + e.getMessage());
             }
 
             socket = null;
@@ -276,8 +267,7 @@ public class ServerComm {
     }
 
     public void moveBall(Vec3f pos) {
-        sendMessage(String.format("(ball (pos %.2f %.2f %.2f))", pos.x, pos.y,
-                pos.z));
+        sendMessage(String.format("(ball (pos %.2f %.2f %.2f))", pos.x, pos.y, pos.z));
     }
 
     public void setPlayMode(String mode) {
@@ -287,7 +277,7 @@ public class ServerComm {
     public void freeKick(boolean left) {
         setPlayMode(left ? "free_kick_left" : "free_kick_right");
     }
-    
+
     public void killServer() {
         sendMessage("(killsim)");
     }
@@ -297,9 +287,8 @@ public class ServerComm {
         // Set the position and velocity of the given player on the field.
         // Example: (agent (team Left)(unum 1)(pos -52.0 0.0 0.3))
         String team = leftTeam ? "Left" : "Right";
-        String m = String.format(
-                "(agent (team %s)(unum %d)(pos %.2f %.2f %.2f))", team,
-                agentID, pos.x, pos.y, pos.z);
+        String m = String.format("(agent (team %s)(unum %d)(pos %.2f %.2f %.2f))", team, agentID,
+                pos.x, pos.y, pos.z);
         sendMessage(m);
     }
 }

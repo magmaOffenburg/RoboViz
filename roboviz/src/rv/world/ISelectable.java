@@ -17,7 +17,6 @@
 package rv.world;
 
 import javax.media.opengl.GL2;
-
 import js.math.BoundingBox;
 import js.math.vector.Vec3f;
 

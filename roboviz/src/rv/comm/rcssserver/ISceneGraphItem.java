@@ -19,24 +19,22 @@ package rv.comm.rcssserver;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 
 /**
- * An object that may use information in the RCSSServer scene graph. This
- * interface allows specific objects to receive updates when the scene graph
- * changes. Rather than making the scene graph an event source and allowing
- * event listeners, objects that use the scene graph info should implement this
- * interface and add themselves to the WorldModel's scene graph items. There is
- * no need for items to constantly update their state; they only need to be
- * up-to-date just before rendering occurs.
+ * An object that may use information in the RCSSServer scene graph. This interface allows specific
+ * objects to receive updates when the scene graph changes. Rather than making the scene graph an
+ * event source and allowing event listeners, objects that use the scene graph info should implement
+ * this interface and add themselves to the WorldModel's scene graph items. There is no need for
+ * items to constantly update their state; they only need to be up-to-date just before rendering
+ * occurs.
  * 
  * @author Justin Stoecker
  */
 public interface ISceneGraphItem {
 
     /**
-     * The scene graph's structure typically remains consistent throughout the
-     * life of the simulation, but sometimes it is entirely new. This occurs,
-     * for example, when the monitor first connects or an agent joins the
-     * simulation. The object implementing this interface is given a chance to
-     * locate its respective node in the scene graph and store a reference to it
+     * The scene graph's structure typically remains consistent throughout the life of the
+     * simulation, but sometimes it is entirely new. This occurs, for example, when the monitor
+     * first connects or an agent joins the simulation. The object implementing this interface is
+     * given a chance to locate its respective node in the scene graph and store a reference to it
      * for future scene graph updates.
      * 
      * @param sg
@@ -44,10 +42,9 @@ public interface ISceneGraphItem {
     public void sceneGraphChanged(SceneGraph sg);
 
     /**
-     * When called, the object implementing this interface can pull data from
-     * the scene graph and store it in its internal state. It is expected that
-     * the implementing object will keep a reference to its node in the scene
-     * graph through the findNode method.
+     * When called, the object implementing this interface can pull data from the scene graph and
+     * store it in its internal state. It is expected that the implementing object will keep a
+     * reference to its node in the scene graph through the findNode method.
      */
     public void update(SceneGraph sg);
 }

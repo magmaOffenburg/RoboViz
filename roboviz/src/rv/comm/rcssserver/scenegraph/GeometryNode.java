@@ -21,8 +21,8 @@ import js.math.vector.Vec3f;
 import rv.comm.rcssserver.SExp;
 
 /**
- * Describes an object and its material. There are two types: static meshes and
- * standard mesh objects (box, cylinder, etc).
+ * Describes an object and its material. There are two types: static meshes and standard mesh
+ * objects (box, cylinder, etc).
  * 
  * @author Justin Stoecker
  */
@@ -69,8 +69,7 @@ public abstract class GeometryNode extends Node {
                 visible = e.getAtoms()[1].equals("1");
             } else if (operation.equals("resetMaterials")) {
                 materials = new String[e.getAtoms().length - 1];
-                System.arraycopy(e.getAtoms(), 1, materials, 0,
-                        materials.length);
+                System.arraycopy(e.getAtoms(), 1, materials, 0, materials.length);
             } else if (operation.equals("setTransparent")) {
                 transparent = true;
             }

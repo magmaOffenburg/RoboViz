@@ -17,7 +17,6 @@
 package rv.world.objects;
 
 import javax.media.opengl.GL2;
-
 import js.math.vector.Vec3f;
 import rv.content.Model;
 import rv.world.ModelObject;

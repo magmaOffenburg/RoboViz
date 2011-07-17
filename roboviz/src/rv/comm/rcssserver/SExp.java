@@ -20,15 +20,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
- * List-based data structure used by SimSpark network protocol for transmitting
- * and receiving messages. An s-expression may contain a series of whitespace
- * separated elements (called atoms) and/or more s-expressions. For example:<br>
+ * List-based data structure used by SimSpark network protocol for transmitting and receiving
+ * messages. An s-expression may contain a series of whitespace separated elements (called atoms)
+ * and/or more s-expressions. For example:<br>
  * <br>
  * (time (month 12) (day 25) (hour 9))<br>
  * <br>
- * The above example is a single s-expression that contains 1 atom and 3
- * sub-expressions; each child expression has 2 atoms. Collectively, the list
- * structure describes the a time.
+ * The above example is a single s-expression that contains 1 atom and 3 sub-expressions; each child
+ * expression has 2 atoms. Collectively, the list structure describes the a time.
  * 
  * @author Justin Stoecker
  */
@@ -55,10 +54,9 @@ public class SExp {
     }
 
     /**
-     * Recursively prints the entire s-expression. Each line contains a pair of
-     * brackets representing an s-expression with comma separated atoms between.
-     * Levels of indentation represent the nesting of child expressions. For
-     * example:<br>
+     * Recursively prints the entire s-expression. Each line contains a pair of brackets
+     * representing an s-expression with comma separated atoms between. Levels of indentation
+     * represent the nesting of child expressions. For example:<br>
      * (time (month 12) (day 25) (hour 9)) <br>
      * would print as:<br>
      * [time]<br>

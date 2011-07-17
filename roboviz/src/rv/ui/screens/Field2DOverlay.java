@@ -20,7 +20,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-
 import js.jogl.Texture2D;
 import js.jogl.model.MeshPart;
 import js.jogl.model.ObjMaterial;
@@ -30,7 +29,6 @@ import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.world.Team;
 import rv.world.WorldModel;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -137,8 +135,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         if (world.getField().getModel().isLoaded() && visible) {
-            MeshPart part = world.getField().getModel().getMesh().getParts()
-                    .get(1);
+            MeshPart part = world.getField().getModel().getMesh().getParts().get(1);
             texture = ((ObjMaterial) part.getMaterial()).getTexture();
 
             // render field
@@ -151,8 +148,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
             gl.glColor4f(1, 1, 1, 1);
             setView(gl, glu);
             world.getField().render(gl);
-            
-            
+
             int pSize = (int) (screenWidth * 0.01125);
 
             gl.glEnable(GL2.GL_POINT_SMOOTH);

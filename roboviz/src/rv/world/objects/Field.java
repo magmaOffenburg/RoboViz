@@ -18,7 +18,6 @@ package rv.world.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.GLDisposable;
 import js.jogl.Texture2D;
 import js.jogl.light.Material;
@@ -33,16 +32,15 @@ import rv.content.Model;
 import rv.world.ModelObject;
 
 /**
- * Soccer field. Consists of a textured quad for the grass and field lines drawn
- * as independent shapes.
+ * Soccer field. Consists of a textured quad for the grass and field lines drawn as independent
+ * shapes.
  * 
  * @author Justin Stoecker
  */
-public class Field extends ModelObject implements GameStateChangeListener,
-        GLDisposable {
+public class Field extends ModelObject implements GameStateChangeListener, GLDisposable {
 
-    public static final Matrix DEFAULT_MODEL_MATRIX = new Matrix(new double[] {
-            -1.5, 0, 0, 0, 0, 0, 1, 0, 0, 1.5, 0, 0, 0, 0, 0, 1 });
+    public static final Matrix DEFAULT_MODEL_MATRIX = new Matrix(new double[] { -1.5, 0, 0, 0, 0,
+            0, 1, 0, 0, 1.5, 0, 0, 0, 0, 0, 1      });
 
     private static final int   CIRCLE_SEGMENTS      = 60;
     private static final float PENALTY_WIDTH        = 2.1f;
@@ -102,18 +100,15 @@ public class Field extends ModelObject implements GameStateChangeListener,
                 { -hfl + hgl + LINE_THICKNESS, 0, hgw + LINE_THICKNESS },
 
                 // left goal box
-                { hfl, 0, hgw + LINE_THICKNESS },
-                { hfl, 0, hgw - LINE_THICKNESS },
+                { hfl, 0, hgw + LINE_THICKNESS }, { hfl, 0, hgw - LINE_THICKNESS },
                 { hfl - hgl + LINE_THICKNESS, 0, hgw - LINE_THICKNESS },
                 { hfl - hgl + LINE_THICKNESS, 0, -hgw + LINE_THICKNESS },
-                { hfl, 0, -hgw + LINE_THICKNESS },
-                { hfl, 0, -hgw - LINE_THICKNESS },
+                { hfl, 0, -hgw + LINE_THICKNESS }, { hfl, 0, -hgw - LINE_THICKNESS },
                 { hfl - hgl - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS },
                 { hfl - hgl - LINE_THICKNESS, 0, hgw + LINE_THICKNESS }, };
 
-        lineIndices = new int[][] { { 0, 1, 5, 4 }, { 1, 2, 6, 5 },
-                { 2, 3, 7, 6 }, { 3, 0, 4, 7 }, { 8, 9, 10, 11 },
-                { 12, 13, 14, 19 }, { 19, 14, 15, 18 }, { 15, 16, 17, 18 },
+        lineIndices = new int[][] { { 0, 1, 5, 4 }, { 1, 2, 6, 5 }, { 2, 3, 7, 6 }, { 3, 0, 4, 7 },
+                { 8, 9, 10, 11 }, { 12, 13, 14, 19 }, { 19, 14, 15, 18 }, { 15, 16, 17, 18 },
                 { 20, 21, 22, 27 }, { 27, 22, 23, 26 }, { 23, 24, 25, 26 } };
 
         // center circle
@@ -122,8 +117,7 @@ public class Field extends ModelObject implements GameStateChangeListener,
         double angleInc = Math.PI * 2.0 / CIRCLE_SEGMENTS;
         int j = 0;
         for (int i = 0; i < CIRCLE_SEGMENTS; i++) {
-            Vec3f v = new Vec3f((float) Math.cos(angleInc * i), 0,
-                    (float) Math.sin(angleInc * i));
+            Vec3f v = new Vec3f((float) Math.cos(angleInc * i), 0, (float) Math.sin(angleInc * i));
             v = v.normalize();
             circleVerts[j++] = v.times(radius - LINE_THICKNESS).getVals();
             circleVerts[j++] = v.times(radius + LINE_THICKNESS).getVals();
@@ -160,8 +154,8 @@ public class Field extends ModelObject implements GameStateChangeListener,
         if (geometryUpdated) {
             renderLines(gl);
             geometryUpdated = false;
-            lineTexture = Texture2D.loadTex(gl, "resources/textures/white.png",
-                    getClass().getClassLoader());
+            lineTexture = Texture2D.loadTex(gl, "resources/textures/white.png", getClass()
+                    .getClassLoader());
         }
 
         gl.glNormal3f(0, 1, 0);

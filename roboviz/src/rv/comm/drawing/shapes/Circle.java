@@ -17,12 +17,9 @@
 package rv.comm.drawing.shapes;
 
 import java.nio.ByteBuffer;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import rv.comm.drawing.commands.Command;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
@@ -34,8 +31,7 @@ public class Circle extends Shape {
     private double[][] pts = new double[20][];
     private float      thickness;
 
-    public Circle(String set, float[] pos, float[] color, float radius,
-            float thickness) {
+    public Circle(String set, float[] pos, float[] color, float radius, float thickness) {
         super(set, color);
         double angleInc = Math.PI * 2.0 / pts.length;
 

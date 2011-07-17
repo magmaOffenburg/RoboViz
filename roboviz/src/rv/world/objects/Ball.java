@@ -17,7 +17,6 @@
 package rv.world.objects;
 
 import javax.media.opengl.GL2;
-
 import js.math.BoundingBox;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
@@ -56,8 +55,7 @@ public class Ball implements ISelectable, ISceneGraphItem {
         Model model = content.getModel(node.getName());
         if (model.isLoaded()) {
             Vec3f[] corners = model.getMesh().getBounds().getCorners();
-            Matrix modelMat = WorldModel.COORD_TFN.times(node
-                    .getWorldTransform());
+            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
             for (int j = 0; j < 8; j++) {
                 Vec3f v = modelMat.transform(corners[j]);
                 if (v.x < min.x)
@@ -100,8 +98,7 @@ public class Ball implements ISelectable, ISceneGraphItem {
 
     @Override
     public void renderSelected(GL2 gl) {
-        ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] {
-                1, 1, 1 });
+        ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] { 1, 1, 1 });
     }
 
 }

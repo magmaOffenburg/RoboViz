@@ -18,13 +18,12 @@ package rv.comm.rcssserver;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
 
 /**
- * Contains soccer game state information collected from rcssserver: teams,
- * scores, play mode, time, field dimensions, etc.
+ * Contains soccer game state information collected from rcssserver: teams, scores, play mode, time,
+ * field dimensions, etc.
  * 
  * @author Justin Stoecker
  */
@@ -189,7 +188,7 @@ public class GameState implements ServerChangeListener {
     public void removeListener(GameStateChangeListener l) {
         listeners.remove(l);
     }
-    
+
     /**
      * Parses expression and updates state
      */

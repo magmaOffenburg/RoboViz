@@ -18,10 +18,8 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-
 import js.jogl.FrameBufferObject;
 import js.jogl.RenderBuffer;
 import js.jogl.ShaderProgram;
@@ -46,8 +44,7 @@ import rv.world.WorldModel;
 public class ShadowMapRenderer implements SceneRenderer {
 
     /**
-     * Encapsulates a directional light that casts shadow within an orthographic
-     * frustum
+     * Encapsulates a directional light that casts shadow within an orthographic frustum
      */
     public static class LightShadowVolume {
 
@@ -72,15 +69,15 @@ public class ShadowMapRenderer implements SceneRenderer {
             return light;
         }
 
-        public LightShadowVolume(DirLight light, Vec3f eye, Vec3f target,
-                Vec3f up, float width, float height, float depth) {
+        public LightShadowVolume(DirLight light, Vec3f eye, Vec3f target, Vec3f up, float width,
+                float height, float depth) {
             this.light = light;
 
             double hw = width / 2;
             double hh = height / 2;
             projection = Matrix.createOrtho(-hw, hw, -hh, hh, 0.0, depth);
-            view = Matrix.createLookAt(eye.x, eye.y, eye.z, target.x, target.y,
-                    target.z, up.x, up.y, up.z);
+            view = Matrix.createLookAt(eye.x, eye.y, eye.z, target.x, target.y, target.z, up.x,
+                    up.y, up.z);
             viewProjection = projection.times(view);
         }
     }
@@ -127,8 +124,7 @@ public class ShadowMapRenderer implements SceneRenderer {
         Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
         Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
         Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
-        tex.texImage(gl, 0, TEX_FORMAT, texWidth, texHeight, 0, GL2.GL_RGBA,
-                GL2.GL_FLOAT, null);
+        tex.texImage(gl, 0, TEX_FORMAT, texWidth, texHeight, 0, GL2.GL_RGBA, GL2.GL_FLOAT, null);
         Texture2D.unbind(gl);
 
         return tex;
@@ -140,8 +136,7 @@ public class ShadowMapRenderer implements SceneRenderer {
         fbo.bind(gl);
         Texture2D colorTexture = createTexture(gl);
         fbo.attachColorTarget(gl, colorTexture, 0, 0, true);
-        RenderBuffer depthRBO = RenderBuffer.createDepthBuffer(gl, texWidth,
-                texHeight);
+        RenderBuffer depthRBO = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
 
         fbo.attachDepthTarget(gl, depthRBO, true);
         int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
@@ -167,8 +162,7 @@ public class ShadowMapRenderer implements SceneRenderer {
         fbo.attachColorTarget(gl, hBlurTexture, 0, 0, true);
         fbo.attachColorTarget(gl, vBlurTexture, 0, 1, true);
 
-        RenderBuffer rbo = RenderBuffer.createDepthBuffer(gl, texWidth,
-                texHeight);
+        RenderBuffer rbo = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
         fbo.attachDepthTarget(gl, rbo, true);
         int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
         fbo.unbind(gl);
@@ -182,8 +176,7 @@ public class ShadowMapRenderer implements SceneRenderer {
         return fbo;
     }
 
-    private boolean abortInit(GL2 gl, String error,
-            Configuration.Graphics config) {
+    private boolean abortInit(GL2 gl, String error, Configuration.Graphics config) {
         System.err.println("Shadow Map: " + error);
         dispose(gl);
         config.setUseShadows(false);
@@ -199,8 +192,7 @@ public class ShadowMapRenderer implements SceneRenderer {
             shadowMapTexture = blurShadowMap(gl);
     }
 
-    private Texture2D renderShadowMap(GL2 gl, WorldModel world,
-            Drawings drawings) {
+    private Texture2D renderShadowMap(GL2 gl, WorldModel world, Drawings drawings) {
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadMatrixd(light.getProjection().wrap());
@@ -224,8 +216,7 @@ public class ShadowMapRenderer implements SceneRenderer {
             else {
                 Model model = content.getModel(node.getName());
                 if (model.isLoaded()) {
-                    Matrix modelMat = WorldModel.COORD_TFN.times(node
-                            .getWorldTransform());
+                    Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
                     model.getMesh().render(gl, modelMat);
                 }
             }
@@ -236,8 +227,7 @@ public class ShadowMapRenderer implements SceneRenderer {
             StaticMeshNode node = transparentNodes.get(i);
             Model model = content.getModel(node.getName());
             if (model.isLoaded()) {
-                Matrix modelMat = WorldModel.COORD_TFN.times(node
-                        .getWorldTransform());
+                Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
                 model.getMesh().render(gl, modelMat);
             }
         }
@@ -266,20 +256,16 @@ public class ShadowMapRenderer implements SceneRenderer {
         blurShader.enable(gl);
 
         // horizontal pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2,
-                blurParams[0].offsets, 0);
-        gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length,
-                blurParams[0].weights, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets, 0);
+        gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
         gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT1);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         renderQuad(gl);
         blurFBO.getColorTexture(1).bind(gl);
 
         // vertical pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2,
-                blurParams[1].offsets, 0);
-        gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length,
-                blurParams[1].weights, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2, blurParams[1].offsets, 0);
+        gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length, blurParams[1].weights, 0);
         gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT0);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         renderQuad(gl);
@@ -332,22 +318,21 @@ public class ShadowMapRenderer implements SceneRenderer {
         blurFBO = createBlurFBO(gl);
 
         ClassLoader cl = getClass().getClassLoader();
-        depthShader = ShaderProgram.create(gl, "shaders/vsm_depth.vert",
-                "shaders/vsm_depth.frag", cl);
+        depthShader = ShaderProgram.create(gl, "shaders/vsm_depth.vert", "shaders/vsm_depth.frag",
+                cl);
         if (depthShader == null)
             return abortInit(gl, "could not load depth pass shader", conf);
 
         if (useBlur) {
             if (blurFBO == null)
                 return abortInit(gl, "could not create shadow FBO", conf);
-            blurShader = ShaderProgram.create(gl, "shaders/vsm_blur.vert",
-                    "shaders/vsm_blur.frag", cl);
+            blurShader = ShaderProgram.create(gl, "shaders/vsm_blur.vert", "shaders/vsm_blur.frag",
+                    cl);
             if (blurShader == null)
                 return abortInit(gl, "could not load blur pass shader", conf);
 
             // configure blur shader
-            blurParams = Gaussian.calcBlurParams(blurriness, samples, texWidth,
-                    texHeight);
+            blurParams = Gaussian.calcBlurParams(blurriness, samples, texWidth, texHeight);
             blurShader.enable(gl);
             ulocBlurWeights = blurShader.getUniform(gl, "weights");
             ulocBlurOffsets = blurShader.getUniform(gl, "offsets");

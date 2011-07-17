@@ -18,12 +18,10 @@ package rv.comm.rcssserver.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import rv.comm.rcssserver.SExp;
 
 /**
- * Contains scene information from rcssserver: geometry, transformations,
- * lighting, etc.
+ * Contains scene information from rcssserver: geometry, transformations, lighting, etc.
  * 
  * @author Justin Stoecker
  */
@@ -60,8 +58,8 @@ public class SceneGraph {
     }
 
     /**
-     * Finds the first instance of a StaticMeshNode with a specified name
-     * starting at the root node n
+     * Finds the first instance of a StaticMeshNode with a specified name starting at the root node
+     * n
      */
     public StaticMeshNode findStaticMeshNode(String name, Node n) {
         return findStaticMeshNode(n, name);
@@ -73,8 +71,8 @@ public class SceneGraph {
     }
 
     /**
-     * Finds a StaticMeshNode that contains (at least) all materials in the
-     * provided list of materials
+     * Finds a StaticMeshNode that contains (at least) all materials in the provided list of
+     * materials
      */
     public StaticMeshNode findStaticMeshNode(Node node, String[] materials) {
         // check if current node is the node we're looking for
@@ -182,8 +180,7 @@ public class SceneGraph {
     }
 
     /**
-     * Updates scene graph with new information. The structure of the scene
-     * graph remains unchanged.
+     * Updates scene graph with new information. The structure of the scene graph remains unchanged.
      */
     public void update(SExp exp) {
         root.update(exp);

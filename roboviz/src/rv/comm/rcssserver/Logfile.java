@@ -19,7 +19,6 @@ package rv.comm.rcssserver;
 import java.text.ParseException;
 import java.util.*;
 import java.io.*;
-
 import js.math.Maths;
 
 /**
@@ -77,8 +76,8 @@ public class Logfile {
     }
 
     /**
-     * Changes the current frame using random access file. The contents of the
-     * current frame will be updated.
+     * Changes the current frame using random access file. The contents of the current frame will be
+     * updated.
      */
     public void setCurrentFrame(int frame) throws IOException {
         int prevFrame = curFramePtr;
@@ -109,8 +108,8 @@ public class Logfile {
     }
 
     /**
-     * Opens the logfile for reading. If it is already opened, the method call
-     * is ignored. The current frame is reset to the start of the log.
+     * Opens the logfile for reading. If it is already opened, the method call is ignored. The
+     * current frame is reset to the start of the log.
      * 
      * @throws IOException
      */
@@ -127,8 +126,8 @@ public class Logfile {
     }
 
     /**
-     * Closes any open file streams. If the logfile is already closed, this
-     * method is ignored. While closed, the logfile frames cannot be read.
+     * Closes any open file streams. If the logfile is already closed, this method is ignored. While
+     * closed, the logfile frames cannot be read.
      */
     public void close() {
         if (!open)
@@ -142,10 +141,9 @@ public class Logfile {
     }
 
     /**
-     * The user may manually switch to a random frame, which is then read from
-     * the random access file. This method ensures reading from the buffered
-     * reader (for fast sequential playback) continues from the current frame
-     * selected in the random access file.
+     * The user may manually switch to a random frame, which is then read from the random access
+     * file. This method ensures reading from the buffered reader (for fast sequential playback)
+     * continues from the current frame selected in the random access file.
      * 
      * @throws IOException
      */

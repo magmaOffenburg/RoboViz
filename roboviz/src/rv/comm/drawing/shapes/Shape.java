@@ -17,9 +17,7 @@
 package rv.comm.drawing.shapes;
 
 import javax.media.opengl.GL2;
-
 import js.jogl.light.Material;
-
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class Shape {

@@ -17,11 +17,9 @@
 package rv.world;
 
 import java.util.ArrayList;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
-
 import js.jogl.light.DirLight;
 import js.jogl.light.LightModel;
 import js.math.vector.Matrix;
@@ -47,12 +45,8 @@ import rv.world.objects.SkyBox;
 public class WorldModel {
 
     /** Transforms SimSpark coordinates to RoboVis coordinates (and reverse) */
-    public static final Matrix            COORD_TFN   = new Matrix(
-                                                              new double[] {
-            -1, 0, 0, 0, 
-            0, 0, 1, 0, 
-            0, 1, 0, 0, 
-            0, 0, 0, 1  });
+    public static final Matrix            COORD_TFN   = new Matrix(new double[] { -1, 0, 0, 0, 0,
+            0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
 
     private GameState                     gameState   = new GameState();
     private SceneGraph                    sceneGraph  = null;
@@ -135,8 +129,7 @@ public class WorldModel {
         return rightTeam;
     }
 
-    public void init(GL glObj, ContentManager cm,
-            Configuration config, Viewer.Mode mode) {
+    public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode) {
         this.config = config.getGraphics();
 
         GL2 gl = glObj.getGL2();
@@ -145,9 +138,11 @@ public class WorldModel {
         gameState.addListener(field);
         gameState.addListener(cm);
 
-        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm, config.getTeamColors());
+        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
+                config.getTeamColors());
         gameState.addListener(leftTeam);
-        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT,cm, config.getTeamColors());
+        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
+                config.getTeamColors());
         gameState.addListener(rightTeam);
         if (mode == Mode.LIVE) {
             // teams and agents try to locate themselves in scene graph for

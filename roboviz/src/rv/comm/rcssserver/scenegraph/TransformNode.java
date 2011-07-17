@@ -20,8 +20,8 @@ import js.math.vector.Matrix;
 import rv.comm.rcssserver.SExp;
 
 /**
- * Describes a local transformation (translation, rotation, scale) applied to
- * current node and all its children
+ * Describes a local transformation (translation, rotation, scale) applied to current node and all
+ * its children
  * 
  * @author Justin Stoecker
  */

@@ -26,7 +26,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,7 +38,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
@@ -57,11 +55,10 @@ import rv.comm.drawing.shapes.Shape;
  */
 public class DrawingListPanel extends JPanel implements ShapeListListener {
 
-    static class CheckListRenderer extends JCheckBox implements
-            ListCellRenderer {
+    static class CheckListRenderer extends JCheckBox implements ListCellRenderer {
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean hasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value, int index,
+                boolean isSelected, boolean hasFocus) {
             setEnabled(list.isEnabled());
             setSelected(((CheckListItem) value).isSelected());
             setFont(list.getFont());
@@ -110,11 +107,11 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
             checkbox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    
+
                     BufferedSet<Shape> p = drawings.getShapeSet(setName);
                     if (p != null)
                         p.setVisible(!p.isVisible());
-                    
+
                     BufferedSet<Annotation> p1 = drawings.getAnnotationSet(setName);
                     if (p1 != null)
                         p1.setVisible(!p1.isVisible());
@@ -154,8 +151,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
                 try {
                     JList list = (JList) event.getSource();
                     int index = list.locationToIndex(event.getPoint());
-                    CheckListItem item = (CheckListItem) list.getModel()
-                            .getElementAt(index);
+                    CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
                     item.setSelected(!item.isSelected());
                     list.repaint(list.getCellBounds(index, index));
                 } catch (Exception e) {
@@ -169,7 +165,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
         JPanel p = new JPanel();
         p.setLayout(new GridLayout(1, 3));
         regexField = new JTextField(".*");
-        
+
         p.add(regexField);
         JButton regexSearch = new JButton("Regex");
         regexSearch.addActionListener(new ActionListener() {
@@ -203,13 +199,12 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
             }
         });
         p.add(clearButton);
-        
-        
+
         this.drawings = drawings;
         drawings.addShapeSetListener(this);
 
         poolFrame.pack();
-        poolFrame.setSize(300,600);
+        poolFrame.setSize(300, 600);
         // TODO: shouldnt do this, just grab pools on init
         drawings.clearAllShapeSets();
     }
@@ -225,7 +220,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
     @Override
     public void setListChanged(SetListChangeEvent evt) {
         String regex = regexField.getText();
-        
+
         model.clear();
         ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
         int size = shapeSets.size();
@@ -233,21 +228,21 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
             if (shapeSets.get(i) != null) {
                 CheckListItem item = new CheckListItem(shapeSets.get(i));
                 boolean visible = shapeSets.get(i).isVisible();
-                boolean matchRegex = regex == null ? true : shapeSets
-                        .get(i).getName().matches(regex);
+                boolean matchRegex = regex == null ? true : shapeSets.get(i).getName()
+                        .matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }
         }
-        
+
         ArrayList<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
         int size2 = annotationSets.size();
         for (int i = 0; i < size2; i++) {
             if (annotationSets.get(i) != null) {
                 CheckListItem item = new CheckListItem(annotationSets.get(i));
                 boolean visible = annotationSets.get(i).isVisible();
-                boolean matchRegex = regex == null ? true : annotationSets
-                        .get(i).getName().matches(regex);
+                boolean matchRegex = regex == null ? true : annotationSets.get(i).getName()
+                        .matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }

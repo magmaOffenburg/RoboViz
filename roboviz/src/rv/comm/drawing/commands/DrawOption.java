@@ -17,7 +17,6 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
-
 import js.io.ByteUtil;
 import rv.Viewer;
 import rv.comm.drawing.Drawings;
