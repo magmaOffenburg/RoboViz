@@ -18,8 +18,6 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.text.ParseException;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
@@ -29,20 +27,25 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogPlayerOverlay implements Screen, KeyListener {
 
-    private float     barPad    = 20;
-    private float     barHeight = 10;
-    private LogPlayer player;
+    private float           barPad    = 20;
+    private float           barHeight = 10;
+    private LogPlayer       player;
+    private PlayerControlls playDialog;
 
     public LogPlayerOverlay(LogPlayer player) {
         this.player = player;
+        playDialog = new PlayerControlls(player);
     }
 
     @Override
     public void setEnabled(GLCanvas canvas, boolean enabled) {
-        if (enabled)
+        if (enabled) {
             canvas.addKeyListener(this);
-        else
+            playDialog.setVisible(true);
+        } else {
             canvas.removeKeyListener(this);
+            playDialog.setVisible(false);
+        }
     }
 
     @Override
@@ -84,10 +87,10 @@ public class LogPlayerOverlay implements Screen, KeyListener {
             player.rewind();
             break;
         case KeyEvent.VK_Z:
-            player.addDelay(-25);
+            player.changePlayBackSpeed(false);
             break;
         case KeyEvent.VK_X:
-            player.addDelay(25);
+            player.changePlayBackSpeed(true);
             break;
         case KeyEvent.VK_COMMA:
             if (!player.isPlaying())

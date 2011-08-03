@@ -18,15 +18,15 @@ package rv.comm.rcssserver;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import javax.swing.Timer;
 import js.math.Maths;
+import rv.util.observer.IObserver;
+import rv.util.observer.ISubscribe;
+import rv.util.observer.Subject;
 import rv.world.WorldModel;
 
 /**
@@ -35,16 +35,21 @@ import rv.world.WorldModel;
  * @author justin
  * 
  */
-public class LogPlayer {
+public class LogPlayer implements ISubscribe<Boolean> {
 
-    private Logfile       logfile;
-    private MessageParser parser;
-    private final Timer   timer;
-    int                   delay   = 150;
-    private boolean       playing = false;
+    private Logfile          logfile;
+    private MessageParser    parser;
+    private final Timer      timer;
+    int                      delay   = 150;
+    private boolean          playing = false;
+    private Subject<Boolean> observers;
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public boolean isAtEnd() {
+        return logfile.isAtEndOfLog();
     }
 
     public int getFrame() {
@@ -61,6 +66,7 @@ public class LogPlayer {
 
     public LogPlayer(File file, WorldModel world) {
 
+        observers = new Subject<Boolean>();
         try {
             logfile = new Logfile(file);
         } catch (Exception e3) {
@@ -89,12 +95,12 @@ public class LogPlayer {
     }
 
     public void pause() {
-        playing = false;
+        setPlaying(false);
         timer.stop();
     }
 
     public void stop() {
-        playing = false;
+        setPlaying(false);
         timer.stop();
         if (logfile.isOpen())
             logfile.close();
@@ -114,10 +120,15 @@ public class LogPlayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        observers.onStateChange(playing);
     }
 
-    public void addDelay(int ms) {
-        int delay = Maths.clamp(timer.getDelay() + ms, 20, 1000);
+    public void changePlayBackSpeed(boolean accelerate) {
+        int acc = 25;
+        if (accelerate) {
+            acc = -25;
+        }
+        int delay = Maths.clamp(timer.getDelay() + acc, 20, 1000);
         timer.setDelay(delay);
         System.out.printf("Player FPS: %.1f\n", 1000.0f / timer.getDelay());
     }
@@ -129,7 +140,7 @@ public class LogPlayer {
     }
 
     public void play() throws IOException, ParseException {
-        playing = true;
+        setPlaying(true);
 
         if (logfile.isAtEndOfLog())
             stop();
@@ -138,6 +149,7 @@ public class LogPlayer {
                 logfile.open();
             logfile.stepForward();
             parseFrame();
+            observers.onStateChange(playing);
         }
     }
 
@@ -145,6 +157,7 @@ public class LogPlayer {
         try {
             logfile.stepBackward();
             parseFrame();
+            observers.onStateChange(playing);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,8 +167,45 @@ public class LogPlayer {
         try {
             logfile.stepForward();
             parseFrame();
+            observers.onStateChange(playing);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setCurrentFrame(int frame) {
+        try {
+            // when jumping forwards we have to make sure not to jump over a full
+            // frame
+            int currentFrame = frame;
+            boolean needHeader = true;
+            do {
+                logfile.stepAnywhere(currentFrame);
+                try {
+                    parseFrame();
+                    needHeader = false;
+                } catch (IndexOutOfBoundsException e) {
+                    // the frame misses some information from the last full frame
+                    // DIRTY: I have no idea currently how this can be detected in a
+                    // nicer way
+                }
+                currentFrame--;
+            } while (needHeader && currentFrame >= 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void attach(IObserver<Boolean> observer) {
+        observers.attach(observer);
+    }
+
+    private void setPlaying(boolean playing) {
+        if (playing != this.playing) {
+            this.playing = playing;
+            observers.onStateChange(playing);
         }
     }
 }

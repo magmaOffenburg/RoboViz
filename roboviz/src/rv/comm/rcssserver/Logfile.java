@@ -16,9 +16,14 @@
 
 package rv.comm.rcssserver;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.ParseException;
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import js.math.Maths;
 
 /**
@@ -180,5 +185,13 @@ public class Logfile {
         // to k-2, buffer the frame, then set current to k-1
         setCurrentFrame(curFramePtr - 2);
         curFramePtr++;
+    }
+
+    /**
+     * Moves the current frame back by one frame.
+     */
+    public void stepAnywhere(int frame) throws IOException, ParseException {
+        setCurrentFrame(frame);
+        curFramePtr = frame + 1;
     }
 }
