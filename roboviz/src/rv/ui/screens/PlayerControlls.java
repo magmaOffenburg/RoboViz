@@ -189,21 +189,25 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
      *            true if the player is playing
      */
     public void update(Boolean playing) {
+        boolean isValid = player.isValid();
         boolean atEnd = player.isAtEnd();
-        rewindButton.setEnabled(!playing || atEnd);
-        slowerButton.setEnabled(playing && !atEnd);
-        pauseButton.setEnabled(playing && !atEnd);
-        fasterButton.setEnabled(playing && !atEnd);
-        playButton.setEnabled(!playing && !atEnd);
-        stepBackwardButton.setEnabled(!playing && !atEnd);
-        stepForwardButton.setEnabled(!playing && !atEnd);
+        rewindButton.setEnabled(isValid && (!playing || atEnd));
+        slowerButton.setEnabled(isValid && playing && !atEnd);
+        pauseButton.setEnabled(isValid && playing && !atEnd);
+        fasterButton.setEnabled(isValid && playing && !atEnd);
+        playButton.setEnabled(isValid && !playing && !atEnd);
+        stepBackwardButton.setEnabled(isValid && !playing);
+        stepForwardButton.setEnabled(isValid && !playing && !atEnd);
+        if (slider.getMaximum() < player.getNumFrames()) {
+            slider.setMaximum(player.getNumFrames());
+        }
         slider.setValue(player.getFrame());
-        slider.setEnabled(!playing && !atEnd);
+        slider.setEnabled(isValid && !playing);
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (slider.isEnabled() && player.isPlaying()) {
+        if (slider.isEnabled()) {
             player.setCurrentFrame(slider.getValue());
         }
     }

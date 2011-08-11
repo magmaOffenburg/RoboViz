@@ -19,7 +19,6 @@ package rv.comm.rcssserver;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import javax.swing.Timer;
@@ -37,38 +36,18 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements ISubscribe<Boolean> {
 
-    private Logfile          logfile;
+    private ILogfileReader   logfile;
     private MessageParser    parser;
-    private final Timer      timer;
+    private Timer            timer;
     int                      delay   = 150;
     private boolean          playing = false;
     private Subject<Boolean> observers;
-
-    public boolean isPlaying() {
-        return playing;
-    }
-
-    public boolean isAtEnd() {
-        return logfile.isAtEndOfLog();
-    }
-
-    public int getFrame() {
-        return logfile.getCurrentFrame();
-    }
-
-    public int getNumFrames() {
-        return logfile.getNumFrames();
-    }
-
-    public Logfile getLogfile() {
-        return logfile;
-    }
 
     public LogPlayer(File file, WorldModel world) {
 
         observers = new Subject<Boolean>();
         try {
-            logfile = new Logfile(file);
+            logfile = new LogfileReaderBuffered(new Logfile(file), 200);
         } catch (Exception e3) {
             e3.printStackTrace();
         }
@@ -77,12 +56,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
             public void actionPerformed(ActionEvent e) {
                 try {
                     play();
-                } catch (IOException e1) {
+                } catch (Exception e1) {
+                    System.out.println("Invalid Logfile.");
                     e1.printStackTrace();
                     timer.stop();
-                } catch (ParseException e2) {
-                    e2.printStackTrace();
-                    timer.stop();
+                    logfile = null;
+                    observers.onStateChange(false);
                 }
             }
         });
@@ -91,7 +70,37 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
         parser = new MessageParser(world);
 
+        if (!logfile.isValid()) {
+            System.out.println("Logfile could not be loaded.");
+            return;
+        }
         timer.start();
+    }
+
+    public boolean isValid() {
+        return logfile != null && logfile.isValid();
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public boolean isAtEnd() {
+        return logfile != null && logfile.isAtEndOfLog();
+    }
+
+    public int getFrame() {
+        if (logfile == null) {
+            return 0;
+        }
+        return logfile.getCurrentFrame();
+    }
+
+    public int getNumFrames() {
+        if (logfile == null) {
+            return 0;
+        }
+        return logfile.getNumFrames();
     }
 
     public void pause() {
@@ -102,8 +111,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public void stop() {
         setPlaying(false);
         timer.stop();
-        if (logfile.isOpen())
-            logfile.close();
+        logfile.close();
     }
 
     public void resume() {
@@ -112,15 +120,13 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void rewind() {
-        logfile.close();
         try {
-            logfile.open();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            logfile.rewind();
+            parseFrame();
+            observers.onStateChange(playing);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        observers.onStateChange(playing);
     }
 
     public void changePlayBackSpeed(boolean accelerate) {
@@ -143,12 +149,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
         setPlaying(true);
 
         if (logfile.isAtEndOfLog())
-            stop();
+            pause();
         else {
-            if (!logfile.isOpen())
-                logfile.open();
-            logfile.stepForward();
             parseFrame();
+            logfile.stepForward();
             observers.onStateChange(playing);
         }
     }
@@ -174,6 +178,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void setCurrentFrame(int frame) {
+        if (frame == getFrame()) {
+            return;
+        }
         try {
             // when jumping forwards we have to make sure not to jump over a full
             // frame
@@ -200,6 +207,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     @Override
     public void attach(IObserver<Boolean> observer) {
         observers.attach(observer);
+        observers.onStateChange(false);
     }
 
     private void setPlaying(boolean playing) {

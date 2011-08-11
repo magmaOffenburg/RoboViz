@@ -18,180 +18,311 @@ package rv.comm.rcssserver;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import js.math.Maths;
+import java.io.InputStreamReader;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import org.apache.tools.bzip2.CBZip2InputStream;
+import com.ice.tar.TarEntry;
+import com.ice.tar.TarInputStream;
 
 /**
- * Abstraction for a log that can be viewed frame by frame
+ * Abstraction for a log that can be viewed frame by frame. Supports unpacked, single file zipped
+ * and tar.bz2 files.
  * 
  * @author justin
  */
-public class Logfile {
+public class Logfile implements ILogfileReader {
 
-    // position in bytes of the start of each line (server message) in the log
-    private List<Long>       framePositions = new ArrayList<Long>();
+    /** used for sequentially playing frames */
+    private BufferedReader br;
 
-    // used for frame-by-frame access when stepping forward or backward
-    private RandomAccessFile raf;
+    /** the file to read from */
+    private File           logsrc;
 
-    // used for sequentially playing frames
-    private BufferedReader   br;
+    /** index of the frame that is currently buffered */
+    private int            curFramePtr;
 
-    private File             logsrc;
+    /** the number of frames in the logfile, initially estimated */
+    private int            numFrames;
 
-    // frame referenced by the random access reader
-    private int              curFramePtr    = 0;
+    /** stores the server message at the current frame position */
+    private String         curFrameMsg;
 
-    // frame that is referenced by the buffered reader
-    private int              brFramePtr     = 0;
-
-    private int              numFrames      = 0;
-
-    // file input streams are assumed to be open
-    private boolean          open           = false;
-
-    private boolean          atEndOfLog     = false;
-
-    // stores the server message at the current frame position
-    private String           curFrameMsg    = null;
-
-    public boolean isOpen() {
-        return open;
+    /**
+     * Default constructor
+     * 
+     * @param file
+     *            the logfile to open
+     * @throws Exception
+     *             if the logfile can not be opened
+     */
+    public Logfile(File file) throws Exception {
+        this.logsrc = file;
+        numFrames = 1700;
+        open();
     }
 
+    /**
+     * Opens the file for buffered reading
+     * 
+     * @throws FileNotFoundException
+     */
+    private void open() throws IOException {
+        br = createBufferedReader();
+        if (br != null) {
+            curFrameMsg = br.readLine();
+        }
+        curFramePtr = 0;
+    }
+
+    @Override
+    public boolean isValid() {
+        return br != null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#isAtEndOfLog()
+     */
+    @Override
     public boolean isAtEndOfLog() {
-        return atEndOfLog;
+        return curFrameMsg == null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#getNumFrames()
+     */
+    @Override
     public int getNumFrames() {
         return numFrames;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#getCurrentFrame()
+     */
+    @Override
     public int getCurrentFrame() {
         return curFramePtr;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#getCurrrentFrameMessage()
+     */
+    @Override
     public String getCurrrentFrameMessage() {
         return curFrameMsg;
     }
 
-    /**
-     * Changes the current frame using random access file. The contents of the current frame will be
-     * updated.
-     */
-    public void setCurrentFrame(int frame) throws IOException {
-        int prevFrame = curFramePtr;
-        this.curFramePtr = Maths.clamp(frame, 0, numFrames - 1);
-
-        // avoid seeking if frame hasn't changed
-        if (prevFrame == curFramePtr)
-            return;
-
-        raf.seek(framePositions.get(curFramePtr).longValue());
-        curFrameMsg = raf.readLine();
-        atEndOfLog = (curFramePtr == numFrames - 1);
-    }
-
-    public Logfile(File file) throws Exception {
-        this.logsrc = file;
-
-        // count number of frames and save their positions in the file
-        long lastMark = 0;
-        String line;
-        BufferedReader br = new BufferedReader(new FileReader(logsrc));
-        while ((line = br.readLine()) != null) {
-            numFrames++;
-            framePositions.add(new Long(lastMark));
-            lastMark += line.length() + 1; // +1 for newline character
-        }
-        br.close();
-    }
-
-    /**
-     * Opens the logfile for reading. If it is already opened, the method call is ignored. The
-     * current frame is reset to the start of the log.
+    /*
+     * (non-Javadoc)
      * 
-     * @throws IOException
+     * @see rv.comm.rcssserver.ILogfileReader#setCurrentFrame(int)
      */
-    public void open() throws IOException {
-        if (open)
-            return;
+    private String setCurrentFrame(int frame) throws IOException {
 
-        br = new BufferedReader(new FileReader(logsrc));
-        raf = new RandomAccessFile(logsrc, "r");
-        open = true;
-        curFramePtr = 0;
-        brFramePtr = 0;
-        atEndOfLog = (curFramePtr == numFrames);
+        if (frame < curFramePtr) {
+            // we have a sequential reader, for stepping backwards we have to start from beginning
+            close();
+            open();
+        }
+
+        String line = curFrameMsg;
+        while (curFramePtr < frame && line != null) {
+            line = stepForward();
+        }
+        return line;
     }
 
-    /**
-     * Closes any open file streams. If the logfile is already closed, this method is ignored. While
-     * closed, the logfile frames cannot be read.
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#rewind()
      */
+    @Override
+    public void rewind() throws IOException {
+        close();
+        open();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#close()
+     */
+    @Override
     public void close() {
-        if (!open)
-            return;
         try {
             br.close();
-            raf.close();
-            open = false;
         } catch (Exception ex) {
         }
     }
 
-    /**
-     * The user may manually switch to a random frame, which is then read from the random access
-     * file. This method ensures reading from the buffered reader (for fast sequential playback)
-     * continues from the current frame selected in the random access file.
+    /*
+     * (non-Javadoc)
      * 
-     * @throws IOException
+     * @see rv.comm.rcssserver.ILogfileReader#stepForward()
      */
-    private void sync() throws IOException {
-        if (br != null)
-            br.close();
-        br = new BufferedReader(new FileReader(logsrc));
-        br.skip(framePositions.get(curFramePtr).longValue());
-        brFramePtr = curFramePtr;
-    }
-
-    /**
-     * Moves the current frame ahead by one frame.
-     */
-    public void stepForward() throws IOException, ParseException {
-        if (atEndOfLog)
-            return;
-
-        if (curFramePtr != brFramePtr)
-            sync();
+    @Override
+    public String stepForward() throws IOException {
+        if (isAtEndOfLog())
+            return null;
 
         curFrameMsg = br.readLine();
-
-        brFramePtr++;
         curFramePtr++;
-        atEndOfLog = (curFramePtr == numFrames - 1);
+        if (curFramePtr >= numFrames) {
+            // the number of frames was estimated too low
+            numFrames++;
+        } else if (curFrameMsg == null) {
+            // the number of frames was estimated too high
+            numFrames = curFramePtr + 1;
+        }
+        return curFrameMsg;
     }
 
-    /**
-     * Moves the current frame back by one frame.
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#stepBackward()
      */
-    public void stepBackward() throws IOException, ParseException {
-        // if current frame is at k, then the k-1 frame is visible; set current
-        // to k-2, buffer the frame, then set current to k-1
-        setCurrentFrame(curFramePtr - 2);
-        curFramePtr++;
+    @Override
+    public void stepBackward() throws IOException {
+        if (curFramePtr > 0) {
+            setCurrentFrame(curFramePtr - 1);
+        }
     }
 
-    /**
-     * Moves the current frame back by one frame.
+    /*
+     * (non-Javadoc)
+     * 
+     * @see rv.comm.rcssserver.ILogfileReader#stepAnywhere(int)
      */
-    public void stepAnywhere(int frame) throws IOException, ParseException {
+    @Override
+    public void stepAnywhere(int frame) throws IOException {
+        if (frame < 0) {
+            frame = 0;
+        }
         setCurrentFrame(frame);
-        curFramePtr = frame + 1;
+    }
+
+    /**
+     * Creates the reader used for sequential reading
+     * 
+     * @return the reader used for sequential reading
+     * @throws FileNotFoundException
+     *             if the logsrc is not found
+     */
+    private BufferedReader createBufferedReader() throws FileNotFoundException {
+
+        if (isBZ2Ending()) {
+            return getBZ2Stream();
+
+        } else if (isZIPEnding()) {
+            return getZipSteam();
+        }
+        return new BufferedReader(new FileReader(logsrc));
+    }
+
+    private BufferedReader getZipSteam() {
+        try {
+            ZipFile zipFile = new ZipFile(logsrc);
+            if (zipFile.size() != 1) {
+                System.out.println("Only support single entry zip files");
+                return null;
+            } else {
+                ZipEntry zipEntry = zipFile.entries().nextElement();
+                return new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipEntry)));
+            }
+
+        } catch (IOException e) {
+            // not a zip file
+            System.out.println("File has zip ending, but seems to be not zip");
+            return null;
+        }
+    }
+
+    private BufferedReader getBZ2Stream() {
+        try {
+            // only works for the current layout of tar.bz2 files
+            FileInputStream zStream = new FileInputStream(logsrc);
+            // for whatever reasons the CBZip2InputStream assumes that 2 bytes have been consumed on
+            // the stream
+            byte[] header = new byte[2];
+            zStream.read(header);
+            if (header[0] != 'B' || header[1] != 'Z') {
+                System.out.println("Not a bz2 file, but bz2 ending");
+                return null;
+            }
+
+            CBZip2InputStream bz2InputStream = new CBZip2InputStream(zStream);
+            TarInputStream tarStream = new TarInputStream(bz2InputStream);
+            TarEntry entry = tarStream.getNextEntry();
+
+            // step into deepest directory
+            while (entry != null && entry.isDirectory()) {
+                TarEntry[] entries = entry.getDirectoryEntries();
+                if (entries.length > 0) {
+                    entry = entries[0];
+                } else {
+                    // empty directory
+                    entry = tarStream.getNextEntry();
+                }
+            }
+            if (entry == null) {
+                System.out.println("tar file does not contain logfile");
+                return null;
+            }
+
+            // search for proper file
+            while (entry != null && !entry.getName().endsWith("sparkmonitor.log")) {
+                entry = tarStream.getNextEntry();
+            }
+
+            if (entry == null) {
+                System.out.println("tar file does not contain logfile");
+                return null;
+            }
+
+            // we have reached the proper position
+            return new BufferedReader(new InputStreamReader(tarStream));
+
+        } catch (IOException e) {
+            // not a bz2 file
+            System.out.println("File has bz2 ending, but seems to be not bz2");
+            return null;
+        }
+    }
+
+    private boolean isBZ2Ending() {
+        if (logsrc.getName().endsWith("tar.bz2")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isZIPEnding() {
+        if (logsrc.getName().endsWith("zip")) {
+            return true;
+        }
+        if (logsrc.getName().endsWith("ZIP")) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        close();
     }
 }
