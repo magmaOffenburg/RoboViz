@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import javax.swing.JFileChooser;
 import javax.swing.Timer;
 import js.math.Maths;
 import rv.util.observer.IObserver;
@@ -39,18 +40,30 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private ILogfileReader   logfile;
     private MessageParser    parser;
     private Timer            timer;
-    int                      delay   = 150;
-    private boolean          playing = false;
+    int                      delay;
+    private boolean          playing;
+
+    /** the list of observers that are informed if something changes */
     private Subject<Boolean> observers;
 
+    /** file chooser for opening logfiles (instance attribute to stay in the selected path) */
+    private JFileChooser     fileChooser;
+
+    /**
+     * Default constructor. Opens the passed logfile and starts playing.
+     * 
+     * @param file
+     *            the logfile to open. Supported are log, zipped logs and tar.bz2
+     * @param world
+     *            reference to the world model
+     */
     public LogPlayer(File file, WorldModel world) {
 
         observers = new Subject<Boolean>();
-        try {
-            logfile = new LogfileReaderBuffered(new Logfile(file), 200);
-        } catch (Exception e3) {
-            e3.printStackTrace();
-        }
+        delay = 150;
+        playing = false;
+        fileChooser = new JFileChooser();
+        openLogfile(file);
 
         timer = new Timer(delay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -216,4 +229,38 @@ public class LogPlayer implements ISubscribe<Boolean> {
             observers.onStateChange(playing);
         }
     }
+
+    /**
+     * Allows the user to choose a logfile to open.
+     */
+    public void openFile() {
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.CANCEL_OPTION) {
+            return;
+        }
+
+        File logFile = fileChooser.getSelectedFile();
+        if (logFile.exists()) {
+            openLogfile(logFile);
+            resume();
+        }
+    }
+
+    /**
+     * Creates a new instance of a buffered logfile reader representing the passed file.
+     * 
+     * @param file
+     *            the logfile to open
+     */
+    private void openLogfile(File file) {
+        try {
+            if (logfile != null) {
+                logfile.close();
+            }
+            logfile = new LogfileReaderBuffered(new Logfile(file), 200);
+        } catch (Exception e3) {
+            e3.printStackTrace();
+        }
+    }
+
 }

@@ -47,6 +47,8 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
 
     private static final long serialVersionUID = -3858876806399693025L;
 
+    private JButton           fileOpenButton;
+
     private LogPlayer         player;
 
     private JButton           rewindButton;
@@ -60,8 +62,6 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
     private JButton           stepForwardButton;
 
     private JButton           pauseButton;
-
-    private JButton           stopButton;
 
     private JButton           fasterButton;
 
@@ -86,9 +86,23 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         Container myContainer = getContentPane();
         myContainer.setLayout(null);
 
-        ImageIcon theIcon = new ImageIcon("resources/images/rewind.png");
+        ImageIcon theIcon = new ImageIcon("resources/images/file_open.png");
+        fileOpenButton = new RoundButton(theIcon);
+        fileOpenButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        fileOpenButton.setToolTipText("Open Logfile...");
+        fileOpenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!player.isPlaying()) {
+                    player.openFile();
+                }
+            }
+        });
+        myContainer.add(fileOpenButton);
+
+        theIcon = new ImageIcon("resources/images/rewind.png");
         rewindButton = new RoundButton(theIcon);
         rewindButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        rewindButton.setToolTipText("Rewind");
         rewindButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 player.rewind();
@@ -99,6 +113,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         theIcon = new ImageIcon("resources/images/fast_backward.png");
         slowerButton = new RoundButton(theIcon);
         slowerButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        slowerButton.setToolTipText("Slower");
         slowerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 player.changePlayBackSpeed(false);
@@ -109,6 +124,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         theIcon = new ImageIcon("resources/images/pause.png");
         pauseButton = new RoundButton(theIcon);
         pauseButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        pauseButton.setToolTipText("Pause");
         pauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (player.isPlaying())
@@ -120,6 +136,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         theIcon = new ImageIcon("resources/images/fast_forward.png");
         fasterButton = new RoundButton(theIcon);
         fasterButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        fasterButton.setToolTipText("Faster");
         fasterButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 player.changePlayBackSpeed(true);
@@ -127,19 +144,10 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         });
         myContainer.add(fasterButton);
 
-        theIcon = new ImageIcon("resources/images/stop.png");
-        stopButton = new RoundButton(theIcon);
-        stopButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        stopButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                player.stop();
-            }
-        });
-        myContainer.add(stopButton);
-
         theIcon = new ImageIcon("resources/images/previous_frame.png");
         stepBackwardButton = new RoundButton(theIcon);
         stepBackwardButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        stepBackwardButton.setToolTipText("Step Back");
         stepBackwardButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
@@ -151,6 +159,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         theIcon = new ImageIcon("resources/images/play.png");
         playButton = new RoundButton(theIcon);
         playButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        playButton.setToolTipText("Play");
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
@@ -163,6 +172,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         theIcon = new ImageIcon("resources/images/next_frame.png");
         stepForwardButton = new RoundButton(theIcon);
         stepForwardButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        stepForwardButton.setToolTipText("Step Forward");
         stepForwardButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
@@ -178,6 +188,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
         slider.setMajorTickSpacing(1000);
         slider.setMinorTickSpacing(500);
         slider.setPaintTicks(true);
+        slider.setToolTipText("Select Frame");
 
         myContainer.add(slider);
     }
@@ -191,6 +202,7 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
     public void update(Boolean playing) {
         boolean isValid = player.isValid();
         boolean atEnd = player.isAtEnd();
+        fileOpenButton.setEnabled(!playing);
         rewindButton.setEnabled(isValid && (!playing || atEnd));
         slowerButton.setEnabled(isValid && playing && !atEnd);
         pauseButton.setEnabled(isValid && playing && !atEnd);

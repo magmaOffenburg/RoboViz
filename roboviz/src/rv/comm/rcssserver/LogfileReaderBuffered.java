@@ -186,7 +186,6 @@ public class LogfileReaderBuffered implements ILogfileReader {
                     bufferZeroFrame++;
                 }
                 currentFrame++;
-                System.out.println("Reading frame: " + currentFrame);
             }
         } else {
             // we are inside the buffer
