@@ -17,17 +17,17 @@ if [ ! -d $BIN ]; then
     mkdir -p $BIN
 fi
 
-cp lib/jsgl.jar $BIN/lib/
-cp lib/bzip2.jar $BIN/lib/
-cp lib/tar.jar $BIN/lib/
-
-javac -d $BIN -cp $CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:lib/jsgl.jar:lib/bzip2.jar:lib/tar.jar:src/ src/rv/Viewer.java
-javac -d $BIN -cp $CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:lib/jsgl.jar:lib/bzip2.jar:lib/tar.jar:src/ src/config/RVConfigure.java
+VIZCLASSPATH=$CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:lib/jsgl.jar:lib/bzip2.jar:lib/tar.jar:src/
+javac -d $BIN -cp $VIZCLASSPATH src/rv/Viewer.java
+javac -d $BIN -cp $VIZCLASSPATH src/config/RVConfigure.java
 
 # copy over resources and libraries to bin folder
 rsync -r --exclude=.svn resources $BIN/
 rsync -r --exclude=.svn $JOGL $BIN/lib/
 rsync -r --exclude=.svn src/shaders $BIN/
+cp lib/jsgl.jar $BIN/lib/
+cp lib/bzip2.jar $BIN/lib/
+cp lib/tar.jar $BIN/lib/
 cp scripts/roboviz.sh $BIN/
 cp scripts/config.sh $BIN/
 cp LICENSE $BIN/

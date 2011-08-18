@@ -1,1 +1,2 @@
-java -Djava.library.path=lib -cp $CLASSPATH:lib/jogl.all.jar:lib/nativewindow.all.jar:lib/gluegen-rt.jar:lib/newt.all.jar:lib/jsgl.jar:lib/bzip2.jar:lib/tar.jar:RoboViz.jar:. config.RVConfigure
+./setEnvironment.sh
+java -Djava.library.path=lib -cp $VIZCLASSPATH config.RVConfigure
