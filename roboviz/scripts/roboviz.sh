@@ -1,5 +1,5 @@
 #!/bin/bash
-./setEnvironment.sh
+VIZCLASSPATH=$CLASSPATH:lib/jogl.all.jar:lib/nativewindow.all.jar:lib/gluegen-rt.jar:lib/newt.all.jar:lib/jsgl.jar:lib/bzip2.jar:lib/tar.jar:RoboViz.jar:.
 
 if [ "$1" == --logfile ]; then
     echo "Starting RoboViz in logfile mode"
