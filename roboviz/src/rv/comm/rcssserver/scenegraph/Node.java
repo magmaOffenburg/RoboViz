@@ -86,8 +86,9 @@ public abstract class Node {
         // updates in expression should follow same structure as the
         // original scene graph, so children are traversed in same order
         int childIndex = 0;
+        int size = children.size();
         for (SExp e : exp.getChildren()) {
-            if (e.getAtoms()[0].equals(Node.DECL_ABRV)) {
+            if (e.getAtoms()[0].equals(Node.DECL_ABRV) && childIndex < size) {
                 Node child = children.get(childIndex++);
                 child.update(e);
             }
