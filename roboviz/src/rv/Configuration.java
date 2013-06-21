@@ -34,6 +34,14 @@ public class Configuration {
 
     private static final String CONFIG_FILE_PATH = "resources/config.txt";
 
+    public String getNextLine(BufferedReader in) throws IOException {
+        String result = in.readLine();
+        while (result != null && result.startsWith("#")) {
+            result = in.readLine();
+        }
+        return result;
+    }
+
     public class Graphics {
 
         private boolean useBloom         = false;
@@ -141,21 +149,26 @@ public class Configuration {
             return vsync;
         }
 
+        /**
+         * @param in
+         * @return
+         * @throws IOException
+         */
         private void read(BufferedReader in) throws IOException {
-            in.readLine();
-            useBloom = Boolean.parseBoolean(getVal(in.readLine()));
-            usePhong = Boolean.parseBoolean(getVal(in.readLine()));
-            useShadows = Boolean.parseBoolean(getVal(in.readLine()));
-            softShadow = Boolean.parseBoolean(getVal(in.readLine()));
-            shadowResolution = Integer.parseInt(getVal(in.readLine()));
-            useStereo = Boolean.parseBoolean(getVal(in.readLine()));
-            vsync = Boolean.parseBoolean(getVal(in.readLine()));
-            fsaa = Boolean.parseBoolean(getVal(in.readLine()));
-            fsaaSamples = Integer.parseInt(getVal(in.readLine()));
-            targetFPS = Integer.parseInt(getVal(in.readLine()));
-            frameWidth = Integer.parseInt(getVal(in.readLine()));
-            frameHeight = Integer.parseInt(getVal(in.readLine()));
-            in.readLine();
+            getNextLine(in);
+            useBloom = Boolean.parseBoolean(getVal(getNextLine(in)));
+            usePhong = Boolean.parseBoolean(getVal(getNextLine(in)));
+            useShadows = Boolean.parseBoolean(getVal(getNextLine(in)));
+            softShadow = Boolean.parseBoolean(getVal(getNextLine(in)));
+            shadowResolution = Integer.parseInt(getVal(getNextLine(in)));
+            useStereo = Boolean.parseBoolean(getVal(getNextLine(in)));
+            vsync = Boolean.parseBoolean(getVal(getNextLine(in)));
+            fsaa = Boolean.parseBoolean(getVal(getNextLine(in)));
+            fsaaSamples = Integer.parseInt(getVal(getNextLine(in)));
+            targetFPS = Integer.parseInt(getVal(getNextLine(in)));
+            frameWidth = Integer.parseInt(getVal(getNextLine(in)));
+            frameHeight = Integer.parseInt(getVal(getNextLine(in)));
+            getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
@@ -225,13 +238,13 @@ public class Configuration {
         }
 
         private void read(BufferedReader in) throws IOException {
-            in.readLine();
-            autoConnect = Boolean.parseBoolean(getVal(in.readLine()));
-            autoConnectDelay = Integer.parseInt(getVal(in.readLine()));
-            serverHost = getVal(in.readLine());
-            serverPort = Integer.parseInt(getVal(in.readLine()));
-            listenPort = Integer.parseInt(getVal(in.readLine()));
-            in.readLine();
+            getNextLine(in);
+            autoConnect = Boolean.parseBoolean(getVal(getNextLine(in)));
+            autoConnectDelay = Integer.parseInt(getVal(getNextLine(in)));
+            serverHost = getVal(getNextLine(in));
+            serverPort = Integer.parseInt(getVal(getNextLine(in)));
+            listenPort = Integer.parseInt(getVal(getNextLine(in)));
+            getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
@@ -253,9 +266,9 @@ public class Configuration {
         }
 
         private void read(BufferedReader in) throws IOException {
-            in.readLine();
-            recordLogs = Boolean.parseBoolean(getVal(in.readLine()));
-            in.readLine();
+            getNextLine(in);
+            recordLogs = Boolean.parseBoolean(getVal(getNextLine(in)));
+            getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
@@ -273,10 +286,10 @@ public class Configuration {
         }
 
         private void read(BufferedReader in) throws IOException {
-            in.readLine();
+            getNextLine(in);
             String line;
             while (true) {
-                line = in.readLine();
+                line = getNextLine(in);
                 if (line == null || line.trim().length() == 0)
                     break;
                 String key = getKey(line);
