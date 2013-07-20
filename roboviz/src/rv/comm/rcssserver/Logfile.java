@@ -18,16 +18,8 @@ package rv.comm.rcssserver;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import org.apache.tools.bzip2.CBZip2InputStream;
-import com.ice.tar.TarEntry;
-import com.ice.tar.TarInputStream;
 
 /**
  * Abstraction for a log that can be viewed frame by frame. Supports unpacked, single file zipped
@@ -72,7 +64,7 @@ public class Logfile implements ILogfileReader {
      * @throws FileNotFoundException
      */
     private void open() throws IOException {
-        br = createBufferedReader();
+        br = TarBz2ZipUtil.createBufferedReader(logsrc);
         if (br != null) {
             curFrameMsg = br.readLine();
         }
@@ -213,111 +205,6 @@ public class Logfile implements ILogfileReader {
             frame = 0;
         }
         setCurrentFrame(frame);
-    }
-
-    /**
-     * Creates the reader used for sequential reading
-     * 
-     * @return the reader used for sequential reading
-     * @throws FileNotFoundException
-     *             if the logsrc is not found
-     */
-    private BufferedReader createBufferedReader() throws FileNotFoundException {
-
-        if (isBZ2Ending()) {
-            return getBZ2Stream();
-
-        } else if (isZIPEnding()) {
-            return getZipSteam();
-        }
-        return new BufferedReader(new FileReader(logsrc));
-    }
-
-    private BufferedReader getZipSteam() {
-        try {
-            ZipFile zipFile = new ZipFile(logsrc);
-            if (zipFile.size() != 1) {
-                System.out.println("Only support single entry zip files");
-                return null;
-            } else {
-                ZipEntry zipEntry = zipFile.entries().nextElement();
-                return new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipEntry)));
-            }
-
-        } catch (IOException e) {
-            // not a zip file
-            System.out.println("File has zip ending, but seems to be not zip");
-            return null;
-        }
-    }
-
-    private BufferedReader getBZ2Stream() {
-        try {
-            // only works for the current layout of tar.bz2 files
-            FileInputStream zStream = new FileInputStream(logsrc);
-            // for whatever reasons the CBZip2InputStream assumes that 2 bytes have been consumed on
-            // the stream
-            byte[] header = new byte[2];
-            zStream.read(header);
-            if (header[0] != 'B' || header[1] != 'Z') {
-                System.out.println("Not a bz2 file, but bz2 ending");
-                return null;
-            }
-
-            CBZip2InputStream bz2InputStream = new CBZip2InputStream(zStream);
-            TarInputStream tarStream = new TarInputStream(bz2InputStream);
-            TarEntry entry = tarStream.getNextEntry();
-
-            // step into deepest directory
-            while (entry != null && entry.isDirectory()) {
-                TarEntry[] entries = entry.getDirectoryEntries();
-                if (entries.length > 0) {
-                    entry = entries[0];
-                } else {
-                    // empty directory
-                    entry = tarStream.getNextEntry();
-                }
-            }
-            if (entry == null) {
-                System.out.println("tar file does not contain logfile");
-                return null;
-            }
-
-            // search for proper file
-            while (entry != null && !entry.getName().endsWith("sparkmonitor.log")) {
-                entry = tarStream.getNextEntry();
-            }
-
-            if (entry == null) {
-                System.out.println("tar file does not contain logfile");
-                return null;
-            }
-
-            // we have reached the proper position
-            return new BufferedReader(new InputStreamReader(tarStream));
-
-        } catch (IOException e) {
-            // not a bz2 file
-            System.out.println("File has bz2 ending, but seems to be not bz2");
-            return null;
-        }
-    }
-
-    private boolean isBZ2Ending() {
-        if (logsrc.getName().endsWith("tar.bz2")) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isZIPEnding() {
-        if (logsrc.getName().endsWith("zip")) {
-            return true;
-        }
-        if (logsrc.getName().endsWith("ZIP")) {
-            return true;
-        }
-        return false;
     }
 
     @Override

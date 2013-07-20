@@ -2,7 +2,7 @@ IF EXIST %BIN% GOTO COMPILE
 mkdir %BIN%
 
 :COMPILE
-set VIZCLASSPATH=%JOGL%\gluegen-rt.jar;%JOGL%\jogl.all.jar;%JOGL%\nativewindow.all.jar;%JOGL%\newt.all.jar;lib\jsgl.jar;lib\bzip2.jar;lib\tar.jar;src\ 
+set VIZCLASSPATH=%JOGL%\gluegen-rt.jar;%JOGL%\jogl.all.jar;%JOGL%\nativewindow.all.jar;%JOGL%\newt.all.jar;lib\jsgl.jar;lib\commons-compress-1.5.jar;src\ 
 echo %VIZCLASSPATH%
 javac -d %BIN% -cp %VIZCLASSPATH% src\rv\Viewer.java
 javac -d %BIN% -cp %VIZCLASSPATH% src\config\RVConfigure.java
@@ -11,8 +11,7 @@ xcopy /E resources %BIN%\resources\
 xcopy /E %JOGL% %BIN%\lib\
 xcopy /E src\shaders %BIN%\shaders\
 copy lib\jsgl.jar %BIN%\lib\
-copy lib\bzip2.jar %BIN%\lib\
-copy lib\tar.jar %BIN%\lib\
+copy lib\commons-compress-1.5.jar %BIN%\lib\
 copy scripts\roboviz-win.bat %BIN%\roboviz.bat
 copy scripts\roboviz-win-logmode.bat %BIN%\roboviz_logmode.bat
 copy scripts\roboviz_draw_test.bat %BIN%\

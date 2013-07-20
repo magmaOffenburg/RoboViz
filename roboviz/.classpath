@@ -25,7 +25,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jsgl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogl2-rc2"/>
-	<classpathentry kind="lib" path="lib/bzip2.jar"/>
-	<classpathentry kind="lib" path="lib/tar.jar"/>
+	<classpathentry kind="lib" path="lib/commons-compress-1.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
