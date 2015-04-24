@@ -17,6 +17,7 @@
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.security.acl.Group;
+import java.util.Locale;
 
 /**
  * Utility class for creating draw commands for RoboVis shapes
@@ -27,7 +28,7 @@ public class RVDraw {
 
     /** Writes a float formatted in 6 ASCII characters to a buffer */
     public static void writeFloatToBuffer(ByteBuffer buf, float value) {
-        buf.put(String.format("%6f", value).substring(0, 6).getBytes());
+        buf.put(String.format(Locale.US, "%6f", value).substring(0, 6).getBytes());
     }
 
     /** Writes RGB values of a Color object to a buffer */

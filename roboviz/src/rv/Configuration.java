@@ -24,6 +24,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Configuration parameters for RoboVis startup
@@ -309,8 +310,8 @@ public class Configuration {
             out.write("Team Colors:\n");
             for (String teamName : colorByTeamName.keySet()) {
                 float[] color = colorByTeamName.get(teamName);
-                out.write(String.format("%-20s : %f %f %f\n", teamName, color[0], color[1],
-                        color[2]));
+                out.write(String.format(Locale.US, "%-20s : %f %f %f\n", teamName, color[0],
+                        color[1], color[2]));
             }
             out.write("\n");
         }

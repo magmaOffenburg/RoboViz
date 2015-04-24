@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.Timer;
 import js.math.vector.Vec3f;
 import rv.Configuration;
@@ -267,7 +268,7 @@ public class ServerComm {
     }
 
     public void moveBall(Vec3f pos) {
-        sendMessage(String.format("(ball (pos %.2f %.2f %.2f))", pos.x, pos.y, pos.z));
+        sendMessage(String.format(Locale.US, "(ball (pos %.2f %.2f %.2f))", pos.x, pos.y, pos.z));
     }
 
     public void setPlayMode(String mode) {
@@ -287,8 +288,8 @@ public class ServerComm {
         // Set the position and velocity of the given player on the field.
         // Example: (agent (team Left)(unum 1)(pos -52.0 0.0 0.3))
         String team = leftTeam ? "Left" : "Right";
-        String m = String.format("(agent (team %s)(unum %d)(pos %.2f %.2f %.2f))", team, agentID,
-                pos.x, pos.y, pos.z);
+        String m = String.format(Locale.US, "(agent (team %s)(unum %d)(pos %.2f %.2f %.2f))", team,
+                agentID, pos.x, pos.y, pos.z);
         sendMessage(m);
     }
 }

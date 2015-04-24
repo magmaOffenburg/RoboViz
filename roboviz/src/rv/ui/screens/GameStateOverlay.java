@@ -17,15 +17,13 @@
 package rv.ui.screens;
 
 import java.awt.Font;
-import java.awt.geom.Rectangle2D;
+import java.util.Locale;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
-import rv.world.Team;
-import rv.world.WorldModel;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
@@ -58,7 +56,7 @@ public class GameStateOverlay implements Screen {
             String teamR = gs.getTeamRight() == null ? "<Right>" : gs.getTeamRight();
 
             String scoreText = gs.getScoreLeft() + ":" + gs.getScoreRight();
-            String timeText = String.format("%.1f", gs.getTime());
+            String timeText = String.format(Locale.US, "%.1f", gs.getTime());
 
             // truncate team names that are too long to fit within bounds
             while (tr1.getBounds(teamL).getWidth() > nameWidth - 4)

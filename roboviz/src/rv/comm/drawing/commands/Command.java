@@ -17,6 +17,7 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
+import java.util.Locale;
 import js.io.ByteUtil;
 import js.math.vector.Vec3f;
 import rv.Viewer;
@@ -142,7 +143,7 @@ public abstract class Command {
 
     /** Writes a float formatted in 6 ASCII characters to a buffer */
     public static void writeFloat(ByteBuffer buf, float value) {
-        buf.put(String.format("%6f", value).substring(0, 6).getBytes());
+        buf.put(String.format(Locale.US, "%6f", value).substring(0, 6).getBytes());
     }
 
     /** Reads a float formatted in 6 ASCII characters to a buffer */

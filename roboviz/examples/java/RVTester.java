@@ -23,7 +23,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
+import java.util.Locale;
 import javax.swing.Timer;
 
 /**
@@ -82,9 +82,9 @@ public class RVTester {
         drawLine(b, c, 5.0f, Color.YELLOW, "animated.spinner");
         drawLine(a, c, 5.0f, Color.YELLOW, "animated.spinner");
         
-        drawAnnotation(String.format("%.1f", b[2]), b, Color.GREEN, "animated.annotation");
+        drawAnnotation(String.format(Locale.US, "%.1f", b[2]), b, Color.GREEN, "animated.annotation");
 
-        drawAgentAnnotation(String.format("%.2f", b[0]), true, 1, Color.CYAN);
+        drawAgentAnnotation(String.format(Locale.US, "%.2f", b[0]), true, 1, Color.CYAN);
         
         // swap all sets starting with "animated"
         swapBuffers("animated");
