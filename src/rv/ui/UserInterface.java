@@ -47,6 +47,7 @@ public class UserInterface implements KeyListener {
     private Viewer            viewer;
     private FPCamera          camera;
     private DrawingListPanel  poolPanel;
+    private ControlsHelpPanel helpPanel;
     private CameraController  cameraControl;
 
     private SceneObjectPicker picker;
@@ -88,6 +89,10 @@ public class UserInterface implements KeyListener {
         return poolPanel;
     }
 
+    public ControlsHelpPanel getShortcutHelpPanel() {
+        return helpPanel;
+    }
+
     public FPCamera getCamera() {
         return camera;
     }
@@ -101,6 +106,7 @@ public class UserInterface implements KeyListener {
         camera = initCamera(drawable.getChosenGLCapabilities());
         picker = new SceneObjectPicker(viewer.getWorldModel(), camera);
         poolPanel = new DrawingListPanel(viewer.getDrawings());
+        helpPanel = new ControlsHelpPanel();
     }
 
     public void init() {

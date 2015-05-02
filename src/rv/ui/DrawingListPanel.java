@@ -26,18 +26,15 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import rv.comm.drawing.BufferedSet;
@@ -54,7 +51,7 @@ import rv.comm.drawing.shapes.Shape;
  * @author justin
  * 
  */
-public class DrawingListPanel extends JPanel implements ShapeListListener {
+public class DrawingListPanel extends FramePanelBase implements ShapeListListener {
 
     static class CheckListRenderer extends JCheckBox implements ListCellRenderer {
         @Override
@@ -126,29 +123,16 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
     }
 
     private Drawings       drawings;
-    private JFrame         poolFrame;
     private JTextField     regexField;
     private JList          list;
     final DefaultListModel model = new DefaultListModel();
 
-    public void showFrame() {
-        poolFrame.setVisible(true);
-    }
-
     public DrawingListPanel(Drawings drawings) {
 
-        poolFrame = new JFrame("Drawings");
-        poolFrame.setAlwaysOnTop(true);
-        poolFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "ClosePanel");
-        poolFrame.getRootPane().getActionMap().put("ClosePanel", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                poolFrame.setVisible(false);
-            }
-        });
+        super("Drawings");
+        frame.setAlwaysOnTop(true);
         list = new JList(model);
-        setSize(300, 600);
+        frame.setSize(300, 600);
 
         list.setCellRenderer(new CheckListRenderer());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -168,9 +152,9 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
             }
         });
 
-        poolFrame.setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
 
-        poolFrame.add(new JScrollPane(list), BorderLayout.CENTER);
+        frame.add(new JScrollPane(list), BorderLayout.CENTER);
         JPanel p = new JPanel();
         p.setLayout(new GridLayout(1, 3));
         regexField = new JTextField(".*");
@@ -199,7 +183,7 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
                     regexList(regexField.getText());
             }
         });
-        poolFrame.add(p, BorderLayout.SOUTH);
+        frame.add(p, BorderLayout.SOUTH);
 
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
@@ -212,8 +196,8 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
         this.drawings = drawings;
         drawings.addShapeSetListener(this);
 
-        poolFrame.pack();
-        poolFrame.setSize(300, 600);
+        frame.pack();
+        frame.setSize(300, 600);
         // TODO: shouldnt do this, just grab pools on init
         drawings.clearAllShapeSets();
     }

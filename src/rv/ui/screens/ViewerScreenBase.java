@@ -64,6 +64,8 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             if (alt) {
                 viewer.toggleFullScreen();
             }
+        case KeyEvent.VK_F1:
+            viewer.getUI().getShortcutHelpPanel().showFrame();
             break;
         }
     }
