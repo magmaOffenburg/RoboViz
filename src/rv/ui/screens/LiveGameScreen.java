@@ -307,9 +307,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
             showNumPlayers = !showNumPlayers;
             break;
         case KeyEvent.VK_0:
-            if (shift) {
-                changeSelection(viewer.getWorldModel().getBall());
-            }
+        case KeyEvent.VK_NUMPAD0:
+            toggleSelection(viewer.getWorldModel().getBall());
             break;
         }
     }
@@ -348,6 +347,13 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
                 changeSelection(newSelection);
             }
         }
+    }
+
+    private void toggleSelection(ISelectable selectable) {
+        if (selectable.isSelected())
+            changeSelection(null);
+        else
+            changeSelection(selectable);
     }
 
     private void changeSelection(ISelectable newSelection) {
