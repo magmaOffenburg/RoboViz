@@ -26,6 +26,7 @@ import js.jogl.model.Mesh;
 import js.jogl.model.MeshPart;
 import js.jogl.model.ObjMaterial;
 import js.jogl.model.ObjMeshImporter;
+import rv.ui.DebugInfo;
 
 /**
  * Named mesh loaded by and managed by the content manager.
@@ -61,10 +62,7 @@ public class Model {
     public Model(String name) {
         this.name = name;
     }
-
-    /**
-     * Reads mesh data
-     */
+    
     public void readMeshData(ContentManager cm) {
         ObjMeshImporter importer = new ObjMeshImporter(ContentManager.MODEL_ROOT,
                 ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
@@ -72,11 +70,15 @@ public class Model {
         importer.setClassLoader(cl);
 
         InputStream is = cl.getResourceAsStream(ContentManager.CONTENT_ROOT + name);
+        if (is == null) {
+            failureMessage();
+            return;
+        }
         mesh = null;
         try {
             mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
         } catch (IOException e) {
-            e.printStackTrace();
+            failureMessage();
         }
 
         // this is necessary for the shader to blend meshes that have
@@ -90,12 +92,13 @@ public class Model {
             }
         }
     }
+    
+    private void failureMessage() {
+        DebugInfo.println(getClass(), "Failed to load " + name);
+    }
 
     /**
      * Copies material information from src material to target material
-     * 
-     * @param target
-     * @param src
      */
     public void replaceMaterial(String target, ObjMaterial src) {
         for (MeshPart part : mesh.getParts()) {
@@ -113,7 +116,7 @@ public class Model {
     }
 
     public void init(GL2 gl, Mesh.RenderMode mode) {
-        if (!loaded) {
+        if (!loaded && mesh != null) {
             mesh.init(gl, mode);
             loaded = true;
         }

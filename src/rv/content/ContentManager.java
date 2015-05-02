@@ -70,7 +70,6 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
             synchronized (ContentManager.this) {
                 modelsToInitialize.add(model);
             }
-            DebugInfo.println(getClass(), String.format("Loaded %s", model.getName()));
         }
     }
 

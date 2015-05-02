@@ -85,7 +85,7 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(400, 110);
-        setMinimumSize(new Dimension(400, 110));
+        setResizable(false);
         Container myContainer = getContentPane();
         myContainer.setLayout(null);
 
