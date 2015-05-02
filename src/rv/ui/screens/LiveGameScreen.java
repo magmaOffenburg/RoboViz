@@ -19,10 +19,7 @@ package rv.ui.screens;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
@@ -37,7 +34,6 @@ import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
-import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
@@ -51,19 +47,18 @@ import rv.world.objects.Ball;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LiveGameScreen implements Screen, KeyListener, MouseListener, MouseMotionListener,
-        ServerChangeListener, SceneGraphListener, GameStateChangeListener {
+public class LiveGameScreen extends ViewerScreenBase implements ServerChangeListener,
+        SceneGraphListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
     }
 
-    private Viewer            viewer;
     private GameStateOverlay  gsOverlay;
     private ConnectionOverlay connectionOverlay;
     private Field2DOverlay    fieldOverlay;
-    private List<Screen>      overlays          = new ArrayList<Screen>();
-    private List<TextOverlay> textOverlays      = new ArrayList<TextOverlay>();
+    private List<Screen>      overlays          = new ArrayList<>();
+    private List<TextOverlay> textOverlays      = new ArrayList<>();
     private boolean           moveObjectMode    = false;
     private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private TextRenderer      tr;
@@ -75,15 +70,13 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
     boolean                   showNumPlayers    = false;
 
     private boolean           shift             = false;
-    private boolean           alt               = false;
-    private boolean           control           = false;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
     }
 
     public LiveGameScreen(Viewer viewer) {
-        this.viewer = viewer;
+        super(viewer);
         gsOverlay = new GameStateOverlay(viewer);
         connectionOverlay = new ConnectionOverlay();
 
@@ -98,21 +91,6 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
         overlays.add(fieldOverlay);
 
         viewer.getWorldModel().getGameState().addListener(this);
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        if (enabled) {
-            canvas.addKeyListener(this);
-            canvas.addMouseListener(this);
-            canvas.addMouseMotionListener(this);
-            viewer.getUI().getCameraControl().attachToCanvas(canvas);
-        } else {
-            canvas.removeKeyListener(this);
-            canvas.removeMouseListener(this);
-            canvas.removeMouseMotionListener(this);
-            viewer.getUI().getCameraControl().detachFromCanvas(canvas);
-        }
     }
 
     private void renderAgentOverheads(Team team) {
@@ -225,7 +203,8 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        super.keyPressed(e);
+        
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (shift)
@@ -251,27 +230,11 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
         case KeyEvent.VK_B:
             viewer.getNetManager().getServer().dropBall();
             break;
-        case KeyEvent.VK_ENTER:
-            if (alt) {
-                viewer.toggleFullScreen();
-            }
-            break;
-        case KeyEvent.VK_F11:
-            viewer.toggleFullScreen();
-            break;
-        case KeyEvent.VK_F:
-            if (control) {
-                viewer.toggleFullScreen();
-            } else {
-                fieldOverlay.setVisible(!fieldOverlay.isVisible());
-            }
-            break;
         case KeyEvent.VK_T:
             viewer.getDrawings().toggle();
             break;
         case KeyEvent.VK_CONTROL:
             moveObjectMode = true;
-            control = true;
             break;
         case KeyEvent.VK_I:
             AgentOverheadType[] vals = AgentOverheadType.values();
@@ -285,23 +248,14 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
                 viewer.getNetManager().getServer().connect();
             }
             break;
-        case KeyEvent.VK_Q:
-            viewer.shutdown();
-            break;
         case KeyEvent.VK_L:
             viewer.getNetManager().getServer().freeKick(true);
             break;
         case KeyEvent.VK_R:
             viewer.getNetManager().getServer().freeKick(false);
             break;
-        case KeyEvent.VK_SPACE:
-            viewer.getUI().getBallTracker().toggleEnabled();
-            break;
         case KeyEvent.VK_SHIFT:
             shift = true;
-            break;
-        case KeyEvent.VK_ALT:
-            alt = true;
             break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
@@ -314,23 +268,22 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
     }
 
     @Override
+    protected void fPressed() {
+        fieldOverlay.setVisible(!fieldOverlay.isVisible());
+    }
+
+    @Override
     public void keyReleased(KeyEvent e) {
+        super.keyReleased(e);
+        
         switch (e.getKeyCode()) {
         case KeyEvent.VK_CONTROL:
             moveObjectMode = false;
-            control = false;
             break;
         case KeyEvent.VK_SHIFT:
             shift = false;
             break;
-        case KeyEvent.VK_ALT:
-            alt = false;
-            break;
         }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
     }
 
     @Override
@@ -401,34 +354,6 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent arg0) {
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent arg0) {
-    }
-
-    @Override
     public void connectionChanged(ServerComm server) {
         changeSelection(null);
     }
@@ -440,10 +365,6 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
 
     @Override
     public void updatedSceneGraph(SceneGraph sg) {
-    }
-
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
     }
 
     @Override
@@ -459,10 +380,5 @@ public class LiveGameScreen implements Screen, KeyListener, MouseListener, Mouse
 
         prevScoreL = gs.getScoreLeft();
         prevScoreR = gs.getScoreRight();
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
-
     }
 }
