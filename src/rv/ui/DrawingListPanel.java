@@ -26,6 +26,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -36,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import rv.comm.drawing.BufferedSet;
@@ -137,6 +139,14 @@ public class DrawingListPanel extends JPanel implements ShapeListListener {
 
         poolFrame = new JFrame("Drawings");
         poolFrame.setAlwaysOnTop(true);
+        poolFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "ClosePanel");
+        poolFrame.getRootPane().getActionMap().put("ClosePanel", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                poolFrame.setVisible(false);
+            }
+        });
         list = new JList(model);
         setSize(300, 600);
 

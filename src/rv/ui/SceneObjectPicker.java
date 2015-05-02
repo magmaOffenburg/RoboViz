@@ -51,8 +51,7 @@ public class SceneObjectPicker {
     /** Picks position on field (plane Y=0) that picking ray intersects */
     public Vec3f pickField() {
         Plane p = new Plane(new Vec3f(0), Vec3f.unitY());
-        Vec3f pos = p.intersect(pickRay);
-        return pos;
+        return p.intersect(pickRay);
     }
 
     /**
