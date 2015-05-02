@@ -181,7 +181,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     public void takeScreenShot() {
         String s = Calendar.getInstance().getTime().toString();
         s = s.replaceAll("\\s+", "_");
-        ssName = String.format("%s_%s.png", "roboviz", s);
+        ssName = String.format(Locale.US, "%s_%s.png", "roboviz", s).replace(':', '_');
     }
 
     private void takeScreenshot(String fileName) {
