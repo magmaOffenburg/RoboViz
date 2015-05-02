@@ -18,6 +18,7 @@ package rv.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
@@ -130,9 +132,11 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
     public DrawingListPanel(Drawings drawings) {
 
         super("Drawings");
+        frame.setIconImage(Viewer.getIcon());
         frame.setAlwaysOnTop(true);
         list = new JList(model);
         frame.setSize(300, 600);
+        frame.setMinimumSize(new Dimension(300, 200));
 
         list.setCellRenderer(new CheckListRenderer());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

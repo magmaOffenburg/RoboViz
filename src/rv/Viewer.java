@@ -54,6 +54,12 @@ import com.jogamp.opengl.util.awt.Screenshot;
  */
 public class Viewer extends GLProgramSwing implements GLEventListener {
 
+    private static Image icon;
+
+    public static Image getIcon() {
+        return icon;
+    }
+
     public enum Mode {
         LOGFILE, LIVE,
     }
@@ -171,9 +177,9 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         }
 
         try {
-            Image iconImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream(
+            icon = ImageIO.read(getClass().getClassLoader().getResourceAsStream(
                     "resources/icon.png"));
-            getFrame().setIconImage(iconImg);
+            getFrame().setIconImage(icon);
         } catch (IOException e1) {
         }
     }

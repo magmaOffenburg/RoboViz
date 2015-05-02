@@ -1,5 +1,6 @@
 package rv.ui;
 
+import rv.Viewer;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,7 @@ public class ControlsHelpPanel extends FramePanelBase {
 
     public ControlsHelpPanel() {
         super("Help");
+        frame.setIconImage(Viewer.getIcon());
         frame.setSize(400, 500);
         frame.setMinimumSize(new Dimension(400, 500));
 

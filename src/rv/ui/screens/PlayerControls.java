@@ -35,6 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import rv.Viewer;
 import rv.comm.rcssserver.LogPlayer;
 import rv.util.observer.IObserver;
 
@@ -69,6 +70,7 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
 
     public PlayerControls(LogPlayer playerRef) {
         super((Dialog) null, "Logplayer");
+        setIconImage(Viewer.getIcon());
         this.player = playerRef;
         createControls();
         player.attach(this);
@@ -83,6 +85,7 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(400, 110);
+        setMinimumSize(new Dimension(400, 110));
         Container myContainer = getContentPane();
         myContainer.setLayout(null);
 
