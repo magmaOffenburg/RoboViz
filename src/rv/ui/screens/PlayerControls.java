@@ -43,7 +43,7 @@ import rv.util.observer.IObserver;
  * 
  * @author dorer
  */
-class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boolean> {
+class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolean> {
 
     private static final long serialVersionUID = -3858876806399693025L;
 
@@ -67,17 +67,17 @@ class PlayerControlls extends JDialog implements ChangeListener, IObserver<Boole
 
     private JSlider           slider;
 
-    public PlayerControlls(LogPlayer playerRef) {
+    public PlayerControls(LogPlayer playerRef) {
         super((Dialog) null, "Logplayer");
         this.player = playerRef;
-        createControlls();
+        createControls();
         player.attach(this);
     }
 
     /**
-     * Create the buttons and other GUI controlls
+     * Create the buttons and other GUI controls
      */
-    private void createControlls() {
+    private void createControls() {
         final int KNOB_SIZE = 32;
         int xOrder = 0;
 

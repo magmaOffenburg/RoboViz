@@ -27,14 +27,14 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogPlayerOverlay implements Screen, KeyListener {
 
-    private float           barPad    = 20;
-    private float           barHeight = 10;
-    private LogPlayer       player;
-    private PlayerControlls playDialog;
+    private float          barPad    = 20;
+    private float          barHeight = 10;
+    private LogPlayer      player;
+    private PlayerControls playDialog;
 
     public LogPlayerOverlay(LogPlayer player) {
         this.player = player;
-        playDialog = new PlayerControlls(player);
+        playDialog = new PlayerControls(player);
     }
 
     @Override
