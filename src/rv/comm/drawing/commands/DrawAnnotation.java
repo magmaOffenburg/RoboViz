@@ -20,7 +20,9 @@ import java.nio.ByteBuffer;
 import js.io.ByteUtil;
 import rv.Viewer;
 import rv.comm.drawing.Drawings;
-import rv.comm.drawing.annotations.*;
+import rv.comm.drawing.annotations.AgentAnnotation;
+import rv.comm.drawing.annotations.Annotation;
+import rv.comm.drawing.annotations.StandardAnnotation;
 import rv.world.objects.Agent;
 
 /**

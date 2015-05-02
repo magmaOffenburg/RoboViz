@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EventObject;
 import java.util.List;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;

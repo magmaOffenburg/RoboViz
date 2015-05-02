@@ -24,14 +24,10 @@ import java.awt.event.MouseMotionListener;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import js.jogl.view.FPCamera;
 import js.jogl.view.Viewport;
-import js.math.vector.Vec2f;
-import js.math.vector.Vec3f;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
-import rv.ui.CameraSetting;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogfileModeScreen implements Screen, KeyListener, MouseListener, MouseMotionListener,

@@ -23,13 +23,15 @@ package rv.util.observer;
 /**
  * Interface to guarantee independence of Observer and Subject
  * 
- * @param <T> Data type transported in updates
+ * @param <T>
+ *            Data type transported in updates
  */
-public interface IObserver<T>
-{
-	/**
-	 * Called to notify an observer about a state change
-	 * @param content reference to the object containing changed state
-	 */
-	public void update(T content);
+public interface IObserver<T> {
+    /**
+     * Called to notify an observer about a state change
+     * 
+     * @param content
+     *            reference to the object containing changed state
+     */
+    public void update(T content);
 }

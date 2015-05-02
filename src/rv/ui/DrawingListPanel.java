@@ -43,7 +43,6 @@ import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
 import rv.comm.drawing.Drawings.ShapeListListener;
 import rv.comm.drawing.VisibleNamedObject;
-import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
 

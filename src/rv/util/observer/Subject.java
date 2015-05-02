@@ -24,52 +24,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base class for all Observer notification classes. This implementation uses a
- * simplified design. Model classes would not inherit from this class but use a
- * mediator. The name was chosen to comply with Gamma et all's book, but is a
- * rather general name
+ * Base class for all Observer notification classes. This implementation uses a simplified design.
+ * Model classes would not inherit from this class but use a mediator. The name was chosen to comply
+ * with Gamma et all's book, but is a rather general name
  * 
- * @param <T> Data type transported in updates
+ * @param <T>
+ *            Data type transported in updates
  */
-public class Subject<T> implements IPublishSubscribe<T>
-{
-	/** the list of observers that are notified */
-	private final List<IObserver<T>> observers;
+public class Subject<T> implements IPublishSubscribe<T> {
+    /** the list of observers that are notified */
+    private final List<IObserver<T>> observers;
 
-	/**
-	 * Default constructor creating the observer list
-	 */
-	public Subject()
-	{
-		super();
-		this.observers = new ArrayList<IObserver<T>>();
-	}
+    /**
+     * Default constructor creating the observer list
+     */
+    public Subject() {
+        super();
+        this.observers = new ArrayList<IObserver<T>>();
+    }
 
-	@Override
-	public void attach(IObserver<T> observer)
-	{
-		if (!observers.contains(observer)) {
-			observers.add(observer);
-		}
-	}
+    @Override
+    public void attach(IObserver<T> observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
 
-	@Override
-	public boolean detach(IObserver<T> observer)
-	{
-		return observers.remove(observer);
-	}
+    @Override
+    public boolean detach(IObserver<T> observer) {
+        return observers.remove(observer);
+    }
 
-	@Override
-	public void detachAll()
-	{
-		observers.clear();
-	}
+    @Override
+    public void detachAll() {
+        observers.clear();
+    }
 
-	@Override
-	public void onStateChange(T content)
-	{
-		for (IObserver<T> observer : observers) {
-			observer.update(content);
-		}
-	}
+    @Override
+    public void onStateChange(T content) {
+        for (IObserver<T> observer : observers) {
+            observer.update(content);
+        }
+    }
 }

@@ -20,7 +20,6 @@ import java.nio.ByteBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import rv.comm.drawing.commands.Command;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * Circle that lies on the surface of the field

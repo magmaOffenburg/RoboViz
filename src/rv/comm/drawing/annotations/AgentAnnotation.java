@@ -17,11 +17,8 @@
 package rv.comm.drawing.annotations;
 
 import java.nio.ByteBuffer;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import js.io.ByteUtil;
 import js.math.vector.Vec3f;
 import rv.comm.drawing.commands.Command;
-import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 
