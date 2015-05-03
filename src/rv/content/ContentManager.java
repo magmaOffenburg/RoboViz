@@ -202,9 +202,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
             img = ImageIO.read(getClass().getClassLoader().getResourceAsStream(
                     "resources/textures/" + name));
             return Texture2D.loadTex(gl, img);
-        } catch (IOException e) {
-            System.err.println("Error loading texture: " + name);
-        } catch (IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             System.err.println("Error loading texture: " + name);
         }
         return null;

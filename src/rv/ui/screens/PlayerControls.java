@@ -46,27 +46,27 @@ import rv.util.observer.IObserver;
  */
 class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolean> {
 
-    private static final long serialVersionUID = -3858876806399693025L;
+    private Container container;
 
-    private JButton           fileOpenButton;
+    private JButton   fileOpenButton;
 
-    private LogPlayer         player;
+    private LogPlayer player;
 
-    private JButton           rewindButton;
+    private JButton   rewindButton;
 
-    private JButton           slowerButton;
+    private JButton   slowerButton;
 
-    private JButton           stepBackwardButton;
+    private JButton   stepBackwardButton;
 
-    private JButton           playButton;
+    private JButton   playButton;
 
-    private JButton           stepForwardButton;
+    private JButton   stepForwardButton;
 
-    private JButton           pauseButton;
+    private JButton   pauseButton;
 
-    private JButton           fasterButton;
+    private JButton   fasterButton;
 
-    private JSlider           slider;
+    private JSlider   slider;
 
     public PlayerControls(LogPlayer playerRef) {
         super((Dialog) null, "Logplayer");
@@ -80,109 +80,77 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
      * Create the buttons and other GUI controls
      */
     private void createControls() {
-        final int KNOB_SIZE = 32;
-        int xOrder = 0;
+        int buttonId = 0;
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(400, 110);
         setResizable(false);
-        Container myContainer = getContentPane();
-        myContainer.setLayout(null);
+        container = getContentPane();
+        container.setLayout(null);
 
-        ImageIcon theIcon = new ImageIcon("resources/images/file_open.png");
-        fileOpenButton = new RoundButton(theIcon);
-        fileOpenButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        fileOpenButton.setToolTipText("Open Logfile...");
-        fileOpenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!player.isPlaying()) {
-                    player.openFile();
-                }
-            }
-        });
-        myContainer.add(fileOpenButton);
+        fileOpenButton = createButton(buttonId++, "file_open", "Open Logfile...",
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!player.isPlaying())
+                            player.openFile();
+                    }
+                });
 
-        theIcon = new ImageIcon("resources/images/rewind.png");
-        rewindButton = new RoundButton(theIcon);
-        rewindButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        rewindButton.setToolTipText("Rewind");
-        rewindButton.addActionListener(new ActionListener() {
+        rewindButton = createButton(buttonId++, "rewind", "Rewind", new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 player.rewind();
             }
         });
-        myContainer.add(rewindButton);
 
-        theIcon = new ImageIcon("resources/images/fast_backward.png");
-        slowerButton = new RoundButton(theIcon);
-        slowerButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        slowerButton.setToolTipText("Slower");
-        slowerButton.addActionListener(new ActionListener() {
+        slowerButton = createButton(buttonId++, "fast_backward", "Slower", new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 player.changePlayBackSpeed(false);
             }
         });
-        myContainer.add(slowerButton);
 
-        theIcon = new ImageIcon("resources/images/pause.png");
-        pauseButton = new RoundButton(theIcon);
-        pauseButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        pauseButton.setToolTipText("Pause");
-        pauseButton.addActionListener(new ActionListener() {
+        pauseButton = createButton(buttonId++, "pause", "Pause", new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (player.isPlaying())
                     player.pause();
             }
         });
-        myContainer.add(pauseButton);
 
-        theIcon = new ImageIcon("resources/images/fast_forward.png");
-        fasterButton = new RoundButton(theIcon);
-        fasterButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        fasterButton.setToolTipText("Faster");
-        fasterButton.addActionListener(new ActionListener() {
+        fasterButton = createButton(buttonId++, "fast_forward", "Faster", new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 player.changePlayBackSpeed(true);
             }
         });
-        myContainer.add(fasterButton);
 
-        theIcon = new ImageIcon("resources/images/previous_frame.png");
-        stepBackwardButton = new RoundButton(theIcon);
-        stepBackwardButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        stepBackwardButton.setToolTipText("Step Back");
-        stepBackwardButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!player.isPlaying())
-                    player.stepBackward();
-            }
-        });
-        myContainer.add(stepBackwardButton);
+        stepBackwardButton = createButton(buttonId++, "previous_frame", "Step back",
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!player.isPlaying())
+                            player.stepBackward();
+                    }
+                });
 
-        theIcon = new ImageIcon("resources/images/play.png");
-        playButton = new RoundButton(theIcon);
-        playButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        playButton.setToolTipText("Play");
-        playButton.addActionListener(new ActionListener() {
+        playButton = createButton(buttonId++, "play", "Play", new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
                     player.resume();
             }
         });
 
-        myContainer.add(playButton);
-
-        theIcon = new ImageIcon("resources/images/next_frame.png");
-        stepForwardButton = new RoundButton(theIcon);
-        stepForwardButton.setBounds(10 + xOrder++ * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
-        stepForwardButton.setToolTipText("Step Forward");
-        stepForwardButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!player.isPlaying())
-                    player.stepForward();
-            }
-        });
-        myContainer.add(stepForwardButton);
+        stepForwardButton = createButton(buttonId++, "next_frame", "Step forward",
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!player.isPlaying())
+                            player.stepForward();
+                    }
+                });
 
         slider = new JSlider(0, player.getNumFrames(), player.getFrame());
         slider.addChangeListener(this);
@@ -193,7 +161,20 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
         slider.setPaintTicks(true);
         slider.setToolTipText("Select Frame");
 
-        myContainer.add(slider);
+        container.add(slider);
+    }
+
+    private RoundButton createButton(int id, String iconName, String tooltip,
+            ActionListener listener) {
+        final int KNOB_SIZE = 32;
+
+        String iconPath = String.format("resources/images/%s.png", iconName);
+        RoundButton button = new RoundButton(new ImageIcon(iconPath));
+        button.setBounds(10 + id * (KNOB_SIZE + 10), 10, KNOB_SIZE, KNOB_SIZE);
+        button.setToolTipText(tooltip);
+        button.addActionListener(listener);
+        container.add(button);
+        return button;
     }
 
     /**
@@ -231,11 +212,10 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
      * Allows to have round swing buttons
      */
     class RoundButton extends JButton {
-        private static final long serialVersionUID = 1L;
 
-        protected Shape           shape;
+        protected Shape shape;
 
-        protected Shape           base;
+        protected Shape base;
 
         public RoundButton(Icon icon) {
             setModel(new DefaultButtonModel());
