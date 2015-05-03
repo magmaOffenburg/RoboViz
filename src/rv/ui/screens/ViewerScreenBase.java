@@ -13,10 +13,7 @@ import rv.world.WorldModel;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener {
-    protected Viewer  viewer;
-
-    protected boolean control = false;
-    private boolean   alt     = false;
+    protected Viewer viewer;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
@@ -61,12 +58,6 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_CONTROL:
-            control = true;
-            break;
-        case KeyEvent.VK_ALT:
-            alt = true;
-            break;
         case KeyEvent.VK_Q:
             viewer.shutdown();
             break;
@@ -77,16 +68,17 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             viewer.toggleFullScreen();
             break;
         case KeyEvent.VK_F:
-            if (control) {
+            if (e.isControlDown()) {
                 viewer.toggleFullScreen();
             } else {
                 fPressed();
             }
             break;
         case KeyEvent.VK_ENTER:
-            if (alt) {
+            if (e.isAltDown()) {
                 viewer.toggleFullScreen();
             }
+            break;
         case KeyEvent.VK_F1:
             viewer.getUI().getShortcutHelpPanel().showFrame();
             break;
@@ -103,14 +95,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_CONTROL:
-            control = false;
-            break;
-        case KeyEvent.VK_ALT:
-            alt = false;
-            break;
-        }
+
     }
 
     @Override
@@ -131,7 +116,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             boolean handled = false;
             ISelectable selectedObject = viewer.getWorldModel().getSelectedObject();
             if (selectedObject != null) {
-                handled = selectedObjectClick(selectedObject);
+                handled = selectedObjectClick(selectedObject, e);
             }
 
             if (!handled) {
@@ -141,7 +126,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         }
     }
 
-    protected boolean selectedObjectClick(ISelectable object) {
+    protected boolean selectedObjectClick(ISelectable object, MouseEvent e) {
         return false;
     }
 

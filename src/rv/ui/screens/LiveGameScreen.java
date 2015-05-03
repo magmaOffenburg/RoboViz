@@ -68,8 +68,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
 
     boolean                   showNumPlayers    = false;
 
-    private boolean           shift             = false;
-
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
     }
@@ -206,7 +204,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
-            if (shift)
+            if (e.isShiftDown())
                 viewer.getNetManager().getServer().killServer();
             break;
         case KeyEvent.VK_K:
@@ -250,9 +248,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         case KeyEvent.VK_R:
             viewer.getNetManager().getServer().freeKick(false);
             break;
-        case KeyEvent.VK_SHIFT:
-            shift = true;
-            break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
             break;
@@ -265,17 +260,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        super.keyReleased(e);
-
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_SHIFT:
-            shift = false;
-            break;
-        }
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) {
         if (robotVantage == null && viewer.getNetManager().getServer().isConnected()) {
             super.mouseClicked(e);
@@ -283,8 +267,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     }
 
     @Override
-    protected boolean selectedObjectClick(ISelectable object) {
-        if (control) {
+    protected boolean selectedObjectClick(ISelectable object, MouseEvent e) {
+        if (e.isControlDown()) {
             Vec3f fieldPos = viewer.getUI().getObjectPicker().pickField();
             moveSelection(fieldPos);
             return true;
