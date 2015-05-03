@@ -208,9 +208,11 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
                 viewer.getNetManager().getServer().killServer();
             break;
         case KeyEvent.VK_K:
+            resetTimeIfExpired();
             viewer.getNetManager().getServer().kickOff(true);
             break;
         case KeyEvent.VK_J:
+            resetTimeIfExpired();
             viewer.getNetManager().getServer().kickOff(false);
             break;
         case KeyEvent.VK_P:
@@ -243,13 +245,16 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             }
             break;
         case KeyEvent.VK_L:
+            resetTimeIfExpired();
             viewer.getNetManager().getServer().freeKick(true);
             break;
         case KeyEvent.VK_R:
             if (e.isShiftDown())
                 viewer.getNetManager().getServer().resetTime();
-            else
+            else {
+                resetTimeIfExpired();
                 viewer.getNetManager().getServer().freeKick(false);
+            }
             break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
@@ -260,6 +265,12 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     @Override
     protected void fPressed() {
         fieldOverlay.setVisible(!fieldOverlay.isVisible());
+    }
+
+    private void resetTimeIfExpired() {
+        // changing the play mode doesn't have any effect if the game has ended
+        if (viewer.getWorldModel().getGameState().getTime() >= 600)
+            viewer.getNetManager().getServer().resetTime();
     }
 
     @Override
