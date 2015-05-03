@@ -44,7 +44,6 @@ public class SimsparkController implements CameraController, GameStateChangeList
     protected boolean       moveR;                   // camera is moving right
     protected boolean       moveU;
     protected boolean       moveD;
-    protected boolean       shift     = false;
     protected Vec2f         lastMouse = new Vec2f(0);
 
     float                   dL, dR, dF, dB, dU, dD = 0;
@@ -144,7 +143,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
             rotate = true;
             break;
         case MouseEvent.BUTTON3:
-            if (shift)
+            if (e.isShiftDown())
                 moveD = true;
             else
                 moveU = true;
@@ -226,9 +225,6 @@ public class SimsparkController implements CameraController, GameStateChangeList
         case KeyEvent.VK_PAGE_UP:
             moveU = true;
             break;
-        case KeyEvent.VK_SHIFT:
-            shift = true;
-            break;
         }
     }
 
@@ -258,9 +254,6 @@ public class SimsparkController implements CameraController, GameStateChangeList
             break;
         case KeyEvent.VK_PAGE_UP:
             moveU = false;
-            break;
-        case KeyEvent.VK_SHIFT:
-            shift = false;
             break;
         }
     }
