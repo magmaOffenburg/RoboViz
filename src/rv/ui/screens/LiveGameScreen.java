@@ -282,9 +282,10 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             pos.y = selected.getBoundingBox().getCenter().y + 0.1f;
             Vec3f serverPos = WorldModel.COORD_TFN.transform(pos);
 
-            if (selected instanceof Ball)
+            if (selected instanceof Ball) {
+                serverPos.z = 0.042f;
                 viewer.getNetManager().getServer().moveBall(serverPos);
-            else if (selected instanceof Agent) {
+            } else if (selected instanceof Agent) {
                 Agent a = (Agent) selected;
                 boolean leftTeam = a.getTeam().getID() == Team.LEFT;
                 viewer.getNetManager().getServer().moveAgent(serverPos, leftTeam, a.getID());
