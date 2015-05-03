@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 public class Configuration {
 
-    private static final String CONFIG_FILE_PATH = "resources/config.txt";
+    private static final String CONFIG_FILE_PATH = "config.txt";
 
     public String getNextLine(BufferedReader in) throws IOException {
         String result = in.readLine();

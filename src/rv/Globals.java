@@ -12,7 +12,7 @@ public class Globals {
         if (icon == null) {
             try {
                 icon = ImageIO.read(Globals.class.getClassLoader().getResourceAsStream(
-                        "resources/icon.png"));
+                        "resources/images/icon.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
