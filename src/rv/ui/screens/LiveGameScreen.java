@@ -246,7 +246,10 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             viewer.getNetManager().getServer().freeKick(true);
             break;
         case KeyEvent.VK_R:
-            viewer.getNetManager().getServer().freeKick(false);
+            if (e.isShiftDown())
+                viewer.getNetManager().getServer().resetTime();
+            else
+                viewer.getNetManager().getServer().freeKick(false);
             break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;

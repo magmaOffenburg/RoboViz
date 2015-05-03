@@ -292,4 +292,8 @@ public class ServerComm {
                 agentID, pos.x, pos.y, pos.z);
         sendMessage(m);
     }
+
+    public void resetTime() {
+        sendMessage("(time 0)");
+    }
 }
