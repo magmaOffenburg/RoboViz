@@ -62,7 +62,7 @@ public class Model {
     public Model(String name) {
         this.name = name;
     }
-    
+
     public void readMeshData(ContentManager cm) {
         ObjMeshImporter importer = new ObjMeshImporter(ContentManager.MODEL_ROOT,
                 ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
@@ -92,7 +92,7 @@ public class Model {
             }
         }
     }
-    
+
     private void failureMessage() {
         DebugInfo.println(getClass(), "Failed to load " + name);
     }

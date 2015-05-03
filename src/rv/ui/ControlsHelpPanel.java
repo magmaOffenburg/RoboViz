@@ -1,6 +1,5 @@
 package rv.ui;
 
-import rv.Viewer;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
+import rv.Viewer;
 
 public class ControlsHelpPanel extends FramePanelBase {
 

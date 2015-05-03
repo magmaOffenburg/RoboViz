@@ -8,13 +8,15 @@ import java.awt.event.MouseMotionListener;
 import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
+import rv.world.ISelectable;
+import rv.world.WorldModel;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener {
-    protected Viewer viewer;
+    protected Viewer  viewer;
 
-    private boolean  control = false;
-    private boolean  alt     = false;
+    protected boolean control = false;
+    private boolean   alt     = false;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
@@ -32,6 +34,27 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
+        }
+    }
+
+    private void toggleSelection(ISelectable selectable) {
+        if (selectable.isSelected())
+            changeSelection(null);
+        else
+            changeSelection(selectable);
+    }
+
+    protected void changeSelection(ISelectable newSelection) {
+        WorldModel worldModel = viewer.getWorldModel();
+        if (newSelection != null) {
+            if (worldModel.getSelectedObject() != null)
+                worldModel.getSelectedObject().setSelected(false);
+            worldModel.setSelectedObject(newSelection);
+            worldModel.getSelectedObject().setSelected(true);
+        } else {
+            if (worldModel.getSelectedObject() != null)
+                worldModel.getSelectedObject().setSelected(false);
+            worldModel.setSelectedObject(null);
         }
     }
 
@@ -67,6 +90,10 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         case KeyEvent.VK_F1:
             viewer.getUI().getShortcutHelpPanel().showFrame();
             break;
+        case KeyEvent.VK_0:
+        case KeyEvent.VK_NUMPAD0:
+            toggleSelection(viewer.getWorldModel().getBall());
+            break;
         }
     }
 
@@ -76,7 +103,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyChar()) {
+        switch (e.getKeyCode()) {
         case KeyEvent.VK_CONTROL:
             control = false;
             break;
@@ -98,7 +125,24 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
 
+            boolean handled = false;
+            ISelectable selectedObject = viewer.getWorldModel().getSelectedObject();
+            if (selectedObject != null) {
+                handled = selectedObjectClick(selectedObject);
+            }
+
+            if (!handled) {
+                ISelectable newSelection = viewer.getUI().getObjectPicker().pickObject();
+                changeSelection(newSelection);
+            }
+        }
+    }
+
+    protected boolean selectedObjectClick(ISelectable object) {
+        return false;
     }
 
     @Override

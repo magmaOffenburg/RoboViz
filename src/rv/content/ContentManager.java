@@ -43,7 +43,6 @@ import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
-import rv.ui.DebugInfo;
 
 /**
  * Loads shaders and meshes used in scene graph.

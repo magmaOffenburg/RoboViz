@@ -59,7 +59,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     private Field2DOverlay    fieldOverlay;
     private List<Screen>      overlays          = new ArrayList<>();
     private List<TextOverlay> textOverlays      = new ArrayList<>();
-    private boolean           moveObjectMode    = false;
     private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private TextRenderer      tr;
     private TextRenderer      overlayTextRenderer;
@@ -204,7 +203,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
-        
+
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (shift)
@@ -233,9 +232,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         case KeyEvent.VK_T:
             viewer.getDrawings().toggle();
             break;
-        case KeyEvent.VK_CONTROL:
-            moveObjectMode = true;
-            break;
         case KeyEvent.VK_I:
             AgentOverheadType[] vals = AgentOverheadType.values();
             agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
@@ -260,10 +256,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
             break;
-        case KeyEvent.VK_0:
-        case KeyEvent.VK_NUMPAD0:
-            toggleSelection(viewer.getWorldModel().getBall());
-            break;
         }
     }
 
@@ -275,11 +267,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
-        
+
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_CONTROL:
-            moveObjectMode = false;
-            break;
         case KeyEvent.VK_SHIFT:
             shift = false;
             break;
@@ -288,38 +277,19 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        boolean connected = viewer.getNetManager().getServer().isConnected();
-        if (robotVantage == null && connected && e.getButton() == MouseEvent.BUTTON1) {
-            viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
-
-            if (moveObjectMode && viewer.getWorldModel().getSelectedObject() != null) {
-                Vec3f fieldPos = viewer.getUI().getObjectPicker().pickField();
-                moveSelection(fieldPos);
-            } else {
-                ISelectable newSelection = viewer.getUI().getObjectPicker().pickObject();
-                changeSelection(newSelection);
-            }
+        if (robotVantage == null && viewer.getNetManager().getServer().isConnected()) {
+            super.mouseClicked(e);
         }
     }
 
-    private void toggleSelection(ISelectable selectable) {
-        if (selectable.isSelected())
-            changeSelection(null);
-        else
-            changeSelection(selectable);
-    }
-
-    private void changeSelection(ISelectable newSelection) {
-        if (newSelection != null) {
-            if (viewer.getWorldModel().getSelectedObject() != null)
-                viewer.getWorldModel().getSelectedObject().setSelected(false);
-            viewer.getWorldModel().setSelectedObject(newSelection);
-            viewer.getWorldModel().getSelectedObject().setSelected(true);
-        } else {
-            if (viewer.getWorldModel().getSelectedObject() != null)
-                viewer.getWorldModel().getSelectedObject().setSelected(false);
-            viewer.getWorldModel().setSelectedObject(null);
+    @Override
+    protected boolean selectedObjectClick(ISelectable object) {
+        if (control) {
+            Vec3f fieldPos = viewer.getUI().getObjectPicker().pickField();
+            moveSelection(fieldPos);
+            return true;
         }
+        return false;
     }
 
     private void moveSelection(Vec3f pos) {
