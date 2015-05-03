@@ -85,6 +85,7 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             index = Math.max(index - 1, 0);
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             // changing the play mode doesn't have any effect if the game has ended
+            float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
             if (viewer.getWorldModel().getGameState().getTime() >= 600)
                 viewer.getNetManager().getServer().resetTime();
             viewer.getNetManager().getServer().setPlayMode(modes[index]);

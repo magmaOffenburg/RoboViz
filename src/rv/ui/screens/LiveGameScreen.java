@@ -269,7 +269,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
 
     private void resetTimeIfExpired() {
         // changing the play mode doesn't have any effect if the game has ended
-        if (viewer.getWorldModel().getGameState().getTime() >= 600)
+        float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
+        if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
             viewer.getNetManager().getServer().resetTime();
     }
 
@@ -297,7 +298,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             Vec3f serverPos = WorldModel.COORD_TFN.transform(pos);
 
             if (selected instanceof Ball) {
-                serverPos.z = 0.042f;
+                serverPos.z = viewer.getWorldModel().getGameState().getBallRadius();
                 viewer.getNetManager().getServer().moveBall(serverPos);
             } else if (selected instanceof Agent) {
                 Agent a = (Agent) selected;
