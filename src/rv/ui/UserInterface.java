@@ -24,11 +24,10 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilitiesImmutable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
+import rv.Globals;
 import rv.Viewer;
 import rv.ui.screens.LiveGameScreen;
 import rv.ui.screens.LogfileModeScreen;
@@ -98,7 +97,7 @@ public class UserInterface implements KeyListener {
     }
 
     public UserInterface(Viewer viewer) {
-        setLookFeel();
+        Globals.setLookFeel();
         this.viewer = viewer;
 
         GLAutoDrawable drawable = viewer.getCanvas();
@@ -162,19 +161,6 @@ public class UserInterface implements KeyListener {
         activeScreen.render(gl, glu, glut, viewer.getScreen());
 
         gl.glDisable(GL.GL_BLEND);
-    }
-
-    private void setLookFeel() {
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available
-        }
     }
 
     @Override

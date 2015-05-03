@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import rv.Configuration;
+import rv.Globals;
 import rv.Viewer;
 
 public class RVConfigure extends JFrame {
@@ -35,8 +36,8 @@ public class RVConfigure extends JFrame {
     }
 
     Configuration           config;
-    final JButton           saveButton = new JButton("Save");
-    ArrayList<SaveListener> listeners  = new ArrayList<SaveListener>();
+    JButton                 saveButton;
+    ArrayList<SaveListener> listeners = new ArrayList<>();
 
     public RVConfigure() {
 
@@ -47,7 +48,9 @@ public class RVConfigure extends JFrame {
             config = new Configuration();
         }
 
+        Globals.setLookFeel();
         setTitle("RoboViz Configuration");
+        setIconImage(Globals.getIcon());
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -67,6 +70,7 @@ public class RVConfigure extends JFrame {
         JPanel southPanel = new JPanel(new GridLayout(1, 2));
         add(southPanel, c);
 
+        saveButton = new JButton("Save");
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (SaveListener l : listeners)
@@ -87,6 +91,8 @@ public class RVConfigure extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
+        setResizable(false);
+        getRootPane().setDefaultButton(startButton);
         pack();
         setLocationRelativeTo(null);
     }

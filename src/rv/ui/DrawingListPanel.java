@@ -38,7 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import rv.Viewer;
+import rv.Globals;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
@@ -132,7 +132,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
     public DrawingListPanel(Drawings drawings) {
 
         super("Drawings");
-        frame.setIconImage(Viewer.getIcon());
+        frame.setIconImage(Globals.getIcon());
         frame.setAlwaysOnTop(true);
         list = new JList(model);
         frame.setSize(300, 600);

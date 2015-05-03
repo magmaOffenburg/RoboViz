@@ -18,7 +18,6 @@ package rv;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -54,12 +53,6 @@ import com.jogamp.opengl.util.awt.Screenshot;
  */
 public class Viewer extends GLProgramSwing implements GLEventListener {
 
-    private static Image icon;
-
-    public static Image getIcon() {
-        return icon;
-    }
-
     public enum Mode {
         LOGFILE, LIVE,
     }
@@ -91,7 +84,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     }
 
     // list of modules that should be included in main update loop
-    private List<IUpdatable>           updatables            = new ArrayList<IUpdatable>();
+    private List<IUpdatable>           updatables            = new ArrayList<>();
 
     private List<WindowResizeListener> windowResizeListeners = new ArrayList<WindowResizeListener>();
 
@@ -176,12 +169,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
                 logFileName = args[i + 1];
         }
 
-        try {
-            icon = ImageIO.read(getClass().getClassLoader().getResourceAsStream(
-                    "resources/icon.png"));
-            getFrame().setIconImage(icon);
-        } catch (IOException e1) {
-        }
+        getFrame().setIconImage(Globals.getIcon());
     }
 
     public void takeScreenShot() {

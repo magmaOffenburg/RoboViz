@@ -97,14 +97,15 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 1;
-        serverPortTF = new JTextField("" + config.getServerPort());
+        serverPortTF = new PortTextField(config.getServerPort());
         panel.add(serverPortTF, c);
 
         addLabel("Delay: ", panel, c, 0, 2);
 
         c.gridx = 1;
         c.gridy = 2;
-        autoConnectDelayTF = new JTextField("" + config.getAutoConnectDelay());
+        autoConnectDelayTF = new IntegerTextField(config.getAutoConnectDelay(), 1,
+                Integer.MAX_VALUE);
         panel.add(autoConnectDelayTF, c);
 
         c.gridx = 1;
@@ -133,7 +134,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 0;
-        drawingPortTF = new JTextField("" + config.getListenPort());
+        drawingPortTF = new PortTextField(config.getListenPort());
         drawingPortTF.setPreferredSize(new Dimension(150, 28));
         panel.add(drawingPortTF, c);
 

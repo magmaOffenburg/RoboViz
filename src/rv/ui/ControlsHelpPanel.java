@@ -8,13 +8,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import rv.Viewer;
+import rv.Globals;
 
 public class ControlsHelpPanel extends FramePanelBase {
 
     public ControlsHelpPanel() {
         super("Help");
-        frame.setIconImage(Viewer.getIcon());
+        frame.setIconImage(Globals.getIcon());
         frame.setSize(400, 500);
         frame.setMinimumSize(new Dimension(400, 500));
 

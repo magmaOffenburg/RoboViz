@@ -103,7 +103,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
                 samplesLabel.setEnabled(fsaaCB.isSelected());
             }
         });
-        samplesTF = new JTextField("" + config.getFSAASamples());
+        samplesTF = new IntegerTextField(config.getFSAASamples(), 1, Integer.MAX_VALUE);
 
         addConstrained(fsaaCB, panel, c, 0, 0);
         addConstrained(samplesLabel, panel, c, 1, 0);
@@ -130,10 +130,10 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         addLabel("FPS: ", panel, c, 1, 0);
         addConstrained(fpsSpinner, panel, c, 2, 0);
 
-        addLabel("Frame W: ", panel, c, 0, 1);
+        addLabel("Frame Width: ", panel, c, 0, 1);
         addConstrained(fwSpinner, panel, c, 1, 1);
 
-        addLabel("Frame H: ", panel, c, 0, 2);
+        addLabel("Frame Height: ", panel, c, 0, 2);
         addConstrained(fhSpinner, panel, c, 1, 2);
 
         return panel;
@@ -159,7 +159,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         });
 
         softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows());
-        shadowResTB = new JTextField("" + config.getShadowResolution());
+        shadowResTB = new IntegerTextField(config.getShadowResolution(), 1, Integer.MAX_VALUE);
 
         addConstrained(phongCB, panel, c, 0, 0);
         addConstrained(bloomCB, panel, c, 1, 0);
