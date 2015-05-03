@@ -21,6 +21,7 @@ import java.util.Locale;
 import js.io.ByteUtil;
 import js.math.vector.Vec3f;
 import rv.Viewer;
+import rv.ui.DebugInfo;
 import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
@@ -150,11 +151,19 @@ public abstract class Command {
     public static float readFloat(ByteBuffer buf) {
         byte[] chars = new byte[6];
         buf.get(chars);
-        return Float.parseFloat(new String(chars));
+        Float result = null;
+        String message = new String(chars);
+        try {
+            result = Float.parseFloat(message);
+        } catch (NumberFormatException e) {
+            DebugInfo.println(Command.class, "Could not parse command, float '" + message
+                    + "' contains invalid characters.");
+        }
+        return result;
     }
 
     /**
-     * Retrives RGB colors as floats in [0,1] from 3 sequential bytes of RGB in a ByteBuffer
+     * Retrieves RGB colors as floats in [0,1] from 3 sequential bytes of RGB in a ByteBuffer
      */
     public static float[] readRGB(ByteBuffer buf) {
         return new float[] { ByteUtil.uValue(buf.get()) / 255.0f,
@@ -162,7 +171,7 @@ public abstract class Command {
     }
 
     /**
-     * Retrives RGBA colors as floats in [0,1] from 4 sequential bytes in a ByteBuffer
+     * Retrieves RGBA colors as floats in [0,1] from 4 sequential bytes in a ByteBuffer
      */
     public static float[] readRGBA(ByteBuffer buf) {
         return new float[] { ByteUtil.uValue(buf.get()) / 255.0f,
