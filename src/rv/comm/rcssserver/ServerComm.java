@@ -268,7 +268,8 @@ public class ServerComm {
     }
 
     public void moveBall(Vec3f pos) {
-        sendMessage(String.format(Locale.US, "(ball (pos %.2f %.2f %.2f))", pos.x, pos.y, pos.z));
+        sendMessage(String.format(Locale.US, "(ball (pos %.2f %.2f %.2f) (vel 0 0 0))", pos.x,
+                pos.y, pos.z));
     }
 
     public void setPlayMode(String mode) {
