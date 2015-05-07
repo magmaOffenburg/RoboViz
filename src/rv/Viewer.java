@@ -18,6 +18,8 @@ package rv;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -196,9 +198,20 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     /** Enter or exit full-screen exclusive mode depending on current mode */
     public void toggleFullScreen() {
         fullscreen = !fullscreen;
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice();
-        gd.setFullScreenWindow(fullscreen ? getFrame() : null);
+        getCurrentScreen().setFullScreenWindow(fullscreen ? getFrame() : null);
+    }
+
+    private GraphicsDevice getCurrentScreen() {
+        GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getScreenDevices();
+        Point location = getFrame().getLocation();
+        for (GraphicsDevice device : devices) {
+            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+            if (bounds.contains(location)) {
+                return device;
+            }
+        }
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
     public void exitError(String msg) {
