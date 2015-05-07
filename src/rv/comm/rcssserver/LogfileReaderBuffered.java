@@ -46,7 +46,7 @@ public class LogfileReaderBuffered implements ILogfileReader {
     /**
      * Default constructor
      * 
-     * @param file
+     * @param decoratee
      *            the logfile to open
      * @param bufferSize
      *            the number of frames to buffer
@@ -67,7 +67,7 @@ public class LogfileReaderBuffered implements ILogfileReader {
      */
     private void open() throws FileNotFoundException {
         buffer = new LinkedList<String>();
-        buffer.add(decoratee.getCurrrentFrameMessage());
+        buffer.add(decoratee.getCurrentFrameMessage());
         bufferZeroFrame = 0;
         currentFrame = 0;
     }
@@ -77,51 +77,26 @@ public class LogfileReaderBuffered implements ILogfileReader {
         return decoratee != null && decoratee.isValid();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#isAtEndOfLog()
-     */
     @Override
     public boolean isAtEndOfLog() {
         return decoratee.isAtEndOfLog() && getBufferIndex(currentFrame) == buffer.size() - 1;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getNumFrames()
-     */
     @Override
     public int getNumFrames() {
         return decoratee.getNumFrames();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrentFrame()
-     */
     @Override
     public int getCurrentFrame() {
         return currentFrame;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrrentFrameMessage()
-     */
     @Override
-    public String getCurrrentFrameMessage() {
+    public String getCurrentFrameMessage() {
         return buffer.get(getBufferIndex(currentFrame));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#setCurrentFrame(int)
-     */
     private String setCurrentFrame(int frame) throws IOException {
 
         int bufferIndex = getBufferIndex(frame);
@@ -143,36 +118,21 @@ public class LogfileReaderBuffered implements ILogfileReader {
             // we are still inside the buffer
             currentFrame = frame;
         }
-        return getCurrrentFrameMessage();
+        return getCurrentFrameMessage();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#rewind()
-     */
     @Override
     public void rewind() throws IOException {
         decoratee.rewind();
         open();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#close()
-     */
     @Override
     public void close() {
         decoratee.close();
         buffer = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepForward()
-     */
     @Override
     public String stepForward() throws IOException {
         if (getBufferIndex(currentFrame) == buffer.size() - 1) {
@@ -191,14 +151,9 @@ public class LogfileReaderBuffered implements ILogfileReader {
             // we are inside the buffer
             currentFrame++;
         }
-        return getCurrrentFrameMessage();
+        return getCurrentFrameMessage();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepBackward()
-     */
     @Override
     public void stepBackward() throws IOException {
         if (currentFrame > 0) {
@@ -206,11 +161,6 @@ public class LogfileReaderBuffered implements ILogfileReader {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepAnywhere(int)
-     */
     @Override
     public void stepAnywhere(int frame) throws IOException {
         if (frame < 0) {

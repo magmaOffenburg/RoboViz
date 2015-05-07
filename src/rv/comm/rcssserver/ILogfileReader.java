@@ -15,7 +15,7 @@ public interface ILogfileReader {
 
     public abstract int getCurrentFrame();
 
-    public abstract String getCurrrentFrameMessage();
+    public abstract String getCurrentFrameMessage();
 
     /**
      * Switches back to the start of the logfile.

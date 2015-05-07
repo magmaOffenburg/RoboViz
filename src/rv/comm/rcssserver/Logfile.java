@@ -76,51 +76,26 @@ public class Logfile implements ILogfileReader {
         return br != null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#isAtEndOfLog()
-     */
     @Override
     public boolean isAtEndOfLog() {
         return curFrameMsg == null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getNumFrames()
-     */
     @Override
     public int getNumFrames() {
         return numFrames;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrentFrame()
-     */
     @Override
     public int getCurrentFrame() {
         return curFramePtr;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrrentFrameMessage()
-     */
     @Override
-    public String getCurrrentFrameMessage() {
+    public String getCurrentFrameMessage() {
         return curFrameMsg;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#setCurrentFrame(int)
-     */
     private String setCurrentFrame(int frame) throws IOException {
 
         if (frame < curFramePtr) {
@@ -136,22 +111,12 @@ public class Logfile implements ILogfileReader {
         return line;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#rewind()
-     */
     @Override
     public void rewind() throws IOException {
         close();
         open();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#close()
-     */
     @Override
     public void close() {
         try {
@@ -160,11 +125,6 @@ public class Logfile implements ILogfileReader {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepForward()
-     */
     @Override
     public String stepForward() throws IOException {
         if (isAtEndOfLog())
@@ -182,11 +142,6 @@ public class Logfile implements ILogfileReader {
         return curFrameMsg;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepBackward()
-     */
     @Override
     public void stepBackward() throws IOException {
         if (curFramePtr > 0) {
@@ -194,11 +149,6 @@ public class Logfile implements ILogfileReader {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepAnywhere(int)
-     */
     @Override
     public void stepAnywhere(int frame) throws IOException {
         if (frame < 0) {

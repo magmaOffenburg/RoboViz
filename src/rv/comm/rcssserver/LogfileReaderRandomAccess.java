@@ -54,8 +54,8 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
     /**
      * Default constructor
      * 
-     * @param decoratee
-     *            the reader that we decorate
+     * @param file
+     *            the logfile
      * @throws Exception
      *             in case the logfile could not be opened
      */
@@ -80,7 +80,7 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
             long lastMark = 0;
             String line;
             while ((line = br.readLine()) != null) {
-                framePositions.add(new Long(lastMark));
+                framePositions.add(lastMark);
                 // +1 for newline character
                 lastMark += line.length() + 1;
             }
@@ -95,43 +95,23 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
         return raf != null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#isAtEndOfLog()
-     */
     @Override
     public boolean isAtEndOfLog() {
         return brFramePtr == numFrames;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getNumFrames()
-     */
     @Override
     public int getNumFrames() {
         return numFrames;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrentFrame()
-     */
     @Override
     public int getCurrentFrame() {
         return brFramePtr;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#getCurrrentFrameMessage()
-     */
     @Override
-    public String getCurrrentFrameMessage() {
+    public String getCurrentFrameMessage() {
         return curFrameMsg;
     }
 
@@ -141,27 +121,17 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
             return curFrameMsg;
         }
         frame = Maths.clamp(frame, 0, numFrames - 1);
-        raf.seek(framePositions.get(frame).longValue());
+        raf.seek(framePositions.get(frame));
         curFrameMsg = raf.readLine();
         return curFrameMsg;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#rewind()
-     */
     @Override
     public void rewind() throws IOException {
         close();
         open();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#close()
-     */
     @Override
     public void close() {
         try {
@@ -170,11 +140,6 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepForward()
-     */
     @Override
     public String stepForward() throws IOException {
         if (isAtEndOfLog())
@@ -185,21 +150,11 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
         return curFrameMsg;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepBackward()
-     */
     @Override
     public void stepBackward() throws IOException {
         setCurrentFrame(brFramePtr - 1);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see rv.comm.rcssserver.ILogfileReader#stepAnywhere(int)
-     */
     @Override
     public void stepAnywhere(int frame) throws IOException {
         setCurrentFrame(frame);
