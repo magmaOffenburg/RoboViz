@@ -226,9 +226,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
                 pmo.setEnabled((GLCanvas) viewer.getCanvas(), true);
             }
             break;
-        case KeyEvent.VK_B:
-            viewer.getNetManager().getServer().dropBall();
-            break;
         case KeyEvent.VK_T:
             viewer.getDrawings().toggle();
             break;
@@ -268,6 +265,11 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     @Override
     protected void fPressed() {
         fieldOverlay.setVisible(!fieldOverlay.isVisible());
+    }
+
+    @Override
+    protected void bPressed() {
+        viewer.getNetManager().getServer().dropBall();
     }
 
     private void resetTimeIfExpired() {
