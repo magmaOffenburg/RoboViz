@@ -44,14 +44,14 @@ import rv.world.objects.SkyBox;
  */
 public class WorldModel {
 
-    /** Transforms SimSpark coordinates to RoboVis coordinates (and reverse) */
+    /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
     public static final Matrix            COORD_TFN   = new Matrix(new double[] { -1, 0, 0, 0, 0,
             0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
 
     private GameState                     gameState   = new GameState();
     private SceneGraph                    sceneGraph  = null;
 
-    private ArrayList<ISceneGraphItem>    sgItems     = new ArrayList<ISceneGraphItem>();
+    private ArrayList<ISceneGraphItem>    sgItems     = new ArrayList<>();
 
     private Configuration.Graphics        config;
     private Field                         field;
@@ -63,7 +63,7 @@ public class WorldModel {
 
     private ISelectable                   selectedObject;
 
-    private ArrayList<SceneGraphListener> sgListeners = new ArrayList<SceneGraphListener>();
+    private ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
 
     public void addSceneGraphListener(SceneGraphListener sgl) {
         sgListeners.add(sgl);

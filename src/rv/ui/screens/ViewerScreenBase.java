@@ -34,8 +34,8 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         }
     }
 
-    private void toggleSelection(ISelectable selectable) {
-        if (selectable.isSelected())
+    protected void toggleSelection(ISelectable selectable) {
+        if (selectable != null && selectable.isSelected())
             changeSelection(null);
         else
             changeSelection(selectable);
@@ -65,7 +65,8 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             viewer.getUI().getBallTracker().toggleEnabled();
             break;
         case KeyEvent.VK_F11:
-            viewer.toggleFullScreen();
+            if (!e.isControlDown())
+                viewer.toggleFullScreen();
             break;
         case KeyEvent.VK_F:
             if (e.isControlDown()) {
@@ -80,7 +81,8 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             }
             break;
         case KeyEvent.VK_F1:
-            viewer.getUI().getShortcutHelpPanel().showFrame();
+            if (!e.isControlDown())
+                viewer.getUI().getShortcutHelpPanel().showFrame();
             break;
         case KeyEvent.VK_B:
             if (e.isControlDown()) {

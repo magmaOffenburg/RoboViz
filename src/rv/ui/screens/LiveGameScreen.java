@@ -202,6 +202,10 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
 
+        int keyCode = e.getKeyCode();
+        if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F11 && e.isControlDown())
+            togglePlayerSelection(keyCode - KeyEvent.VK_F1 + 1, !e.isAltDown());
+
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (e.isShiftDown())
@@ -270,6 +274,14 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
     @Override
     protected void bPressed() {
         viewer.getNetManager().getServer().dropBall();
+    }
+
+    private void togglePlayerSelection(int playerID, boolean leftTeam) {
+        WorldModel worldModel = viewer.getWorldModel();
+        Team team = leftTeam ? worldModel.getLeftTeam() : worldModel.getRightTeam();
+        Agent agent = team.getAgentByID(playerID);
+        if (agent != null)
+            toggleSelection(agent);
     }
 
     private void resetTimeIfExpired() {

@@ -79,11 +79,14 @@ public class PlaymodeOverlay implements Screen, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_DOWN:
             index = Math.min(index + 1, modes.length - 1);
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            break;
+        case KeyEvent.VK_UP:
             index = Math.max(index - 1, 0);
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            break;
+        case KeyEvent.VK_ENTER:
             // changing the play mode doesn't have any effect if the game has ended
             float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
             if (viewer.getWorldModel().getGameState().getTime() >= 600)
@@ -92,10 +95,12 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             setEnabled((GLCanvas) viewer.getCanvas(), false);
             masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
             masterScreen.removeOverlay(this);
-        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            break;
+        case KeyEvent.VK_ESCAPE:
             setEnabled((GLCanvas) viewer.getCanvas(), false);
             masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
             masterScreen.removeOverlay(this);
+            break;
         }
     }
 

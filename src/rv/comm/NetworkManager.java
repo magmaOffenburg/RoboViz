@@ -44,16 +44,15 @@ public class NetworkManager {
     public void init(Viewer viewer, Configuration config) {
         try {
             agentComm = new DrawComm(viewer, config.getNetworking().getListenPort());
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
+        } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
         serverComm = new ServerComm(viewer.getWorldModel(), config, viewer.getMode());
     }
 
     public void shutdown() {
-        agentComm.shutdown();
+        if (agentComm != null)
+            agentComm.shutdown();
         serverComm.disconnect();
     }
 }
