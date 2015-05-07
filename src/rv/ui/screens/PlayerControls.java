@@ -45,6 +45,15 @@ import rv.util.observer.IObserver;
  */
 class PlayerControls extends FramePanelBase implements ChangeListener, IObserver<Boolean> {
 
+    private static PlayerControls instance;
+
+    public static PlayerControls getInstance(LogPlayer player) {
+        if (instance != null) {
+            instance.dispose();
+        }
+        return instance = new PlayerControls(player);
+    }
+
     private Container container;
 
     private JButton   fileOpenButton;
@@ -67,11 +76,11 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
     private JSlider   slider;
 
-    public PlayerControls(LogPlayer playerRef) {
+    private PlayerControls(LogPlayer player) {
         super("Logplayer");
-        this.player = playerRef;
+        this.player = player;
         createControls();
-        player.attach(this);
+        this.player.attach(this);
     }
 
     public void setVisible(boolean b) {
@@ -208,6 +217,10 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         if (slider.isEnabled()) {
             player.setCurrentFrame(slider.getValue());
         }
+    }
+
+    public void dispose() {
+        frame.dispose();
     }
 
     /**

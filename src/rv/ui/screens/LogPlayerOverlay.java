@@ -34,7 +34,7 @@ public class LogPlayerOverlay implements Screen, KeyListener {
 
     public LogPlayerOverlay(LogPlayer player) {
         this.player = player;
-        playDialog = new PlayerControls(player);
+        playDialog = PlayerControls.getInstance(player);
     }
 
     @Override
