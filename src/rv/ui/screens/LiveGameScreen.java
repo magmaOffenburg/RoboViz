@@ -259,6 +259,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
             break;
+        case KeyEvent.VK_ESCAPE:
+            changeSelection(null);
+            break;
         }
     }
 

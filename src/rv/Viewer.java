@@ -86,7 +86,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     // list of modules that should be included in main update loop
     private List<IUpdatable>           updatables            = new ArrayList<>();
 
-    private List<WindowResizeListener> windowResizeListeners = new ArrayList<WindowResizeListener>();
+    private List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
     private WorldModel                 world;
     private UserInterface              ui;
