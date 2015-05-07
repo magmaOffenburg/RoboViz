@@ -202,14 +202,19 @@ public class SceneGraph {
             if (atoms[0].equals(Node.DECL_ABRV)) {
                 String type = atoms[1];
                 Node node = null;
-                if (type.equals(TransformNode.EXP_ABRV)) {
+                switch (type) {
+                case TransformNode.EXP_ABRV:
                     node = new TransformNode(parent, e);
-                } else if (type.equals(LightNode.EXP_ABRV)) {
+                    break;
+                case LightNode.EXP_ABRV:
                     node = new LightNode(parent, e);
-                } else if (type.equals(StaticMeshNode.EXP_ABRV)) {
+                    break;
+                case StaticMeshNode.EXP_ABRV:
                     node = new StaticMeshNode(parent, e);
-                } else if (type.equals(StandardMeshNode.EXP_ABRV)) {
+                    break;
+                case StandardMeshNode.EXP_ABRV:
                     node = new StandardMeshNode(parent, exp);
+                    break;
                 }
 
                 if (node != null) {

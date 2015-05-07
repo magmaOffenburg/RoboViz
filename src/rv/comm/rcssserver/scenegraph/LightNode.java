@@ -36,12 +36,17 @@ public class LightNode extends Node {
         // (setSpecular x y z w))
         for (SExp e : exp.getChildren()) {
             String operation = e.getAtoms()[0];
-            if (operation.equals("setDiffuse"))
+            switch (operation) {
+            case "setDiffuse":
                 copyValues(e, diffuse);
-            else if (operation.equals("setAmbient"))
+                break;
+            case "setAmbient":
                 copyValues(e, ambient);
-            else if (operation.equals("setSpecular"))
+                break;
+            case "setSpecular":
                 copyValues(e, specular);
+                break;
+            }
         }
     }
 

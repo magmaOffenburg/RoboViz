@@ -153,7 +153,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     private void parseFrame() throws ParseException {
-        String msg = logfile.getCurrrentFrameMessage();
+        String msg = logfile.getCurrentFrameMessage();
         if (msg != null)
             parser.parse(msg);
     }

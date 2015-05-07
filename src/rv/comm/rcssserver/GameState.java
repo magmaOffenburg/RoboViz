@@ -206,74 +206,97 @@ public class GameState implements ServerChangeListener {
             if (atoms != null) {
                 String atomName = atoms[0];
 
-                if (atomName.equals(FIELD_LENGTH)) {
+                switch (atomName) {
+                case FIELD_LENGTH:
                     fieldLength = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(FIELD_WIDTH)) {
+                    break;
+                case FIELD_WIDTH:
                     fieldWidth = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(FIELD_HEIGHT)) {
+                    break;
+                case FIELD_HEIGHT:
                     fieldHeight = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(GOAL_WIDTH)) {
+                    break;
+                case GOAL_WIDTH:
                     goalWidth = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(GOAL_DEPTH)) {
+                    break;
+                case GOAL_DEPTH:
                     goalDepth = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(GOAL_HEIGHT)) {
+                    break;
+                case GOAL_HEIGHT:
                     goalHeight = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(FREE_KICK_DST)) {
+                    break;
+                case FREE_KICK_DST:
                     freeKickDist = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(WAIT_BEFORE_KO)) {
+                    break;
+                case WAIT_BEFORE_KO:
                     waitBeforeKickoff = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(AGENT_RADIUS)) {
+                    break;
+                case AGENT_RADIUS:
                     agentRadius = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(BALL_RADIUS)) {
+                    break;
+                case BALL_RADIUS:
                     ballRadius = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(BALL_MASS)) {
+                    break;
+                case BALL_MASS:
                     ballMass = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(RULE_GOAL_PAUSE_TIME)) {
+                    break;
+                case RULE_GOAL_PAUSE_TIME:
                     ruleGoalPauseTime = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(RULE_KICK_PAUSE_TIME)) {
+                    break;
+                case RULE_KICK_PAUSE_TIME:
                     ruleKickPauseTime = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(RULE_HALF_TIME)) {
+                    break;
+                case RULE_HALF_TIME:
                     ruleHalfTime = Float.parseFloat(atoms[1]);
                     measureOrRuleChanges++;
-                } else if (atomName.equals(PLAY_MODES)) {
+                    break;
+                case PLAY_MODES:
                     playModes = new String[atoms.length - 1];
                     System.arraycopy(atoms, 1, playModes, 0, playModes.length);
                     playStateChanges++;
-                } else if (atomName.equals(TIME)) {
+                    break;
+                case TIME:
                     time = Float.parseFloat(atoms[1]);
                     timeChanges++;
-                } else if (atomName.equals(HALF)) {
+                    break;
+                case HALF:
                     half = Integer.parseInt(atoms[1]);
                     timeChanges++;
-                } else if (atomName.equals(PLAY_MODE)) {
+                    break;
+                case PLAY_MODE:
                     int mode = Integer.parseInt(atoms[1]);
                     playMode = playModes[mode];
                     playStateChanges++;
-                } else if (atomName.equals(TEAM_LEFT)) {
+                    break;
+                case TEAM_LEFT:
                     teamLeft = atoms[1];
                     playStateChanges++;
-                } else if (atomName.equals(TEAM_RIGHT)) {
+                    break;
+                case TEAM_RIGHT:
                     teamRight = atoms[1];
                     playStateChanges++;
-                } else if (atomName.equals(SCORE_LEFT)) {
+                    break;
+                case SCORE_LEFT:
                     scoreLeft = Integer.parseInt(atoms[1]);
                     playStateChanges++;
-                } else if (atomName.equals(SCORE_RIGHT)) {
+                    break;
+                case SCORE_RIGHT:
                     scoreRight = Integer.parseInt(atoms[1]);
                     playStateChanges++;
+                    break;
                 }
             }
         }

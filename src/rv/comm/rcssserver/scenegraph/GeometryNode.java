@@ -61,17 +61,23 @@ public abstract class GeometryNode extends Node {
     private void applyOperations(SExp exp) {
         for (SExp e : exp.getChildren()) {
             String operation = e.getAtoms()[0];
-            if (operation.equals("load")) {
+            switch (operation) {
+            case "load":
                 load(e);
-            } else if (operation.equals("sSc")) {
+                break;
+            case "sSc":
                 setScale(e);
-            } else if (operation.equals("setVisible")) {
+                break;
+            case "setVisible":
                 visible = e.getAtoms()[1].equals("1");
-            } else if (operation.equals("resetMaterials")) {
+                break;
+            case "resetMaterials":
                 materials = new String[e.getAtoms().length - 1];
                 System.arraycopy(e.getAtoms(), 1, materials, 0, materials.length);
-            } else if (operation.equals("setTransparent")) {
+                break;
+            case "setTransparent":
                 transparent = true;
+                break;
             }
         }
     }
