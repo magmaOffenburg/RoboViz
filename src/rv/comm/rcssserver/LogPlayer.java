@@ -90,6 +90,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
         timer.start();
     }
 
+    public void setWorldModel(WorldModel world) {
+        parser.setWorldModel(world);
+    }
+
     public boolean isValid() {
         return logfile != null && logfile.isValid();
     }

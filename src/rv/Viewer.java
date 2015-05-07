@@ -42,6 +42,7 @@ import js.jogl.view.Viewport;
 import rv.comm.NetworkManager;
 import rv.comm.drawing.Drawings;
 import rv.comm.rcssserver.LogPlayer;
+import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.world.WorldModel;
@@ -227,9 +228,11 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
         GL2 gl = drawable.getGL().getGL2();
 
-        // print OpenGL renderer info
-        glInfo = new GLInfo(drawable.getGL());
-        glInfo.print();
+        if (!init) {
+            // print OpenGL renderer info
+            glInfo = new GLInfo(drawable.getGL());
+            glInfo.print();
+        }
 
         // initialize / load content
         contentManager = new ContentManager(config.teamColors);
@@ -237,6 +240,9 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             exitError("Problems loading resource files!");
         }
 
+        SceneGraph oldSceneGraph = null;
+        if (init)
+            oldSceneGraph = world.getSceneGraph();
         world = new WorldModel();
         world.init(drawable.getGL(), contentManager, config, mode);
         drawings = new Drawings();
@@ -248,9 +254,12 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             netManager.getServer().addChangeListener(world.getGameState());
         } else {
             File log = new File(logFileName);
-            if (log.exists())
-                logPlayer = new LogPlayer(new File(logFileName), world);
-            else {
+            if (log.exists()) {
+                if (!init)
+                    logPlayer = new LogPlayer(new File(logFileName), world);
+                else
+                    logPlayer.setWorldModel(world);
+            } else {
                 System.err.println("Could not find log file " + logFileName);
                 System.exit(0);
             }
@@ -260,6 +269,8 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         renderer = new Renderer(this);
         renderer.init(drawable, contentManager, glInfo);
 
+        if (init && oldSceneGraph != null)
+            world.setSceneGraph(oldSceneGraph);
         world.addSceneGraphListener(contentManager);
 
         gl.glClearColor(0, 0, 0, 1);

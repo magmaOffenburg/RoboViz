@@ -36,6 +36,10 @@ public class MessageParser {
         this.world = world;
     }
 
+    public void setWorldModel(WorldModel world) {
+        this.world = world;
+    }
+
     public void parse(String message) throws ParseException {
         ArrayList<SExp> expressions = SExp.parse(message);
 
