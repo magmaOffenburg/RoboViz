@@ -17,9 +17,9 @@
 package rv.comm.drawing;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -27,15 +27,14 @@ import js.io.ByteUtil;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.commands.Command;
+import rv.ui.DebugInfo;
 
 /**
- * Communication interface between clients sending draw commands and RoboVis
+ * Communication interface between clients sending draw commands and RoboViz
  * 
  * @author Justin Stoecker
  */
 public class DrawComm {
-
-    // -------------------------------------------------------------------------
 
     /** Receives UDP packets */
     private class ReceiveThread extends Thread {
@@ -44,7 +43,17 @@ public class DrawComm {
         private volatile boolean running     = true;
 
         public ReceiveThread(int port) throws SocketException {
-            socket = new DatagramSocket(port);
+            try {
+                socket = new DatagramSocket(port);
+            } catch (BindException e) {
+                DebugInfo
+                        .println(
+                                getClass(),
+                                "Unable to bind to draw port "
+                                        + port
+                                        + " - another RoboViz instance is probably already listening on the same port");
+                running = false;
+            }
         }
 
         @Override
@@ -59,39 +68,24 @@ public class DrawComm {
                     e.printStackTrace();
                 }
             }
-            socket.close();
+            if (socket != null)
+                socket.close();
         }
     }
 
-    // -------------------------------------------------------------------------
-
-    private boolean        showWarnings = true;
-    private Viewer         viewer;
-    private ReceiveThread  packetReceiver;
-    private DatagramSocket outSocket;
-    private InetAddress    sendAddress;
-    private int            sendPort;
+    private boolean       showWarnings = true;
+    private Viewer        viewer;
+    private ReceiveThread packetReceiver;
 
     /** Creates a new AgentComm */
     public DrawComm(Viewer viewer, int port) throws SocketException, UnknownHostException {
         this.viewer = viewer;
         packetReceiver = new ReceiveThread(port);
         packetReceiver.start();
-        outSocket = new DatagramSocket();
         Configuration.Networking config = viewer.getConfig().networking;
-        sendAddress = InetAddress.getByName(config.serverHost);
-        sendPort = config.serverPort;
     }
 
-    /** Sends a UDP packet to all clients */
-    public void sendPktToAgents(byte[] buf) throws IOException {
-        DatagramPacket pkt = new DatagramPacket(buf, buf.length, sendAddress, sendPort);
-        outSocket.send(pkt);
-    }
-
-    /**
-     * Handle incoming UDP packet data
-     * */
+    /** Handle incoming UDP packet data */
     public void handle(DatagramPacket packet) {
         byte[] pktData = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), pktData, 0, pktData.length);
