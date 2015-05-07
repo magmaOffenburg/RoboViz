@@ -49,12 +49,12 @@ public class PhongWorldRenderer implements SceneRenderer {
 
         shader = cm.loadShader(gl, "phong");
         if (shader == null) {
-            graphics.setUsePhong(false);
+            graphics.usePhong = false;
             System.err.println("Phong shader failed to load!");
         }
 
         if (shader == null) {
-            graphics.setUsePhong(false);
+            graphics.usePhong = false;
             return false;
         }
 

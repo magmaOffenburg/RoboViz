@@ -60,7 +60,7 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
 
         shader = VSMPhongShader.create(gl);
         if (shader == null) {
-            graphics.setUseShadows(false);
+            graphics.useShadows = false;
             return false;
         }
 

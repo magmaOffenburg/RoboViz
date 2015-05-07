@@ -142,14 +142,14 @@ public class ServerComm {
     public ServerComm(WorldModel world, Configuration config, Viewer.Mode viewerMode) {
         this.world = world;
 
-        Configuration.Networking net = config.getNetworking();
+        Configuration.Networking net = config.networking;
 
-        serverHost = net.getServerHost();
-        serverPort = net.getServerPort();
+        serverHost = net.serverHost;
+        serverPort = net.serverPort;
 
         // automatically attempt connection with server while not connected
-        if (net.isAutoConnect()) {
-            autoConnectTimer = new Timer(net.getAutoConnectDelay(), new ActionListener() {
+        if (net.autoConnect) {
+            autoConnectTimer = new Timer(net.autoConnectDelay, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (socket == null) {
@@ -161,7 +161,7 @@ public class ServerComm {
             autoConnectTimer.start();
         }
 
-        recordLogs = viewerMode != Viewer.Mode.LOGFILE && config.getGeneral().isRecordLogs();
+        recordLogs = viewerMode != Viewer.Mode.LOGFILE && config.general.recordLogs;
     }
 
     private void setupNewLogfile() {
@@ -169,12 +169,10 @@ public class ServerComm {
         s = s.replaceAll("\\s+", "_");
         File logFile = new File(String.format("roboviz_log_%s.log", s));
         System.out.println("Recording to new logfile: " + logFile.getName());
-        if (logFile != null) {
-            try {
-                logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

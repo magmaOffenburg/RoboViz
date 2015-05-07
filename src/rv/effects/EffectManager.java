@@ -58,7 +58,7 @@ public class EffectManager implements GLDisposable {
         LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0),
                 Vec3f.unitY(), 24, 24, 30);
 
-        if (config.useBloom()) {
+        if (config.useBloom) {
             bloom = new Bloom();
             boolean success = bloom.init(gl, screen, cm, config);
             if (!success)
@@ -67,7 +67,7 @@ public class EffectManager implements GLDisposable {
                 viewer.addWindowResizeListener(bloom);
         }
 
-        if (config.useShadows()) {
+        if (config.useShadows) {
             shadowRenderer = new ShadowMapRenderer(sun);
             if (!shadowRenderer.init(gl, config, cm))
                 shadowRenderer = null;

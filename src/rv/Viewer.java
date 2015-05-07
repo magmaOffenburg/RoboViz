@@ -160,8 +160,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
     /** Creates a new RoboVis viewer */
     public Viewer(Configuration config, GLCapabilities caps, String[] args) {
-        super("RoboViz", config.getGraphics().getFrameWidth(), config.getGraphics()
-                .getFrameHeight(), caps);
+        super("RoboViz", config.graphics.frameWidth, config.graphics.frameHeight, caps);
 
         this.config = config;
 
@@ -233,7 +232,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         glInfo.print();
 
         // initialize / load content
-        contentManager = new ContentManager(config.getTeamColors());
+        contentManager = new ContentManager(config.teamColors);
         if (!contentManager.init(drawable, glInfo)) {
             exitError("Problems loading resource files!");
         }
@@ -288,10 +287,10 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
         GLProfile glp = GLProfile.get(GLProfile.GL2);
         final GLCapabilities caps = new GLCapabilities(glp);
-        caps.setStereo(config.getGraphics().useStereo());
-        if (config.getGraphics().useFSAA()) {
+        caps.setStereo(config.graphics.useStereo);
+        if (config.graphics.useFsaa) {
             caps.setSampleBuffers(true);
-            caps.setNumSamples(config.getGraphics().getFSAASamples());
+            caps.setNumSamples(config.graphics.fsaaSamples);
         }
 
         final String[] arguments = args;
@@ -336,6 +335,6 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             ssName = null;
         }
 
-        renderer.render(drawable, config.getGraphics());
+        renderer.render(drawable, config.graphics);
     }
 }

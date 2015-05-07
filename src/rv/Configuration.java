@@ -45,126 +45,29 @@ public class Configuration {
 
     public class Graphics {
 
-        private boolean useBloom         = false;
-        private boolean usePhong         = false;
-        private boolean useShadows       = false;
-        private boolean softShadow       = false;
-        private boolean useStereo        = false;
-        private boolean vsync            = true;
-        private boolean fsaa             = false;
-        private int     fsaaSamples      = 4;
-        private int     targetFPS        = 60;
-        private int     frameWidth       = 800;
-        private int     frameHeight      = 600;
-        private int     shadowResolution = 1024;
+        public boolean useBloom         = false;
+        public boolean usePhong         = false;
+        public boolean useShadows       = false;
+        public boolean useSoftShadows   = false;
+        public boolean useStereo        = false;
+        public boolean useVsync         = true;
+        public boolean useFsaa          = false;
+        public int     fsaaSamples      = 4;
+        public int     targetFPS        = 60;
+        public int     frameWidth       = 800;
+        public int     frameHeight      = 600;
+        public int     shadowResolution = 1024;
 
-        public void setFSAASamples(int samples) {
-            this.fsaaSamples = samples;
-        }
-
-        public void setShadowResolution(int shadowResolution) {
-            this.shadowResolution = shadowResolution;
-        }
-
-        public int getTargetFPS() {
-            return targetFPS;
-        }
-
-        public int getFSAASamples() {
-            return fsaaSamples;
-        }
-
-        public void setTargetFPS(int targetFPS) {
-            this.targetFPS = targetFPS;
-        }
-
-        public void setSoftShadow(boolean softShadow) {
-            this.softShadow = softShadow;
-        }
-
-        public void setFSAA(boolean fsaa) {
-            this.fsaa = fsaa;
-        }
-
-        public void setUseBloom(boolean useBloom) {
-            this.useBloom = useBloom;
-        }
-
-        public void setUsePhong(boolean usePhong) {
-            this.usePhong = usePhong;
-        }
-
-        public void setUseShadows(boolean useShadows) {
-            this.useShadows = useShadows;
-        }
-
-        public void setUseStereo(boolean useStereo) {
-            this.useStereo = useStereo;
-        }
-
-        public boolean useSoftShadows() {
-            return softShadow;
-        }
-
-        public boolean useBloom() {
-            return useBloom;
-        }
-
-        public boolean usePhong() {
-            return usePhong;
-        }
-
-        public boolean useStereo() {
-            return useStereo;
-        }
-
-        public boolean useShadows() {
-            return useShadows;
-        }
-
-        public boolean useFSAA() {
-            return fsaa;
-        }
-
-        public int getFrameHeight() {
-            return frameHeight;
-        }
-
-        public int getShadowResolution() {
-            return shadowResolution;
-        }
-
-        public void setFrameHeight(int frameHeight) {
-            this.frameHeight = frameHeight;
-        }
-
-        public int getFrameWidth() {
-            return frameWidth;
-        }
-
-        public void setFrameWidth(int frameWidth) {
-            this.frameWidth = frameWidth;
-        }
-
-        public boolean isVsync() {
-            return vsync;
-        }
-
-        /**
-         * @param in
-         * @return
-         * @throws IOException
-         */
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
             useBloom = Boolean.parseBoolean(getVal(getNextLine(in)));
             usePhong = Boolean.parseBoolean(getVal(getNextLine(in)));
             useShadows = Boolean.parseBoolean(getVal(getNextLine(in)));
-            softShadow = Boolean.parseBoolean(getVal(getNextLine(in)));
+            useSoftShadows = Boolean.parseBoolean(getVal(getNextLine(in)));
             shadowResolution = Integer.parseInt(getVal(getNextLine(in)));
             useStereo = Boolean.parseBoolean(getVal(getNextLine(in)));
-            vsync = Boolean.parseBoolean(getVal(getNextLine(in)));
-            fsaa = Boolean.parseBoolean(getVal(getNextLine(in)));
+            useVsync = Boolean.parseBoolean(getVal(getNextLine(in)));
+            useFsaa = Boolean.parseBoolean(getVal(getNextLine(in)));
             fsaaSamples = Integer.parseInt(getVal(getNextLine(in)));
             targetFPS = Integer.parseInt(getVal(getNextLine(in)));
             frameWidth = Integer.parseInt(getVal(getNextLine(in)));
@@ -177,66 +80,25 @@ public class Configuration {
             out.write(String.format("%-20s : %b\n", "Bloom", useBloom));
             out.write(String.format("%-20s : %b\n", "Phong", usePhong));
             out.write(String.format("%-20s : %b\n", "Shadows", useShadows));
-            out.write(String.format("%-20s : %b\n", "Soft Shadows", softShadow));
+            out.write(String.format("%-20s : %b\n", "Soft Shadows", useSoftShadows));
             out.write(String.format("%-20s : %d\n", "Shadow Resolution", shadowResolution));
             out.write(String.format("%-20s : %b\n", "Stereo 3D", useStereo));
-            out.write(String.format("%-20s : %b\n", "V-Sync", vsync));
-            out.write(String.format("%-20s : %b\n", "FSAA", fsaa));
+            out.write(String.format("%-20s : %b\n", "V-Sync", useVsync));
+            out.write(String.format("%-20s : %b\n", "FSAA", useFsaa));
             out.write(String.format("%-20s : %d\n", "FSAA Samples", fsaaSamples));
             out.write(String.format("%-20s : %d\n", "Target FPS", targetFPS));
             out.write(String.format("%-20s : %d\n", "Frame Width", frameWidth));
             out.write(String.format("%-20s : %d\n", "Frame Height", frameHeight));
             out.write("\n");
         }
-
     }
 
     public class Networking {
-        private boolean autoConnect      = true;
-        private String  serverHost       = "localhost";
-        private int     serverPort       = 3200;
-        private int     listenPort       = 32769;
-        private int     autoConnectDelay = 1000;
-
-        public int getListenPort() {
-            return listenPort;
-        }
-
-        public String getServerHost() {
-            return serverHost;
-        }
-
-        public int getServerPort() {
-            return serverPort;
-        }
-
-        public boolean isAutoConnect() {
-            return autoConnect;
-        }
-
-        public int getAutoConnectDelay() {
-            return autoConnectDelay;
-        }
-
-        public void setAutoConnect(boolean autoConnect) {
-            this.autoConnect = autoConnect;
-        }
-
-        public void setAutoConnectDelay(int autoConnectDelay) {
-            this.autoConnectDelay = autoConnectDelay;
-        }
-
-        public void setListenPort(int listenPort) {
-            this.listenPort = listenPort;
-        }
-
-        public void setServerHost(String serverHost) {
-            this.serverHost = serverHost;
-        }
-
-        public void setServerPort(int serverPort) {
-            this.serverPort = serverPort;
-        }
+        public boolean autoConnect      = true;
+        public String  serverHost       = "localhost";
+        public int     serverPort       = 3200;
+        public int     listenPort       = 32769;
+        public int     autoConnectDelay = 1000;
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
@@ -260,11 +122,7 @@ public class Configuration {
     }
 
     public class General {
-        private boolean recordLogs = false;
-
-        public boolean isRecordLogs() {
-            return recordLogs;
-        }
+        public boolean recordLogs = false;
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
@@ -296,7 +154,7 @@ public class Configuration {
                 String key = getKey(line);
                 String val = getVal(line);
                 String[] bits = val.split("\\s+");
-                if (bits != null && bits.length == 3) {
+                if (bits.length == 3) {
                     float[] color = new float[3];
                     color[0] = Float.parseFloat(bits[0]);
                     color[1] = Float.parseFloat(bits[1]);
@@ -317,26 +175,10 @@ public class Configuration {
         }
     }
 
-    private Graphics   graphics   = new Graphics();
-    private Networking networking = new Networking();
-    private General    general    = new General();
-    private TeamColors teamColors = new TeamColors();
-
-    public Graphics getGraphics() {
-        return graphics;
-    }
-
-    public Networking getNetworking() {
-        return networking;
-    }
-
-    public General getGeneral() {
-        return general;
-    }
-
-    public TeamColors getTeamColors() {
-        return teamColors;
-    }
+    public final Graphics   graphics   = new Graphics();
+    public final Networking networking = new Networking();
+    public final General    general    = new General();
+    public final TeamColors teamColors = new TeamColors();
 
     private static String getKey(String line) {
         return line.substring(0, line.indexOf(":") - 1).trim();

@@ -112,7 +112,7 @@ public class Bloom implements GLDisposable, WindowResizeListener {
     private void abortInit(GL2 gl, String error, Configuration.Graphics config) {
         System.err.println("Bloom: " + error);
         dispose(gl);
-        config.setUseBloom(false);
+        config.useBloom = false;
     }
 
     /**

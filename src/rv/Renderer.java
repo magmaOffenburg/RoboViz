@@ -79,7 +79,7 @@ public class Renderer implements WindowResizeListener {
 
     public Renderer(Viewer viewer) {
         this.viewer = viewer;
-        this.graphics = viewer.getConfig().getGraphics();
+        this.graphics = viewer.getConfig().graphics;
     }
 
     public void init(GLAutoDrawable drawable, ContentManager cm, GLInfo info) {
@@ -87,31 +87,31 @@ public class Renderer implements WindowResizeListener {
         boolean supportAAFBO = info.extSupported("GL_EXT_framebuffer_multisample")
                 && info.extSupported("GL_EXT_framebuffer_blit");
 
-        if (graphics.useFSAA() && !supportAAFBO)
+        if (graphics.useFsaa && !supportAAFBO)
             System.out.println("Warning: no support for FSAA while bloom enabled");
-        boolean useFSAA = graphics.useFSAA()
-                && (supportAAFBO && graphics.useBloom() || !graphics.useBloom());
+        boolean useFSAA = graphics.useFsaa
+                && (supportAAFBO && graphics.useBloom || !graphics.useBloom);
 
-        if (graphics.isVsync())
+        if (graphics.useVsync)
             drawable.getGL().setSwapInterval(1);
         if (useFSAA)
             drawable.getGL().glEnable(GL.GL_MULTISAMPLE);
 
         effectManager = new EffectManager();
         viewer.addWindowResizeListener(this);
-        effectManager.init(drawable.getGL().getGL2(), viewer, viewer.getScreen(), viewer
-                .getConfig().getGraphics(), cm);
+        effectManager.init(drawable.getGL().getGL2(), viewer, viewer.getScreen(),
+                viewer.getConfig().graphics, cm);
 
-        if (graphics.useBloom()) {
+        if (graphics.useBloom) {
             if (useFSAA)
-                numSamples = graphics.getFSAASamples();
+                numSamples = graphics.fsaaSamples;
             // if we do post-processing we'll need an FBO for the scene
             genFBO(drawable.getGL().getGL2(), viewer.getScreen());
         }
 
         selectRenderer(drawable.getGL().getGL2(), cm);
 
-        drawable.getGL().setSwapInterval(viewer.getConfig().getGraphics().isVsync() ? 1 : 0);
+        drawable.getGL().setSwapInterval(viewer.getConfig().graphics.useVsync ? 1 : 0);
 
         vantage = viewer.getUI().getCamera();
     }
@@ -121,9 +121,9 @@ public class Renderer implements WindowResizeListener {
      */
     private void selectRenderer(GL2 gl, ContentManager cm) {
         while (sceneRenderer == null) {
-            if (graphics.useShadows())
+            if (graphics.useShadows)
                 sceneRenderer = new VSMPhongWorldRenderer(effectManager);
-            else if (graphics.usePhong())
+            else if (graphics.usePhong)
                 sceneRenderer = new PhongWorldRenderer();
             else
                 sceneRenderer = new BasicSceneRenderer();
@@ -147,12 +147,12 @@ public class Renderer implements WindowResizeListener {
     public void render(GLAutoDrawable drawable, Configuration.Graphics config) {
         GL2 gl = drawable.getGL().getGL2();
 
-        if (config.useShadows()) {
+        if (config.useShadows) {
             ShadowMapRenderer shadowRenderer = effectManager.getShadowRenderer();
             shadowRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
         }
 
-        if (graphics.useStereo()) {
+        if (graphics.useStereo) {
             vantage.applyLeft(gl, glu, viewer.getScreen());
             gl.glDrawBuffer(GL2.GL_BACK_LEFT);
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -178,7 +178,7 @@ public class Renderer implements WindowResizeListener {
     }
 
     private void drawScene(GL2 gl) {
-        if (graphics.useBloom()) {
+        if (graphics.useBloom) {
 
             if (msSceneFBO != null) {
                 msSceneFBO.bind(gl);
@@ -230,8 +230,7 @@ public class Renderer implements WindowResizeListener {
 
     @Override
     public void windowResized(WindowResizeEvent event) {
-        if (viewer.getConfig().getGraphics().useBloom()
-                || viewer.getConfig().getGraphics().useShadows()) {
+        if (viewer.getConfig().graphics.useBloom || viewer.getConfig().graphics.useShadows) {
             if (sceneFBO != null)
                 sceneFBO.dispose(event.getDrawable().getGL());
             if (msSceneFBO != null)

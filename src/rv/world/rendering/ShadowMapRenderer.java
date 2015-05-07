@@ -179,7 +179,7 @@ public class ShadowMapRenderer implements SceneRenderer {
     private boolean abortInit(GL2 gl, String error, Configuration.Graphics config) {
         System.err.println("Shadow Map: " + error);
         dispose(gl);
-        config.setUseShadows(false);
+        config.useShadows = false;
         return false;
     }
 
@@ -307,9 +307,9 @@ public class ShadowMapRenderer implements SceneRenderer {
     public boolean init(GL2 gl, Graphics conf, ContentManager cm) {
         this.content = cm;
         this.graphics = conf;
-        this.useBlur = conf.useSoftShadows();
+        this.useBlur = conf.useSoftShadows;
 
-        texWidth = texHeight = conf.getShadowResolution();
+        texWidth = texHeight = conf.shadowResolution;
 
         // generate FBOs
         shadowFBO = createShadowFBO(gl);

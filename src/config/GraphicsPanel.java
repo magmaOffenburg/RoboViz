@@ -54,7 +54,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
     public GraphicsPanel(RVConfigure configProg) {
         this.configProg = configProg;
-        config = configProg.config.getGraphics();
+        config = configProg.config.graphics;
         initGUI();
         configProg.listeners.add(this);
     }
@@ -96,14 +96,14 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 10;
 
-        fsaaCB = new JCheckBox("Enabled", config.useFSAA());
+        fsaaCB = new JCheckBox("Enabled", config.useFsaa);
         fsaaCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 samplesTF.setEnabled(fsaaCB.isSelected());
                 samplesLabel.setEnabled(fsaaCB.isSelected());
             }
         });
-        samplesTF = new IntegerTextField(config.getFSAASamples(), 1, Integer.MAX_VALUE);
+        samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
 
         addConstrained(fsaaCB, panel, c, 0, 0);
         addConstrained(samplesLabel, panel, c, 1, 0);
@@ -120,10 +120,10 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 10;
 
-        stereoCB = new JCheckBox("Stereo 3D", config.useStereo());
-        fpsSpinner = new JSpinner(new SpinnerNumberModel(config.getTargetFPS(), 1, 60, 1));
-        fwSpinner = new JSpinner(new SpinnerNumberModel(config.getFrameWidth(), 1, 10000, 1));
-        fhSpinner = new JSpinner(new SpinnerNumberModel(config.getFrameHeight(), 1, 10000, 1));
+        stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
+        fpsSpinner = new JSpinner(new SpinnerNumberModel(config.targetFPS, 1, 60, 1));
+        fwSpinner = new JSpinner(new SpinnerNumberModel(config.frameWidth, 1, 10000, 1));
+        fhSpinner = new JSpinner(new SpinnerNumberModel(config.frameHeight, 1, 10000, 1));
 
         addConstrained(stereoCB, panel, c, 0, 0);
 
@@ -147,9 +147,9 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 10;
 
-        bloomCB = new JCheckBox("Bloom", config.useBloom());
-        phongCB = new JCheckBox("Phong", config.usePhong());
-        shadowCB = new JCheckBox("Shadows", config.useShadows());
+        bloomCB = new JCheckBox("Bloom", config.useBloom);
+        phongCB = new JCheckBox("Phong", config.usePhong);
+        shadowCB = new JCheckBox("Shadows", config.useShadows);
         shadowCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent arg0) {
                 softShadowCB.setEnabled(shadowCB.isSelected());
@@ -158,8 +158,8 @@ public class GraphicsPanel extends JPanel implements SaveListener {
             }
         });
 
-        softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows());
-        shadowResTB = new IntegerTextField(config.getShadowResolution(), 1, Integer.MAX_VALUE);
+        softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
+        shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);
 
         addConstrained(phongCB, panel, c, 0, 0);
         addConstrained(bloomCB, panel, c, 1, 0);
@@ -174,29 +174,28 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
     @Override
     public void configSaved(RVConfigure configProg) {
-        config.setUseBloom(bloomCB.isSelected());
-        config.setUsePhong(phongCB.isSelected());
-        config.setUseShadows(shadowCB.isSelected());
-        config.setSoftShadow(softShadowCB.isSelected());
-        config.setFSAA(fsaaCB.isSelected());
-        config.setUseStereo(stereoCB.isSelected());
+        config.useBloom = bloomCB.isSelected();
+        config.usePhong = phongCB.isSelected();
+        config.useShadows = shadowCB.isSelected();
+        config.useSoftShadows = softShadowCB.isSelected();
+        config.useFsaa = fsaaCB.isSelected();
+        config.useStereo = stereoCB.isSelected();
 
         try {
-            int samples = Integer.parseInt(samplesTF.getText());
-            config.setFSAASamples(samples);
+            config.fsaaSamples = Integer.parseInt(samplesTF.getText());
+            ;
         } catch (Exception e) {
-            samplesTF.setText(config.getFSAASamples() + "");
+            samplesTF.setText(config.fsaaSamples + "");
         }
 
         try {
-            int shadowRes = Integer.parseInt(shadowResTB.getText());
-            config.setShadowResolution(shadowRes);
+            config.shadowResolution = Integer.parseInt(shadowResTB.getText());
         } catch (Exception e) {
-            shadowResTB.setText(config.getShadowResolution() + "");
+            shadowResTB.setText(config.shadowResolution + "");
         }
 
-        config.setTargetFPS(((Integer) fpsSpinner.getValue()).intValue());
-        config.setFrameWidth(((Integer) fwSpinner.getValue()).intValue());
-        config.setFrameHeight(((Integer) fhSpinner.getValue()).intValue());
+        config.targetFPS = (Integer) fpsSpinner.getValue();
+        config.frameWidth = (Integer) fwSpinner.getValue();
+        config.frameHeight = (Integer) fhSpinner.getValue();
     }
 }

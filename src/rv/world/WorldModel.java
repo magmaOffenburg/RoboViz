@@ -130,7 +130,7 @@ public class WorldModel {
     }
 
     public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode) {
-        this.config = config.getGraphics();
+        this.config = config.graphics;
 
         GL2 gl = glObj.getGL2();
 
@@ -139,10 +139,10 @@ public class WorldModel {
         gameState.addListener(cm);
 
         leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
-                config.getTeamColors());
+                config.teamColors);
         gameState.addListener(leftTeam);
         rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
-                config.getTeamColors());
+                config.teamColors);
         gameState.addListener(rightTeam);
         if (mode == Mode.LIVE) {
             // teams and agents try to locate themselves in scene graph for

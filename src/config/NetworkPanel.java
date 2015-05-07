@@ -47,7 +47,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
     public NetworkPanel(RVConfigure configProg) {
         this.configProg = configProg;
-        this.config = configProg.config.getNetworking();
+        this.config = configProg.config.networking;
         configProg.listeners.add(this);
         initGUI();
     }
@@ -89,7 +89,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 0;
-        serverHostTF = new JTextField(config.getServerHost());
+        serverHostTF = new JTextField(config.serverHost);
         serverHostTF.setPreferredSize(new Dimension(150, 28));
         panel.add(serverHostTF, c);
 
@@ -97,23 +97,22 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 1;
-        serverPortTF = new PortTextField(config.getServerPort());
+        serverPortTF = new PortTextField(config.serverPort);
         panel.add(serverPortTF, c);
 
         addLabel("Delay: ", panel, c, 0, 2);
 
         c.gridx = 1;
         c.gridy = 2;
-        autoConnectDelayTF = new IntegerTextField(config.getAutoConnectDelay(), 1,
-                Integer.MAX_VALUE);
+        autoConnectDelayTF = new IntegerTextField(config.autoConnectDelay, 1, Integer.MAX_VALUE);
         panel.add(autoConnectDelayTF, c);
 
         c.gridx = 1;
         c.gridy = 3;
-        final JCheckBox autoConnectCB = new JCheckBox("Auto-Connect", config.isAutoConnect());
+        final JCheckBox autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
         autoConnectCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                config.setAutoConnect(autoConnectCB.isSelected());
+                config.autoConnect = autoConnectCB.isSelected();
                 autoConnectDelayTF.setEnabled(autoConnectCB.isSelected());
             }
         });
@@ -134,7 +133,7 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 0;
-        drawingPortTF = new PortTextField(config.getListenPort());
+        drawingPortTF = new PortTextField(config.listenPort);
         drawingPortTF.setPreferredSize(new Dimension(150, 28));
         panel.add(drawingPortTF, c);
 
@@ -143,27 +142,25 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
     @Override
     public void configSaved(RVConfigure configProg) {
-        config.setServerHost(serverHostTF.getText());
+        config.serverHost = serverHostTF.getText();
 
         try {
-            int port = Integer.parseInt(serverPortTF.getText());
-            config.setServerPort(port);
+            config.serverPort = Integer.parseInt(serverPortTF.getText());
         } catch (Exception e) {
-            serverPortTF.setText("" + config.getServerPort());
+            serverPortTF.setText("" + config.serverPort);
         }
 
         try {
-            int delay = Integer.parseInt(autoConnectDelayTF.getText());
-            config.setAutoConnectDelay(delay);
+            config.autoConnectDelay = Integer.parseInt(autoConnectDelayTF.getText());
         } catch (Exception e) {
-            autoConnectDelayTF.setText("" + config.getAutoConnectDelay());
+            autoConnectDelayTF.setText("" + config.autoConnectDelay);
         }
 
         try {
-            int drawport = Integer.parseInt(drawingPortTF.getText());
-            config.setListenPort(drawport);
+            config.listenPort = Integer.parseInt(drawingPortTF.getText());
+            ;
         } catch (Exception e) {
-            drawingPortTF.setText("" + config.getListenPort());
+            drawingPortTF.setText("" + config.listenPort);
         }
     }
 }

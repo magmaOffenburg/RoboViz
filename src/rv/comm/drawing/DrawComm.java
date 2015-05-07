@@ -78,9 +78,9 @@ public class DrawComm {
         packetReceiver = new ReceiveThread(port);
         packetReceiver.start();
         outSocket = new DatagramSocket();
-        Configuration.Networking config = viewer.getConfig().getNetworking();
-        sendAddress = InetAddress.getByName(config.getServerHost());
-        sendPort = config.getServerPort();
+        Configuration.Networking config = viewer.getConfig().networking;
+        sendAddress = InetAddress.getByName(config.serverHost);
+        sendPort = config.serverPort;
     }
 
     /** Sends a UDP packet to all clients */

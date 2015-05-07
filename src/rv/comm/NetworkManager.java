@@ -43,7 +43,7 @@ public class NetworkManager {
 
     public void init(Viewer viewer, Configuration config) {
         try {
-            agentComm = new DrawComm(viewer, config.getNetworking().getListenPort());
+            agentComm = new DrawComm(viewer, config.networking.listenPort);
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
