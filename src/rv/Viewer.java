@@ -63,8 +63,8 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     /** Event object for when the main RoboVis window is resized */
     public class WindowResizeEvent extends EventObject {
 
-        private Viewport       window;
-        private GLAutoDrawable drawable;
+        private final Viewport       window;
+        private final GLAutoDrawable drawable;
 
         public Viewport getWindow() {
             return window;
@@ -86,25 +86,22 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         public void windowResized(WindowResizeEvent event);
     }
 
-    // list of modules that should be included in main update loop
-    private List<IUpdatable>           updatables            = new ArrayList<>();
+    private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
-    private List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
-
-    private WorldModel                 world;
-    private UserInterface              ui;
-    private NetworkManager             netManager;
-    private ContentManager             contentManager;
-    private Drawings                   drawings;
-    private Renderer                   renderer;
-    private LogPlayer                  logPlayer;
-    boolean                            init                  = false;
-    private boolean                    fullscreen            = false;
-    private GLInfo                     glInfo;
-    private Configuration              config;
-    private String                     ssName                = null;
-    private String                     logFileName;
-    private Mode                       mode                  = Mode.LIVE;
+    private WorldModel                       world;
+    private UserInterface                    ui;
+    private NetworkManager                   netManager;
+    private ContentManager                   contentManager;
+    private Drawings                         drawings;
+    private Renderer                         renderer;
+    private LogPlayer                        logPlayer;
+    boolean                                  init                  = false;
+    private boolean                          fullscreen            = false;
+    private GLInfo                           glInfo;
+    private final Configuration              config;
+    private String                           ssName                = null;
+    private String                           logFileName;
+    private Mode                             mode                  = Mode.LIVE;
 
     public LogPlayer getLogPlayer() {
         return logPlayer;
@@ -286,10 +283,6 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         ui.update(gl, elapsedMS);
         world.update(gl, elapsedMS, ui);
         drawings.update();
-
-        // update any plug-ins that request updates
-        for (IUpdatable module : updatables)
-            module.update(gl, world, ui, elapsedMS);
     }
 
     public static void main(String[] args) {

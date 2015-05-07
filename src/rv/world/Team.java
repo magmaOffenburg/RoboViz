@@ -42,12 +42,12 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     private static final int               MAX_AGENTS = 11;
 
     private final Configuration.TeamColors config;
-    private ContentManager                 content;
+    private final ContentManager           content;
     private final float[]                  defaultColor;
     private final int                      id;
     private String                         name;
-    private List<Agent>                    agents;
-    private ObjMaterial                    teamColor;
+    private final List<Agent>              agents;
+    private final ObjMaterial              teamColor;
     private int                            score;
 
     public ObjMaterial getTeamMaterial() {
@@ -104,7 +104,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         this.id = id;
         this.content = content;
         this.config = config;
-        agents = new ArrayList<Agent>();
+        agents = new ArrayList<>();
 
         name = (id == LEFT) ? "<left>" : "<right>";
 
@@ -138,8 +138,8 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
     @Override
     public void update(SceneGraph sg) {
-        for (int i = 0; i < agents.size(); i++)
-            agents.get(i).update(sg);
+        for (Agent agent : agents)
+            agent.update(sg);
     }
 
     public Agent getAgentByID(int id) {

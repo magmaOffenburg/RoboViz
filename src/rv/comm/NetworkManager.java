@@ -17,7 +17,6 @@
 package rv.comm;
 
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.DrawComm;
@@ -44,7 +43,7 @@ public class NetworkManager {
     public void init(Viewer viewer, Configuration config) {
         try {
             agentComm = new DrawComm(viewer, config.networking.listenPort);
-        } catch (SocketException | UnknownHostException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         }
         serverComm = new ServerComm(viewer.getWorldModel(), config, viewer.getMode());

@@ -30,18 +30,21 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class GameStateOverlay implements Screen {
 
     private class GameStateBar {
-        private static final int barHeight     = 24;
-        private static final int nameWidth     = 220;
-        private static final int timeWidth     = 78;
-        private static final int timepad       = 11;
-        private static final int scoreBoxWidth = 56;
-        private static final int ypad          = 4;
-        private static final int playModeWidth = 2 * nameWidth + scoreBoxWidth + timeWidth + 6;
+        private static final int   BAR_HEIGHT      = 24;
+        private static final int   NAME_WIDTH      = 220;
+        private static final int   TIME_WIDTH      = 78;
+        private static final int   TIME_PAD        = 11;
+        private static final int   SCORE_BOX_WIDTH = 56;
+        private static final int   Y_PAD           = 4;
+        private static final int   PLAYMODE_WIDTH  = 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH
+                                                           + 6;
 
-        private TextRenderer     tr1;
-        private TextRenderer     tr2;
+        private final TextRenderer tr1;
+        private final TextRenderer tr2;
 
-        private int              x, y;
+        private final int          x;
+
+        private int                y;
 
         public GameStateBar(int x, int y) {
             this.x = x;
@@ -59,39 +62,40 @@ public class GameStateOverlay implements Screen {
             String timeText = String.format(Locale.US, "%.1f", gs.getTime());
 
             // truncate team names that are too long to fit within bounds
-            while (tr1.getBounds(teamL).getWidth() > nameWidth - 4)
+            while (tr1.getBounds(teamL).getWidth() > NAME_WIDTH - 4)
                 teamL = teamL.substring(0, teamL.length() - 1);
-            while (tr1.getBounds(teamR).getWidth() > nameWidth - 4)
+            while (tr1.getBounds(teamR).getWidth() > NAME_WIDTH - 4)
                 teamR = teamR.substring(0, teamR.length() - 1);
 
-            double lxpad = (nameWidth - tr1.getBounds(teamL).getWidth()) / 2;
-            double rxpad = (nameWidth - tr1.getBounds(teamR).getWidth()) / 2;
-            double sxpad = (scoreBoxWidth - tr1.getBounds(scoreText).getWidth()) / 2;
+            double lxpad = (NAME_WIDTH - tr1.getBounds(teamL).getWidth()) / 2;
+            double rxpad = (NAME_WIDTH - tr1.getBounds(teamR).getWidth()) / 2;
+            double sxpad = (SCORE_BOX_WIDTH - tr1.getBounds(scoreText).getWidth()) / 2;
 
-            drawGradientBar(gl, x - 3, y - 24, playModeWidth, 24, 0.5f,
-                    new float[] { 0, 0, 0, 0.5f }, new float[] { 0, 0, 0, 0 }, false);
+            drawGradientBar(gl, x - 3, y - 24, PLAYMODE_WIDTH, 24, 0.5f, new float[] { 0, 0, 0,
+                    0.5f }, new float[] { 0, 0, 0, 0 }, false);
 
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor4f(0, 0, 0, 0.5f);
-            drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6, barHeight + 6);
-            drawBox(gl, x - 3, y - 3, 2 * nameWidth + scoreBoxWidth + timeWidth + 6,
-                    barHeight * 0.6f);
+            drawBox(gl, x - 3, y - 3, 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6,
+                    BAR_HEIGHT + 6);
+            drawBox(gl, x - 3, y - 3, 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6,
+                    BAR_HEIGHT * 0.6f);
             float[] lc = viewer.getWorldModel().getLeftTeam().getTeamMaterial().getDiffuse();
             gl.glColor4f(lc[0] * 0.8f, lc[1] * 0.8f, lc[2] * 0.8f, 0.65f);
-            drawBox(gl, x, y, nameWidth, barHeight);
+            drawBox(gl, x, y, NAME_WIDTH, BAR_HEIGHT);
             gl.glColor4f(0.2f, 0.2f, 0.2f, 0.65f);
-            drawBox(gl, x + nameWidth, y, scoreBoxWidth, barHeight);
+            drawBox(gl, x + NAME_WIDTH, y, SCORE_BOX_WIDTH, BAR_HEIGHT);
             gl.glColor4f(1, .3f, .3f, 0.65f);
             float[] rc = viewer.getWorldModel().getRightTeam().getTeamMaterial().getDiffuse();
             gl.glColor4f(rc[0] * 0.8f, rc[1] * 0.8f, rc[2] * 0.8f, 0.65f);
-            drawBox(gl, x + nameWidth + scoreBoxWidth, y, nameWidth, barHeight);
+            drawBox(gl, x + NAME_WIDTH + SCORE_BOX_WIDTH, y, NAME_WIDTH, BAR_HEIGHT);
             gl.glEnd();
 
             tr1.beginRendering(screenW, screenH);
-            tr1.draw(teamL, (int) (x + lxpad), y + ypad);
-            tr1.draw(scoreText, (int) (x + nameWidth + sxpad), y + ypad);
-            tr1.draw(teamR, (int) (x + nameWidth + scoreBoxWidth + rxpad), y + ypad);
-            tr1.draw(timeText, x + 2 * nameWidth + scoreBoxWidth + timepad, y + ypad);
+            tr1.draw(teamL, (int) (x + lxpad), y + Y_PAD);
+            tr1.draw(scoreText, (int) (x + NAME_WIDTH + sxpad), y + Y_PAD);
+            tr1.draw(teamR, (int) (x + NAME_WIDTH + SCORE_BOX_WIDTH + rxpad), y + Y_PAD);
+            tr1.draw(timeText, x + 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_PAD, y + Y_PAD);
             tr1.endRendering();
 
             tr2.setColor(0.9f, 0.9f, 0.9f, 1);
@@ -101,14 +105,11 @@ public class GameStateOverlay implements Screen {
         }
     }
 
-    private Viewer       viewer;
-    private TextRenderer textRenderer;
-    private GameStateBar gsBar;
+    private final Viewer       viewer;
+    private final GameStateBar gsBar;
 
     public GameStateOverlay(Viewer viewer) {
         this.viewer = viewer;
-        Font font = new Font("Arial", Font.PLAIN, 20);
-        textRenderer = new TextRenderer(font, true, false);
         gsBar = new GameStateBar(20, 20);
     }
 
@@ -166,10 +167,8 @@ public class GameStateOverlay implements Screen {
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-
-        gsBar.y = vp.h - gsBar.barHeight - 20;
+        gsBar.y = vp.h - GameStateBar.BAR_HEIGHT - 20;
         gsBar.render(gl, viewer.getWorldModel().getGameState(), vp.w, vp.h);
-
     }
 
     static void drawBox(GL2 gl, float x, float y, float w, float h) {

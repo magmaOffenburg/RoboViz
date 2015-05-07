@@ -45,25 +45,24 @@ import rv.world.objects.SkyBox;
 public class WorldModel {
 
     /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
-    public static final Matrix            COORD_TFN   = new Matrix(new double[] { -1, 0, 0, 0, 0,
-            0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
+    public static final Matrix                  COORD_TFN   = new Matrix(new double[] { -1, 0, 0,
+            0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
 
-    private GameState                     gameState   = new GameState();
-    private SceneGraph                    sceneGraph  = null;
+    private final GameState                     gameState   = new GameState();
+    private SceneGraph                          sceneGraph  = null;
 
-    private ArrayList<ISceneGraphItem>    sgItems     = new ArrayList<>();
+    private final ArrayList<ISceneGraphItem>    sgItems     = new ArrayList<>();
 
-    private Configuration.Graphics        config;
-    private Field                         field;
-    private Ball                          ball;
-    private Team                          leftTeam;
-    private Team                          rightTeam;
-    private LightModel                    lighting;
-    private SkyBox                        skyBox;
+    private Field                               field;
+    private Ball                                ball;
+    private Team                                leftTeam;
+    private Team                                rightTeam;
+    private LightModel                          lighting;
+    private SkyBox                              skyBox;
 
-    private ISelectable                   selectedObject;
+    private ISelectable                         selectedObject;
 
-    private ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
+    private final ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
 
     public void addSceneGraphListener(SceneGraphListener sgl) {
         sgListeners.add(sgl);
@@ -130,8 +129,6 @@ public class WorldModel {
     }
 
     public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode) {
-        this.config = config.graphics;
-
         GL2 gl = glObj.getGL2();
 
         field = new Field(cm.getModel("models/newfield.obj"), cm);

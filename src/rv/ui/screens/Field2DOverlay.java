@@ -19,9 +19,6 @@ package rv.ui.screens;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import js.jogl.Texture2D;
-import js.jogl.model.MeshPart;
-import js.jogl.model.ObjMaterial;
 import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
@@ -37,16 +34,13 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public class Field2DOverlay implements Screen, GameStateChangeListener {
 
-    private WorldModel world;
-    private Texture2D  texture;
+    private final WorldModel world;
 
-    private float      originX      = 20;
-    private float      originY      = 20;
-    private float      fieldWidth   = 180;
-    private float      fieldLength  = 120;
-    private int        screenWidth  = 1;
-    private int        screenHeight = 1;
-    private boolean    visible      = false;
+    private float            fieldWidth   = 180;
+    private float            fieldLength  = 120;
+    private int              screenWidth  = 1;
+    private int              screenHeight = 1;
+    private boolean          visible      = false;
 
     public void setVisible(boolean visible) {
         this.visible = visible;
@@ -64,13 +58,6 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     @Override
     public void setEnabled(GLCanvas canvas, boolean enabled) {
     }
-
-    // private float[] calc2DPos(Vec3f p) {
-    // float hw = fieldWidth / 2;
-    // float x = originX + hw - p.x / 9 * hw;
-    // float y = originY + hh + p.z / 6 * hh;
-    // return new float[] { x, y };
-    // }
 
     private void setView(GL2 gl, GLU glu) {
         float hfw = fieldWidth / 2;
@@ -134,13 +121,6 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         if (world.getField().getModel().isLoaded() && visible) {
-            MeshPart part = world.getField().getModel().getMesh().getParts().get(1);
-            texture = ((ObjMaterial) part.getMaterial()).getTexture();
-
-            // render field
-            // gl.glEnable(GL.GL_TEXTURE_2D);
-            // gl.glEnable(GL.GL_BLEND);
-
             screenWidth = vp.w;
             screenHeight = vp.h;
 

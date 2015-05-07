@@ -34,9 +34,9 @@ import rv.world.WorldModel;
  */
 public class SceneObjectPicker {
 
-    private WorldModel world;
-    private Camera3D   camera;
-    private Ray        pickRay;
+    private final WorldModel world;
+    private final Camera3D   camera;
+    private Ray              pickRay;
 
     public SceneObjectPicker(WorldModel world, Camera3D camera) {
         this.world = world;
@@ -61,7 +61,7 @@ public class SceneObjectPicker {
         if (pickRay == null)
             return null;
 
-        List<ISelectable> selectables = new ArrayList<ISelectable>();
+        List<ISelectable> selectables = new ArrayList<>();
         for (ISelectable s : world.getLeftTeam().getAgents())
             selectables.add(s);
         for (ISelectable s : world.getRightTeam().getAgents())
@@ -75,8 +75,7 @@ public class SceneObjectPicker {
         ISelectable closest = null;
         float minDepth = Float.POSITIVE_INFINITY;
         float d;
-        for (int i = 0; i < objects.size(); i++) {
-            ISelectable o = objects.get(i);
+        for (ISelectable o : objects) {
             if (o.getBoundingBox() == null)
                 continue;
             Vec3f[] x = o.getBoundingBox().intersect(pickRay);
@@ -90,8 +89,8 @@ public class SceneObjectPicker {
 
     private static float getMinDepth(Vec3f[] x, Vec3f origin) {
         float minDepth = Float.POSITIVE_INFINITY;
-        for (int i = 0; i < x.length; i++) {
-            float d = x[i].minus(origin).lengthSquared();
+        for (Vec3f aX : x) {
+            float d = aX.minus(origin).lengthSquared();
             minDepth = d < minDepth ? d : minDepth;
         }
 

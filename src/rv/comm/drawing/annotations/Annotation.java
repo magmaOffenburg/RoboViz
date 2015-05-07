@@ -25,10 +25,10 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  */
 public abstract class Annotation {
 
-    protected float[] pos;
-    protected float[] color;
-    protected String  text;
-    protected String  set;
+    protected final float[] pos;
+    protected final float[] color;
+    protected final String  text;
+    protected final String  set;
 
     public float[] getPos() {
         return pos;

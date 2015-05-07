@@ -43,17 +43,17 @@ import com.jogamp.opengl.util.gl2.GLUT;
  * @author Justin Stoecker
  */
 public class UserInterface implements KeyListener {
-    private Viewer            viewer;
-    private FPCamera          camera;
-    private DrawingListPanel  poolPanel;
-    private ControlsHelpPanel helpPanel;
-    private CameraController  cameraControl;
+    private final Viewer            viewer;
+    private FPCamera                camera;
+    private final DrawingListPanel  poolPanel;
+    private final ControlsHelpPanel helpPanel;
+    private CameraController        cameraControl;
 
-    private SceneObjectPicker picker;
-    private Screen            overlay;
-    private KeyListener[]     tempListeners;
-    private Screen            activeScreen;
-    private CamTargetTracker  ballTracker;
+    private final SceneObjectPicker picker;
+    private Screen                  overlay;
+    private KeyListener[]           tempListeners;
+    private Screen                  activeScreen;
+    private CamTargetTracker        ballTracker;
 
     public CamTargetTracker getBallTracker() {
         return ballTracker;
@@ -65,9 +65,6 @@ public class UserInterface implements KeyListener {
 
     public SceneObjectPicker getObjectPicker() {
         return picker;
-    }
-
-    public void showSettings() {
     }
 
     public Screen getActiveScreen() {

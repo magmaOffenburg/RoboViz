@@ -25,9 +25,9 @@ import rv.comm.drawing.commands.Command;
  * @author Justin Stoecker
  */
 public class Line extends Shape {
-    private float[] start;
-    private float[] end;
-    private float   thickness;
+    private final float[] start;
+    private final float[] end;
+    private final float   thickness;
 
     public Line(String set, float[] start, float[] end, float[] color, float thickness) {
         super(set, color);

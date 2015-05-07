@@ -13,7 +13,7 @@ import rv.world.WorldModel;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener {
-    protected Viewer viewer;
+    protected final Viewer viewer;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;

@@ -88,8 +88,7 @@ public class TarBz2ZipUtil {
                 return null;
             } else {
                 ZipEntry zipEntry = zipFile.entries().nextElement();
-                Reader reader = new InputStreamReader(zipFile.getInputStream(zipEntry));
-                return reader;
+                return new InputStreamReader(zipFile.getInputStream(zipEntry));
             }
 
         } catch (IOException e) {
@@ -153,9 +152,7 @@ public class TarBz2ZipUtil {
                     .createCompressorInputStream(which, zStream);
             return new InputStreamReader(bz2InputStream);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CompressorException e) {
+        } catch (IOException | CompressorException e) {
             e.printStackTrace();
         }
         return null;
@@ -193,45 +190,31 @@ public class TarBz2ZipUtil {
 
             CompressorOutputStream bz2Stream = new CompressorStreamFactory()
                     .createCompressorOutputStream(which, zStream);
-            // TarArchiveOutputStream tarStream = new TarArchiveOutputStream(
-            // bz2Stream);
-            // TarArchiveEntry entry = new TarArchiveEntry("spark.log");
-            // tarStream.putArchiveEntry(entry);
             return new OutputStreamWriter(bz2Stream);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CompressorException e) {
+        } catch (IOException | CompressorException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public static boolean isTarBZ2Ending(File file) {
-        if (file.getName().toLowerCase().endsWith("tar.bz2")) {
-            return true;
-        }
-        return false;
+        return endsWith(file, "tar.bz2");
     }
 
     public static boolean isBZ2Ending(File file) {
-        if (file.getName().toLowerCase().endsWith(".bz2")) {
-            return true;
-        }
-        return false;
+        return endsWith(file, ".bz2");
     }
 
     public static boolean isGZipEnding(File file) {
-        if (file.getName().toLowerCase().endsWith(".gz")) {
-            return true;
-        }
-        return false;
+        return endsWith(file, ".gz");
     }
 
     public static boolean isZIPEnding(File file) {
-        if (file.getName().toLowerCase().endsWith("zip")) {
-            return true;
-        }
-        return false;
+        return endsWith(file, "zip");
+    }
+
+    private static boolean endsWith(File file, String ending) {
+        return file.getName().toLowerCase().endsWith(ending);
     }
 }

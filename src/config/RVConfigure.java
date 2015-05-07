@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import rv.Configuration;
 import rv.Globals;
 import rv.Viewer;
@@ -35,9 +36,9 @@ public class RVConfigure extends JFrame {
         void configSaved(RVConfigure configProg);
     }
 
-    Configuration           config;
-    JButton                 saveButton;
-    ArrayList<SaveListener> listeners = new ArrayList<>();
+    Configuration                 config;
+    final JButton                 saveButton;
+    final ArrayList<SaveListener> listeners = new ArrayList<>();
 
     public RVConfigure() {
 
@@ -89,7 +90,7 @@ public class RVConfigure extends JFrame {
         });
         southPanel.add(startButton);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(600, 600);
         setResizable(false);
         getRootPane().setDefaultButton(startButton);

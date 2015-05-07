@@ -36,7 +36,7 @@ public class DrawAnnotation extends Command {
     public static final int AGENT_ADD   = 1;
     public static final int AGENT_CLEAR = 2;
 
-    private Drawings        drawings;
+    private final Drawings  drawings;
     private Annotation      annotation;
 
     public DrawAnnotation(ByteBuffer buf, Viewer viewer) {

@@ -21,8 +21,8 @@ import js.math.vector.Vec3f;
 
 public class CameraSetting {
 
-    private Vec3f position;
-    private Vec2f rotation;
+    private final Vec3f position;
+    private final Vec2f rotation;
 
     public Vec3f getPosition() {
         return position;

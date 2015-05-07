@@ -30,7 +30,7 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
 
     private static final float FOV_DEGREES = 120.0f;
 
-    private Agent              agent;
+    private final Agent        agent;
 
     public RobotVantage(Agent agent, float near, float far) {
         super(agent.getHeadCenter(), near, far);
@@ -106,11 +106,8 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
         gl.glLoadIdentity();
         Vec3f eyeR = position.plus(this.right.times(eyeSep / 2));
-        Vec3f t = eyeR.plus(forward);
 
         Vec3f c = agent.getHeadCenter().minus(this.right.times(eyeSep / 2));
-        Matrix viewL = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z
-                + forward.z, 0, 1, 0);
         gl.glLoadIdentity();
         gl.glLoadMatrixd(viewMatrix.wrap());
     }

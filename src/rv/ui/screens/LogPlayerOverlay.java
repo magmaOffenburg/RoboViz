@@ -27,10 +27,10 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogPlayerOverlay implements Screen, KeyListener {
 
-    private float          barPad    = 20;
-    private float          barHeight = 10;
-    private LogPlayer      player;
-    private PlayerControls playDialog;
+    private final static float   BAR_PAD    = 20;
+    private final static float   BAR_HEIGHT = 10;
+    private final LogPlayer      player;
+    private final PlayerControls playDialog;
 
     public LogPlayerOverlay(LogPlayer player) {
         this.player = player;
@@ -53,21 +53,21 @@ public class LogPlayerOverlay implements Screen, KeyListener {
         // player bar
         gl.glColor4f(0.5f, 0.5f, 0.5f, 0.8f);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(barPad, barPad);
-        gl.glVertex2f(vp.w - barPad, barPad);
-        gl.glVertex2f(vp.w - barPad, barPad + barHeight);
-        gl.glVertex2f(barPad, barPad + barHeight);
+        gl.glVertex2f(BAR_PAD, BAR_PAD);
+        gl.glVertex2f(vp.w - BAR_PAD, BAR_PAD);
+        gl.glVertex2f(vp.w - BAR_PAD, BAR_PAD + BAR_HEIGHT);
+        gl.glVertex2f(BAR_PAD, BAR_PAD + BAR_HEIGHT);
         gl.glEnd();
 
         // player position knob
         float percent = (float) player.getFrame() / player.getNumFrames();
-        float knobX = percent * (vp.w - 2 * barPad) + barPad;
+        float knobX = percent * (vp.w - 2 * BAR_PAD) + BAR_PAD;
         gl.glColor4f(1, 1, 1, 1);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(knobX - 1, barPad - 2);
-        gl.glVertex2f(knobX + 1, barPad - 2);
-        gl.glVertex2f(knobX + 1, barPad + 2 + barHeight);
-        gl.glVertex2f(knobX - 1, barPad + 2 + barHeight);
+        gl.glVertex2f(knobX - 1, BAR_PAD - 2);
+        gl.glVertex2f(knobX + 1, BAR_PAD - 2);
+        gl.glVertex2f(knobX + 1, BAR_PAD + 2 + BAR_HEIGHT);
+        gl.glVertex2f(knobX - 1, BAR_PAD + 2 + BAR_HEIGHT);
         gl.glEnd();
     }
 

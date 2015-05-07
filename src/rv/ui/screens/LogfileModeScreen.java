@@ -25,8 +25,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogfileModeScreen extends ViewerScreenBase {
 
-    private GameStateOverlay gsOverlay;
-    private LogPlayerOverlay lpOverlay;
+    private final GameStateOverlay gsOverlay;
+    private final LogPlayerOverlay lpOverlay;
 
     public LogfileModeScreen(Viewer viewer) {
         super(viewer);

@@ -35,22 +35,23 @@ import config.RVConfigure.SaveListener;
 
 public class GraphicsPanel extends JPanel implements SaveListener {
 
-    RVConfigure            configProg;
-    Configuration.Graphics config;
+    final RVConfigure            configProg;
+    final Configuration.Graphics config;
 
-    JCheckBox              bloomCB;
-    JCheckBox              phongCB;
-    JCheckBox              shadowCB;
-    JCheckBox              softShadowCB;
-    JCheckBox              fsaaCB;
-    JCheckBox              stereoCB;
-    JTextField             samplesTF;
-    JTextField             shadowResTB;
-    JSpinner               fpsSpinner;
-    JSpinner               fwSpinner;
-    JSpinner               fhSpinner;
-    JLabel                 shadowResLabel = new JLabel("Shadow Resolution: ", SwingConstants.RIGHT);
-    JLabel                 samplesLabel   = new JLabel("Samples: ", SwingConstants.RIGHT);
+    JCheckBox                    bloomCB;
+    JCheckBox                    phongCB;
+    JCheckBox                    shadowCB;
+    JCheckBox                    softShadowCB;
+    JCheckBox                    fsaaCB;
+    JCheckBox                    stereoCB;
+    JTextField                   samplesTF;
+    JTextField                   shadowResTB;
+    JSpinner                     fpsSpinner;
+    JSpinner                     fwSpinner;
+    JSpinner                     fhSpinner;
+    final JLabel                 shadowResLabel = new JLabel("Shadow Resolution: ",
+                                                        SwingConstants.RIGHT);
+    final JLabel                 samplesLabel   = new JLabel("Samples: ", SwingConstants.RIGHT);
 
     public GraphicsPanel(RVConfigure configProg) {
         this.configProg = configProg;
@@ -183,7 +184,6 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
         try {
             config.fsaaSamples = Integer.parseInt(samplesTF.getText());
-            ;
         } catch (Exception e) {
             samplesTF.setText(config.fsaaSamples + "");
         }

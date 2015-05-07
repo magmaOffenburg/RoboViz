@@ -26,15 +26,15 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  */
 public class TextOverlay {
 
-    private String  text;
-    private int     fadeDuration = 750;
-    private int     duration;
-    private int     x, y;
-    private float   a            = 1;
-    private long    elapsed      = 0;
-    private long    lastTime     = 0;
-    private boolean done         = false;
-    private float[] color;
+    private final String  text;
+    private int           fadeDuration = 750;
+    private int           duration;
+    private int           x, y;
+    private float         a            = 1;
+    private long          elapsed      = 0;
+    private long          lastTime     = 0;
+    private boolean       done         = false;
+    private final float[] color;
 
     public void setFadeDuration(int fadeDuration) {
         this.fadeDuration = fadeDuration;

@@ -23,7 +23,7 @@ import rv.comm.drawing.commands.Command;
 
 public class Polygon extends Shape {
 
-    private float[][] v;
+    private final float[][] v;
 
     public Polygon(String set, float[] color, float[][] verts) {
         super(set, color);
@@ -34,8 +34,8 @@ public class Polygon extends Shape {
     public void draw(GL2 gl) {
         gl.glColor4fv(color, 0);
         gl.glBegin(GL2.GL_POLYGON);
-        for (int i = 0; i < v.length; i++)
-            gl.glVertex3fv(v[i], 0);
+        for (float[] aV : v)
+            gl.glVertex3fv(aV, 0);
         gl.glEnd();
     }
 

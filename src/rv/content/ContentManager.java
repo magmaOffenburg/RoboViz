@@ -58,7 +58,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 
     private class ModelLoader extends Thread {
 
-        private Model model;
+        private final Model model;
 
         public ModelLoader(Model model) {
             this.model = model;
@@ -74,13 +74,11 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 
     private final Configuration.TeamColors config;
 
-    // GLU glu = new GLU();
-    // GLUT glut = new GLUT();
     private Mesh.RenderMode                meshRenderMode     = Mesh.RenderMode.IMMEDIATE;
     private Texture2D                      whiteTexture;
     public static Texture2D                selectionTexture;
-    private List<Model>                    modelsToInitialize = new ArrayList<Model>();
-    private List<Model>                    models             = new ArrayList<Model>();
+    private final List<Model>              modelsToInitialize = new ArrayList<>();
+    private final List<Model>              models             = new ArrayList<>();
     private ObjMaterialLibrary             naoMaterialLib;
 
     public Texture2D getSelectionTexture() {
@@ -107,8 +105,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
      * added to a queue and loaded.
      */
     public synchronized Model getModel(String name) {
-        for (int i = 0; i < models.size(); i++) {
-            Model model = models.get(i);
+        for (Model model : models) {
             if (model.getName().equals(name)) {
                 return model;
             }
@@ -142,8 +139,6 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
     }
 
     public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color) {
-        // gl.glPushAttrib(GL2.GL_LIGHTING_BIT);
-        // gl.glDisable(GL2.GL_LIGHTING);
         gl.glColor3fv(color, 0);
         ContentManager.selectionTexture.bind(gl);
         gl.glBegin(GL2.GL_QUADS);
@@ -157,7 +152,6 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
         gl.glVertex3f(p.x + r, 0, p.z - r);
         gl.glEnd();
         Texture2D.unbind(gl);
-        // gl.glPopAttrib();
     }
 
     public boolean init(GLAutoDrawable drawable, GLInfo glInfo) {
@@ -223,6 +217,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
             mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
 
         // this is necessary for the shader to blend meshes that have textures

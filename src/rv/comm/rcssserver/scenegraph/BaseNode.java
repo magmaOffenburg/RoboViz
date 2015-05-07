@@ -25,8 +25,8 @@ public class BaseNode extends Node {
     /** Abbreviation declaring this node type in an s-expression */
     private static final String EXP_ABRV = "BN";
 
-    public BaseNode(Node parent) {
-        super(parent);
+    public BaseNode() {
+        super(null);
         // (nd BN <contents>)
     }
 

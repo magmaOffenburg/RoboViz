@@ -30,9 +30,9 @@ public class SceneGraphHeader {
     public static final String FULL = "RSG";
     public static final String DIFF = "RDS";
 
-    private String             type;
-    private int                majorVersion;
-    private int                minorVersion;
+    private final String       type;
+    private final int          majorVersion;
+    private final int          minorVersion;
 
     public String getType() {
         return type;

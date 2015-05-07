@@ -27,8 +27,8 @@ import rv.comm.drawing.commands.Command;
  * @author Justin Stoecker
  */
 public class Circle extends Shape {
-    private double[][] pts = new double[20][];
-    private float      thickness;
+    private final double[][] pts = new double[20][];
+    private final float      thickness;
 
     public Circle(String set, float[] pos, float[] color, float radius, float thickness) {
         super(set, color);
@@ -49,8 +49,8 @@ public class Circle extends Shape {
         gl.glColor3fv(color, 0);
         gl.glLineWidth(thickness);
         gl.glBegin(GL.GL_LINE_LOOP);
-        for (int i = 0; i < pts.length; i++)
-            gl.glVertex3d(pts[i][0], pts[i][1], pts[i][2]);
+        for (double[] pt : pts)
+            gl.glVertex3d(pt[0], pt[1], pt[2]);
         gl.glEnd();
     }
 

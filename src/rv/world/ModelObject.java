@@ -30,7 +30,7 @@ import rv.content.Model;
  */
 public class ModelObject {
 
-    protected Model       model;
+    protected final Model model;
     protected Matrix      modelMatrix = Matrix.createIdentity();
     protected BoundingBox bounds;
 

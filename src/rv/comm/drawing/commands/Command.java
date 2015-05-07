@@ -148,7 +148,7 @@ public abstract class Command {
     }
 
     /** Reads a float formatted in 6 ASCII characters to a buffer */
-    public static float readFloat(ByteBuffer buf) {
+    public static Float readFloat(ByteBuffer buf) {
         byte[] chars = new byte[6];
         buf.get(chars);
         Float result = null;

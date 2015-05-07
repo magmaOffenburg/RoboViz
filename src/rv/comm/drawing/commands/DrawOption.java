@@ -29,8 +29,8 @@ import rv.comm.drawing.Drawings;
 public class DrawOption extends Command {
     public static final int SWAP_BUFFERS = 0;
 
-    private String          setName;
-    private Drawings        drawings;
+    private final String    setName;
+    private final Drawings  drawings;
 
     public DrawOption(ByteBuffer buf, Viewer viewer) {
         this.drawings = viewer.getDrawings();

@@ -51,7 +51,7 @@ public class ServerComm {
      */
     private class MessageReceiver extends Thread {
 
-        private MessageParser parser = new MessageParser(world);
+        private final MessageParser parser = new MessageParser(world);
 
         private void writeToLogfile(String msg) {
             logfileOutput.write(msg);
@@ -61,7 +61,7 @@ public class ServerComm {
         @Override
         public void run() {
             try {
-                String message = null;
+                String message;
                 do {
                     message = readMessage();
                     if (message != null) {
@@ -108,18 +108,18 @@ public class ServerComm {
         public void connectionChanged(ServerComm server);
     }
 
-    private List<ServerChangeListener> changeListeners = new ArrayList<ServerChangeListener>();
-    private Timer                      autoConnectTimer;
-    private MessageReceiver            inThread;
-    private Socket                     socket;
-    private PrintWriter                out             = null;
-    private WorldModel                 world;
-    private DataInputStream            in;
-    private boolean                    connected       = false;
-    private String                     serverHost;
-    private int                        serverPort;
-    private PrintWriter                logfileOutput   = null;
-    private boolean                    recordLogs      = false;
+    private final List<ServerChangeListener> changeListeners = new ArrayList<>();
+    private Timer                            autoConnectTimer;
+
+    private Socket                           socket;
+    private PrintWriter                      out             = null;
+    private final WorldModel                 world;
+    private DataInputStream                  in;
+    private boolean                          connected       = false;
+    private final String                     serverHost;
+    private final int                        serverPort;
+    private PrintWriter                      logfileOutput   = null;
+    private boolean                          recordLogs      = false;
 
     private void setConnected(boolean connected) {
         this.connected = connected;
@@ -189,7 +189,7 @@ public class ServerComm {
             socket = new Socket(host, port);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new DataInputStream(socket.getInputStream());
-            inThread = new MessageReceiver();
+            MessageReceiver inThread = new MessageReceiver();
             inThread.start();
             DebugInfo.println(getClass(), "connected with rcssserver3d " + socket.getInetAddress()
                     + ":" + socket.getPort());

@@ -54,27 +54,27 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         return instance = new PlayerControls(player);
     }
 
-    private Container container;
+    private Container       container;
 
-    private JButton   fileOpenButton;
+    private JButton         fileOpenButton;
 
-    private LogPlayer player;
+    private final LogPlayer player;
 
-    private JButton   rewindButton;
+    private JButton         rewindButton;
 
-    private JButton   slowerButton;
+    private JButton         slowerButton;
 
-    private JButton   stepBackwardButton;
+    private JButton         stepBackwardButton;
 
-    private JButton   playButton;
+    private JButton         playButton;
 
-    private JButton   stepForwardButton;
+    private JButton         stepForwardButton;
 
-    private JButton   pauseButton;
+    private JButton         pauseButton;
 
-    private JButton   fasterButton;
+    private JButton         fasterButton;
 
-    private JSlider   slider;
+    private JSlider         slider;
 
     private PlayerControls(LogPlayer player) {
         super("Logplayer");

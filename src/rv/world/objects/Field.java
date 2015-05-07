@@ -35,6 +35,7 @@ import rv.world.ModelObject;
  * 
  * @author Justin Stoecker
  */
+@SuppressWarnings("ForLoopReplaceableByForEach")
 public class Field extends ModelObject implements GameStateChangeListener, GLDisposable {
 
     public static final Matrix DEFAULT_MODEL_MATRIX = new Matrix(new double[] { -1.5, 0, 0, 0, 0,
@@ -47,7 +48,7 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
     private static final float GOAL_BOX_LENGTH      = 1.8f;
     private static final float LINE_THICKNESS       = 0.02f;
 
-    private Material           lineMaterial         = new Material();
+    private final Material     lineMaterial         = new Material();
     private float[][]          circleVerts;
     private float[][]          lineVerts;
     private int[][]            lineIndices;
@@ -130,14 +131,14 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
         gl.glNewList(linesDisplayList, GL2.GL_COMPILE);
         {
             gl.glBegin(GL2.GL_QUADS);
-            for (int i = 0; i < lineIndices.length; i++)
-                for (int j = 0; j < lineIndices[i].length; j++)
-                    gl.glVertex3fv(lineVerts[lineIndices[i][j]], 0);
+            for (int[] lineIndice : lineIndices)
+                for (int j = 0; j < lineIndice.length; j++)
+                    gl.glVertex3fv(lineVerts[lineIndice[j]], 0);
             gl.glEnd();
 
             gl.glBegin(GL2.GL_QUAD_STRIP);
-            for (int i = 0; i < circleVerts.length; i++)
-                gl.glVertex3fv(circleVerts[i], 0);
+            for (float[] circleVert : circleVerts)
+                gl.glVertex3fv(circleVert, 0);
             gl.glVertex3fv(circleVerts[0], 0);
             gl.glVertex3fv(circleVerts[1], 0);
             gl.glEnd();

@@ -21,10 +21,8 @@ import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import js.io.ByteUtil;
-import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.commands.Command;
 import rv.ui.DebugInfo;
@@ -73,16 +71,15 @@ public class DrawComm {
         }
     }
 
-    private boolean       showWarnings = true;
-    private Viewer        viewer;
-    private ReceiveThread packetReceiver;
+    private final static boolean SHOW_WARNINGS = true;
+    private final Viewer         viewer;
+    private ReceiveThread        packetReceiver;
 
     /** Creates a new AgentComm */
-    public DrawComm(Viewer viewer, int port) throws SocketException, UnknownHostException {
+    public DrawComm(Viewer viewer, int port) throws SocketException {
         this.viewer = viewer;
         packetReceiver = new ReceiveThread(port);
         packetReceiver.start();
-        Configuration.Networking config = viewer.getConfig().networking;
     }
 
     /** Handle incoming UDP packet data */
@@ -96,7 +93,7 @@ public class DrawComm {
             try {
                 cmd = Command.parse(buf, viewer);
             } catch (Exception e) {
-                if (showWarnings) {
+                if (SHOW_WARNINGS) {
                     System.out.printf("Exception parsing command (start index %d)\n",
                             buf.position());
                     printPacket(packet);
@@ -105,7 +102,7 @@ public class DrawComm {
             }
 
             if (cmd == null) {
-                if (showWarnings) {
+                if (SHOW_WARNINGS) {
                     System.out.printf("Null command (start index %d)\n", buf.position());
                     printPacket(packet);
                 }

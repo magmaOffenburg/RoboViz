@@ -27,7 +27,7 @@ public class StaticMeshNode extends GeometryNode {
     /** Abbreviation declaring this node type in an s-expression */
     public static final String EXP_ABRV = "StaticMesh";
 
-    String                     s;
+    final String               s;
 
     public StaticMeshNode(Node parent, SExp exp) {
         super(parent, exp);

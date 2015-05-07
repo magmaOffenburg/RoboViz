@@ -37,8 +37,8 @@ public class Drawings {
     /** Event object launched when the list of sets is modified */
     public class SetListChangeEvent extends EventObject {
 
-        private ArrayList<BufferedSet<Shape>>      shapeSets;
-        private ArrayList<BufferedSet<Annotation>> annotationSets;
+        private final ArrayList<BufferedSet<Shape>>      shapeSets;
+        private final ArrayList<BufferedSet<Annotation>> annotationSets;
 
         public ArrayList<BufferedSet<Shape>> getShapeSets() {
             return shapeSets;
@@ -60,13 +60,13 @@ public class Drawings {
         public void setListChanged(SetListChangeEvent evt);
     }
 
-    private ArrayList<ShapeListListener>             listeners            = new ArrayList<Drawings.ShapeListListener>();
-    private HashMap<String, BufferedSet<Shape>>      shapeSetListing      = new HashMap<String, BufferedSet<Shape>>();
-    private HashMap<String, BufferedSet<Annotation>> annotationSetListing = new HashMap<String, BufferedSet<Annotation>>();
-    private ArrayList<BufferedSet<Shape>>            shapeSets            = new ArrayList<BufferedSet<Shape>>();
-    private ArrayList<BufferedSet<Annotation>>       annotationSets       = new ArrayList<BufferedSet<Annotation>>();
-    private boolean                                  changed              = false;
-    private boolean                                  visible              = true;
+    private final ArrayList<ShapeListListener>             listeners            = new ArrayList<>();
+    private final HashMap<String, BufferedSet<Shape>>      shapeSetListing      = new HashMap<>();
+    private final HashMap<String, BufferedSet<Annotation>> annotationSetListing = new HashMap<>();
+    private final ArrayList<BufferedSet<Shape>>            shapeSets            = new ArrayList<>();
+    private final ArrayList<BufferedSet<Annotation>>       annotationSets       = new ArrayList<>();
+    private boolean                                        changed              = false;
+    private boolean                                        visible              = true;
 
     public boolean isVisible() {
         return visible;
@@ -107,7 +107,7 @@ public class Drawings {
 
         if (set == null) {
             // shape has a set name that hasn't been seen, so create a new set
-            BufferedSet<Annotation> newSet = new BufferedSet<Annotation>(setName);
+            BufferedSet<Annotation> newSet = new BufferedSet<>(setName);
             newSet.put(annotation);
             synchronized (this) {
                 annotationSets.add(newSet);
@@ -125,7 +125,7 @@ public class Drawings {
 
         if (set == null) {
             // shape has a set name that hasn't been seen, so create a new set
-            BufferedSet<Shape> newSet = new BufferedSet<Shape>(setName);
+            BufferedSet<Shape> newSet = new BufferedSet<>(setName);
             newSet.put(shape);
             synchronized (this) {
                 shapeSets.add(newSet);

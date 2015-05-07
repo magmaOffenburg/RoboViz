@@ -96,8 +96,8 @@ public abstract class GeometryNode extends Node {
     }
 
     public boolean containsMaterial(String name) {
-        for (int i = 0; i < materials.length; i++)
-            if (materials[i].equals(name))
+        for (String material : materials)
+            if (material.equals(name))
                 return true;
         return false;
     }

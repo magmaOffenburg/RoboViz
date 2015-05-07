@@ -44,19 +44,19 @@ public class Agent implements ISelectable {
         public void transformChanged(Matrix headTransform);
     }
 
-    private List<ChangeListener> listeners  = new ArrayList<ChangeListener>();
-    private List<StaticMeshNode> meshNodes;
-    private BoundingBox          bounds;
-    private ContentManager       content;
-    private Team                 team;
-    private int                  id;
-    private boolean              selected   = false;
-    private Matrix               headTransform;
+    private final List<ChangeListener> listeners  = new ArrayList<>();
+    private final List<StaticMeshNode> meshNodes;
+    private BoundingBox                bounds;
+    private final ContentManager       content;
+    private final Team                 team;
+    private final int                  id;
+    private boolean                    selected   = false;
+    private Matrix                     headTransform;
 
-    private Vec3f                headCenter;
-    private Vec3f                headDirection;
+    private Vec3f                      headCenter;
+    private Vec3f                      headDirection;
 
-    private AgentAnnotation      annotation = null;
+    private AgentAnnotation            annotation = null;
 
     public void setAnnotation(AgentAnnotation annotation) {
         this.annotation = annotation;
@@ -115,9 +115,7 @@ public class Agent implements ISelectable {
         Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
         Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
-        for (int i = 0; i < meshNodes.size(); i++) {
-            StaticMeshNode node = meshNodes.get(i);
-
+        for (StaticMeshNode node : meshNodes) {
             Model model = content.getModel(node.getName());
             if (model.isLoaded()) {
                 Vec3f[] corners = model.getMesh().getBounds().getCorners();

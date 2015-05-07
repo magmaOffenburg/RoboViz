@@ -37,17 +37,17 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements ISubscribe<Boolean> {
 
-    private ILogfileReader   logfile;
-    private MessageParser    parser;
-    private Timer            timer;
-    int                      delay;
-    private boolean          playing;
+    private ILogfileReader         logfile;
+    private final MessageParser    parser;
+    private Timer                  timer;
+    final int                      delay;
+    private boolean                playing;
 
     /** the list of observers that are informed if something changes */
-    private Subject<Boolean> observers;
+    private final Subject<Boolean> observers;
 
     /** file chooser for opening logfiles (instance attribute to stay in the selected path) */
-    private JFileChooser     fileChooser;
+    private final JFileChooser     fileChooser;
 
     /**
      * Default constructor. Opens the passed logfile and starts playing.
@@ -59,7 +59,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
      */
     public LogPlayer(File file, WorldModel world) {
 
-        observers = new Subject<Boolean>();
+        observers = new Subject<>();
         delay = 150;
         playing = false;
         fileChooser = new JFileChooser();

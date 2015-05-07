@@ -38,12 +38,12 @@ import config.RVConfigure.SaveListener;
  */
 public class NetworkPanel extends JPanel implements SaveListener {
 
-    Configuration.Networking config;
-    RVConfigure              configProg;
-    JTextField               serverHostTF;
-    JTextField               serverPortTF;
-    JTextField               drawingPortTF;
-    JTextField               autoConnectDelayTF;
+    final Configuration.Networking config;
+    final RVConfigure              configProg;
+    JTextField                     serverHostTF;
+    JTextField                     serverPortTF;
+    JTextField                     drawingPortTF;
+    JTextField                     autoConnectDelayTF;
 
     public NetworkPanel(RVConfigure configProg) {
         this.configProg = configProg;
@@ -158,7 +158,6 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         try {
             config.listenPort = Integer.parseInt(drawingPortTF.getText());
-            ;
         } catch (Exception e) {
             drawingPortTF.setText("" + config.listenPort);
         }

@@ -28,11 +28,7 @@ import rv.world.objects.Agent;
 public class AgentAnnotation extends Annotation {
 
     private static final Vec3f OFFSET = new Vec3f(0, 0.7f, 0);
-    private Agent              agent;
-
-    public Agent getAgent() {
-        return agent;
-    }
+    private final Agent        agent;
 
     @Override
     public float[] getPos() {

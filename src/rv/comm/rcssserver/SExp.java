@@ -102,7 +102,7 @@ public class SExp {
      */
     public static ArrayList<SExp> parse(String text) throws ParseException {
 
-        ArrayList<SExp> expressions = new ArrayList<SExp>();
+        ArrayList<SExp> expressions = new ArrayList<>();
         SExp curExpr = null;
 
         for (int i = 0; i < text.length(); i++) {
@@ -115,7 +115,7 @@ public class SExp {
                 // is the parent of this new expression
                 if (curExpr != null) {
                     if (curExpr.children == null)
-                        curExpr.children = new ArrayList<SExp>();
+                        curExpr.children = new ArrayList<>();
                     curExpr.children.add(expr);
                     expr.parent = curExpr;
                 }

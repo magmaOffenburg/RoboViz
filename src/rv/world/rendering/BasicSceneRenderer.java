@@ -36,8 +36,8 @@ import rv.world.WorldModel;
  */
 public class BasicSceneRenderer implements SceneRenderer {
 
-    private ContentManager content;
-    private List<String>   suppressedMeshes = new ArrayList<String>();
+    private ContentManager     content;
+    private final List<String> suppressedMeshes = new ArrayList<>();
 
     @Override
     public boolean init(GL2 gl2, Configuration.Graphics conf, ContentManager cm) {
@@ -112,10 +112,9 @@ public class BasicSceneRenderer implements SceneRenderer {
         world.getField().render(gl);
         gl.glDepthMask(true);
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<StaticMeshNode>();
+        List<StaticMeshNode> transparentNodes = new ArrayList<>();
         List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (int i = 0; i < nodes.size(); i++) {
-            StaticMeshNode node = nodes.get(i);
+        for (StaticMeshNode node : nodes) {
             if (node.isTransparent())
                 transparentNodes.add(node);
             else
@@ -130,8 +129,8 @@ public class BasicSceneRenderer implements SceneRenderer {
 
         // transparent stuff
 
-        for (int i = 0; i < transparentNodes.size(); i++)
-            renderSceneGraphNode(gl, transparentNodes.get(i), content);
+        for (StaticMeshNode transparentNode : transparentNodes)
+            renderSceneGraphNode(gl, transparentNode, content);
         gl.glDisable(GL.GL_BLEND);
 
         gl.glDisable(GL2.GL_LIGHTING);

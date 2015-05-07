@@ -36,33 +36,30 @@ import rv.content.ContentManager;
  * @author Justin Stoecker
  */
 public class Bloom implements GLDisposable, WindowResizeListener {
-    private boolean               disposed     = false;
+    private boolean                   disposed     = false;
 
-    private ShaderProgram         luminosityShader;
-    private ShaderProgram         blurShader;
-    private ShaderProgram         compositeShader;
+    private ShaderProgram             luminosityShader;
+    private ShaderProgram             blurShader;
+    private ShaderProgram             compositeShader;
 
-    private Uniform.Float         luminosityThreshold;
-    private Uniform.Float         compositeIntensity;
-    private Uniform.Int           compositeTex1;
-    private Uniform.Int           compositeTex2;
+    private Uniform.Float             luminosityThreshold;
+    private Uniform.Float             compositeIntensity;
 
-    private FrameBufferObject[]   fullSizeFBOs = new FrameBufferObject[2];
-    private FrameBufferObject[]   halfSizeFBOs = new FrameBufferObject[2];
+    // --Commented out by Inspection (07.05.2015 20:41):private Uniform.Int compositeTex2;
 
-    private Gaussian.BlurParams[] blurParams;
-    private float                 blurriness   = 1.5f;
-    private int                   samples      = 15;
-    private float                 intensity    = 2.4f;
-    private float                 threshold    = 0.85f;
-    private int                   ulocBlurOffsets;
-    private int                   ulocBlurWeights;
-    private int                   w, h;
+    private final FrameBufferObject[] fullSizeFBOs = new FrameBufferObject[2];
+    private final FrameBufferObject[] halfSizeFBOs = new FrameBufferObject[2];
+
+    private Gaussian.BlurParams[]     blurParams;
+    private final static float        BLURRINESS   = 1.5f;
+    private final static int          SAMPLES      = 15;
+    private final static float        INTENSITY    = 2.4f;
+    private final static float        THRESHOLD    = 0.85f;
+    private int                       ulocBlurOffsets;
+    private int                       ulocBlurWeights;
 
     public void setBlurParams(int w, int h) {
-        this.w = w;
-        this.h = h;
-        this.blurParams = Gaussian.calcBlurParams(blurriness, samples, w, h);
+        this.blurParams = Gaussian.calcBlurParams(BLURRINESS, SAMPLES, w, h);
     }
 
     public Bloom() {
@@ -90,7 +87,7 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         }
 
         luminosityShader.enable(gl);
-        luminosityThreshold = new Uniform.Float(gl, luminosityShader, "threshold", threshold);
+        luminosityThreshold = new Uniform.Float(gl, luminosityShader, "threshold", THRESHOLD);
         luminosityShader.disable(gl);
 
         blurShader.enable(gl);
@@ -99,8 +96,8 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         blurShader.disable(gl);
 
         compositeShader.enable(gl);
-        compositeIntensity = new Uniform.Float(gl, compositeShader, "intensity", intensity);
-        compositeTex1 = new Uniform.Int(gl, compositeShader, "inputTexture1", 0);
+        compositeIntensity = new Uniform.Float(gl, compositeShader, "intensity", INTENSITY);
+        Uniform.Int compositeTex1 = new Uniform.Int(gl, compositeShader, "inputTexture1", 0);
         compositeTex1 = new Uniform.Int(gl, compositeShader, "inputTexture2", 1);
         compositeShader.disable(gl);
 

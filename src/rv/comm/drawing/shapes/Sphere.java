@@ -24,18 +24,15 @@ import rv.comm.drawing.commands.Command;
 
 public class Sphere extends Shape {
     /** Size of a parsed draw circle command packet */
-    public static final int CMD_SIZE = 31;
+    public static final int      CMD_SIZE = 31;
 
-    private float[]         position;
-    private float           radius;
-    private Material        mat;
-    private GeodesicSphere  model;
+    private final float[]        position;
+    private final GeodesicSphere model;
 
     public Sphere(String set, float[] position, float[] color, float radius) {
         super(set, color);
         this.position = position;
-        this.radius = radius;
-        mat = new Material();
+        Material mat = new Material();
         this.color = color;
         mat.setDiffAmbient(color[0], color[1], color[2], 1);
         model = new GeodesicSphere(radius, 1);

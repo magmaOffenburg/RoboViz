@@ -74,7 +74,7 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
      */
     private void open() throws IOException {
         if (framePositions == null) {
-            framePositions = new ArrayList<Long>(500);
+            framePositions = new ArrayList<>(500);
             // read file to cache
             BufferedReader br = new BufferedReader(new FileReader(logsrc));
             long lastMark = 0;

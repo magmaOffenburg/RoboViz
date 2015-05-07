@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -59,7 +57,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         public Component getListCellRendererComponent(JList<? extends CheckListItem> list,
                 CheckListItem value, int index, boolean isSelected, boolean cellHasFocus) {
             setEnabled(list.isEnabled());
-            setSelected(((CheckListItem) value).isSelected());
+            setSelected(value.isSelected());
             setFont(list.getFont());
             setBackground(list.getBackground());
             setForeground(list.getForeground());
@@ -69,9 +67,9 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
     }
 
     static class CheckListItem {
-        private VisibleNamedObject item;
-        private String             label;
-        private boolean            isSelected = false;
+        private final VisibleNamedObject item;
+        private final String             label;
+        private boolean                  isSelected = false;
 
         public CheckListItem(VisibleNamedObject item) {
             this.item = item;
@@ -93,47 +91,17 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         }
     }
 
-    private class Cell extends JComponent {
-        private String    setName;
-        private JLabel    text;
-        private JCheckBox checkbox;
-
-        public Cell(String text, boolean state) {
-            this.setName = text;
-            this.text = new JLabel(text);
-            this.checkbox = new JCheckBox();
-            checkbox.setSelected(state);
-            checkbox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    BufferedSet<Shape> p = drawings.getShapeSet(setName);
-                    if (p != null)
-                        p.setVisible(!p.isVisible());
-
-                    BufferedSet<Annotation> p1 = drawings.getAnnotationSet(setName);
-                    if (p1 != null)
-                        p1.setVisible(!p1.isVisible());
-                }
-            });
-
-            this.setLayout(new GridLayout(0, 2));
-            add(this.text);
-            add(this.checkbox);
-        }
-    }
-
     private Drawings                      drawings;
-    private JTextField                    regexField;
-    private JList<CheckListItem>          list;
-    final DefaultListModel<CheckListItem> model = new DefaultListModel<CheckListItem>();
+    private final JTextField              regexField;
+    private final JList<CheckListItem>    list;
+    final DefaultListModel<CheckListItem> model = new DefaultListModel<>();
 
     public DrawingListPanel(Drawings drawings) {
 
         super("Drawings");
         addCloseHotkey();
         frame.setAlwaysOnTop(true);
-        list = new JList<CheckListItem>(model);
+        list = new JList<>(model);
         frame.setSize(300, 600);
         frame.setMinimumSize(new Dimension(300, 200));
 
@@ -219,24 +187,22 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 
         model.clear();
         ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
-        int size = shapeSets.size();
         for (BufferedSet<Shape> shapeSet : shapeSets) {
             if (shapeSet != null) {
                 CheckListItem item = new CheckListItem(shapeSet);
                 boolean visible = shapeSet.isVisible();
-                boolean matchRegex = regex == null ? true : shapeSet.getName().matches(regex);
+                boolean matchRegex = regex == null || shapeSet.getName().matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }
         }
 
         ArrayList<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
-        int size2 = annotationSets.size();
         for (BufferedSet<Annotation> annotationSet : annotationSets) {
             if (annotationSet != null) {
                 CheckListItem item = new CheckListItem(annotationSet);
                 boolean visible = annotationSet.isVisible();
-                boolean matchRegex = regex == null ? true : annotationSet.getName().matches(regex);
+                boolean matchRegex = regex == null || annotationSet.getName().matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }

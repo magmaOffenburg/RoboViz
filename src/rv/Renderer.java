@@ -26,7 +26,6 @@ import js.jogl.GLInfo;
 import js.jogl.Texture2D;
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
-import js.math.vector.Matrix;
 import rv.Viewer.WindowResizeEvent;
 import rv.Viewer.WindowResizeListener;
 import rv.content.ContentManager;
@@ -45,28 +44,21 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public class Renderer implements WindowResizeListener {
 
-    public static GLU              glu        = new GLU();
-    public static GLUT             glut       = new GLUT();
-    private FrameBufferObject      sceneFBO;
-    private EffectManager          effectManager;
-    private Viewer                 viewer;
-    private Configuration.Graphics graphics;
-    private SceneRenderer          sceneRenderer;
-    private Camera3D               vantage;
+    public static final GLU              glu        = new GLU();
+    public static final GLUT             glut       = new GLUT();
+    private FrameBufferObject            sceneFBO;
+    private EffectManager                effectManager;
+    private final Viewer                 viewer;
+    private final Configuration.Graphics graphics;
+    private SceneRenderer                sceneRenderer;
+    private Camera3D                     vantage;
 
     // this FBO is only used if bloom and FSAA are enabled at the same time
-    private FrameBufferObject      msSceneFBO;
-    private int                    numSamples = -1;
+    private FrameBufferObject            msSceneFBO;
+    private int                          numSamples = -1;
 
     public void setVantage(Camera3D vantage) {
         this.vantage = vantage;
-    }
-
-    /**
-     * Overrides view and projection matrices used in rendering
-     */
-    public void overrideViewProjection(int eye, Matrix modelview, Matrix projection) {
-
     }
 
     public EffectManager getEffectManager() {

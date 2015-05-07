@@ -35,22 +35,22 @@ import rv.ui.UserInterface;
  */
 public class SimsparkController implements CameraController, GameStateChangeListener {
 
-    private UserInterface   ui;
+    private final UserInterface ui;
 
-    protected boolean       rotate;
-    protected boolean       moveF;                   // camera is moving
-    protected boolean       moveB;                   // camera is moving back
-    protected boolean       moveL;                   // camera is moving left
-    protected boolean       moveR;                   // camera is moving right
-    protected boolean       moveU;
-    protected boolean       moveD;
-    protected Vec2f         lastMouse = new Vec2f(0);
+    protected boolean           rotate;
+    protected boolean           moveF;                   // camera is moving
+    protected boolean           moveB;                   // camera is moving back
+    protected boolean           moveL;                   // camera is moving left
+    protected boolean           moveR;                   // camera is moving right
+    protected boolean           moveU;
+    protected boolean           moveD;
+    protected Vec2f             lastMouse = new Vec2f(0);
 
-    float                   dL, dR, dF, dB, dU, dD = 0;
-    float                   dMax      = 1;
-    float                   dChange   = 0.08f;
+    float                       dL, dR, dF, dB, dU, dD = 0;
+    final float                 dMax      = 1;
+    final float                 dChange   = 0.08f;
 
-    private CameraSetting[] cameras;
+    private CameraSetting[]     cameras;
 
     public SimsparkController(UserInterface ui) {
         this.ui = ui;

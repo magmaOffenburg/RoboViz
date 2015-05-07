@@ -41,57 +41,57 @@ public class GameState implements ServerChangeListener {
     }
 
     // Measurements and Rules
-    public static final String            FIELD_LENGTH         = "FieldLength";
-    public static final String            FIELD_WIDTH          = "FieldWidth";
-    public static final String            FIELD_HEIGHT         = "FieldHeight";
-    public static final String            GOAL_WIDTH           = "GoalWidth";
-    public static final String            GOAL_DEPTH           = "GoalDepth";
-    public static final String            GOAL_HEIGHT          = "GoalHeight";
-    public static final String            FREE_KICK_DST        = "FreeKickDistance";
-    public static final String            WAIT_BEFORE_KO       = "WaitBeforeKickOff";
-    public static final String            AGENT_RADIUS         = "AgentRadius";
-    public static final String            BALL_RADIUS          = "BallRadius";
-    public static final String            BALL_MASS            = "BallMass";
-    public static final String            RULE_GOAL_PAUSE_TIME = "RuleGoalPauseTime";
-    public static final String            RULE_KICK_PAUSE_TIME = "RuleKickInPauseTime";
-    public static final String            RULE_HALF_TIME       = "RuleHalfTime";
+    public static final String                  FIELD_LENGTH         = "FieldLength";
+    public static final String                  FIELD_WIDTH          = "FieldWidth";
+    public static final String                  FIELD_HEIGHT         = "FieldHeight";
+    public static final String                  GOAL_WIDTH           = "GoalWidth";
+    public static final String                  GOAL_DEPTH           = "GoalDepth";
+    public static final String                  GOAL_HEIGHT          = "GoalHeight";
+    public static final String                  FREE_KICK_DST        = "FreeKickDistance";
+    public static final String                  WAIT_BEFORE_KO       = "WaitBeforeKickOff";
+    public static final String                  AGENT_RADIUS         = "AgentRadius";
+    public static final String                  BALL_RADIUS          = "BallRadius";
+    public static final String                  BALL_MASS            = "BallMass";
+    public static final String                  RULE_GOAL_PAUSE_TIME = "RuleGoalPauseTime";
+    public static final String                  RULE_KICK_PAUSE_TIME = "RuleKickInPauseTime";
+    public static final String                  RULE_HALF_TIME       = "RuleHalfTime";
 
     // Play State
-    public static final String            PLAY_MODES           = "play_modes";
-    public static final String            TEAM_LEFT            = "team_left";
-    public static final String            TEAM_RIGHT           = "team_right";
-    public static final String            SCORE_LEFT           = "score_left";
-    public static final String            SCORE_RIGHT          = "score_right";
-    public static final String            PLAY_MODE            = "play_mode";
+    public static final String                  PLAY_MODES           = "play_modes";
+    public static final String                  TEAM_LEFT            = "team_left";
+    public static final String                  TEAM_RIGHT           = "team_right";
+    public static final String                  SCORE_LEFT           = "score_left";
+    public static final String                  SCORE_RIGHT          = "score_right";
+    public static final String                  PLAY_MODE            = "play_mode";
 
     // Time
-    public static final String            TIME                 = "time";
-    public static final String            HALF                 = "half";
+    public static final String                  TIME                 = "time";
+    public static final String                  HALF                 = "half";
 
-    private float                         fieldLength;
-    private float                         fieldWidth;
-    private float                         fieldHeight;
-    private float                         goalWidth;
-    private float                         goalDepth;
-    private float                         goalHeight;
-    private float                         freeKickDist;
-    private float                         waitBeforeKickoff;
-    private float                         agentRadius;
-    private float                         ballRadius;
-    private float                         ballMass;
-    private float                         ruleGoalPauseTime;
-    private float                         ruleKickPauseTime;
-    private float                         ruleHalfTime;
-    private String[]                      playModes;
-    private String                        teamLeft;
-    private String                        teamRight;
-    private int                           scoreLeft;
-    private int                           scoreRight;
-    private String                        playMode             = "<Play Mode>";
-    private float                         time;
-    private int                           half;
+    private float                               fieldLength;
+    private float                               fieldWidth;
+    private float                               fieldHeight;
+    private float                               goalWidth;
+    private float                               goalDepth;
+    private float                               goalHeight;
+    private float                               freeKickDist;
+    private float                               waitBeforeKickoff;
+    private float                               agentRadius;
+    private float                               ballRadius;
+    private float                               ballMass;
+    private float                               ruleGoalPauseTime;
+    private float                               ruleKickPauseTime;
+    private float                               ruleHalfTime;
+    private String[]                            playModes;
+    private String                              teamLeft;
+    private String                              teamRight;
+    private int                                 scoreLeft;
+    private int                                 scoreRight;
+    private String                              playMode             = "<Play Mode>";
+    private float                               time;
+    private int                                 half;
 
-    private List<GameStateChangeListener> listeners            = new ArrayList<GameStateChangeListener>();
+    private final List<GameStateChangeListener> listeners            = new ArrayList<>();
 
     public float getFieldLength() {
         return fieldLength;

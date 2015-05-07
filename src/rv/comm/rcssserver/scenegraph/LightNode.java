@@ -26,9 +26,9 @@ import rv.comm.rcssserver.SExp;
 public class LightNode extends Node {
     public static final String EXP_ABRV = "Light";
 
-    private float[]            diffuse  = new float[4];
-    private float[]            ambient  = new float[4];
-    private float[]            specular = new float[4];
+    private final float[]      diffuse  = new float[4];
+    private final float[]      ambient  = new float[4];
+    private final float[]      specular = new float[4];
 
     public LightNode(Node parent, SExp exp) {
         super(parent);

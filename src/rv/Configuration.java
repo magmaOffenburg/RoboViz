@@ -139,7 +139,7 @@ public class Configuration {
     }
 
     public class TeamColors {
-        private HashMap<String, float[]> colorByTeamName = new HashMap<String, float[]>();
+        private final HashMap<String, float[]> colorByTeamName = new HashMap<>();
 
         public float[] find(String teamName) {
             return colorByTeamName.get(teamName);

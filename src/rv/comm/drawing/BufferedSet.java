@@ -26,13 +26,13 @@ import java.util.ArrayList;
  */
 public class BufferedSet<T> implements VisibleNamedObject {
 
-    private boolean        visible  = true;
-    private final String   name;
-    private int            frontBuf = 0;
-    private int            backBuf  = 1;
+    private boolean              visible  = true;
+    private final String         name;
+    private int                  frontBuf = 0;
+    private int                  backBuf  = 1;
 
     @SuppressWarnings("unchecked")
-    private ArrayList<T>[] buffers  = new ArrayList[2];
+    private final ArrayList<T>[] buffers  = new ArrayList[2];
 
     public boolean isVisible() {
         return visible;
@@ -48,8 +48,8 @@ public class BufferedSet<T> implements VisibleNamedObject {
 
     public BufferedSet(String name) {
         this.name = name;
-        buffers[0] = new ArrayList<T>();
-        buffers[1] = new ArrayList<T>();
+        buffers[0] = new ArrayList<>();
+        buffers[1] = new ArrayList<>();
     }
 
     /**
@@ -60,7 +60,7 @@ public class BufferedSet<T> implements VisibleNamedObject {
         // current front buffer; this buffer may be swapped while the thread
         // is still using the shapes in it (such as rendering).
         ArrayList<T> set = buffers[frontBuf];
-        ArrayList<T> setCopy = new ArrayList<T>(set.size());
+        ArrayList<T> setCopy = new ArrayList<>(set.size());
         setCopy.addAll(set);
 
         return setCopy;

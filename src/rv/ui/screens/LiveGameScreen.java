@@ -54,19 +54,19 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         NONE, ANNOTATIONS, IDS
     }
 
-    private GameStateOverlay  gsOverlay;
-    private ConnectionOverlay connectionOverlay;
-    private Field2DOverlay    fieldOverlay;
-    private List<Screen>      overlays          = new ArrayList<>();
-    private List<TextOverlay> textOverlays      = new ArrayList<>();
-    private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
-    private TextRenderer      tr;
-    private TextRenderer      overlayTextRenderer;
-    private RobotVantage      robotVantage      = null;
-    private int               prevScoreL        = -1;
-    private int               prevScoreR        = -1;
+    private final GameStateOverlay  gsOverlay;
+    private final ConnectionOverlay connectionOverlay;
+    private final Field2DOverlay    fieldOverlay;
+    private final List<Screen>      overlays          = new ArrayList<>();
+    private final List<TextOverlay> textOverlays      = new ArrayList<>();
+    private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
+    private final TextRenderer      tr;
+    private final TextRenderer      overlayTextRenderer;
+    private RobotVantage            robotVantage      = null;
+    private int                     prevScoreL        = -1;
+    private int                     prevScoreR        = -1;
 
-    boolean                   showNumPlayers    = false;
+    boolean                         showNumPlayers    = false;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);

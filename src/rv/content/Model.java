@@ -35,9 +35,9 @@ import rv.ui.DebugInfo;
  */
 public class Model {
 
-    private Mesh    mesh;
-    private boolean loaded = false;
-    private String  name;
+    private Mesh         mesh;
+    private boolean      loaded = false;
+    private final String name;
 
     public Mesh getMesh() {
         return mesh;

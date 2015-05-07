@@ -29,17 +29,18 @@ import rv.world.ISelectable;
  */
 public class CamTargetTracker {
 
-    private boolean          enabled           = false;
-    private FPCamera         camera;
-    private ISelectable      target;
-    private int              maxSaved          = 3;
-    private ArrayList<Vec3f> saved             = new ArrayList<Vec3f>(maxSaved);
-    private float            tetherDist        = -1;
-    private float            tetherVelocity    = 0;
-    private float            tetherChange      = 0.05f;
-    private float            maxTetherVelocity = 2f;
-    private float            slowTetherRange   = 4;
-    private float            minTetherDist     = 2.5f;
+    private final static float     TETHER_CHANGE       = 0.05f;
+    private final static float     MAX_TETHER_VELOCITY = 2f;
+
+    private boolean                enabled             = false;
+    private final FPCamera         camera;
+    private ISelectable            target;
+    private final int              maxSaved            = 3;
+    private final ArrayList<Vec3f> saved               = new ArrayList<>(maxSaved);
+    private float                  tetherDist          = -1;
+    private float                  tetherVelocity      = 0;
+    private float                  slowTetherRange     = 4;
+    private float                  minTetherDist       = 2.5f;
 
     public boolean isEnabled() {
         return enabled;
@@ -116,10 +117,11 @@ public class CamTargetTracker {
             } else {
                 scale = (d - minTetherDist) / (slowTetherRange - minTetherDist);
             }
-            tetherVelocity = Math.min(scale * (tetherVelocity + tetherChange), maxTetherVelocity);
+            tetherVelocity = Math
+                    .min(scale * (tetherVelocity + TETHER_CHANGE), MAX_TETHER_VELOCITY);
             camera.moveWorld(v.normalize().times(tetherVelocity));
         }
-        tetherVelocity = Math.max(tetherVelocity - tetherChange, 0);
+        tetherVelocity = Math.max(tetherVelocity - TETHER_CHANGE, 0);
     }
 
     public void update() {

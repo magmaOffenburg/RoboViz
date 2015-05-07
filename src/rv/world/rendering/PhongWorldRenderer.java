@@ -37,14 +37,13 @@ import rv.world.WorldModel;
  */
 public class PhongWorldRenderer implements SceneRenderer {
 
-    private ContentManager content;
-    private Graphics       graphics;
-    private ShaderProgram  shader;
-    private List<String>   suppressedMeshes = new ArrayList<String>();
+    private ContentManager     content;
+
+    private ShaderProgram      shader;
+    private final List<String> suppressedMeshes = new ArrayList<>();
 
     @Override
     public boolean init(GL2 gl, Graphics graphics, ContentManager cm) {
-        this.graphics = graphics;
         this.content = cm;
 
         shader = cm.loadShader(gl, "phong");
@@ -101,10 +100,9 @@ public class PhongWorldRenderer implements SceneRenderer {
         world.getField().render(gl);
         gl.glDepthMask(true);
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<StaticMeshNode>();
+        List<StaticMeshNode> transparentNodes = new ArrayList<>();
         List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (int i = 0; i < nodes.size(); i++) {
-            StaticMeshNode node = nodes.get(i);
+        for (StaticMeshNode node : nodes) {
             if (node.isTransparent())
                 transparentNodes.add(node);
             else
@@ -121,8 +119,8 @@ public class PhongWorldRenderer implements SceneRenderer {
 
         // transparent stuff
 
-        for (int i = 0; i < transparentNodes.size(); i++)
-            renderSceneGraphNode(gl, transparentNodes.get(i), content);
+        for (StaticMeshNode transparentNode : transparentNodes)
+            renderSceneGraphNode(gl, transparentNode, content);
         gl.glDisable(GL.GL_BLEND);
 
         shader.disable(gl);

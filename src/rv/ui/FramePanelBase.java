@@ -9,7 +9,7 @@ import javax.swing.KeyStroke;
 import rv.Globals;
 
 public class FramePanelBase {
-    protected JFrame frame;
+    protected final JFrame frame;
 
     public void showFrame() {
         frame.setVisible(true);

@@ -41,7 +41,7 @@ public abstract class Node {
     protected ArrayList<Node>  children;
 
     // if the node has no parent, it is assumed to be a root of the graph
-    protected Node             parent;
+    protected final Node       parent;
 
     public Node getParent() {
         return parent;

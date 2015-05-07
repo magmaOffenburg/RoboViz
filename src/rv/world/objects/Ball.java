@@ -30,10 +30,10 @@ import rv.world.WorldModel;
 
 public class Ball implements ISelectable, ISceneGraphItem {
 
-    private BoundingBox    bounds;
-    private boolean        selected = false;
-    private StaticMeshNode node;
-    private ContentManager content;
+    private BoundingBox          bounds;
+    private boolean              selected = false;
+    private StaticMeshNode       node;
+    private final ContentManager content;
 
     public Ball(ContentManager content) {
         this.content = content;

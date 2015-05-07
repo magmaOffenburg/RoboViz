@@ -21,7 +21,6 @@ import java.util.List;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import js.math.vector.Matrix;
-import rv.Configuration;
 import rv.Configuration.Graphics;
 import rv.Renderer;
 import rv.comm.drawing.Drawings;
@@ -39,11 +38,10 @@ import rv.world.WorldModel;
  */
 public class VSMPhongWorldRenderer implements SceneRenderer {
 
-    private ContentManager         content;
-    private Configuration.Graphics graphics;
-    private EffectManager          effects;
-    private VSMPhongShader         shader;
-    private List<String>           suppressedMeshes = new ArrayList<String>();
+    private ContentManager      content;
+    private final EffectManager effects;
+    private VSMPhongShader      shader;
+    private final List<String>  suppressedMeshes = new ArrayList<>();
 
     public VSMPhongShader getShader() {
         return shader;
@@ -55,7 +53,6 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
 
     @Override
     public boolean init(GL2 gl, Graphics graphics, ContentManager cm) {
-        this.graphics = graphics;
         this.content = cm;
 
         shader = VSMPhongShader.create(gl);
@@ -117,10 +114,9 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
         world.getField().render(gl);
         gl.glDepthMask(true);
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<StaticMeshNode>();
+        List<StaticMeshNode> transparentNodes = new ArrayList<>();
         List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (int i = 0; i < nodes.size(); i++) {
-            StaticMeshNode node = nodes.get(i);
+        for (StaticMeshNode node : nodes) {
             if (node.isTransparent())
                 transparentNodes.add(node);
             else
@@ -138,8 +134,8 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
 
         // transparent stuff
 
-        for (int i = 0; i < transparentNodes.size(); i++)
-            renderSceneGraphNode(gl, transparentNodes.get(i), content);
+        for (StaticMeshNode transparentNode : transparentNodes)
+            renderSceneGraphNode(gl, transparentNode, content);
         gl.glDisable(GL.GL_BLEND);
 
         shader.disable(gl);

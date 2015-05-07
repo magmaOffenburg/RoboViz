@@ -48,10 +48,10 @@ public class ShadowMapRenderer implements SceneRenderer {
      */
     public static class LightShadowVolume {
 
-        private DirLight light;
-        private Matrix   view;
-        private Matrix   projection;
-        private Matrix   viewProjection;
+        private final DirLight light;
+        private final Matrix   view;
+        private final Matrix   projection;
+        private final Matrix   viewProjection;
 
         public Matrix getView() {
             return view;
@@ -82,28 +82,27 @@ public class ShadowMapRenderer implements SceneRenderer {
         }
     }
 
-    private final int              TEX_FORMAT = GL2.GL_RG32F;
+    private final static int        TEX_FORMAT = GL2.GL_RG32F;
 
-    private ContentManager         content;
-    private float                  blurriness = 1.0f;
-    private int                    samples    = 5;
-    private int                    texWidth;
-    private int                    texHeight;
-    private Texture2D              shadowMapTexture;
+    private ContentManager          content;
+    private final static float      BLURRINESS = 1.0f;
+    private final static int        SAMPLES    = 5;
+    private int                     texWidth;
+    private int                     texHeight;
+    private Texture2D               shadowMapTexture;
 
-    private FrameBufferObject      shadowFBO;
-    private FrameBufferObject      blurFBO;
+    private FrameBufferObject       shadowFBO;
+    private FrameBufferObject       blurFBO;
 
-    private ShaderProgram          depthShader;
-    private ShaderProgram          blurShader;
+    private ShaderProgram           depthShader;
+    private ShaderProgram           blurShader;
 
-    private Gaussian.BlurParams[]  blurParams;
-    private int                    ulocBlurWeights;
-    private int                    ulocBlurOffsets;
+    private Gaussian.BlurParams[]   blurParams;
+    private int                     ulocBlurWeights;
+    private int                     ulocBlurOffsets;
 
-    private boolean                useBlur    = true;
-    private Configuration.Graphics graphics;
-    private LightShadowVolume      light;
+    private boolean                 useBlur    = true;
+    private final LightShadowVolume light;
 
     public LightShadowVolume getLight() {
         return light;
@@ -207,10 +206,9 @@ public class ShadowMapRenderer implements SceneRenderer {
 
         world.getField().render(gl);
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<StaticMeshNode>();
+        List<StaticMeshNode> transparentNodes = new ArrayList<>();
         List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (int i = 0; i < nodes.size(); i++) {
-            StaticMeshNode node = nodes.get(i);
+        for (StaticMeshNode node : nodes) {
             if (node.isTransparent())
                 transparentNodes.add(node);
             else {
@@ -223,8 +221,7 @@ public class ShadowMapRenderer implements SceneRenderer {
         }
 
         gl.glEnable(GL.GL_BLEND);
-        for (int i = 0; i < transparentNodes.size(); i++) {
-            StaticMeshNode node = transparentNodes.get(i);
+        for (StaticMeshNode node : transparentNodes) {
             Model model = content.getModel(node.getName());
             if (model.isLoaded()) {
                 Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
@@ -306,7 +303,6 @@ public class ShadowMapRenderer implements SceneRenderer {
     @Override
     public boolean init(GL2 gl, Graphics conf, ContentManager cm) {
         this.content = cm;
-        this.graphics = conf;
         this.useBlur = conf.useSoftShadows;
 
         texWidth = texHeight = conf.shadowResolution;
@@ -332,7 +328,7 @@ public class ShadowMapRenderer implements SceneRenderer {
                 return abortInit(gl, "could not load blur pass shader", conf);
 
             // configure blur shader
-            blurParams = Gaussian.calcBlurParams(blurriness, samples, texWidth, texHeight);
+            blurParams = Gaussian.calcBlurParams(BLURRINESS, SAMPLES, texWidth, texHeight);
             blurShader.enable(gl);
             ulocBlurWeights = blurShader.getUniform(gl, "weights");
             ulocBlurOffsets = blurShader.getUniform(gl, "offsets");

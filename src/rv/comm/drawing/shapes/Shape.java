@@ -20,9 +20,9 @@ import javax.media.opengl.GL2;
 import js.jogl.light.Material;
 
 public abstract class Shape {
-    protected Material material;
-    protected float[]  color;
-    protected String   set;
+    protected final Material material;
+    protected float[]        color;
+    protected final String   set;
 
     public String getSetName() {
         return set;

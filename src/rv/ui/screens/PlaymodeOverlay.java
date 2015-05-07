@@ -30,11 +30,11 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class PlaymodeOverlay implements Screen, KeyListener {
 
-    Viewer                 viewer;
-    int                    index = 0;
-    String[]               modes;
-    TextRenderer           tr;
-    private LiveGameScreen masterScreen;
+    final Viewer                 viewer;
+    int                          index = 0;
+    String[]                     modes;
+    final TextRenderer           tr;
+    private final LiveGameScreen masterScreen;
 
     public PlaymodeOverlay(Viewer viewer, LiveGameScreen masterScreen) {
         this.viewer = viewer;
@@ -89,7 +89,7 @@ public class PlaymodeOverlay implements Screen, KeyListener {
         case KeyEvent.VK_ENTER:
             // changing the play mode doesn't have any effect if the game has ended
             float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
-            if (viewer.getWorldModel().getGameState().getTime() >= 600)
+            if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
                 viewer.getNetManager().getServer().resetTime();
             viewer.getNetManager().getServer().setPlayMode(modes[index]);
             setEnabled((GLCanvas) viewer.getCanvas(), false);

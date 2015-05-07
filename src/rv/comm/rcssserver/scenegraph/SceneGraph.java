@@ -33,7 +33,7 @@ public class SceneGraph {
         public void updatedSceneGraph(SceneGraph sg);
     }
 
-    private Node root;
+    private final Node root;
 
     public Node getRoot() {
         return root;
@@ -82,13 +82,13 @@ public class SceneGraph {
 
             // make sure each material in the list is in the node's materials
             int numMatsContained = 0;
-            for (int i = 0; i < materials.length; i++) {
+            for (String material : materials) {
                 boolean containsMaterial = false;
 
                 // see if node contains current material and stop when it is
                 // found
-                for (int j = 0; j < nodeMats.length; j++) {
-                    if (nodeMats[j].equals(materials[i])) {
+                for (String nodeMat : nodeMats) {
+                    if (nodeMat.equals(material)) {
                         containsMaterial = true;
                         numMatsContained++;
                         break;
@@ -154,7 +154,7 @@ public class SceneGraph {
      * Retrieves a list of all mesh nodes below a given node in the graph
      */
     public List<StaticMeshNode> getAllMeshNodes(Node rootNode) {
-        List<StaticMeshNode> nodes = new ArrayList<StaticMeshNode>();
+        List<StaticMeshNode> nodes = new ArrayList<>();
         appendMeshNode(nodes, rootNode);
         return nodes;
     }
@@ -173,7 +173,7 @@ public class SceneGraph {
      * Creates a new scene graph by parsing nodes contained in s-expression
      */
     public SceneGraph(SExp exp) {
-        root = new BaseNode(null);
+        root = new BaseNode();
         readNodes(root, exp);
     }
 
@@ -217,7 +217,7 @@ public class SceneGraph {
 
                 if (node != null) {
                     if (parent.children == null)
-                        parent.children = new ArrayList<Node>();
+                        parent.children = new ArrayList<>();
                     parent.children.add(node);
 
                     // keep reading child's branch of nodes recursively

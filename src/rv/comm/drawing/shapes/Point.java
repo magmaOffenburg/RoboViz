@@ -25,8 +25,8 @@ public class Point extends Shape {
     /** Size of a parsed draw circle command packet */
     public static final int CMD_SIZE = 31;
 
-    private float[]         position;
-    private float           size;
+    private final float[]   position;
+    private final float     size;
 
     public Point(String set, float[] position, float[] color, float size) {
         super(set, color);

@@ -28,9 +28,9 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class ConnectionOverlay implements Screen {
 
-    private final String msg = "Disconnected";
-    private TextRenderer tr;
-    private Rectangle2D  b;
+    private final String       msg = "Disconnected";
+    private final TextRenderer tr;
+    private final Rectangle2D  b;
 
     public ConnectionOverlay() {
         tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, 24), true, true);

@@ -40,7 +40,7 @@ public class Subject<T> implements IPublishSubscribe<T> {
      */
     public Subject() {
         super();
-        this.observers = new ArrayList<IObserver<T>>();
+        this.observers = new ArrayList<>();
     }
 
     @Override

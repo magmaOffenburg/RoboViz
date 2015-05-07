@@ -33,7 +33,7 @@ public class Logfile implements ILogfileReader {
     private BufferedReader br;
 
     /** the file to read from */
-    private File           logsrc;
+    private final File     logsrc;
 
     /** index of the frame that is currently buffered */
     private int            curFramePtr;

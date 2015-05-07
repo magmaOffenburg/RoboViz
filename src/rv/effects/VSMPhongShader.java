@@ -35,7 +35,7 @@ public class VSMPhongShader {
     private static final Matrix BIAS_MATRIX = new Matrix(new double[] { 0.5, 0.0, 0.0, 0.0, 0.0,
             0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0, });
 
-    private ShaderProgram       prog;
+    private final ShaderProgram prog;
     private Uniform.Mat4        modelMatrix;
     private Uniform.Mat4        lvpbMatrix;
 

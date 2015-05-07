@@ -16,7 +16,6 @@
 
 package rv.comm.rcssserver;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,19 +28,19 @@ import java.util.List;
 public class LogfileReaderBuffered implements ILogfileReader {
 
     /** the reader to decorate */
-    private ILogfileReader decoratee;
+    private final ILogfileReader decoratee;
 
     /** the maximal size of the buffer */
-    private int            bufferSize;
+    private final int            bufferSize;
 
     /** buffer for the frame messages */
-    private List<String>   buffer;
+    private List<String>         buffer;
 
     /** the frame that is buffered at position 0 of the buffer */
-    private int            bufferZeroFrame;
+    private int                  bufferZeroFrame;
 
     /** index of the current Frame */
-    private int            currentFrame;
+    private int                  currentFrame;
 
     /**
      * Default constructor
@@ -50,11 +49,8 @@ public class LogfileReaderBuffered implements ILogfileReader {
      *            the logfile to open
      * @param bufferSize
      *            the number of frames to buffer
-     * @throws FileNotFoundException
-     *             if the logfile can not be opened
      */
-    public LogfileReaderBuffered(ILogfileReader decoratee, int bufferSize)
-            throws FileNotFoundException {
+    public LogfileReaderBuffered(ILogfileReader decoratee, int bufferSize) {
         this.decoratee = decoratee;
         this.bufferSize = bufferSize;
         open();
@@ -62,11 +58,9 @@ public class LogfileReaderBuffered implements ILogfileReader {
 
     /**
      * Opens the file for buffered reading
-     * 
-     * @throws FileNotFoundException
      */
-    private void open() throws FileNotFoundException {
-        buffer = new LinkedList<String>();
+    private void open() {
+        buffer = new LinkedList<>();
         buffer.add(decoratee.getCurrentFrameMessage());
         bufferZeroFrame = 0;
         currentFrame = 0;
