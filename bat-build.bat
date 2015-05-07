@@ -19,6 +19,7 @@ copy scripts\config.bat %BIN%\config.bat
 copy scripts\setEnvironment.bat %BIN%\setEnvironment.bat
 copy LICENSE %BIN%\
 copy NOTICE %BIN%\
+copy config.txt %BIN%\
 
 cd %BIN%
 jar cf RoboViz.jar config rv

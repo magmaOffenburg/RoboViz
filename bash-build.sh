@@ -22,15 +22,16 @@ javac -d $BIN -cp $VIZCLASSPATH src/rv/Viewer.java
 javac -d $BIN -cp $VIZCLASSPATH src/config/RVConfigure.java
 
 # copy over resources and libraries to bin folder
-rsync -r --exclude=.svn resources $BIN/
-rsync -r --exclude=.svn $JOGL $BIN/lib/
-rsync -r --exclude=.svn src/shaders $BIN/
+rsync -r resources $BIN/
+rsync -r $JOGL $BIN/lib/
+rsync -r src/shaders $BIN/
 cp lib/jsgl.jar $BIN/lib/
 cp lib/commons-compress-1.5.jar $BIN/lib/
 cp scripts/roboviz.sh $BIN/
 cp scripts/config.sh $BIN/
 cp LICENSE $BIN/
 cp NOTICE $BIN/
+cp config.txt $BIN/
 
 # create JAR and delete bytecode directories
 cd $BIN/
