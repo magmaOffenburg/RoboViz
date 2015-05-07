@@ -64,10 +64,6 @@ public class Renderer implements WindowResizeListener {
 
     /**
      * Overrides view and projection matrices used in rendering
-     * 
-     * @param eye
-     * @param modelview
-     * @param projection
      */
     public void overrideViewProjection(int eye, Matrix modelview, Matrix projection) {
 

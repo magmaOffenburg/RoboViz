@@ -40,16 +40,11 @@ public interface SceneRenderer {
     /**
      * Renders world model scene to currently bound frame buffer according to this renderer's
      * implementation
-     * 
-     * @param gl
-     * @param world
      */
     public void render(GL2 gl, WorldModel world, Drawings drawings);
 
     /**
      * Release any resources used by renderer
-     * 
-     * @param gl
      */
     public void dispose(GL gl);
 }

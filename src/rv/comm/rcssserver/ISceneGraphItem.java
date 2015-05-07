@@ -36,8 +36,6 @@ public interface ISceneGraphItem {
      * first connects or an agent joins the simulation. The object implementing this interface is
      * given a chance to locate its respective node in the scene graph and store a reference to it
      * for future scene graph updates.
-     * 
-     * @param sg
      */
     public void sceneGraphChanged(SceneGraph sg);
 

@@ -171,8 +171,6 @@ public class SceneGraph {
 
     /**
      * Creates a new scene graph by parsing nodes contained in s-expression
-     * 
-     * @param exp
      */
     public SceneGraph(SExp exp) {
         root = new BaseNode(null);

@@ -29,8 +29,7 @@ public interface IUpdatable {
 
     /**
      * Allows a module to update its state.
-     * 
-     * @param gl
+     *
      * @param world
      *            - world model state
      * @param ui
