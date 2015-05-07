@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -35,7 +36,7 @@ public class Configuration {
 
     private static final String CONFIG_FILE_PATH = "config.txt";
 
-    public String getNextLine(BufferedReader in) throws IOException {
+    public static String getNextLine(BufferedReader in) throws IOException {
         String result = in.readLine();
         while (result != null && result.startsWith("#")) {
             result = in.readLine();
@@ -60,35 +61,35 @@ public class Configuration {
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
-            useBloom = Boolean.parseBoolean(getVal(getNextLine(in)));
-            usePhong = Boolean.parseBoolean(getVal(getNextLine(in)));
-            useShadows = Boolean.parseBoolean(getVal(getNextLine(in)));
-            useSoftShadows = Boolean.parseBoolean(getVal(getNextLine(in)));
-            shadowResolution = Integer.parseInt(getVal(getNextLine(in)));
-            useStereo = Boolean.parseBoolean(getVal(getNextLine(in)));
-            useVsync = Boolean.parseBoolean(getVal(getNextLine(in)));
-            useFsaa = Boolean.parseBoolean(getVal(getNextLine(in)));
-            fsaaSamples = Integer.parseInt(getVal(getNextLine(in)));
-            targetFPS = Integer.parseInt(getVal(getNextLine(in)));
-            frameWidth = Integer.parseInt(getVal(getNextLine(in)));
-            frameHeight = Integer.parseInt(getVal(getNextLine(in)));
+            useBloom = getNextBool(in);
+            usePhong = getNextBool(in);
+            useShadows = getNextBool(in);
+            useSoftShadows = getNextBool(in);
+            shadowResolution = getNextInt(in);
+            useStereo = getNextBool(in);
+            useVsync = getNextBool(in);
+            useFsaa = getNextBool(in);
+            fsaaSamples = getNextInt(in);
+            targetFPS = getNextInt(in);
+            frameWidth = getNextInt(in);
+            frameHeight = getNextInt(in);
             getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
             out.write("Graphics Settings:\n");
-            out.write(String.format("%-20s : %b\n", "Bloom", useBloom));
-            out.write(String.format("%-20s : %b\n", "Phong", usePhong));
-            out.write(String.format("%-20s : %b\n", "Shadows", useShadows));
-            out.write(String.format("%-20s : %b\n", "Soft Shadows", useSoftShadows));
-            out.write(String.format("%-20s : %d\n", "Shadow Resolution", shadowResolution));
-            out.write(String.format("%-20s : %b\n", "Stereo 3D", useStereo));
-            out.write(String.format("%-20s : %b\n", "V-Sync", useVsync));
-            out.write(String.format("%-20s : %b\n", "FSAA", useFsaa));
-            out.write(String.format("%-20s : %d\n", "FSAA Samples", fsaaSamples));
-            out.write(String.format("%-20s : %d\n", "Target FPS", targetFPS));
-            out.write(String.format("%-20s : %d\n", "Frame Width", frameWidth));
-            out.write(String.format("%-20s : %d\n", "Frame Height", frameHeight));
+            writeVal(out, "Bloom", useBloom);
+            writeVal(out, "Phong", usePhong);
+            writeVal(out, "Shadows", useShadows);
+            writeVal(out, "Soft Shadows", useSoftShadows);
+            writeVal(out, "Shadow Resolution", shadowResolution);
+            writeVal(out, "Stereo 3D", useStereo);
+            writeVal(out, "V-Sync", useVsync);
+            writeVal(out, "FSAA", useFsaa);
+            writeVal(out, "FSAA Samples", fsaaSamples);
+            writeVal(out, "Target FPS", targetFPS);
+            writeVal(out, "Frame Width", frameWidth);
+            writeVal(out, "Frame Height", frameHeight);
             out.write("\n");
         }
     }
@@ -102,21 +103,21 @@ public class Configuration {
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
-            autoConnect = Boolean.parseBoolean(getVal(getNextLine(in)));
-            autoConnectDelay = Integer.parseInt(getVal(getNextLine(in)));
-            serverHost = getVal(getNextLine(in));
-            serverPort = Integer.parseInt(getVal(getNextLine(in)));
-            listenPort = Integer.parseInt(getVal(getNextLine(in)));
+            autoConnect = getNextBool(in);
+            autoConnectDelay = getNextInt(in);
+            serverHost = getNextString(in);
+            serverPort = getNextInt(in);
+            listenPort = getNextInt(in);
             getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
             out.write("Networking Settings:\n");
-            out.write(String.format("%-20s : %b\n", "Auto-Connect", autoConnect));
-            out.write(String.format("%-20s : %d\n", "Auto-Connect Delay", autoConnectDelay));
-            out.write(String.format("%-20s : %s\n", "Server Host", serverHost));
-            out.write(String.format("%-20s : %d\n", "Server Port", serverPort));
-            out.write(String.format("%-20s : %d\n", "Drawing Port", listenPort));
+            writeVal(out, "Auto-Connect", autoConnect);
+            writeVal(out, "Auto-Connect Delay", autoConnectDelay);
+            writeVal(out, "Server Host", serverHost);
+            writeVal(out, "Server Port", serverPort);
+            writeVal(out, "Drawing Port", listenPort);
             out.write("\n");
         }
     }
@@ -132,7 +133,7 @@ public class Configuration {
 
         private void write(BufferedWriter out) throws IOException {
             out.write("General Settings:\n");
-            out.write(String.format("%-20s : %b\n", "Record Logfiles", recordLogs));
+            writeVal(out, "Record Logfiles", recordLogs);
             out.write("\n");
         }
     }
@@ -186,6 +187,30 @@ public class Configuration {
 
     private static String getVal(String line) {
         return line.substring(line.indexOf(":") + 1).trim();
+    }
+
+    private static int getNextInt(BufferedReader in) throws IOException {
+        return Integer.parseInt(getVal(getNextLine(in)));
+    }
+
+    private static boolean getNextBool(BufferedReader in) throws IOException {
+        return Boolean.parseBoolean(getVal(getNextLine(in)));
+    }
+
+    private static String getNextString(BufferedReader in) throws IOException {
+        return getVal(getNextLine(in));
+    }
+
+    private static void writeVal(Writer out, String name, int value) throws IOException {
+        out.write(String.format("%-20s : %d\n", name, value));
+    }
+
+    private static void writeVal(Writer out, String name, boolean value) throws IOException {
+        out.write(String.format("%-20s : %b\n", name, value));
+    }
+
+    private static void writeVal(Writer out, String name, String value) throws IOException {
+        out.write(String.format("%-20s : %s\n", name, value));
     }
 
     public void write() {
