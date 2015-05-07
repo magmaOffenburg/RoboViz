@@ -38,7 +38,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import rv.Globals;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.Drawings.SetListChangeEvent;
@@ -55,10 +54,10 @@ import rv.comm.drawing.shapes.Shape;
  */
 public class DrawingListPanel extends FramePanelBase implements ShapeListListener {
 
-    static class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+    static class CheckListRenderer extends JCheckBox implements ListCellRenderer<CheckListItem> {
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index,
-                boolean isSelected, boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<? extends CheckListItem> list,
+                CheckListItem value, int index, boolean isSelected, boolean cellHasFocus) {
             setEnabled(list.isEnabled());
             setSelected(((CheckListItem) value).isSelected());
             setFont(list.getFont());
@@ -124,17 +123,16 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         }
     }
 
-    private Drawings       drawings;
-    private JTextField     regexField;
-    private JList          list;
-    final DefaultListModel model = new DefaultListModel();
+    private Drawings                      drawings;
+    private JTextField                    regexField;
+    private JList<CheckListItem>          list;
+    final DefaultListModel<CheckListItem> model = new DefaultListModel<CheckListItem>();
 
     public DrawingListPanel(Drawings drawings) {
 
         super("Drawings");
-        frame.setIconImage(Globals.getIcon());
         frame.setAlwaysOnTop(true);
-        list = new JList(model);
+        list = new JList<CheckListItem>(model);
         frame.setSize(300, 600);
         frame.setMinimumSize(new Dimension(300, 200));
 
@@ -202,13 +200,13 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 
         frame.pack();
         frame.setSize(300, 600);
-        // TODO: shouldnt do this, just grab pools on init
+        // TODO: shouldn't do this, just grab pools on init
         drawings.clearAllShapeSets();
     }
 
     private void regexList(String s) {
         for (int i = 0; i < model.getSize(); i++) {
-            CheckListItem cli = ((CheckListItem) model.getElementAt(i));
+            CheckListItem cli = (model.getElementAt(i));
             cli.setSelected(cli.item.getName().matches(s));
         }
         list.repaint();
@@ -221,12 +219,11 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         model.clear();
         ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
         int size = shapeSets.size();
-        for (int i = 0; i < size; i++) {
-            if (shapeSets.get(i) != null) {
-                CheckListItem item = new CheckListItem(shapeSets.get(i));
-                boolean visible = shapeSets.get(i).isVisible();
-                boolean matchRegex = regex == null ? true : shapeSets.get(i).getName()
-                        .matches(regex);
+        for (BufferedSet<Shape> shapeSet : shapeSets) {
+            if (shapeSet != null) {
+                CheckListItem item = new CheckListItem(shapeSet);
+                boolean visible = shapeSet.isVisible();
+                boolean matchRegex = regex == null ? true : shapeSet.getName().matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }
@@ -234,12 +231,11 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 
         ArrayList<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
         int size2 = annotationSets.size();
-        for (int i = 0; i < size2; i++) {
-            if (annotationSets.get(i) != null) {
-                CheckListItem item = new CheckListItem(annotationSets.get(i));
-                boolean visible = annotationSets.get(i).isVisible();
-                boolean matchRegex = regex == null ? true : annotationSets.get(i).getName()
-                        .matches(regex);
+        for (BufferedSet<Annotation> annotationSet : annotationSets) {
+            if (annotationSet != null) {
+                CheckListItem item = new CheckListItem(annotationSet);
+                boolean visible = annotationSet.isVisible();
+                boolean matchRegex = regex == null ? true : annotationSet.getName().matches(regex);
                 item.setSelected(visible && matchRegex);
                 model.addElement(item);
             }

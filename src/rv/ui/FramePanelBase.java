@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import rv.Globals;
 
 public class FramePanelBase {
     protected JFrame frame;
@@ -16,7 +17,7 @@ public class FramePanelBase {
 
     public FramePanelBase(String title) {
         frame = new JFrame(title);
-        frame.setSize(400, 500);
+        frame.setIconImage(Globals.getIcon());
         String actionName = "ClosePanel" + title;
         frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), actionName);
