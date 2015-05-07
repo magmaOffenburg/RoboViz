@@ -251,8 +251,8 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
             if (log.exists())
                 logPlayer = new LogPlayer(new File(logFileName), world);
             else {
-                System.err.println("Could not find log file!");
-                shutdown();
+                System.err.println("Could not find log file " + logFileName);
+                System.exit(0);
             }
         }
         ui = new UserInterface(this);
