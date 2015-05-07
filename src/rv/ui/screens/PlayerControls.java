@@ -19,7 +19,6 @@ package rv.ui.screens;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Shape;
@@ -31,12 +30,12 @@ import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import rv.Globals;
 import rv.comm.rcssserver.LogPlayer;
+import rv.ui.FramePanelBase;
 import rv.util.observer.IObserver;
 
 /**
@@ -44,7 +43,7 @@ import rv.util.observer.IObserver;
  * 
  * @author dorer
  */
-class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolean> {
+class PlayerControls extends FramePanelBase implements ChangeListener, IObserver<Boolean> {
 
     private Container container;
 
@@ -69,11 +68,14 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
     private JSlider   slider;
 
     public PlayerControls(LogPlayer playerRef) {
-        super((Dialog) null, "Logplayer");
-        setIconImage(Globals.getIcon());
+        super("Logplayer");
         this.player = playerRef;
         createControls();
         player.attach(this);
+    }
+
+    public void setVisible(boolean b) {
+        frame.setVisible(b);
     }
 
     /**
@@ -82,10 +84,10 @@ class PlayerControls extends JDialog implements ChangeListener, IObserver<Boolea
     private void createControls() {
         int buttonId = 0;
 
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setSize(400, 110);
-        setResizable(false);
-        container = getContentPane();
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(400, 110);
+        frame.setResizable(false);
+        container = frame.getContentPane();
         container.setLayout(null);
 
         fileOpenButton = createButton(buttonId++, "file_open", "Open Logfile...",

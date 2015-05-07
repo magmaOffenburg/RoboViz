@@ -18,7 +18,10 @@ public class FramePanelBase {
     public FramePanelBase(String title) {
         frame = new JFrame(title);
         frame.setIconImage(Globals.getIcon());
-        String actionName = "ClosePanel" + title;
+    }
+
+    public void addCloseHotkey() {
+        String actionName = "ClosePanel" + frame.getTitle();
         frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), actionName);
         frame.getRootPane().getActionMap().put(actionName, new AbstractAction() {

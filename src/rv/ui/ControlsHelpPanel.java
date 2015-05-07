@@ -13,6 +13,7 @@ public class ControlsHelpPanel extends FramePanelBase {
 
     public ControlsHelpPanel() {
         super("Help");
+        addCloseHotkey();
         frame.setSize(400, 500);
         frame.setMinimumSize(new Dimension(400, 500));
 

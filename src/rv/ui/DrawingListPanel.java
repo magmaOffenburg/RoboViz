@@ -131,6 +131,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
     public DrawingListPanel(Drawings drawings) {
 
         super("Drawings");
+        addCloseHotkey();
         frame.setAlwaysOnTop(true);
         list = new JList<CheckListItem>(model);
         frame.setSize(300, 600);
