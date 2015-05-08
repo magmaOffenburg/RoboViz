@@ -16,10 +16,15 @@
 
 package rv;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +40,12 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import js.jogl.GLInfo;
-import js.jogl.prog.GLProgramSwing;
+import js.jogl.prog.GLProgram;
 import js.jogl.view.Viewport;
 import rv.comm.NetworkManager;
 import rv.comm.drawing.Drawings;
@@ -46,6 +54,10 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.world.WorldModel;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.awt.AWTKeyAdapter;
+import com.jogamp.newt.event.awt.AWTMouseAdapter;
 import com.jogamp.opengl.util.awt.Screenshot;
 
 /**
@@ -54,7 +66,7 @@ import com.jogamp.opengl.util.awt.Screenshot;
  * 
  * @author Justin Stoecker
  */
-public class Viewer extends GLProgramSwing implements GLEventListener {
+public class Viewer extends GLProgram implements GLEventListener {
 
     public enum Mode {
         LOGFILE, LIVE,
@@ -88,6 +100,8 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
+    private JFrame                           frame;
+    private GLCanvas                         canvas;
     private WorldModel                       world;
     private UserInterface                    ui;
     private NetworkManager                   netManager;
@@ -148,7 +162,8 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     }
 
     public void shutdown() {
-        getFrame().dispose();
+        storeConfig();
+        frame.dispose();
         System.exit(0);
     }
 
@@ -156,19 +171,77 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
         return renderer;
     }
 
-    /** Creates a new RoboVis viewer */
     public Viewer(Configuration config, GLCapabilities caps, String[] args) {
-        super("RoboViz", config.graphics.frameWidth, config.graphics.frameHeight, caps);
-
+        super(config.graphics.frameWidth, config.graphics.frameHeight);
         this.config = config;
 
-        // check command-line args
+        initComponents(caps);
+        parseArgs(args);
+    }
+
+    private void initComponents(GLCapabilities caps) {
+        canvas = new GLCanvas(caps);
+
+        frame = new JFrame("RoboViz");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                shutdown();
+            }
+        });
+        frame.setIconImage(Globals.getIcon());
+        frame.setLayout(new BorderLayout());
+        frame.add(canvas, BorderLayout.CENTER);
+        restoreConfig();
+        frame.setVisible(true);
+        attachDrawableAndStart(canvas);
+    }
+
+    private void parseArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("--logfile") && i < args.length - 1)
                 logFileName = args[i + 1];
         }
+    }
 
-        getFrame().setIconImage(Globals.getIcon());
+    private void restoreConfig() {
+        Configuration.Graphics graphics = config.graphics;
+        Integer frameX = graphics.frameX;
+        Integer frameY = graphics.frameY;
+        boolean maximized = graphics.isMaximized;
+
+        frame.setSize(graphics.frameWidth, graphics.frameHeight);
+
+        if (frameX == null || frameY == null)
+            frame.setLocationRelativeTo(null);
+        else
+            frame.setLocation(frameX, frameY);
+
+        frame.setState(maximized ? Frame.MAXIMIZED_BOTH : Frame.NORMAL);
+    }
+
+    private void storeConfig() {
+        Configuration.Graphics graphics = config.graphics;
+        Point location = frame.getLocation();
+        Dimension size = frame.getSize();
+        int state = frame.getState();
+
+        graphics.frameX = location.x;
+        graphics.frameY = location.y;
+        graphics.frameWidth = size.width;
+        graphics.frameHeight = size.height;
+        graphics.isMaximized = (state & Frame.MAXIMIZED_BOTH) > 0;
+
+        config.write();
+    }
+
+    public void addKeyListener(KeyListener l) {
+        (new AWTKeyAdapter(l)).addTo(this.canvas);
+    }
+
+    public void addMouseListener(MouseListener l) {
+        (new AWTMouseAdapter(l)).addTo(this.canvas);
     }
 
     public void takeScreenShot() {
@@ -195,13 +268,13 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     /** Enter or exit full-screen exclusive mode depending on current mode */
     public void toggleFullScreen() {
         fullscreen = !fullscreen;
-        getCurrentScreen().setFullScreenWindow(fullscreen ? getFrame() : null);
+        getCurrentScreen().setFullScreenWindow(fullscreen ? frame : null);
     }
 
     private GraphicsDevice getCurrentScreen() {
         GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getScreenDevices();
-        Point location = getFrame().getLocation();
+        Point location = frame.getLocation();
         for (GraphicsDevice device : devices) {
             Rectangle bounds = device.getDefaultConfiguration().getBounds();
             if (bounds.contains(location)) {
@@ -214,7 +287,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
     public void exitError(String msg) {
         System.err.println(msg);
         animator.stop();
-        getFrame().dispose();
+        frame.dispose();
         System.exit(1);
     }
 
@@ -225,8 +298,7 @@ public class Viewer extends GLProgramSwing implements GLEventListener {
 
         GL2 gl = drawable.getGL().getGL2();
 
-        if (!init) {
-            // print OpenGL renderer info
+        if (!init) { // print OpenGL renderer info
             glInfo = new GLInfo(drawable.getGL());
             glInfo.print();
         }

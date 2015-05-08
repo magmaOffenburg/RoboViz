@@ -45,7 +45,6 @@ public class Configuration {
     }
 
     public class Graphics {
-
         public boolean useBloom         = false;
         public boolean usePhong         = false;
         public boolean useShadows       = false;
@@ -53,10 +52,13 @@ public class Configuration {
         public boolean useStereo        = false;
         public boolean useVsync         = true;
         public boolean useFsaa          = false;
+        public boolean isMaximized      = false;
         public int     fsaaSamples      = 4;
         public int     targetFPS        = 60;
         public int     frameWidth       = 800;
         public int     frameHeight      = 600;
+        public Integer frameX           = null;
+        public Integer frameY           = null;
         public int     shadowResolution = 1024;
 
         private void read(BufferedReader in) throws IOException {
@@ -73,6 +75,9 @@ public class Configuration {
             targetFPS = getNextInt(in);
             frameWidth = getNextInt(in);
             frameHeight = getNextInt(in);
+            frameX = getNextInteger(in);
+            frameY = getNextInteger(in);
+            isMaximized = getNextBool(in);
             getNextLine(in);
         }
 
@@ -90,6 +95,9 @@ public class Configuration {
             writeVal(out, "Target FPS", targetFPS);
             writeVal(out, "Frame Width", frameWidth);
             writeVal(out, "Frame Height", frameHeight);
+            writeVal(out, "Frame X", frameX);
+            writeVal(out, "Frame Y", frameY);
+            writeVal(out, "Frame Maximized", isMaximized);
             out.write("\n");
         }
     }
@@ -191,6 +199,14 @@ public class Configuration {
 
     private static int getNextInt(BufferedReader in) throws IOException {
         return Integer.parseInt(getVal(getNextLine(in)));
+    }
+
+    private static Integer getNextInteger(BufferedReader in) throws IOException {
+        try {
+            return Integer.parseInt(getVal(getNextLine(in)));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private static boolean getNextBool(BufferedReader in) throws IOException {
