@@ -49,7 +49,7 @@ public class AgentAnnotation extends Annotation {
         float[] color = Command.readRGB(buf);
         String text = Command.getString(buf);
 
-        if (agent == null)
+        if (agent == null || agent.getHeadCenter() == null)
             return null;
         return new AgentAnnotation(text, agent, color);
     }
