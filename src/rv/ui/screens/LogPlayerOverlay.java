@@ -90,10 +90,10 @@ public class LogPlayerOverlay implements Screen, KeyListener {
             player.rewind();
             break;
         case KeyEvent.VK_X:
-            player.changePlayBackSpeed(false);
+            player.decreasePlayBackSpeed();
             break;
         case KeyEvent.VK_C:
-            player.changePlayBackSpeed(true);
+            player.increasePlayBackSpeed();
             break;
         case KeyEvent.VK_COMMA:
             if (!player.isPlaying())

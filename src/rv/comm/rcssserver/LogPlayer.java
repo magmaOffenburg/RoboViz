@@ -43,6 +43,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private final MessageParser    parser;
     private Timer                  timer;
     private boolean                playing;
+    private double                 playbackSpeed       = 1;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -146,19 +147,23 @@ public class LogPlayer implements ISubscribe<Boolean> {
         }
     }
 
-    public void setPlayBackSpeedFactor(double factor) {
+    public void setPlayBackSpeed(double factor) {
         int newDelay = (int) (DEFAULT_TIMER_DELAY / factor);
-        timer.setDelay(Maths.clamp(newDelay, 20, 1000));
+        timer.setDelay(Maths.clamp(newDelay, 15, 1500));
+        playbackSpeed = Maths.clamp(factor, 0.1, 10);
+        observers.onStateChange(playing);
     }
 
-    public void changePlayBackSpeed(boolean accelerate) {
-        int acc = 25;
-        if (accelerate) {
-            acc = -25;
-        }
-        int delay = Maths.clamp(timer.getDelay() + acc, 20, 1000);
-        timer.setDelay(delay);
-        System.out.printf("Player FPS: %.1f\n", 1000.0f / timer.getDelay());
+    public void increasePlayBackSpeed() {
+        setPlayBackSpeed(getPlayBackSpeed() + 0.1);
+    }
+
+    public void decreasePlayBackSpeed() {
+        setPlayBackSpeed(getPlayBackSpeed() - 0.1);
+    }
+
+    public double getPlayBackSpeed() {
+        return playbackSpeed;
     }
 
     private void parseFrame() throws ParseException {

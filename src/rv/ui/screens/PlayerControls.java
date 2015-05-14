@@ -160,7 +160,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         playbackSpeedSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                player.setPlayBackSpeedFactor((double) playbackSpeedSpinner.getValue());
+                player.setPlayBackSpeed((double) playbackSpeedSpinner.getValue());
             }
         });
         container.add(playbackSpeedSpinner, c);
@@ -218,6 +218,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         if (slider.isEnabled()) {
             player.setCurrentFrame(slider.getValue());
         }
+        playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
     }
 
     public void dispose() {
