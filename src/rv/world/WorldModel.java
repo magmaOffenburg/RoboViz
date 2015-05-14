@@ -110,13 +110,6 @@ public class WorldModel {
             listener.selectionChanged(selectedObject);
     }
 
-    public void toggleObjectSelection(ISelectable selectable) {
-        if (selectedObject != null && selectable != selectedObject)
-            setSelectedObject(selectable);
-        else
-            setSelectedObject((selectedObject == null) ? selectable : null);
-    }
-
     public GameState getGameState() {
         return gameState;
     }

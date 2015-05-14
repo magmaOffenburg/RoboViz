@@ -8,7 +8,6 @@ public class Control extends Command {
     public static final int AGENT_SELECT = 0;
 
     private final Viewer    viewer;
-
     private final Agent     agent;
 
     public Control(ByteBuffer buf, Viewer viewer) {

@@ -287,7 +287,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         Team team = leftTeam ? worldModel.getLeftTeam() : worldModel.getRightTeam();
         Agent agent = team.getAgentByID(playerID);
         if (agent != null)
-            viewer.getWorldModel().toggleObjectSelection(agent);
+            viewer.getWorldModel().setSelectedObject(agent);
     }
 
     private void resetTimeIfExpired() {

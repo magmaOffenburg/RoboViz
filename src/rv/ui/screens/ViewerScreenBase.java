@@ -64,7 +64,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             break;
         case KeyEvent.VK_B:
             if (e.isControlDown()) {
-                viewer.getWorldModel().toggleObjectSelection(viewer.getWorldModel().getBall());
+                viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
             } else {
                 bPressed();
             }
