@@ -333,10 +333,10 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
     private void setRobotVantage(RobotVantageType type) {
         boolean differentType = robotVantageType != type;
-        int oldAgentID = -1;
+        Agent oldAgent = null;
 
         if (robotVantage != null) {
-            oldAgentID = robotVantage.getAgent().getID();
+            oldAgent = robotVantage.getAgent();
             robotVantage.detach();
             robotVantage = null;
             viewer.getRenderer().setVantage(viewer.getUI().getCamera());
@@ -354,7 +354,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         }
 
         Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
-        if (differentType || oldAgentID != agent.getID()) {
+        if (differentType || oldAgent != agent) {
             if (type == RobotVantageType.FIRST_PERSON)
                 robotVantage = new RobotVantageFirstPerson(agent);
             else
@@ -382,10 +382,12 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
     @Override
     public void selectionChanged(ISelectable newSelection) {
-        if (newSelection instanceof Agent) {
-            setRobotVantage(robotVantageType);
-        } else {
-            setRobotVantage(RobotVantageType.NONE);
+        if (robotVantage != null) {
+            if (newSelection instanceof Agent) {
+                setRobotVantage(robotVantageType);
+            } else {
+                setRobotVantage(RobotVantageType.NONE);
+            }
         }
     }
 }
