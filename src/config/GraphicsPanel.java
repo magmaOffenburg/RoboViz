@@ -44,6 +44,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     JCheckBox                    softShadowCB;
     JCheckBox                    fsaaCB;
     JCheckBox                    stereoCB;
+    JCheckBox                    vsyncCB;
     JTextField                   samplesTF;
     JTextField                   shadowResTB;
     JSpinner                     fpsSpinner;
@@ -122,20 +123,27 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         c.ipadx = 10;
 
         stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
+        vsyncCB = new JCheckBox("V-Sync", config.useVsync);
         fpsSpinner = new JSpinner(new SpinnerNumberModel(config.targetFPS, 1, 60, 1));
         fwSpinner = new JSpinner(new SpinnerNumberModel(config.frameWidth, 1, 10000, 1));
         fhSpinner = new JSpinner(new SpinnerNumberModel(config.frameHeight, 1, 10000, 1));
 
-        addConstrained(stereoCB, panel, c, 0, 0);
+        int y = 0;
+        addConstrained(stereoCB, panel, c, 0, y);
 
-        addLabel("FPS: ", panel, c, 1, 0);
-        addConstrained(fpsSpinner, panel, c, 2, 0);
+        addConstrained(vsyncCB, panel, c, 1, y);
 
-        addLabel("Frame Width: ", panel, c, 0, 1);
-        addConstrained(fwSpinner, panel, c, 1, 1);
+        y++;
+        addLabel("FPS: ", panel, c, 0, y);
+        addConstrained(fpsSpinner, panel, c, 1, y);
 
-        addLabel("Frame Height: ", panel, c, 0, 2);
-        addConstrained(fhSpinner, panel, c, 1, 2);
+        y++;
+        addLabel("Frame Width: ", panel, c, 0, y);
+        addConstrained(fwSpinner, panel, c, 1, y);
+
+        y++;
+        addLabel("Frame Height: ", panel, c, 0, y);
+        addConstrained(fhSpinner, panel, c, 1, y);
 
         return panel;
     }
@@ -181,6 +189,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         config.useSoftShadows = softShadowCB.isSelected();
         config.useFsaa = fsaaCB.isSelected();
         config.useStereo = stereoCB.isSelected();
+        config.useVsync = vsyncCB.isSelected();
 
         try {
             config.fsaaSamples = Integer.parseInt(samplesTF.getText());
