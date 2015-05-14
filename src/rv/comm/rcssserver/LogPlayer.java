@@ -37,10 +37,11 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements ISubscribe<Boolean> {
 
+    private static final int       DEFAULT_TIMER_DELAY = 150;
+
     private ILogfileReader         logfile;
     private final MessageParser    parser;
     private Timer                  timer;
-    final int                      delay;
     private boolean                playing;
 
     /** the list of observers that are informed if something changes */
@@ -60,12 +61,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public LogPlayer(File file, WorldModel world) {
 
         observers = new Subject<>();
-        delay = 150;
         playing = false;
         fileChooser = new JFileChooser();
         openLogfile(file);
 
-        timer = new Timer(delay, new ActionListener() {
+        timer = new Timer(DEFAULT_TIMER_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     play();
@@ -79,7 +79,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
             }
         });
         timer.setRepeats(true);
-        timer.setDelay(delay);
+        timer.setDelay(DEFAULT_TIMER_DELAY);
 
         parser = new MessageParser(world);
 
@@ -144,6 +144,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setPlayBackSpeedFactor(double factor) {
+        int newDelay = (int) (DEFAULT_TIMER_DELAY / factor);
+        timer.setDelay(Maths.clamp(newDelay, 20, 1000));
     }
 
     public void changePlayBackSpeed(boolean accelerate) {

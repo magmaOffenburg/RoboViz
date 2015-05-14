@@ -205,12 +205,12 @@ public class Viewer extends GLProgram implements GLEventListener {
     }
 
     private void parseArgs(String[] args) {
-        StringArgument LOGFILE = new StringArgument("logFile", null);
+        StringArgument LOG_FILE = new StringArgument("logFile", null);
         StringArgument SERVER_HOST = new StringArgument("serverHost", null);
         IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
         StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
-        logFileName = LOGFILE.parse(args);
+        logFileName = LOG_FILE.parse(args);
         config.networking.overrideServerHost(SERVER_HOST.parse(args));
         config.networking.overrideServerPort(SERVER_PORT.parse(args));
         drawingFilter = DRAWING_FILTER.parse(args);
@@ -249,11 +249,11 @@ public class Viewer extends GLProgram implements GLEventListener {
     }
 
     public void addKeyListener(KeyListener l) {
-        (new AWTKeyAdapter(l)).addTo(this.canvas);
+        (new AWTKeyAdapter(l)).addTo(canvas);
     }
 
     public void addMouseListener(MouseListener l) {
-        (new AWTMouseAdapter(l)).addTo(this.canvas);
+        (new AWTMouseAdapter(l)).addTo(canvas);
     }
 
     public void takeScreenShot() {
