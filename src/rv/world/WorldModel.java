@@ -178,12 +178,9 @@ public class WorldModel {
         rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
                 config.teamColors);
         gameState.addListener(rightTeam);
-        if (mode == Mode.LIVE) {
-            // teams and agents try to locate themselves in scene graph for
-            // selection purposes; not useful if using logfiles
-            sgItems.add(leftTeam);
-            sgItems.add(rightTeam);
-        }
+
+        sgItems.add(leftTeam);
+        sgItems.add(rightTeam);
 
         ball = new Ball(cm);
         sgItems.add(ball);
