@@ -34,10 +34,6 @@ import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
-import rv.comm.rcssserver.ServerComm;
-import rv.comm.rcssserver.ServerComm.ServerChangeListener;
-import rv.comm.rcssserver.scenegraph.SceneGraph;
-import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.ui.view.RobotVantage;
 import rv.world.ISelectable;
 import rv.world.Team;
@@ -47,8 +43,7 @@ import rv.world.objects.Ball;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LiveGameScreen extends ViewerScreenBase implements ServerChangeListener,
-        SceneGraphListener {
+public class LiveGameScreen extends ViewerScreenBase {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
@@ -80,9 +75,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new TextRenderer(font, true, false);
         overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
-
-        viewer.getNetManager().getServer().addChangeListener(this);
-        viewer.getWorldModel().addSceneGraphListener(this);
 
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
@@ -261,7 +253,10 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             showNumPlayers = !showNumPlayers;
             break;
         case KeyEvent.VK_ESCAPE:
-            changeSelection(null);
+            viewer.getWorldModel().setSelectedObject(null);
+            break;
+        case KeyEvent.VK_U:
+            viewer.getNetManager().getServer().requestFullState();
             break;
         }
     }
@@ -281,7 +276,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
         Team team = leftTeam ? worldModel.getLeftTeam() : worldModel.getRightTeam();
         Agent agent = team.getAgentByID(playerID);
         if (agent != null)
-            toggleSelection(agent);
+            viewer.getWorldModel().toggleObjectSelection(agent);
     }
 
     private void resetTimeIfExpired() {
@@ -338,20 +333,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
         }
-    }
-
-    @Override
-    public void connectionChanged(ServerComm server) {
-        changeSelection(null);
-    }
-
-    @Override
-    public void newSceneGraph(SceneGraph sg) {
-        changeSelection(null);
-    }
-
-    @Override
-    public void updatedSceneGraph(SceneGraph sg) {
     }
 
     @Override

@@ -295,4 +295,8 @@ public class ServerComm {
     public void resetTime() {
         sendMessage("(time 0)");
     }
+
+    public void requestFullState() {
+        sendMessage("(reqfullstate)");
+    }
 }

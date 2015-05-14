@@ -9,7 +9,6 @@ import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.world.ISelectable;
-import rv.world.WorldModel;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener {
@@ -31,27 +30,6 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
-        }
-    }
-
-    protected void toggleSelection(ISelectable selectable) {
-        if (selectable != null && selectable.isSelected())
-            changeSelection(null);
-        else
-            changeSelection(selectable);
-    }
-
-    protected void changeSelection(ISelectable newSelection) {
-        WorldModel worldModel = viewer.getWorldModel();
-        if (newSelection != null) {
-            if (worldModel.getSelectedObject() != null)
-                worldModel.getSelectedObject().setSelected(false);
-            worldModel.setSelectedObject(newSelection);
-            worldModel.getSelectedObject().setSelected(true);
-        } else {
-            if (worldModel.getSelectedObject() != null)
-                worldModel.getSelectedObject().setSelected(false);
-            worldModel.setSelectedObject(null);
         }
     }
 
@@ -86,7 +64,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             break;
         case KeyEvent.VK_B:
             if (e.isControlDown()) {
-                toggleSelection(viewer.getWorldModel().getBall());
+                viewer.getWorldModel().toggleObjectSelection(viewer.getWorldModel().getBall());
             } else {
                 bPressed();
             }
@@ -130,7 +108,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
             if (!handled) {
                 ISelectable newSelection = viewer.getUI().getObjectPicker().pickObject();
-                changeSelection(newSelection);
+                viewer.getWorldModel().setSelectedObject(newSelection);
             }
         }
     }

@@ -33,6 +33,7 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
+import rv.world.objects.Agent;
 import rv.world.objects.Ball;
 import rv.world.objects.Field;
 import rv.world.objects.SkyBox;
@@ -80,8 +81,18 @@ public class WorldModel {
         return ball;
     }
 
-    public void setSelectedObject(ISelectable selectedObject) {
-        this.selectedObject = selectedObject;
+    public void setSelectedObject(ISelectable newSelection) {
+        if (selectedObject != null)
+            selectedObject.setSelected(false);
+
+        selectedObject = newSelection;
+
+        if (selectedObject != null)
+            selectedObject.setSelected(true);
+    }
+
+    public void toggleObjectSelection(ISelectable selectable) {
+        setSelectedObject((selectedObject == null) ? selectable : null);
     }
 
     public GameState getGameState() {
@@ -101,6 +112,17 @@ public class WorldModel {
 
             for (ISceneGraphItem sgi : sgItems)
                 sgi.sceneGraphChanged(sceneGraph);
+        }
+
+        if (selectedObject instanceof Agent) {
+            Agent agent = (Agent) selectedObject;
+            Agent newSelection;
+            if (agent.getTeam().getID() == Team.LEFT) {
+                newSelection = getLeftTeam().getAgentByID(agent.getID());
+            } else {
+                newSelection = getRightTeam().getAgentByID(agent.getID());
+            }
+            setSelectedObject(newSelection);
         }
     }
 
