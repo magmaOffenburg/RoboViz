@@ -33,7 +33,6 @@ import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
-import rv.comm.rcssserver.GameState;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
 import rv.ui.view.RobotVantageThirdPerson;
@@ -56,14 +55,10 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
     }
 
     private final ConnectionOverlay connectionOverlay;
-    private final List<TextOverlay> textOverlays      = new ArrayList<>();
     private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private final TextRenderer      tr;
-    private final TextRenderer      overlayTextRenderer;
     private RobotVantageBase        robotVantage      = null;
     private RobotVantageType        robotVantageType  = RobotVantageType.NONE;
-    private int                     prevScoreL        = -1;
-    private int                     prevScoreR        = -1;
 
     boolean                         showNumPlayers    = false;
 
@@ -77,9 +72,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new TextRenderer(font, true, false);
-        overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
 
-        viewer.getWorldModel().getGameState().addListener(this);
         viewer.getWorldModel().addSelectionChangeListener(this);
     }
 
@@ -152,24 +145,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
             gsOverlay.render(gl, glu, glut, vp);
 
         super.render(gl, glu, glut, vp);
-
-        vp.apply(gl);
-        if (textOverlays.size() > 0)
-            renderTextOverlays(vp.w, vp.h);
-    }
-
-    private void renderTextOverlays(int w, int h) {
-        overlayTextRenderer.beginRendering(w, h);
-        for (int i = 0; i < textOverlays.size(); i++) {
-            TextOverlay overlay = textOverlays.get(i);
-            if (overlay.isExpired()) {
-                textOverlays.remove(i);
-                i--;
-            } else {
-                overlay.render(overlayTextRenderer, w, h);
-            }
-        }
-        overlayTextRenderer.endRendering();
     }
 
     private void renderBillboardText(String text, Vec3f pos3D, float[] color) {
@@ -350,21 +325,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
             robotVantageType = type;
         }
-    }
-
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-        if (prevScoreL != -1 && prevScoreR != -1) {
-            if (gs.getScoreLeft() > prevScoreL && gs.getTeamLeft() != null)
-                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamLeft()), 4000,
-                        new float[] { 1, 1, 1, 1 }));
-            if (gs.getScoreRight() > prevScoreR && gs.getTeamRight() != null)
-                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamRight()),
-                        4000, new float[] { 1, 1, 1, 1 }));
-        }
-
-        prevScoreL = gs.getScoreLeft();
-        prevScoreR = gs.getScoreRight();
     }
 
     @Override

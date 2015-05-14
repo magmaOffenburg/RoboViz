@@ -1,5 +1,6 @@
 package rv.ui.screens;
 
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.world.ISelectable;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
@@ -22,19 +24,45 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     protected final GameStateOverlay gsOverlay;
     private final Field2DOverlay     fieldOverlay;
-    protected final List<Screen>     overlays = new ArrayList<>();
+    protected final List<Screen>     overlays     = new ArrayList<>();
+
+    protected final TextRenderer     overlayTextRenderer;
+    private final List<TextOverlay>  textOverlays = new ArrayList<>();
+
+    private int                      prevScoreL   = -1;
+    private int                      prevScoreR   = -1;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
         gsOverlay = new GameStateOverlay(viewer);
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
+
+        overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
     }
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         for (Screen overlay : overlays)
             overlay.render(gl, glu, glut, vp);
+
+        vp.apply(gl);
+        if (textOverlays.size() > 0)
+            renderTextOverlays(vp.w, vp.h);
+    }
+
+    private void renderTextOverlays(int w, int h) {
+        overlayTextRenderer.beginRendering(w, h);
+        for (int i = 0; i < textOverlays.size(); i++) {
+            TextOverlay overlay = textOverlays.get(i);
+            if (overlay.isExpired()) {
+                textOverlays.remove(i);
+                i--;
+            } else {
+                overlay.render(overlayTextRenderer, w, h);
+            }
+        }
+        overlayTextRenderer.endRendering();
     }
 
     @Override
@@ -44,11 +72,13 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             canvas.addMouseListener(this);
             canvas.addMouseMotionListener(this);
             viewer.getUI().getCameraControl().attachToCanvas(canvas);
+            viewer.getWorldModel().getGameState().addListener(this);
         } else {
             canvas.removeKeyListener(this);
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
+            viewer.getWorldModel().getGameState().removeListener(this);
         }
 
         for (Screen overlay : overlays)
@@ -172,6 +202,16 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void gsPlayStateChanged(GameState gs) {
+        if (prevScoreL != -1 && prevScoreR != -1) {
+            if (gs.getScoreLeft() > prevScoreL && gs.getTeamLeft() != null)
+                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamLeft()), 4000,
+                        new float[] { 1, 1, 1, 1 }));
+            if (gs.getScoreRight() > prevScoreR && gs.getTeamRight() != null)
+                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamRight()),
+                        4000, new float[] { 1, 1, 1, 1 }));
+        }
 
+        prevScoreL = gs.getScoreLeft();
+        prevScoreR = gs.getScoreRight();
     }
 }
