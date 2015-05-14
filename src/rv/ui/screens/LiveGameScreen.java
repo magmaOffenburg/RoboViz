@@ -34,7 +34,9 @@ import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
-import rv.ui.view.RobotVantage;
+import rv.ui.view.RobotVantageBase;
+import rv.ui.view.RobotVantageFirstPerson;
+import rv.ui.view.RobotVantageThirdPerson;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -49,6 +51,10 @@ public class LiveGameScreen extends ViewerScreenBase {
         NONE, ANNOTATIONS, IDS
     }
 
+    enum RobotVantageType {
+        FIRST_PERSON, THIRD_PERSON
+    }
+
     private final GameStateOverlay  gsOverlay;
     private final ConnectionOverlay connectionOverlay;
     private final Field2DOverlay    fieldOverlay;
@@ -57,7 +63,8 @@ public class LiveGameScreen extends ViewerScreenBase {
     private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private final TextRenderer      tr;
     private final TextRenderer      overlayTextRenderer;
-    private RobotVantage            robotVantage      = null;
+    private RobotVantageBase        robotVantage      = null;
+    private RobotVantageType        robotVantageType  = null;
     private int                     prevScoreL        = -1;
     private int                     prevScoreR        = -1;
 
@@ -230,7 +237,10 @@ public class LiveGameScreen extends ViewerScreenBase {
             agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
             break;
         case KeyEvent.VK_V:
-            setRobotVantage();
+            setRobotVantage(RobotVantageType.FIRST_PERSON);
+            break;
+        case KeyEvent.VK_E:
+            setRobotVantage(RobotVantageType.THIRD_PERSON);
             break;
         case KeyEvent.VK_C:
             if (!viewer.getNetManager().getServer().isConnected()) {
@@ -320,18 +330,27 @@ public class LiveGameScreen extends ViewerScreenBase {
         }
     }
 
-    private void setRobotVantage() {
+    private void setRobotVantage(RobotVantageType type) {
+        boolean differentType = robotVantageType != type;
+
         if (robotVantage != null) {
             robotVantage.detach();
             robotVantage = null;
             viewer.getRenderer().setVantage(viewer.getUI().getCamera());
             viewer.getUI().getCameraControl().attachToCanvas((GLCanvas) viewer.getCanvas());
-        } else if (viewer.getWorldModel().getSelectedObject() != null
+            robotVantageType = null;
+        }
+
+        if (differentType && viewer.getWorldModel().getSelectedObject() != null
                 && viewer.getWorldModel().getSelectedObject() instanceof Agent) {
             Agent a = (Agent) viewer.getWorldModel().getSelectedObject();
-            robotVantage = new RobotVantage(a, 0.1f, 300);
+            if (type == RobotVantageType.FIRST_PERSON)
+                robotVantage = new RobotVantageFirstPerson(a);
+            else
+                robotVantage = new RobotVantageThirdPerson(a);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
+            robotVantageType = type;
         }
     }
 

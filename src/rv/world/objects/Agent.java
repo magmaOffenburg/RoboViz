@@ -44,19 +44,20 @@ public class Agent implements ISelectable {
         public void transformChanged(Matrix headTransform);
     }
 
-    private final List<ChangeListener> listeners  = new ArrayList<>();
+    private final List<ChangeListener> listeners      = new ArrayList<>();
     private final List<StaticMeshNode> meshNodes;
     private BoundingBox                bounds;
     private final ContentManager       content;
     private final Team                 team;
     private final int                  id;
-    private boolean                    selected   = false;
+    private boolean                    selected       = false;
     private Matrix                     headTransform;
 
     private Vec3f                      headCenter;
     private Vec3f                      headDirection;
 
-    private AgentAnnotation            annotation = null;
+    private AgentAnnotation            annotation     = null;
+    private Vec3f                      torsoDirection = null;
 
     public void setAnnotation(AgentAnnotation annotation) {
         this.annotation = annotation;
@@ -76,6 +77,10 @@ public class Agent implements ISelectable {
 
     public Vec3f getHeadDirection() {
         return headDirection;
+    }
+
+    public Vec3f getTorsoDirection() {
+        return torsoDirection;
     }
 
     /**
@@ -126,6 +131,12 @@ public class Agent implements ISelectable {
                     headTransform = modelMat;
                     headCenter = headTransform.transform(new Vec3f(0));
                     headDirection = headTransform.transform(new Vec3f(0, 0, 1)).minus(headCenter)
+                            .normalize();
+                } else if (node.getName().endsWith("body.obj")) {
+                    // Store body direction for third person view
+                    Matrix bodyRot = modelMat;
+                    Vec3f bodyCenter = bodyRot.transform(new Vec3f(0));
+                    torsoDirection = bodyRot.transform(new Vec3f(0, 0, 1)).minus(bodyCenter)
                             .normalize();
                 }
 

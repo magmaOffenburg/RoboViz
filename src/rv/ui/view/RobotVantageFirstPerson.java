@@ -17,31 +17,20 @@
 package rv.ui.view;
 
 import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
-import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.world.objects.Agent;
 
-public class RobotVantage extends Camera3D implements Agent.ChangeListener {
+public class RobotVantageFirstPerson extends RobotVantageBase {
 
     private static final float FOV_DEGREES = 120.0f;
 
-    private final Agent        agent;
-
-    public RobotVantage(Agent agent, float near, float far) {
-        super(agent.getHeadCenter(), near, far);
-        this.agent = agent;
-        agent.addChangeListener(this);
-        fovY = FOV_DEGREES;
+    public RobotVantageFirstPerson(Agent agent) {
+        super(agent, FOV_DEGREES);
         updateView();
-    }
-
-    public void detach() {
-        agent.removeChangeListener(this);
     }
 
     @Override
@@ -110,17 +99,5 @@ public class RobotVantage extends Camera3D implements Agent.ChangeListener {
         Vec3f c = agent.getHeadCenter().minus(this.right.times(eyeSep / 2));
         gl.glLoadIdentity();
         gl.glLoadMatrixd(viewMatrix.wrap());
-    }
-
-    @Override
-    public void addListeners(GLCanvas canvas) {
-    }
-
-    @Override
-    public void removeListeners(GLCanvas canvas) {
-    }
-
-    public void transformChanged(Matrix t) {
-        updateView();
     }
 }
