@@ -26,7 +26,7 @@ import rv.world.objects.Agent;
 
 public class RobotVantageFirstPerson extends RobotVantageBase {
 
-    private static final float FOV_DEGREES = 120.0f;
+    private static final float FOV_DEGREES = 80.f;
 
     public RobotVantageFirstPerson(Agent agent) {
         super(agent, FOV_DEGREES);
@@ -42,17 +42,6 @@ public class RobotVantageFirstPerson extends RobotVantageBase {
         right = forward.cross(up).normalize();
         viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z
                 + forward.z, 0, 1, 0);
-    }
-
-    @Override
-    public void apply(GL2 gl, GLU glu, Viewport vp) {
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        gl.glLoadIdentity();
-        glu.gluPerspective(fovY, 1, near, far);
-
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glLoadMatrixd(viewMatrix.wrap());
     }
 
     @Override

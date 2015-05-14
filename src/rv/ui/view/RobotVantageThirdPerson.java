@@ -16,17 +16,13 @@
 
 package rv.ui.view;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLMatrixFunc;
-import javax.media.opengl.glu.GLU;
-import js.jogl.view.Viewport;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.world.objects.Agent;
 
 public class RobotVantageThirdPerson extends RobotVantageBase {
 
-    private static final float FOV_DEGREES    = 60.0f;
+    private static final float FOV_DEGREES    = 80.0f;
 
     private static final int   CAMERA_AVERAGE = 20;
     private Vec3f              avgPos[], avgForward[];
@@ -95,16 +91,5 @@ public class RobotVantageThirdPerson extends RobotVantageBase {
 
         viewMatrix = Matrix
                 .createLookAt(camPos.x, camPos.y, camPos.z, avg.x, avg.y, avg.z, 0, 1, 0);
-    }
-
-    @Override
-    public void apply(GL2 gl, GLU glu, Viewport vp) {
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        gl.glLoadIdentity();
-        glu.gluPerspective(fovY, vp.getAspect(), near, far);
-
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glLoadMatrixd(viewMatrix.wrap());
     }
 }
