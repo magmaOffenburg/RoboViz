@@ -60,17 +60,17 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
     private Container       container;
 
-    private JButton         fileOpenButton;
+    private RoundButton     fileOpenButton;
 
     private final LogPlayer player;
 
-    private JButton         rewindButton;
+    private RoundButton     rewindButton;
 
-    private JButton         stepBackwardButton;
+    private RoundButton     stepBackwardButton;
 
-    private JButton         stepForwardButton;
+    private RoundButton     stepForwardButton;
 
-    private JButton         playPauseButton;
+    private RoundButton     playPauseButton;
 
     private JSpinner        playbackSpeedSpinner;
 
@@ -131,11 +131,11 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
             public void actionPerformed(ActionEvent e) {
                 if (player.isPlaying()) {
                     player.pause();
-                    playPauseButton.setIcon(getButtonIcon("play"));
+                    playPauseButton.setIcon("play");
                     playPauseButton.setToolTipText("Play");
                 } else {
                     player.resume();
-                    playPauseButton.setIcon(getButtonIcon("pause"));
+                    playPauseButton.setIcon("pause");
                     playPauseButton.setToolTipText("Pause");
                 }
             }
@@ -179,17 +179,12 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
     private RoundButton createButton(GridBagConstraints c, String iconName, String tooltip,
             ActionListener listener) {
-        RoundButton button = new RoundButton(getButtonIcon(iconName));
+        RoundButton button = new RoundButton(iconName);
         button.setToolTipText(tooltip);
         button.addActionListener(listener);
         c.gridx++;
         container.add(button, c);
         return button;
-    }
-
-    private ImageIcon getButtonIcon(String iconName) {
-        String iconPath = String.format("resources/images/%s.png", iconName);
-        return new ImageIcon(iconPath);
     }
 
     /**
@@ -235,15 +230,25 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
         protected Shape base;
 
-        public RoundButton(Icon icon) {
+        public RoundButton(String iconName) {
             setModel(new DefaultButtonModel());
-            init(null, icon);
+            setIcon(iconName);
             setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
             setBackground(Color.BLACK);
             setContentAreaFilled(false);
             setFocusPainted(false);
             setAlignmentY(Component.TOP_ALIGNMENT);
             initShape();
+        }
+
+        public void setIcon(String iconName) {
+            setIcon(getImageIcon(iconName));
+            setRolloverIcon(getImageIcon(iconName + "_highlight"));
+        }
+
+        private ImageIcon getImageIcon(String iconName) {
+            String iconPath = String.format("resources/images/%s.png", iconName);
+            return new ImageIcon(iconPath);
         }
 
         protected void initShape() {
