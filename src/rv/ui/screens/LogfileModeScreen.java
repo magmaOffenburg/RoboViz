@@ -16,37 +16,13 @@
 
 package rv.ui.screens;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
-import js.jogl.view.Viewport;
 import rv.Viewer;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogfileModeScreen extends ViewerScreenBase {
 
-    private final GameStateOverlay gsOverlay;
-    private final LogPlayerOverlay lpOverlay;
-
     public LogfileModeScreen(Viewer viewer) {
         super(viewer);
-        lpOverlay = new LogPlayerOverlay(viewer);
-        gsOverlay = new GameStateOverlay(viewer);
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        super.setEnabled(canvas, enabled);
-
-        gsOverlay.setEnabled(canvas, enabled);
-        lpOverlay.setEnabled(canvas, enabled);
-
-        viewer.getWorldModel().getGameState().addListener(this);
-    }
-
-    @Override
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        gsOverlay.render(gl, glu, glut, vp);
-        lpOverlay.render(gl, glu, glut, vp);
+        overlays.add(new LogPlayerOverlay(viewer));
+        overlays.add(gsOverlay);
     }
 }

@@ -5,17 +5,36 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
+import javax.media.opengl.glu.GLU;
+import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.world.ISelectable;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener {
-    protected final Viewer viewer;
+    protected final Viewer           viewer;
+
+    protected final GameStateOverlay gsOverlay;
+    private final Field2DOverlay     fieldOverlay;
+    protected final List<Screen>     overlays = new ArrayList<>();
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
+        gsOverlay = new GameStateOverlay(viewer);
+        fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
+        overlays.add(fieldOverlay);
+    }
+
+    @Override
+    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
+        for (Screen overlay : overlays)
+            overlay.render(gl, glu, glut, vp);
     }
 
     @Override
@@ -31,6 +50,9 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             canvas.removeMouseMotionListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
         }
+
+        for (Screen overlay : overlays)
+            overlay.setEnabled(canvas, enabled);
     }
 
     @Override
@@ -50,7 +72,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             if (e.isControlDown()) {
                 viewer.toggleFullScreen();
             } else {
-                fPressed();
+                fieldOverlay.setVisible(!fieldOverlay.isVisible());
             }
             break;
         case KeyEvent.VK_ENTER:
@@ -70,10 +92,6 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             }
             break;
         }
-    }
-
-    protected void fPressed() {
-
     }
 
     protected void bPressed() {

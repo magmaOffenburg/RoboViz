@@ -55,10 +55,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         NONE, FIRST_PERSON, THIRD_PERSON
     }
 
-    private final GameStateOverlay  gsOverlay;
     private final ConnectionOverlay connectionOverlay;
-    private final Field2DOverlay    fieldOverlay;
-    private final List<Screen>      overlays          = new ArrayList<>();
     private final List<TextOverlay> textOverlays      = new ArrayList<>();
     private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private final TextRenderer      tr;
@@ -76,15 +73,11 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
     public LiveGameScreen(Viewer viewer) {
         super(viewer);
-        gsOverlay = new GameStateOverlay(viewer);
         connectionOverlay = new ConnectionOverlay();
 
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new TextRenderer(font, true, false);
         overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
-
-        fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
-        overlays.add(fieldOverlay);
 
         viewer.getWorldModel().getGameState().addListener(this);
         viewer.getWorldModel().addSelectionChangeListener(this);
@@ -158,8 +151,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         else
             gsOverlay.render(gl, glu, glut, vp);
 
-        for (Screen overlay : overlays)
-            overlay.render(gl, glu, glut, vp);
+        super.render(gl, glu, glut, vp);
 
         vp.apply(gl);
         if (textOverlays.size() > 0)
@@ -270,11 +262,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
             viewer.getNetManager().getServer().requestFullState();
             break;
         }
-    }
-
-    @Override
-    protected void fPressed() {
-        fieldOverlay.setVisible(!fieldOverlay.isVisible());
     }
 
     @Override
