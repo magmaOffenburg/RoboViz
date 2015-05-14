@@ -68,11 +68,9 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
     private JButton         stepBackwardButton;
 
-    private JButton         playButton;
-
     private JButton         stepForwardButton;
 
-    private JButton         pauseButton;
+    private JButton         playPauseButton;
 
     private JSpinner        playbackSpeedSpinner;
 
@@ -91,12 +89,12 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
     private void createControls() {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setSize(330, 120);
-        // frame.setResizable(false);
+        frame.setResizable(false);
         container = frame.getContentPane();
 
         GridBagLayout layout = new GridBagLayout();
-        layout.columnWidths = new int[] { 1, 1, 1, 1, 1, 1, 1 };
-        layout.columnWeights = new double[] { 0, 0, 0, 0, 0, 0, 0 };
+        layout.columnWidths = new int[] { 1, 1, 1, 1, 1, 1 };
+        layout.columnWeights = new double[] { 0, 0, 0, 0, 0, 0 };
         layout.rowHeights = new int[] { 1, 1 };
         layout.rowWeights = new double[] { 0.0, 0.0 };
         container.setLayout(layout);
@@ -120,14 +118,6 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
             }
         });
 
-        pauseButton = createButton(c, "pause", "Pause", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (player.isPlaying())
-                    player.pause();
-            }
-        });
-
         stepBackwardButton = createButton(c, "previous_frame", "Step back", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,11 +126,18 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
             }
         });
 
-        playButton = createButton(c, "play", "Play", new ActionListener() {
+        playPauseButton = createButton(c, "pause", "Pause", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!player.isPlaying())
+                if (player.isPlaying()) {
+                    player.pause();
+                    playPauseButton.setIcon(getButtonIcon("play"));
+                    playPauseButton.setToolTipText("Play");
+                } else {
                     player.resume();
+                    playPauseButton.setIcon(getButtonIcon("pause"));
+                    playPauseButton.setToolTipText("Pause");
+                }
             }
         });
 
@@ -153,7 +150,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         });
 
         c.gridx++;
-        c.insets = new Insets(5, 10, 0, 0);
+        c.insets = new Insets(5, 40, 0, 0);
         playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.1, 10, 0.1));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
@@ -176,18 +173,23 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         c.gridwidth = c.gridx + 1;
         c.gridx = 0;
         c.gridy = 1;
+        c.insets = new Insets(5, 5, 0, 0);
         container.add(slider, c);
     }
 
     private RoundButton createButton(GridBagConstraints c, String iconName, String tooltip,
             ActionListener listener) {
-        String iconPath = String.format("resources/images/%s.png", iconName);
-        RoundButton button = new RoundButton(new ImageIcon(iconPath));
+        RoundButton button = new RoundButton(getButtonIcon(iconName));
         button.setToolTipText(tooltip);
         button.addActionListener(listener);
         c.gridx++;
         container.add(button, c);
         return button;
+    }
+
+    private ImageIcon getButtonIcon(String iconName) {
+        String iconPath = String.format("resources/images/%s.png", iconName);
+        return new ImageIcon(iconPath);
     }
 
     /**
@@ -201,9 +203,8 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         boolean atEnd = player.isAtEnd();
         fileOpenButton.setEnabled(!playing);
         rewindButton.setEnabled(isValid && (!playing || atEnd));
-        pauseButton.setEnabled(isValid && playing && !atEnd);
+        playPauseButton.setEnabled(isValid && !atEnd);
         playbackSpeedSpinner.setEnabled(isValid && playing && !atEnd);
-        playButton.setEnabled(isValid && !playing && !atEnd);
         stepBackwardButton.setEnabled(isValid && !playing);
         stepForwardButton.setEnabled(isValid && !playing && !atEnd);
         if (slider.getMaximum() < player.getNumFrames()) {
