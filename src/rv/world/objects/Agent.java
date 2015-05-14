@@ -185,8 +185,10 @@ public class Agent implements ISelectable {
 
     @Override
     public void renderSelected(GL2 gl) {
-        ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getTeamMaterial()
-                .getDiffuse());
+        if (getPosition() != null) {
+            ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getTeamMaterial()
+                    .getDiffuse());
+        }
     }
 
     /** Returns identifier for agent based on team and ID (ex. L.1 for left 1) */
