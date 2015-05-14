@@ -220,7 +220,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerChangeList
             viewer.getNetManager().getServer().kickOff(false);
             break;
         case KeyEvent.VK_P:
-            viewer.getUI().getShapeSetPanel().showFrame();
+            viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());
             break;
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null

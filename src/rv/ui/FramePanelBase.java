@@ -7,12 +7,20 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import rv.Globals;
+import rv.util.SwingUtil;
 
 public class FramePanelBase {
     protected final JFrame frame;
 
-    public void showFrame() {
+    public void showFrame(JFrame parent) {
         frame.setVisible(true);
+        if (parent != null) {
+            frame.setLocation(SwingUtil.getCurrentScreenLocation(parent));
+        }
+    }
+
+    public void hideFrame(JFrame frame) {
+        frame.setVisible(false);
     }
 
     public FramePanelBase(String title) {

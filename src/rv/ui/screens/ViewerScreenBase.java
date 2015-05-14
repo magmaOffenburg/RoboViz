@@ -82,7 +82,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             break;
         case KeyEvent.VK_F1:
             if (!e.isControlDown())
-                viewer.getUI().getShortcutHelpPanel().showFrame();
+                viewer.getUI().getShortcutHelpPanel().showFrame(viewer.getFrame());
             break;
         case KeyEvent.VK_B:
             if (e.isControlDown()) {

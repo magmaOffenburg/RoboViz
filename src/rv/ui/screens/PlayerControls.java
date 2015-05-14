@@ -83,10 +83,6 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         this.player.attach(this);
     }
 
-    public void setVisible(boolean b) {
-        frame.setVisible(b);
-    }
-
     /**
      * Create the buttons and other GUI controls
      */

@@ -22,6 +22,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
+import rv.Viewer;
 import rv.comm.rcssserver.LogPlayer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
@@ -31,9 +32,11 @@ public class LogPlayerOverlay implements Screen, KeyListener {
     private final static float   BAR_HEIGHT = 10;
     private final LogPlayer      player;
     private final PlayerControls playDialog;
+    private final Viewer         viewer;
 
-    public LogPlayerOverlay(LogPlayer player) {
-        this.player = player;
+    public LogPlayerOverlay(Viewer viewer) {
+        this.viewer = viewer;
+        this.player = viewer.getLogPlayer();
         playDialog = PlayerControls.getInstance(player);
     }
 
@@ -41,10 +44,10 @@ public class LogPlayerOverlay implements Screen, KeyListener {
     public void setEnabled(GLCanvas canvas, boolean enabled) {
         if (enabled) {
             canvas.addKeyListener(this);
-            playDialog.setVisible(true);
+            playDialog.showFrame(viewer.getFrame());
         } else {
             canvas.removeKeyListener(this);
-            playDialog.setVisible(false);
+            playDialog.hideFrame(viewer.getFrame());
         }
     }
 

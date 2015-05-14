@@ -19,10 +19,7 @@ package rv;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -53,6 +50,7 @@ import rv.comm.rcssserver.LogPlayer;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
+import rv.util.SwingUtil;
 import rv.util.commandline.Argument;
 import rv.util.commandline.IntegerArgument;
 import rv.util.commandline.StringArgument;
@@ -155,6 +153,10 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     public Drawings getDrawings() {
         return drawings;
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 
     public void addWindowResizeListener(WindowResizeListener l) {
@@ -278,20 +280,7 @@ public class Viewer extends GLProgram implements GLEventListener {
     /** Enter or exit full-screen exclusive mode depending on current mode */
     public void toggleFullScreen() {
         fullscreen = !fullscreen;
-        getCurrentScreen().setFullScreenWindow(fullscreen ? frame : null);
-    }
-
-    private GraphicsDevice getCurrentScreen() {
-        GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getScreenDevices();
-        Point location = frame.getLocation();
-        for (GraphicsDevice device : devices) {
-            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            if (bounds.contains(location)) {
-                return device;
-            }
-        }
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        SwingUtil.getCurrentScreen(frame).setFullScreenWindow(fullscreen ? frame : null);
     }
 
     public void exitError(String msg) {

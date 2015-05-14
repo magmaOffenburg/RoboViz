@@ -30,7 +30,7 @@ public class LogfileModeScreen extends ViewerScreenBase {
 
     public LogfileModeScreen(Viewer viewer) {
         super(viewer);
-        lpOverlay = new LogPlayerOverlay(viewer.getLogPlayer());
+        lpOverlay = new LogPlayerOverlay(viewer);
         gsOverlay = new GameStateOverlay(viewer);
     }
 
