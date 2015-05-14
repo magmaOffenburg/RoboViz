@@ -107,7 +107,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
-                    player.openFile();
+                    player.openFile(frame);
             }
         });
 

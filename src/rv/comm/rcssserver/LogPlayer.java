@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 import js.math.Maths;
 import rv.util.observer.IObserver;
@@ -247,8 +248,8 @@ public class LogPlayer implements ISubscribe<Boolean> {
     /**
      * Allows the user to choose a logfile to open.
      */
-    public void openFile() {
-        int returnVal = fileChooser.showOpenDialog(null);
+    public void openFile(JFrame parent) {
+        int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.CANCEL_OPTION) {
             return;
         }
