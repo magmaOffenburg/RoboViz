@@ -88,25 +88,10 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     private void drawPoints(GL2 gl, int pSize, boolean manualColor) {
         gl.glPointSize(pSize);
         gl.glBegin(GL2.GL_POINTS);
-        Team left = world.getLeftTeam();
-        if (!manualColor)
-            gl.glColor3fv(left.getTeamMaterial().getDiffuse(), 0);
-        for (int i = 0; i < left.getAgents().size(); i++) {
-            Vec3f p = left.getAgents().get(i).getPosition();
-            if (p != null) {
-                gl.glVertex3f(p.x, p.y, p.z);
-            }
-        }
-        Team right = world.getRightTeam();
-        if (!manualColor)
-            gl.glColor3fv(right.getTeamMaterial().getDiffuse(), 0);
-        for (int i = 0; i < right.getAgents().size(); i++) {
-            Vec3f p = right.getAgents().get(i).getPosition();
-            if (p != null) {
-                gl.glVertex3f(p.x, p.y, p.z);
-            }
-        }
+        drawTeam(gl, manualColor, world.getRightTeam());
+        drawTeam(gl, manualColor, world.getLeftTeam());
         gl.glEnd();
+
         gl.glPointSize(pSize * 0.75f);
         gl.glBegin(GL2.GL_POINTS);
         Vec3f p = world.getBall().getPosition();
@@ -116,6 +101,17 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
             gl.glVertex3f(p.x, p.y, p.z);
         }
         gl.glEnd();
+    }
+
+    private void drawTeam(GL2 gl, boolean manualColor, Team team) {
+        if (!manualColor)
+            gl.glColor3fv(team.getTeamMaterial().getDiffuse(), 0);
+        for (int i = 0; i < team.getAgents().size(); i++) {
+            Vec3f p = team.getAgents().get(i).getPosition();
+            if (p != null) {
+                gl.glVertex3f(p.x, p.y, p.z);
+            }
+        }
     }
 
     @Override

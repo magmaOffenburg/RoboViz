@@ -26,7 +26,6 @@ import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
-import rv.Viewer.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ISceneGraphItem;
 import rv.comm.rcssserver.scenegraph.SceneGraph;

@@ -204,14 +204,17 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
     public void gsPlayStateChanged(GameState gs) {
         if (prevScoreL != -1 && prevScoreR != -1) {
             if (gs.getScoreLeft() > prevScoreL && gs.getTeamLeft() != null)
-                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamLeft()), 4000,
-                        new float[] { 1, 1, 1, 1 }));
+                addTeamScoredOverlay(gs.getTeamLeft());
             if (gs.getScoreRight() > prevScoreR && gs.getTeamRight() != null)
-                textOverlays.add(new TextOverlay(String.format("Goal %s!", gs.getTeamRight()),
-                        4000, new float[] { 1, 1, 1, 1 }));
+                addTeamScoredOverlay(gs.getTeamRight());
         }
 
         prevScoreL = gs.getScoreLeft();
         prevScoreR = gs.getScoreRight();
+    }
+
+    private void addTeamScoredOverlay(String teamName) {
+        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), 4000, new float[] {
+                1, 1, 1, 1 }));
     }
 }
