@@ -45,25 +45,30 @@ import rv.world.objects.SkyBox;
  */
 public class WorldModel {
 
+    public interface SelectionChangeListener {
+        public void selectionChanged(ISelectable newSelection);
+    }
+
     /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
-    public static final Matrix                  COORD_TFN   = new Matrix(new double[] { -1, 0, 0,
-            0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
+    public static final Matrix                       COORD_TFN    = new Matrix(new double[] { -1,
+            0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1          });
 
-    private final GameState                     gameState   = new GameState();
-    private SceneGraph                          sceneGraph  = null;
+    private final GameState                          gameState    = new GameState();
+    private SceneGraph                               sceneGraph   = null;
 
-    private final ArrayList<ISceneGraphItem>    sgItems     = new ArrayList<>();
+    private final ArrayList<ISceneGraphItem>         sgItems      = new ArrayList<>();
 
-    private Field                               field;
-    private Ball                                ball;
-    private Team                                leftTeam;
-    private Team                                rightTeam;
-    private LightModel                          lighting;
-    private SkyBox                              skyBox;
+    private Field                                    field;
+    private Ball                                     ball;
+    private Team                                     leftTeam;
+    private Team                                     rightTeam;
+    private LightModel                               lighting;
+    private SkyBox                                   skyBox;
 
-    private ISelectable                         selectedObject;
+    private ISelectable                              selectedObject;
 
-    private final ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
+    private final ArrayList<SceneGraphListener>      sgListeners  = new ArrayList<>();
+    private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
 
     public void addSceneGraphListener(SceneGraphListener sgl) {
         sgListeners.add(sgl);
@@ -71,6 +76,14 @@ public class WorldModel {
 
     public void removeSceneGraphListener(SceneGraphListener sgl) {
         sgListeners.remove(sgl);
+    }
+
+    public void addSelectionChangeListener(SelectionChangeListener sl) {
+        selListeners.add(sl);
+    }
+
+    public void removeSelectionChangeListener(SelectionChangeListener sl) {
+        selListeners.remove(sl);
     }
 
     public ISelectable getSelectedObject() {
@@ -82,6 +95,9 @@ public class WorldModel {
     }
 
     public void setSelectedObject(ISelectable newSelection) {
+        if (newSelection == selectedObject)
+            return;
+
         if (selectedObject != null)
             selectedObject.setSelected(false);
 
@@ -89,10 +105,16 @@ public class WorldModel {
 
         if (selectedObject != null)
             selectedObject.setSelected(true);
+
+        for (SelectionChangeListener listener : selListeners)
+            listener.selectionChanged(selectedObject);
     }
 
     public void toggleObjectSelection(ISelectable selectable) {
-        setSelectedObject((selectedObject == null) ? selectable : null);
+        if (selectedObject != null && selectable != selectedObject)
+            setSelectedObject(selectable);
+        else
+            setSelectedObject((selectedObject == null) ? selectable : null);
     }
 
     public GameState getGameState() {

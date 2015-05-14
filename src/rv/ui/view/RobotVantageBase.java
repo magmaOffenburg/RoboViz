@@ -30,4 +30,8 @@ public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeL
     @Override
     public void removeListeners(GLCanvas canvas) {
     }
+
+    public Agent getAgent() {
+        return agent;
+    }
 }

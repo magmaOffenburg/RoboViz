@@ -45,14 +45,14 @@ import rv.world.objects.Ball;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LiveGameScreen extends ViewerScreenBase {
+public class LiveGameScreen extends ViewerScreenBase implements WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
     }
 
     enum RobotVantageType {
-        FIRST_PERSON, THIRD_PERSON
+        NONE, FIRST_PERSON, THIRD_PERSON
     }
 
     private final GameStateOverlay  gsOverlay;
@@ -64,7 +64,7 @@ public class LiveGameScreen extends ViewerScreenBase {
     private final TextRenderer      tr;
     private final TextRenderer      overlayTextRenderer;
     private RobotVantageBase        robotVantage      = null;
-    private RobotVantageType        robotVantageType  = null;
+    private RobotVantageType        robotVantageType  = RobotVantageType.NONE;
     private int                     prevScoreL        = -1;
     private int                     prevScoreR        = -1;
 
@@ -87,6 +87,7 @@ public class LiveGameScreen extends ViewerScreenBase {
         overlays.add(fieldOverlay);
 
         viewer.getWorldModel().getGameState().addListener(this);
+        viewer.getWorldModel().addSelectionChangeListener(this);
     }
 
     private void renderAgentOverheads(Team team) {
@@ -332,22 +333,32 @@ public class LiveGameScreen extends ViewerScreenBase {
 
     private void setRobotVantage(RobotVantageType type) {
         boolean differentType = robotVantageType != type;
+        int oldAgentID = -1;
 
         if (robotVantage != null) {
+            oldAgentID = robotVantage.getAgent().getID();
             robotVantage.detach();
             robotVantage = null;
             viewer.getRenderer().setVantage(viewer.getUI().getCamera());
             viewer.getUI().getCameraControl().attachToCanvas((GLCanvas) viewer.getCanvas());
-            robotVantageType = null;
+            robotVantageType = RobotVantageType.NONE;
         }
 
-        if (differentType && viewer.getWorldModel().getSelectedObject() != null
-                && viewer.getWorldModel().getSelectedObject() instanceof Agent) {
-            Agent a = (Agent) viewer.getWorldModel().getSelectedObject();
+        if (type == RobotVantageType.NONE) {
+            return;
+        }
+
+        ISelectable selected = viewer.getWorldModel().getSelectedObject();
+        if (!(selected instanceof Agent)) {
+            return;
+        }
+
+        Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
+        if (differentType || oldAgentID != agent.getID()) {
             if (type == RobotVantageType.FIRST_PERSON)
-                robotVantage = new RobotVantageFirstPerson(a);
+                robotVantage = new RobotVantageFirstPerson(agent);
             else
-                robotVantage = new RobotVantageThirdPerson(a);
+                robotVantage = new RobotVantageThirdPerson(agent);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
             robotVantageType = type;
@@ -367,5 +378,14 @@ public class LiveGameScreen extends ViewerScreenBase {
 
         prevScoreL = gs.getScoreLeft();
         prevScoreR = gs.getScoreRight();
+    }
+
+    @Override
+    public void selectionChanged(ISelectable newSelection) {
+        if (newSelection instanceof Agent) {
+            setRobotVantage(robotVantageType);
+        } else {
+            setRobotVantage(RobotVantageType.NONE);
+        }
     }
 }

@@ -36,6 +36,7 @@ public abstract class Command {
     public static final int DRAW_OPTION     = 0;
     public static final int DRAW_SHAPE      = 1;
     public static final int DRAW_ANNOTATION = 2;
+    public static final int CONTROL         = 3;
 
     /** Performs the command's function */
     public abstract void execute();
@@ -129,6 +130,8 @@ public abstract class Command {
             return new DrawShape(buf, viewer);
         case Command.DRAW_ANNOTATION:
             return new DrawAnnotation(buf, viewer);
+        case Command.CONTROL:
+            return new Control(buf, viewer);
         default:
             return null;
         }
