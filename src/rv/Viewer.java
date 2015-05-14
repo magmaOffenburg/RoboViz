@@ -118,6 +118,7 @@ public class Viewer extends GLProgram implements GLEventListener {
     private final Configuration              config;
     private String                           ssName                = null;
     private String                           logFileName;
+    private String                           drawingFilter;
     private Mode                             mode                  = Mode.LIVE;
 
     public LogPlayer getLogPlayer() {
@@ -205,10 +206,12 @@ public class Viewer extends GLProgram implements GLEventListener {
         StringArgument LOGFILE = new StringArgument("logFile", null);
         StringArgument SERVER_HOST = new StringArgument("serverHost", null);
         IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
+        StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
         logFileName = LOGFILE.parse(args);
         config.networking.overrideServerHost(SERVER_HOST.parse(args));
         config.networking.overrideServerPort(SERVER_PORT.parse(args));
+        drawingFilter = DRAWING_FILTER.parse(args);
         Argument.endParse(args);
     }
 
@@ -253,8 +256,8 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     public void takeScreenShot() {
         String s = Calendar.getInstance().getTime().toString();
-        s = s.replaceAll("\\s+", "_");
-        ssName = String.format(Locale.US, "screenshots/%s_%s.png", "roboviz", s).replace(':', '_');
+        s = s.replaceAll("[\\s:]+", "_");
+        ssName = String.format(Locale.US, "screenshots/%s_%s.png", "roboviz", s);
     }
 
     private void takeScreenshot(String fileName) {
@@ -340,7 +343,7 @@ public class Viewer extends GLProgram implements GLEventListener {
                 System.exit(0);
             }
         }
-        ui = new UserInterface(this);
+        ui = new UserInterface(this, drawingFilter);
         ui.init();
         renderer = new Renderer(this);
         renderer.init(drawable, contentManager, glInfo);

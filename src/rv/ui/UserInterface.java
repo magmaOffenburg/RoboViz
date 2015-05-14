@@ -93,7 +93,7 @@ public class UserInterface implements KeyListener {
         return camera;
     }
 
-    public UserInterface(Viewer viewer) {
+    public UserInterface(Viewer viewer, String drawingFilter) {
         Globals.setLookFeel();
         this.viewer = viewer;
 
@@ -101,7 +101,7 @@ public class UserInterface implements KeyListener {
 
         camera = initCamera(drawable.getChosenGLCapabilities());
         picker = new SceneObjectPicker(viewer.getWorldModel(), camera);
-        poolPanel = new DrawingListPanel(viewer.getDrawings());
+        poolPanel = new DrawingListPanel(viewer.getDrawings(), drawingFilter);
         helpPanel = new ControlsHelpPanel();
     }
 

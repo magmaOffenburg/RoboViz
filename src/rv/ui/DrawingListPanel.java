@@ -96,7 +96,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
     private final JList<CheckListItem>    list;
     final DefaultListModel<CheckListItem> model = new DefaultListModel<>();
 
-    public DrawingListPanel(Drawings drawings) {
+    public DrawingListPanel(Drawings drawings, String drawingFilter) {
 
         super("Drawings");
         addCloseHotkey();
@@ -128,7 +128,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         frame.add(new JScrollPane(list), BorderLayout.CENTER);
         JPanel p = new JPanel();
         p.setLayout(new GridLayout(1, 3));
-        regexField = new JTextField(".*");
+        regexField = new JTextField(drawingFilter);
 
         p.add(regexField);
         JButton regexSearch = new JButton("Regex");
