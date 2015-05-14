@@ -198,19 +198,19 @@ public class Configuration {
     }
 
     private static int getNextInt(BufferedReader in) throws IOException {
-        return Integer.parseInt(getVal(getNextLine(in)));
+        return Integer.parseInt(getNextString(in));
     }
 
     private static Integer getNextInteger(BufferedReader in) throws IOException {
         try {
-            return Integer.parseInt(getVal(getNextLine(in)));
+            return Integer.parseInt(getNextString(in));
         } catch (NumberFormatException e) {
             return null;
         }
     }
 
     private static boolean getNextBool(BufferedReader in) throws IOException {
-        return Boolean.parseBoolean(getVal(getNextLine(in)));
+        return Boolean.parseBoolean(getNextString(in));
     }
 
     private static String getNextString(BufferedReader in) throws IOException {

@@ -12,9 +12,7 @@ xcopy /E %JOGL% %BIN%\lib\
 xcopy /E src\shaders %BIN%\shaders\
 copy lib\jsgl.jar %BIN%\lib\
 copy lib\commons-compress-1.5.jar %BIN%\lib\
-copy scripts\roboviz-win.bat %BIN%\roboviz.bat
-copy scripts\roboviz-win-logmode.bat %BIN%\roboviz_logmode.bat
-copy scripts\roboviz_draw_test.bat %BIN%\
+copy scripts\roboviz.bat %BIN%\roboviz.bat
 copy scripts\config.bat %BIN%\config.bat
 copy scripts\setEnvironment.bat %BIN%\setEnvironment.bat
 copy LICENSE %BIN%\

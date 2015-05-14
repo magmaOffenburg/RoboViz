@@ -53,6 +53,8 @@ import rv.comm.rcssserver.LogPlayer;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
+import rv.util.commandline.Argument;
+import rv.util.commandline.StringArgument;
 import rv.world.WorldModel;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseListener;
@@ -199,10 +201,10 @@ public class Viewer extends GLProgram implements GLEventListener {
     }
 
     private void parseArgs(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equalsIgnoreCase("--logfile") && i < args.length - 1)
-                logFileName = args[i + 1];
-        }
+        StringArgument LOGFILE = new StringArgument("logFile", null);
+
+        logFileName = LOGFILE.parse(args);
+        Argument.endParse(args);
     }
 
     private void restoreConfig() {
