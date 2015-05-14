@@ -199,7 +199,8 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         fileOpenButton.setEnabled(!playing);
         rewindButton.setEnabled(isValid && (!playing || atEnd));
         playPauseButton.setEnabled(isValid && !atEnd);
-        playbackSpeedSpinner.setEnabled(isValid && playing && !atEnd);
+        playbackSpeedSpinner.setEnabled(isValid && !atEnd);
+        playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
         stepBackwardButton.setEnabled(isValid && !playing);
         stepForwardButton.setEnabled(isValid && !playing && !atEnd);
         if (slider.getMaximum() < player.getNumFrames()) {
@@ -214,7 +215,6 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         if (slider.isEnabled()) {
             player.setCurrentFrame(slider.getValue());
         }
-        playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
     }
 
     public void dispose() {
