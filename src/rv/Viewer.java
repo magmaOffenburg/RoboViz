@@ -54,6 +54,7 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.util.commandline.Argument;
+import rv.util.commandline.IntegerArgument;
 import rv.util.commandline.StringArgument;
 import rv.world.WorldModel;
 import com.jogamp.newt.event.KeyListener;
@@ -202,8 +203,12 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     private void parseArgs(String[] args) {
         StringArgument LOGFILE = new StringArgument("logFile", null);
+        StringArgument SERVER_HOST = new StringArgument("serverHost", null);
+        IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
 
         logFileName = LOGFILE.parse(args);
+        config.networking.overrideServerHost(SERVER_HOST.parse(args));
+        config.networking.overrideServerPort(SERVER_PORT.parse(args));
         Argument.endParse(args);
     }
 

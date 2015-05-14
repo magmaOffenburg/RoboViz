@@ -144,8 +144,8 @@ public class ServerComm {
 
         Configuration.Networking net = config.networking;
 
-        serverHost = net.serverHost;
-        serverPort = net.serverPort;
+        serverHost = net.getServerHost();
+        serverPort = net.getServerPort();
 
         // automatically attempt connection with server while not connected
         if (net.autoConnect) {

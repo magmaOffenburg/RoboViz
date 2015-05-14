@@ -103,11 +103,14 @@ public class Configuration {
     }
 
     public class Networking {
-        public boolean autoConnect      = true;
-        public String  serverHost       = "localhost";
-        public int     serverPort       = 3200;
-        public int     listenPort       = 32769;
-        public int     autoConnectDelay = 1000;
+        public boolean  autoConnect          = true;
+        public String   serverHost           = "localhost";
+        public int      serverPort           = 3200;
+        public int      listenPort           = 32769;
+        public int      autoConnectDelay     = 1000;
+
+        private String  overriddenServerHost = null;
+        private Integer overriddenServerPort = null;
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
@@ -127,6 +130,22 @@ public class Configuration {
             writeVal(out, "Server Port", serverPort);
             writeVal(out, "Drawing Port", listenPort);
             out.write("\n");
+        }
+
+        public void overrideServerHost(String serverHost) {
+            this.overriddenServerHost = serverHost;
+        }
+
+        public void overrideServerPort(Integer serverPort) {
+            this.overriddenServerPort = serverPort;
+        }
+
+        public String getServerHost() {
+            return (overriddenServerHost == null) ? serverHost : overriddenServerHost;
+        }
+
+        public int getServerPort() {
+            return (overriddenServerPort == null) ? serverPort : overriddenServerPort;
         }
     }
 
