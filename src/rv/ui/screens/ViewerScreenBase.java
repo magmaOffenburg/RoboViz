@@ -80,11 +80,11 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         // draw number of agents on each team
         if (showNumPlayers) {
             Team lt = viewer.getWorldModel().getLeftTeam();
-            tr.setColor(Color.white);
-            tr.draw(String.format("%s : %d", lt.getName(), lt.getAgents().size()), 10, 10);
+            renderOutlinedText(formatNumTeamPlayers(lt), 10, 10);
+
             Team rt = viewer.getWorldModel().getRightTeam();
-            String s = String.format("%s : %d", rt.getName(), rt.getAgents().size());
-            tr.draw(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10);
+            String s = formatNumTeamPlayers(rt);
+            renderOutlinedText(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10);
         }
         tr.endRendering();
 
@@ -94,6 +94,26 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         vp.apply(gl);
         if (textOverlays.size() > 0)
             renderTextOverlays(vp.w, vp.h);
+    }
+
+    private String formatNumTeamPlayers(Team team) {
+        return String.format("%s : %d", team.getName(), team.getAgents().size());
+    }
+
+    private void renderOutlinedText(String s, int x, int y) {
+        int delta = 1;
+        tr.setColor(0, 0, 0, 0.5f);
+        tr.draw(s, x - delta, y - delta);
+        tr.draw(s, x - delta, y + delta);
+        tr.draw(s, x + delta, y - delta);
+        tr.draw(s, x + delta, y + delta);
+        tr.draw(s, x + delta, y);
+        tr.draw(s, x - delta, y);
+        tr.draw(s, x, y + delta);
+        tr.draw(s, x, y - delta);
+
+        tr.setColor(Color.white);
+        tr.draw(s, x, y);
     }
 
     private void renderAgentOverheads(Team team) {
