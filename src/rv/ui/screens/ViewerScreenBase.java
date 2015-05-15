@@ -231,6 +231,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
+            fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
             break;
         }
     }

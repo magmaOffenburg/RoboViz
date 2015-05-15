@@ -41,6 +41,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     private int              screenWidth  = 1;
     private int              screenHeight = 1;
     private boolean          visible      = false;
+    private int              yPos         = 10;
 
     public void setVisible(boolean visible) {
         this.visible = visible;
@@ -48,6 +49,10 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setyPos(int yPos) {
+        this.yPos = yPos;
     }
 
     public Field2DOverlay(WorldModel world) {
@@ -74,7 +79,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
 
         int displayWidth = (int) (screenWidth * 0.3f);
         int displayHeight = (int) (displayWidth * fieldWidth / fieldLength);
-        gl.glViewport(20, 20, displayWidth, displayHeight);
+        gl.glViewport(10, yPos, displayWidth, displayHeight);
     }
 
     private void unsetView(GL2 gl, Viewport vp) {

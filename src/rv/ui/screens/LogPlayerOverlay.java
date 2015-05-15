@@ -28,8 +28,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LogPlayerOverlay implements Screen, KeyListener {
 
-    private final static float   BAR_PAD    = 20;
-    private final static float   BAR_HEIGHT = 10;
     private final LogPlayer      player;
     private final PlayerControls playDialog;
     private final Viewer         viewer;
@@ -53,25 +51,7 @@ public class LogPlayerOverlay implements Screen, KeyListener {
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        // player bar
-        gl.glColor4f(0.5f, 0.5f, 0.5f, 0.8f);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(BAR_PAD, BAR_PAD);
-        gl.glVertex2f(vp.w - BAR_PAD, BAR_PAD);
-        gl.glVertex2f(vp.w - BAR_PAD, BAR_PAD + BAR_HEIGHT);
-        gl.glVertex2f(BAR_PAD, BAR_PAD + BAR_HEIGHT);
-        gl.glEnd();
 
-        // player position knob
-        float percent = (float) player.getFrame() / player.getNumFrames();
-        float knobX = percent * (vp.w - 2 * BAR_PAD) + BAR_PAD;
-        gl.glColor4f(1, 1, 1, 1);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(knobX - 1, BAR_PAD - 2);
-        gl.glVertex2f(knobX + 1, BAR_PAD - 2);
-        gl.glVertex2f(knobX + 1, BAR_PAD + 2 + BAR_HEIGHT);
-        gl.glVertex2f(knobX - 1, BAR_PAD + 2 + BAR_HEIGHT);
-        gl.glEnd();
     }
 
     @Override
