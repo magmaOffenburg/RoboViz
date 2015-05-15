@@ -45,6 +45,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private Timer                  timer;
     private boolean                playing;
     private double                 playbackSpeed       = 1;
+    private Integer                desiredFrame = null;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -70,6 +71,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
         timer = new Timer(DEFAULT_TIMER_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                    if (desiredFrame != null) {
+                        setCurrentFrame(desiredFrame);
+                        desiredFrame = null;
+                    }
                     play();
                 } catch (Exception e1) {
                     System.out.println("Invalid Logfile.");
@@ -204,8 +209,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
             e.printStackTrace();
         }
     }
-
-    public void setCurrentFrame(int frame) {
+    
+    public void setDesiredFrame(int frame) {
+        desiredFrame = frame;
+    }
+    
+    private void setCurrentFrame(int frame) {
         if (frame == getFrame()) {
             return;
         }
@@ -277,5 +286,4 @@ public class LogPlayer implements ISubscribe<Boolean> {
             e3.printStackTrace();
         }
     }
-
 }

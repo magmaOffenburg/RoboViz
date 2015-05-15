@@ -213,7 +213,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
     @Override
     public void stateChanged(ChangeEvent e) {
         if (slider.isEnabled()) {
-            player.setCurrentFrame(slider.getValue());
+            player.setDesiredFrame(slider.getValue());
         }
     }
 
