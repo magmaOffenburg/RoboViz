@@ -33,6 +33,7 @@ public class TextOverlay {
     private float         a            = 1;
     private long          elapsed      = 0;
     private long          lastTime     = 0;
+    private double        timeScale    = 1;
     private boolean       done         = false;
     private final float[] color;
 
@@ -48,6 +49,10 @@ public class TextOverlay {
         return done;
     }
 
+    public void setTimeScale(double timeScale) {
+        this.timeScale = timeScale;
+    }
+
     public TextOverlay(String text, int duration, float[] color) {
         this.duration = duration;
         this.text = text;
@@ -57,7 +62,7 @@ public class TextOverlay {
     private void update() {
         long curTime = System.currentTimeMillis();
         if (lastTime != 0)
-            elapsed += curTime - lastTime;
+            elapsed += (curTime - lastTime) * timeScale;
         lastTime = curTime;
 
         if (fadeDuration > 0 && elapsed > duration)

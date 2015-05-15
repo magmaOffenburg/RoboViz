@@ -24,4 +24,10 @@ public class LogfileModeScreen extends ViewerScreenBase {
         super(viewer);
         overlays.add(new LogPlayerOverlay(viewer));
     }
+
+    @Override
+    protected void addTextOverlay(TextOverlay textOverlay) {
+        super.addTextOverlay(textOverlay);
+        textOverlay.setTimeScale(viewer.getLogPlayer().getPlayBackSpeed());
+    }
 }

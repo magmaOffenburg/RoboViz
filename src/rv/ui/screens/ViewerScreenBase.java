@@ -334,8 +334,12 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
     }
 
     private void addTeamScoredOverlay(String teamName) {
-        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), 4000, new float[] {
-                1, 1, 1, 1 }));
+        addTextOverlay(new TextOverlay(String.format("Goal %s!", teamName), 4000, new float[] { 1,
+                1, 1, 1 }));
+    }
+
+    protected void addTextOverlay(TextOverlay textOverlay) {
+        textOverlays.add(textOverlay);
     }
 
     private void setRobotVantage(RobotVantageType type) {
