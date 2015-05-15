@@ -16,8 +16,8 @@
 
 package rv.ui.screens;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  * A 2D overlay that displays text on the screen
@@ -67,19 +67,18 @@ public class TextOverlay {
             done = true;
     }
 
-    private void calcXY(TextRenderer tr, int w, int h) {
+    private void calcXY(BorderTextRenderer tr, int w, int h) {
         Rectangle2D bounds = tr.getBounds(text);
         x = (int) (w - bounds.getWidth()) / 2;
         y = (int) (h - bounds.getHeight()) / 2;
     }
 
-    public void render(TextRenderer tr, int w, int h) {
+    public void render(BorderTextRenderer tr, int w, int h) {
         if (duration > 0)
             update();
         calcXY(tr, w, h);
-        tr.setColor(0, 0, 0, a);
-        tr.draw(text, x - 1, y - 1);
-        tr.setColor(color[0], color[1], color[2], a);
-        tr.draw(text, x, y);
+        Color textColor = new Color(color[0], color[1], color[2], a);
+        Color shadowColor = new Color(0, 0, 0, a);
+        tr.drawWithShadow(text, x, y, textColor, shadowColor);
     }
 }

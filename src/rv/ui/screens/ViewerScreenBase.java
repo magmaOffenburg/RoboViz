@@ -22,11 +22,11 @@ import rv.comm.rcssserver.GameState;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
 import rv.ui.view.RobotVantageThirdPerson;
+import rv.util.SwingUtil;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
-import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
@@ -40,23 +40,23 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         NONE, FIRST_PERSON, THIRD_PERSON
     }
 
-    protected final Viewer          viewer;
+    protected final Viewer             viewer;
 
-    private final Field2DOverlay    fieldOverlay;
-    protected final List<Screen>    overlays          = new ArrayList<>();
+    private final Field2DOverlay       fieldOverlay;
+    protected final List<Screen>       overlays          = new ArrayList<>();
 
-    protected final TextRenderer    overlayTextRenderer;
-    private final List<TextOverlay> textOverlays      = new ArrayList<>();
+    protected final BorderTextRenderer overlayTextRenderer;
+    private final List<TextOverlay>    textOverlays      = new ArrayList<>();
 
-    private RobotVantageBase        robotVantage      = null;
-    private RobotVantageType        robotVantageType  = RobotVantageType.NONE;
+    private RobotVantageBase           robotVantage      = null;
+    private RobotVantageType           robotVantageType  = RobotVantageType.NONE;
 
-    private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
-    protected final TextRenderer    tr;
+    private AgentOverheadType          agentOverheadType = AgentOverheadType.ANNOTATIONS;
+    protected final BorderTextRenderer tr;
 
-    private int                     prevScoreL        = -1;
-    private int                     prevScoreR        = -1;
-    private boolean                 showNumPlayers    = false;
+    private int                        prevScoreL        = -1;
+    private int                        prevScoreR        = -1;
+    private boolean                    showNumPlayers    = false;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
@@ -64,9 +64,9 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
 
-        overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
+        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
         Font font = new Font("Arial", Font.BOLD, 16);
-        tr = new TextRenderer(font, true, false);
+        tr = new BorderTextRenderer(font, true, false);
     }
 
     @Override
@@ -80,11 +80,13 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         // draw number of agents on each team
         if (showNumPlayers) {
             Team lt = viewer.getWorldModel().getLeftTeam();
-            renderOutlinedText(formatNumTeamPlayers(lt), 10, 10);
+            Color outlineColor = new Color(0, 0, 0, 0.5f);
+            tr.drawWithOutline(formatNumTeamPlayers(lt), 10, 10, Color.white, outlineColor);
 
             Team rt = viewer.getWorldModel().getRightTeam();
             String s = formatNumTeamPlayers(rt);
-            renderOutlinedText(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10);
+            tr.drawWithOutline(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10, Color.white,
+                    outlineColor);
         }
         tr.endRendering();
 
@@ -98,22 +100,6 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     private String formatNumTeamPlayers(Team team) {
         return String.format("%s : %d", team.getName(), team.getAgents().size());
-    }
-
-    private void renderOutlinedText(String s, int x, int y) {
-        int delta = 1;
-        tr.setColor(0, 0, 0, 0.5f);
-        tr.draw(s, x - delta, y - delta);
-        tr.draw(s, x - delta, y + delta);
-        tr.draw(s, x + delta, y - delta);
-        tr.draw(s, x + delta, y + delta);
-        tr.draw(s, x + delta, y);
-        tr.draw(s, x - delta, y);
-        tr.draw(s, x, y + delta);
-        tr.draw(s, x, y - delta);
-
-        tr.setColor(Color.white);
-        tr.draw(s, x, y);
     }
 
     private void renderAgentOverheads(Team team) {
@@ -151,13 +137,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         if (screenPos.z > 1)
             return;
 
-        tr.setColor(0, 0, 0, 1);
-        tr.draw(text, x - 1, y - 1);
-        if (color.length == 4)
-            tr.setColor(color[0], color[1], color[2], color[3]);
-        else
-            tr.setColor(color[0], color[1], color[2], 1);
-        tr.draw(text, x, y);
+        tr.drawWithShadow(text, x, y, SwingUtil.toColor(color), Color.black);
     }
 
     private void renderTextOverlays(int w, int h) {

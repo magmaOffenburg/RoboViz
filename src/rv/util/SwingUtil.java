@@ -1,5 +1,6 @@
 package rv.util;
 
+import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -43,5 +44,12 @@ public class SwingUtil {
                     .getLocation();
         }
         return currentScreen.getDefaultConfiguration().getBounds().getLocation();
+    }
+
+    public static Color toColor(float[] color) {
+        if (color.length == 4)
+            return new Color(color[0], color[1], color[2], color[3]);
+        else
+            return new Color(color[0], color[1], color[2], 1);
     }
 }
