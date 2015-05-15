@@ -47,7 +47,7 @@ import rv.util.observer.IObserver;
  * 
  * @author dorer
  */
-class PlayerControls extends FramePanelBase implements ChangeListener, IObserver<Boolean> {
+class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
     private static PlayerControls instance;
 
@@ -150,7 +150,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         });
 
         c.gridx++;
-        c.insets = new Insets(5, 40, 0, 0);
+        c.insets = new Insets(5, 50, 0, 0);
         playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.25, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
@@ -163,7 +163,18 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         container.add(playbackSpeedSpinner, c);
 
         slider = new JSlider(0, player.getNumFrames(), player.getFrame());
-        slider.addChangeListener(this);
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (slider.isEnabled()) {
+                    int frame = slider.getValue();
+                    player.setDesiredFrame(frame);
+                    if (frame < player.getNumFrames()) {
+                        updateButtons(player.isPlaying(), false);
+                    }
+                }
+            }
+        });
         slider.setEnabled(false);
         slider.setMajorTickSpacing(1000);
         slider.setMinorTickSpacing(500);
@@ -194,27 +205,28 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
      *            true if the player is playing
      */
     public void update(Boolean playing) {
+        updateButtons(playing, player.isAtEnd());
+        updateSlider(playing);
+    }
+
+    private void updateButtons(Boolean playing, boolean atEnd) {
         boolean isValid = player.isValid();
-        boolean atEnd = player.isAtEnd();
         fileOpenButton.setEnabled(!playing);
         rewindButton.setEnabled(isValid && (!playing || atEnd));
         playPauseButton.setEnabled(isValid && !atEnd);
+        playPauseButton.setIcon(playing ? "pause" : "play");
         playbackSpeedSpinner.setEnabled(isValid && !atEnd);
         playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
         stepBackwardButton.setEnabled(isValid && !playing);
         stepForwardButton.setEnabled(isValid && !playing && !atEnd);
+    }
+
+    private void updateSlider(Boolean playing) {
         if (slider.getMaximum() < player.getNumFrames()) {
             slider.setMaximum(player.getNumFrames());
         }
         slider.setValue(player.getFrame());
-        slider.setEnabled(isValid && !playing);
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (slider.isEnabled()) {
-            player.setDesiredFrame(slider.getValue());
-        }
+        slider.setEnabled(player.isValid() && !playing);
     }
 
     public void dispose() {
@@ -226,9 +238,9 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
      */
     class RoundButton extends JButton {
 
-        protected Shape shape;
-
-        protected Shape base;
+        private Shape  shape;
+        private Shape  base;
+        private String iconName;
 
         public RoundButton(String iconName) {
             setModel(new DefaultButtonModel());
@@ -242,6 +254,10 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
         }
 
         public void setIcon(String iconName) {
+            if (this.iconName != null && this.iconName.equals(iconName)) {
+                return;
+            }
+            this.iconName = iconName;
             setIcon(getImageIcon(iconName));
             setRolloverIcon(getImageIcon(iconName + "_highlight"));
         }

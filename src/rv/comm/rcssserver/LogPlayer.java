@@ -45,7 +45,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private Timer                  timer;
     private boolean                playing;
     private double                 playbackSpeed       = 1;
-    private Integer                desiredFrame = null;
+    private Integer                desiredFrame        = null;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -209,11 +209,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
             e.printStackTrace();
         }
     }
-    
+
     public void setDesiredFrame(int frame) {
         desiredFrame = frame;
     }
-    
+
     private void setCurrentFrame(int frame) {
         if (frame == getFrame()) {
             return;
