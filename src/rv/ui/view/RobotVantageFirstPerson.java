@@ -26,7 +26,8 @@ import rv.world.objects.Agent;
 
 public class RobotVantageFirstPerson extends RobotVantageBase {
 
-    private static final float FOV_DEGREES = 80.f;
+    /** matches the agent's FOV for debugging purposes */
+    private static final float FOV_DEGREES = 120.f;
 
     public RobotVantageFirstPerson(Agent agent) {
         super(agent, FOV_DEGREES);
@@ -88,5 +89,10 @@ public class RobotVantageFirstPerson extends RobotVantageBase {
         Vec3f c = agent.getHeadCenter().minus(this.right.times(eyeSep / 2));
         gl.glLoadIdentity();
         gl.glLoadMatrixd(viewMatrix.wrap());
+    }
+
+    @Override
+    protected float getAspect(Viewport vp) {
+        return 1; /* consistent display across aspect ratios */
     }
 }

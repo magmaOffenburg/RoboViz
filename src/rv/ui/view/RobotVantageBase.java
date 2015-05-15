@@ -23,7 +23,7 @@ public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeL
     public void apply(GL2 gl, GLU glu, Viewport vp) {
         gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(fovY, vp.getAspect(), near, far);
+        glu.gluPerspective(fovY, getAspect(vp), near, far);
 
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -48,5 +48,9 @@ public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeL
 
     public Agent getAgent() {
         return agent;
+    }
+
+    protected float getAspect(Viewport vp) {
+        return vp.getAspect();
     }
 }
