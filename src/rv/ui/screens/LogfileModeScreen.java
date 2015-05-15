@@ -23,6 +23,5 @@ public class LogfileModeScreen extends ViewerScreenBase {
     public LogfileModeScreen(Viewer viewer) {
         super(viewer);
         overlays.add(new LogPlayerOverlay(viewer));
-        overlays.add(gsOverlay);
     }
 }

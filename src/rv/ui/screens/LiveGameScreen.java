@@ -132,8 +132,6 @@ public class LiveGameScreen extends ViewerScreenBase {
 
         if (!viewer.getNetManager().getServer().isConnected())
             connectionOverlay.render(gl, glu, glut, vp);
-        else
-            gsOverlay.render(gl, glu, glut, vp);
     }
 
     private void renderBillboardText(String text, Vec3f pos3D, float[] color) {

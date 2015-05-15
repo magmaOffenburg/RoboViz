@@ -49,6 +49,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
         gsOverlay = new GameStateOverlay(viewer);
+        overlays.add(gsOverlay);
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
 
