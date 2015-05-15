@@ -16,8 +16,6 @@
 
 package rv.ui.screens;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -25,33 +23,21 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
-import js.math.BoundingBox;
 import js.math.vector.Vec3f;
 import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
-import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 import rv.world.objects.Ball;
-import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LiveGameScreen extends ViewerScreenBase {
 
-    enum AgentOverheadType {
-        NONE, ANNOTATIONS, IDS
-    }
-
     private final ConnectionOverlay connectionOverlay;
-    private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
-    private final TextRenderer      tr;
-
-    boolean                         showNumPlayers    = false;
 
     public void removeOverlay(Screen overlay) {
         overlays.remove(overlay);
@@ -60,35 +46,6 @@ public class LiveGameScreen extends ViewerScreenBase {
     public LiveGameScreen(Viewer viewer) {
         super(viewer);
         connectionOverlay = new ConnectionOverlay();
-
-        Font font = new Font("Arial", Font.BOLD, 16);
-        tr = new TextRenderer(font, true, false);
-    }
-
-    private void renderAgentOverheads(Team team) {
-        ISelectable selected = viewer.getWorldModel().getSelectedObject();
-
-        for (int i = 0; i < team.getAgents().size(); i++) {
-            Agent a = team.getAgents().get(i);
-            BoundingBox b = a.getBoundingBox();
-            if (b == null)
-                continue;
-            Vec3f p = b.getCenter();
-            p.y = 1;
-            String text = "" + a.getID();
-
-            AgentAnnotation aa = a.getAnnotation();
-            if (aa != null && agentOverheadType == AgentOverheadType.ANNOTATIONS) {
-                renderBillboardText(aa.getText(), p, aa.getColor());
-            } else if (agentOverheadType == AgentOverheadType.IDS) {
-                float[] color;
-                if (selected != null && selected == a) {
-                    color = new float[] { 1, 1, 1, 1 };
-                } else
-                    color = team.getTeamMaterial().getDiffuse();
-                renderBillboardText(text, p, color);
-            }
-        }
     }
 
     private void renderAnnotations() {
@@ -109,47 +66,15 @@ public class LiveGameScreen extends ViewerScreenBase {
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        // text overlays
+        super.render(gl, glu, glut, vp);
+
         tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
-        if (agentOverheadType != AgentOverheadType.NONE) {
-            renderAgentOverheads(viewer.getWorldModel().getLeftTeam());
-            renderAgentOverheads(viewer.getWorldModel().getRightTeam());
-        }
-        // draw number of agents on each team
-        if (showNumPlayers) {
-            Team lt = viewer.getWorldModel().getLeftTeam();
-            tr.setColor(Color.white);
-            tr.draw(String.format("%s : %d", lt.getName(), lt.getAgents().size()), 10, 10);
-            Team rt = viewer.getWorldModel().getRightTeam();
-            String s = String.format("%s : %d", rt.getName(), rt.getAgents().size());
-            tr.draw(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10);
-        }
         if (viewer.getDrawings().isVisible())
             renderAnnotations();
         tr.endRendering();
 
-        super.render(gl, glu, glut, vp);
-
         if (!viewer.getNetManager().getServer().isConnected())
             connectionOverlay.render(gl, glu, glut, vp);
-    }
-
-    private void renderBillboardText(String text, Vec3f pos3D, float[] color) {
-        Camera3D camera = viewer.getUI().getCamera();
-        Vec3f screenPos = camera.project(pos3D, viewer.getScreen());
-        int x = (int) (screenPos.x - tr.getBounds(text).getWidth() / 2);
-        int y = (int) screenPos.y;
-
-        if (screenPos.z > 1)
-            return;
-
-        tr.setColor(0, 0, 0, 1);
-        tr.draw(text, x - 1, y - 1);
-        if (color.length == 4)
-            tr.setColor(color[0], color[1], color[2], color[3]);
-        else
-            tr.setColor(color[0], color[1], color[2], 1);
-        tr.draw(text, x, y);
     }
 
     @Override
@@ -183,10 +108,6 @@ public class LiveGameScreen extends ViewerScreenBase {
         case KeyEvent.VK_T:
             viewer.getDrawings().toggle();
             break;
-        case KeyEvent.VK_I:
-            AgentOverheadType[] vals = AgentOverheadType.values();
-            agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
-            break;
         case KeyEvent.VK_C:
             if (!viewer.getNetManager().getServer().isConnected()) {
                 viewer.getNetManager().getServer().connect();
@@ -203,9 +124,6 @@ public class LiveGameScreen extends ViewerScreenBase {
                 resetTimeIfExpired();
                 viewer.getNetManager().getServer().freeKick(false);
             }
-            break;
-        case KeyEvent.VK_N:
-            showNumPlayers = !showNumPlayers;
             break;
         case KeyEvent.VK_U:
             viewer.getNetManager().getServer().requestFullState();

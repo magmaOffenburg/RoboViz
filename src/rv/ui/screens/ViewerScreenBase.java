@@ -1,5 +1,6 @@
 package rv.ui.screens;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -11,8 +12,12 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
+import js.math.BoundingBox;
+import js.math.vector.Vec3f;
 import rv.Viewer;
+import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.rcssserver.GameState;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
@@ -27,43 +32,112 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
 
+    enum AgentOverheadType {
+        NONE, ANNOTATIONS, IDS
+    }
+
     enum RobotVantageType {
         NONE, FIRST_PERSON, THIRD_PERSON
     }
 
-    protected final Viewer           viewer;
+    protected final Viewer          viewer;
 
-    protected final GameStateOverlay gsOverlay;
-    private final Field2DOverlay     fieldOverlay;
-    protected final List<Screen>     overlays         = new ArrayList<>();
+    private final Field2DOverlay    fieldOverlay;
+    protected final List<Screen>    overlays          = new ArrayList<>();
 
-    protected final TextRenderer     overlayTextRenderer;
-    private final List<TextOverlay>  textOverlays     = new ArrayList<>();
+    protected final TextRenderer    overlayTextRenderer;
+    private final List<TextOverlay> textOverlays      = new ArrayList<>();
 
-    private RobotVantageBase         robotVantage     = null;
-    private RobotVantageType         robotVantageType = RobotVantageType.NONE;
+    private RobotVantageBase        robotVantage      = null;
+    private RobotVantageType        robotVantageType  = RobotVantageType.NONE;
 
-    private int                      prevScoreL       = -1;
-    private int                      prevScoreR       = -1;
+    private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
+    protected final TextRenderer    tr;
+
+    private int                     prevScoreL        = -1;
+    private int                     prevScoreR        = -1;
+    private boolean                 showNumPlayers    = false;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
-        gsOverlay = new GameStateOverlay(viewer);
-        overlays.add(gsOverlay);
+        overlays.add(new GameStateOverlay(viewer));
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
 
         overlayTextRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
+        Font font = new Font("Arial", Font.BOLD, 16);
+        tr = new TextRenderer(font, true, false);
     }
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
+        // text overlays
+        tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
+        if (agentOverheadType != AgentOverheadType.NONE) {
+            renderAgentOverheads(viewer.getWorldModel().getLeftTeam());
+            renderAgentOverheads(viewer.getWorldModel().getRightTeam());
+        }
+        // draw number of agents on each team
+        if (showNumPlayers) {
+            Team lt = viewer.getWorldModel().getLeftTeam();
+            tr.setColor(Color.white);
+            tr.draw(String.format("%s : %d", lt.getName(), lt.getAgents().size()), 10, 10);
+            Team rt = viewer.getWorldModel().getRightTeam();
+            String s = String.format("%s : %d", rt.getName(), rt.getAgents().size());
+            tr.draw(s, (int) (vp.w - tr.getBounds(s).getWidth() - 10), 10);
+        }
+        tr.endRendering();
+
         for (Screen overlay : overlays)
             overlay.render(gl, glu, glut, vp);
 
         vp.apply(gl);
         if (textOverlays.size() > 0)
             renderTextOverlays(vp.w, vp.h);
+    }
+
+    private void renderAgentOverheads(Team team) {
+        ISelectable selected = viewer.getWorldModel().getSelectedObject();
+
+        for (int i = 0; i < team.getAgents().size(); i++) {
+            Agent a = team.getAgents().get(i);
+            BoundingBox b = a.getBoundingBox();
+            if (b == null)
+                continue;
+            Vec3f p = b.getCenter();
+            p.y = 1;
+            String text = "" + a.getID();
+
+            AgentAnnotation aa = a.getAnnotation();
+            if (aa != null && agentOverheadType == AgentOverheadType.ANNOTATIONS) {
+                renderBillboardText(aa.getText(), p, aa.getColor());
+            } else if (agentOverheadType == AgentOverheadType.IDS) {
+                float[] color;
+                if (selected != null && selected == a) {
+                    color = new float[] { 1, 1, 1, 1 };
+                } else
+                    color = team.getTeamMaterial().getDiffuse();
+                renderBillboardText(text, p, color);
+            }
+        }
+    }
+
+    protected void renderBillboardText(String text, Vec3f pos3D, float[] color) {
+        Camera3D camera = viewer.getUI().getCamera();
+        Vec3f screenPos = camera.project(pos3D, viewer.getScreen());
+        int x = (int) (screenPos.x - tr.getBounds(text).getWidth() / 2);
+        int y = (int) screenPos.y;
+
+        if (screenPos.z > 1)
+            return;
+
+        tr.setColor(0, 0, 0, 1);
+        tr.draw(text, x - 1, y - 1);
+        if (color.length == 4)
+            tr.setColor(color[0], color[1], color[2], color[3]);
+        else
+            tr.setColor(color[0], color[1], color[2], 1);
+        tr.draw(text, x, y);
     }
 
     private void renderTextOverlays(int w, int h) {
@@ -150,6 +224,13 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             break;
         case KeyEvent.VK_E:
             setRobotVantage(RobotVantageType.THIRD_PERSON);
+            break;
+        case KeyEvent.VK_I:
+            AgentOverheadType[] vals = AgentOverheadType.values();
+            agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
+            break;
+        case KeyEvent.VK_N:
+            showNumPlayers = !showNumPlayers;
             break;
         }
     }
