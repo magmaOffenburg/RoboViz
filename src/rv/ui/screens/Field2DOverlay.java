@@ -125,14 +125,14 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
             screenWidth = vp.w;
             screenHeight = vp.h;
 
-            gl.glColor4f(1, 1, 1, 1);
+            gl.glColor4f(1, 1, 1, 0.1f);
             setView(gl, glu);
             world.getField().render(gl);
 
             int pSize = (int) (screenWidth * 0.01125);
 
             gl.glEnable(GL2.GL_POINT_SMOOTH);
-            gl.glColor3f(0, 0, 0);
+            gl.glColor4f(0, 0, 0, 0.5f);
             drawPoints(gl, pSize, true);
             drawPoints(gl, pSize - 2, false);
             gl.glDisable(GL2.GL_POINT_SMOOTH);
