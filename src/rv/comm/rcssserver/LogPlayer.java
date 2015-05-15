@@ -156,16 +156,16 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public void setPlayBackSpeed(double factor) {
         int newDelay = (int) (DEFAULT_TIMER_DELAY / factor);
         timer.setDelay(Maths.clamp(newDelay, 15, 1500));
-        playbackSpeed = Maths.clamp(factor, 0.1, 10);
+        playbackSpeed = Maths.clamp(factor, 0.25, 10);
         observers.onStateChange(playing);
     }
 
     public void increasePlayBackSpeed() {
-        setPlayBackSpeed(getPlayBackSpeed() + 0.1);
+        setPlayBackSpeed(getPlayBackSpeed() + 0.25);
     }
 
     public void decreasePlayBackSpeed() {
-        setPlayBackSpeed(getPlayBackSpeed() - 0.1);
+        setPlayBackSpeed(getPlayBackSpeed() - 0.25);
     }
 
     public double getPlayBackSpeed() {

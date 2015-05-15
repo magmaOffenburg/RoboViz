@@ -151,7 +151,7 @@ class PlayerControls extends FramePanelBase implements ChangeListener, IObserver
 
         c.gridx++;
         c.insets = new Insets(5, 40, 0, 0);
-        playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.1, 10, 0.1));
+        playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.25, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
         playbackSpeedSpinner.addChangeListener(new ChangeListener() {
