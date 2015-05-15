@@ -97,7 +97,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
         drawTeam(gl, manualColor, world.getLeftTeam());
         gl.glEnd();
 
-        gl.glPointSize(pSize * 0.75f);
+        gl.glPointSize(pSize * 0.5f);
         gl.glBegin(GL2.GL_POINTS);
         Vec3f p = world.getBall().getPosition();
         if (p != null) {
