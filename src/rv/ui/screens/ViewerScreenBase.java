@@ -14,23 +14,37 @@ import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
+import rv.ui.view.RobotVantageBase;
+import rv.ui.view.RobotVantageFirstPerson;
+import rv.ui.view.RobotVantageThirdPerson;
 import rv.world.ISelectable;
+import rv.world.Team;
+import rv.world.WorldModel;
+import rv.world.objects.Agent;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
-        MouseMotionListener, GameState.GameStateChangeListener {
+        MouseMotionListener, GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
+
+    enum RobotVantageType {
+        NONE, FIRST_PERSON, THIRD_PERSON
+    }
+
     protected final Viewer           viewer;
 
     protected final GameStateOverlay gsOverlay;
     private final Field2DOverlay     fieldOverlay;
-    protected final List<Screen>     overlays     = new ArrayList<>();
+    protected final List<Screen>     overlays         = new ArrayList<>();
 
     protected final TextRenderer     overlayTextRenderer;
-    private final List<TextOverlay>  textOverlays = new ArrayList<>();
+    private final List<TextOverlay>  textOverlays     = new ArrayList<>();
 
-    private int                      prevScoreL   = -1;
-    private int                      prevScoreR   = -1;
+    private RobotVantageBase         robotVantage     = null;
+    private RobotVantageType         robotVantageType = RobotVantageType.NONE;
+
+    private int                      prevScoreL       = -1;
+    private int                      prevScoreR       = -1;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
@@ -73,12 +87,14 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             canvas.addMouseMotionListener(this);
             viewer.getUI().getCameraControl().attachToCanvas(canvas);
             viewer.getWorldModel().getGameState().addListener(this);
+            viewer.getWorldModel().addSelectionChangeListener(this);
         } else {
             canvas.removeKeyListener(this);
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
             viewer.getWorldModel().getGameState().removeListener(this);
+            viewer.getWorldModel().removeSelectionChangeListener(this);
         }
 
         for (Screen overlay : overlays)
@@ -87,7 +103,11 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
+        int keyCode = e.getKeyCode();
+        if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F11 && e.isControlDown())
+            selectPlayer(keyCode - KeyEvent.VK_F1 + 1, !e.isAltDown());
+
+        switch (keyCode) {
         case KeyEvent.VK_Q:
             viewer.shutdown();
             break;
@@ -121,11 +141,28 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
                 bPressed();
             }
             break;
+        case KeyEvent.VK_ESCAPE:
+            viewer.getWorldModel().setSelectedObject(null);
+            break;
+        case KeyEvent.VK_V:
+            setRobotVantage(RobotVantageType.FIRST_PERSON);
+            break;
+        case KeyEvent.VK_E:
+            setRobotVantage(RobotVantageType.THIRD_PERSON);
+            break;
         }
     }
 
     protected void bPressed() {
 
+    }
+
+    private void selectPlayer(int playerID, boolean leftTeam) {
+        WorldModel worldModel = viewer.getWorldModel();
+        Team team = leftTeam ? worldModel.getLeftTeam() : worldModel.getRightTeam();
+        Agent agent = team.getAgentByID(playerID);
+        if (agent != null)
+            viewer.getWorldModel().setSelectedObject(agent);
     }
 
     @Override
@@ -145,7 +182,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (robotVantage == null && e.getButton() == MouseEvent.BUTTON1) {
             viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
 
             boolean handled = false;
@@ -216,5 +253,50 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
     private void addTeamScoredOverlay(String teamName) {
         textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), 4000, new float[] {
                 1, 1, 1, 1 }));
+    }
+
+    private void setRobotVantage(RobotVantageType type) {
+        boolean differentType = robotVantageType != type;
+        Agent oldAgent = null;
+
+        if (robotVantage != null) {
+            oldAgent = robotVantage.getAgent();
+            robotVantage.detach();
+            robotVantage = null;
+            viewer.getRenderer().setVantage(viewer.getUI().getCamera());
+            viewer.getUI().getCameraControl().attachToCanvas((GLCanvas) viewer.getCanvas());
+            robotVantageType = RobotVantageType.NONE;
+        }
+
+        if (type == RobotVantageType.NONE) {
+            return;
+        }
+
+        ISelectable selected = viewer.getWorldModel().getSelectedObject();
+        if (!(selected instanceof Agent)) {
+            return;
+        }
+
+        Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
+        if (differentType || oldAgent != agent) {
+            if (type == RobotVantageType.FIRST_PERSON)
+                robotVantage = new RobotVantageFirstPerson(agent);
+            else
+                robotVantage = new RobotVantageThirdPerson(agent);
+            viewer.getRenderer().setVantage(robotVantage);
+            viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
+            robotVantageType = type;
+        }
+    }
+
+    @Override
+    public void selectionChanged(ISelectable newSelection) {
+        if (robotVantage != null) {
+            if (newSelection instanceof Agent) {
+                setRobotVantage(robotVantageType);
+            } else {
+                setRobotVantage(RobotVantageType.NONE);
+            }
+        }
     }
 }

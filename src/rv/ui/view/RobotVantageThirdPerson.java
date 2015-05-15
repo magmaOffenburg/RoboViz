@@ -46,7 +46,7 @@ public class RobotVantageThirdPerson extends RobotVantageBase {
     protected void updateView() {
         Matrix m = agent.getHeadTransform();
         Vec3f torsoDirection = agent.getTorsoDirection();
-        if (torsoDirection == null) {
+        if (m == null || torsoDirection == null) {
             return;
         }
         forward = agent.getTorsoDirection().normalize();

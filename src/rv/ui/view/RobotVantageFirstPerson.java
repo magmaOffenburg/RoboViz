@@ -39,6 +39,9 @@ public class RobotVantageFirstPerson extends RobotVantageBase {
         Matrix m = agent.getHeadTransform();
         Vec3f c = agent.getHeadCenter();
         forward = agent.getHeadDirection();
+        if (m == null || c == null || forward == null) {
+            return;
+        }
         up = m.transform(new Vec3f(0, 1, 0));
         right = forward.cross(up).normalize();
         viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z

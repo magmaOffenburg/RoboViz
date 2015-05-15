@@ -33,9 +33,6 @@ import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
-import rv.ui.view.RobotVantageBase;
-import rv.ui.view.RobotVantageFirstPerson;
-import rv.ui.view.RobotVantageThirdPerson;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -44,21 +41,15 @@ import rv.world.objects.Ball;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LiveGameScreen extends ViewerScreenBase implements WorldModel.SelectionChangeListener {
+public class LiveGameScreen extends ViewerScreenBase {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
     }
 
-    enum RobotVantageType {
-        NONE, FIRST_PERSON, THIRD_PERSON
-    }
-
     private final ConnectionOverlay connectionOverlay;
     private AgentOverheadType       agentOverheadType = AgentOverheadType.ANNOTATIONS;
     private final TextRenderer      tr;
-    private RobotVantageBase        robotVantage      = null;
-    private RobotVantageType        robotVantageType  = RobotVantageType.NONE;
 
     boolean                         showNumPlayers    = false;
 
@@ -72,8 +63,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new TextRenderer(font, true, false);
-
-        viewer.getWorldModel().addSelectionChangeListener(this);
     }
 
     private void renderAgentOverheads(Team team) {
@@ -169,10 +158,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
 
-        int keyCode = e.getKeyCode();
-        if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F11 && e.isControlDown())
-            togglePlayerSelection(keyCode - KeyEvent.VK_F1 + 1, !e.isAltDown());
-
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (e.isShiftDown())
@@ -204,12 +189,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
             AgentOverheadType[] vals = AgentOverheadType.values();
             agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
             break;
-        case KeyEvent.VK_V:
-            setRobotVantage(RobotVantageType.FIRST_PERSON);
-            break;
-        case KeyEvent.VK_E:
-            setRobotVantage(RobotVantageType.THIRD_PERSON);
-            break;
         case KeyEvent.VK_C:
             if (!viewer.getNetManager().getServer().isConnected()) {
                 viewer.getNetManager().getServer().connect();
@@ -230,9 +209,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
             break;
-        case KeyEvent.VK_ESCAPE:
-            viewer.getWorldModel().setSelectedObject(null);
-            break;
         case KeyEvent.VK_U:
             viewer.getNetManager().getServer().requestFullState();
             break;
@@ -244,14 +220,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
         viewer.getNetManager().getServer().dropBall();
     }
 
-    private void togglePlayerSelection(int playerID, boolean leftTeam) {
-        WorldModel worldModel = viewer.getWorldModel();
-        Team team = leftTeam ? worldModel.getLeftTeam() : worldModel.getRightTeam();
-        Agent agent = team.getAgentByID(playerID);
-        if (agent != null)
-            viewer.getWorldModel().setSelectedObject(agent);
-    }
-
     private void resetTimeIfExpired() {
         // changing the play mode doesn't have any effect if the game has ended
         float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
@@ -261,7 +229,7 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (robotVantage == null && viewer.getNetManager().getServer().isConnected()) {
+        if (viewer.getNetManager().getServer().isConnected()) {
             super.mouseClicked(e);
         }
     }
@@ -289,51 +257,6 @@ public class LiveGameScreen extends ViewerScreenBase implements WorldModel.Selec
                 Agent a = (Agent) selected;
                 boolean leftTeam = a.getTeam().getID() == Team.LEFT;
                 viewer.getNetManager().getServer().moveAgent(serverPos, leftTeam, a.getID());
-            }
-        }
-    }
-
-    private void setRobotVantage(RobotVantageType type) {
-        boolean differentType = robotVantageType != type;
-        Agent oldAgent = null;
-
-        if (robotVantage != null) {
-            oldAgent = robotVantage.getAgent();
-            robotVantage.detach();
-            robotVantage = null;
-            viewer.getRenderer().setVantage(viewer.getUI().getCamera());
-            viewer.getUI().getCameraControl().attachToCanvas((GLCanvas) viewer.getCanvas());
-            robotVantageType = RobotVantageType.NONE;
-        }
-
-        if (type == RobotVantageType.NONE) {
-            return;
-        }
-
-        ISelectable selected = viewer.getWorldModel().getSelectedObject();
-        if (!(selected instanceof Agent)) {
-            return;
-        }
-
-        Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
-        if (differentType || oldAgent != agent) {
-            if (type == RobotVantageType.FIRST_PERSON)
-                robotVantage = new RobotVantageFirstPerson(agent);
-            else
-                robotVantage = new RobotVantageThirdPerson(agent);
-            viewer.getRenderer().setVantage(robotVantage);
-            viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
-            robotVantageType = type;
-        }
-    }
-
-    @Override
-    public void selectionChanged(ISelectable newSelection) {
-        if (robotVantage != null) {
-            if (newSelection instanceof Agent) {
-                setRobotVantage(robotVantageType);
-            } else {
-                setRobotVantage(RobotVantageType.NONE);
             }
         }
     }
