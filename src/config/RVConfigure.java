@@ -19,6 +19,7 @@ package config;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javax.swing.WindowConstants;
 import rv.Configuration;
 import rv.Globals;
 import rv.Viewer;
+import rv.util.SwingUtil;
 
 public class RVConfigure extends JFrame {
 
@@ -95,7 +97,10 @@ public class RVConfigure extends JFrame {
         setResizable(false);
         getRootPane().setDefaultButton(startButton);
         pack();
-        setLocationRelativeTo(null);
+        Point desiredLocation = new Point(config.graphics.frameX, config.graphics.frameY);
+        if (config.graphics.centerFrame)
+            desiredLocation.setLocation(0, 0);
+        SwingUtil.centerOnScreenAtLocation(this, desiredLocation);
     }
 
     public static void main(String[] args) {

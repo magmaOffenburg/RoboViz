@@ -1,6 +1,7 @@
 package rv.util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -10,6 +11,10 @@ import javax.swing.JFrame;
 
 public class SwingUtil {
     public static GraphicsDevice getCurrentScreen(JFrame frame) {
+        return getCurrentScreen(frame.getLocation(), frame.getSize());
+    }
+
+    public static GraphicsDevice getCurrentScreen(Point location, Dimension size) {
         GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getScreenDevices();
 
@@ -18,7 +23,7 @@ public class SwingUtil {
         float bestPercentage = 0;
         for (GraphicsDevice device : devices) {
             Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            float percentage = getPercentageOnScreen(frame, bounds);
+            float percentage = getPercentageOnScreen(location, size, bounds);
 
             if (percentage > bestPercentage) {
                 bestMatch = device;
@@ -28,12 +33,13 @@ public class SwingUtil {
         return bestMatch;
     }
 
-    private static float getPercentageOnScreen(JFrame frame, Rectangle screen) {
-        Rectangle frameBounds = new Rectangle(frame.getLocation(), frame.getSize());
+    private static float getPercentageOnScreen(Point location, Dimension size, Rectangle screen) {
+        Rectangle frameBounds = new Rectangle(location, size);
         Rectangle2D intersection = frameBounds.createIntersection(screen);
-        int screenArea = screen.width * screen.height;
-        int intersectionArea = (int) Math.abs(intersection.getWidth() * intersection.getHeight());
-        return (float) intersectionArea / screenArea;
+        int frameArea = size.width * size.height;
+        int intersectionArea = (int) (intersection.getWidth() * intersection.getHeight());
+        float percentage = (float) intersectionArea / frameArea;
+        return percentage < 0 ? 0 : percentage;
     }
 
     public static Point getCurrentScreenLocation(JFrame frame) {
@@ -44,6 +50,13 @@ public class SwingUtil {
                     .getLocation();
         }
         return currentScreen.getDefaultConfiguration().getBounds().getLocation();
+    }
+
+    public static void centerOnScreenAtLocation(JFrame frame, Point desiredLocation) {
+        GraphicsDevice currentScreen = getCurrentScreen(desiredLocation, frame.getSize());
+        Rectangle2D screenBounds = currentScreen.getDefaultConfiguration().getBounds();
+        frame.setLocation((int) screenBounds.getCenterX() - (frame.getWidth() / 2),
+                (int) screenBounds.getCenterY() - (frame.getHeight() / 2));
     }
 
     public static Color toColor(float[] color) {
