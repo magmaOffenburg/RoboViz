@@ -215,7 +215,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         rewindButton.setEnabled(isValid && (!playing || atEnd));
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
-        playbackSpeedSpinner.setEnabled(isValid && !atEnd);
+        playbackSpeedSpinner.setEnabled(isValid);
         playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
         stepBackwardButton.setEnabled(isValid && !playing);
         stepForwardButton.setEnabled(isValid && !playing && !atEnd);
