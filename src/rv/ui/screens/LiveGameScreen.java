@@ -133,6 +133,7 @@ public class LiveGameScreen extends ViewerScreenBase {
 
     @Override
     protected void bPressed() {
+        resetTimeIfExpired();
         viewer.getNetManager().getServer().dropBall();
     }
 
