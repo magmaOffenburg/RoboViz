@@ -29,7 +29,7 @@ import rv.world.WorldModel;
 import rv.world.objects.Agent;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public abstract class ViewerScreenBase implements Screen, KeyListener, MouseListener,
+public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener,
         MouseMotionListener, GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
@@ -62,6 +62,7 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         this.viewer = viewer;
         overlays.add(new GameStateOverlay(viewer));
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
+        fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
 
         overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
@@ -91,7 +92,8 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
         tr.endRendering();
 
         for (Screen overlay : overlays)
-            overlay.render(gl, glu, glut, vp);
+            if (overlay.isVisible())
+                overlay.render(gl, glu, glut, vp);
 
         vp.apply(gl);
         if (textOverlays.size() > 0)

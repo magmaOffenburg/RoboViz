@@ -19,14 +19,13 @@ package rv.ui.screens;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import rv.effects.EffectManager;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class ConnectionOverlay implements Screen {
+public class ConnectionOverlay extends ScreenBase {
 
     private final String       msg = "Disconnected";
     private final TextRenderer tr;
@@ -51,9 +50,5 @@ public class ConnectionOverlay implements Screen {
         tr.setColor(1, 1, 1, 1);
         tr.draw(msg, x, y);
         tr.endRendering();
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
     }
 }

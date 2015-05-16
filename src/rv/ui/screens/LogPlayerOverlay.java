@@ -26,7 +26,7 @@ import rv.Viewer;
 import rv.comm.rcssserver.LogPlayer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LogPlayerOverlay implements Screen, KeyListener {
+public class LogPlayerOverlay extends ScreenBase implements KeyListener {
 
     private final LogPlayer      player;
     private final PlayerControls playDialog;

@@ -28,6 +28,7 @@ import js.math.vector.Vec3f;
 import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.Annotation;
+import rv.comm.rcssserver.ServerComm;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -35,17 +36,26 @@ import rv.world.objects.Agent;
 import rv.world.objects.Ball;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class LiveGameScreen extends ViewerScreenBase {
-
+public class LiveGameScreen extends ViewerScreenBase implements ServerComm.ServerChangeListener {
+    private final PlaymodeOverlay   playmodeOverlay;
     private final ConnectionOverlay connectionOverlay;
-
-    public void removeOverlay(Screen overlay) {
-        overlays.remove(overlay);
-    }
 
     public LiveGameScreen(Viewer viewer) {
         super(viewer);
+        playmodeOverlay = new PlaymodeOverlay(viewer, this);
+        overlays.add(playmodeOverlay);
         connectionOverlay = new ConnectionOverlay();
+        overlays.add(connectionOverlay);
+    }
+
+    @Override
+    public void setEnabled(GLCanvas canvas, boolean enabled) {
+        super.setEnabled(canvas, enabled);
+        if (enabled) {
+            viewer.getNetManager().getServer().addChangeListener(this);
+        } else {
+            viewer.getNetManager().getServer().removeChangeListener(this);
+        }
     }
 
     private void renderAnnotations() {
@@ -72,9 +82,6 @@ public class LiveGameScreen extends ViewerScreenBase {
         if (viewer.getDrawings().isVisible())
             renderAnnotations();
         tr.endRendering();
-
-        if (!viewer.getNetManager().getServer().isConnected())
-            connectionOverlay.render(gl, glu, glut, vp);
     }
 
     @Override
@@ -100,9 +107,8 @@ public class LiveGameScreen extends ViewerScreenBase {
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null
                     && viewer.getWorldModel().getGameState().getPlayModes() != null) {
-                PlaymodeOverlay pmo = new PlaymodeOverlay(viewer, this);
-                overlays.add(pmo);
-                pmo.setEnabled((GLCanvas) viewer.getCanvas(), true);
+                setEnabled((GLCanvas) viewer.getCanvas(), false);
+                playmodeOverlay.setVisible(true);
             }
             break;
         case KeyEvent.VK_T:
@@ -174,5 +180,10 @@ public class LiveGameScreen extends ViewerScreenBase {
                 viewer.getNetManager().getServer().moveAgent(serverPos, leftTeam, a.getID());
             }
         }
+    }
+
+    @Override
+    public void connectionChanged(ServerComm server) {
+        connectionOverlay.setVisible(!server.isConnected());
     }
 }

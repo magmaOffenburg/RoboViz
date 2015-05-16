@@ -32,7 +32,7 @@ import rv.Viewer;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class PlaymodeOverlay implements Screen, KeyListener {
+public class PlaymodeOverlay extends ScreenBase implements KeyListener {
 
     private static final String  DEFAULT_FILTER_TEXT = "Type anything to filter...";
     private static final int     MAX_FILTER_LENGTH   = 30;
@@ -41,9 +41,9 @@ public class PlaymodeOverlay implements Screen, KeyListener {
 
     final Viewer                 viewer;
     int                          index               = 0;
-    String[]                     modes;
+    String[]                     modes               = new String[] {};
     List<String>                 filteredModes       = new ArrayList<>();
-    String                       filterText;
+    String                       filterText          = DEFAULT_FILTER_TEXT;
     String                       caret               = CARET;
     int                          caretTimer          = 0;
     boolean                      justCreated         = true;
@@ -53,18 +53,32 @@ public class PlaymodeOverlay implements Screen, KeyListener {
     public PlaymodeOverlay(Viewer viewer, LiveGameScreen masterScreen) {
         this.viewer = viewer;
         this.masterScreen = masterScreen;
-        if (viewer.getWorldModel().getGameState() != null)
-            this.modes = viewer.getWorldModel().getGameState().getPlayModes();
         tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
-        filterText = DEFAULT_FILTER_TEXT;
-        resetFilter(null);
+        visible = false;
+    }
 
-        // temporarily disable active screen
-        masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), false);
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            if (viewer.getWorldModel().getGameState() != null)
+                this.modes = viewer.getWorldModel().getGameState().getPlayModes();
+            ((GLCanvas) viewer.getCanvas()).addKeyListener(this);
+            filterText = DEFAULT_FILTER_TEXT;
+            resetFilter(null);
+            justCreated = true;
+        } else {
+            ((GLCanvas) viewer.getCanvas()).removeKeyListener(this);
+            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
+        }
     }
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
+
+        if (modes.length <= 0) {
+            return;
+        }
 
         int h = (int) (tr.getBounds(modes[0]).getHeight()) + 3;
         int y = (vp.h - (modes.length + 2) * h) / 2;
@@ -131,10 +145,10 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
                 viewer.getNetManager().getServer().resetTime();
             viewer.getNetManager().getServer().setPlayMode(modes[index]);
-            close();
+            setVisible(false);
             break;
         case KeyEvent.VK_ESCAPE:
-            close();
+            setVisible(false);
             break;
         case KeyEvent.VK_BACK_SPACE:
             filterTextChanged();
@@ -151,12 +165,6 @@ public class PlaymodeOverlay implements Screen, KeyListener {
         else if (value > max)
             return min;
         return value;
-    }
-
-    private void close() {
-        setEnabled((GLCanvas) viewer.getCanvas(), false);
-        masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
-        masterScreen.removeOverlay(this);
     }
 
     @Override
@@ -195,14 +203,5 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             }
         }
         index = 0;
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        if (enabled) {
-            canvas.addKeyListener(this);
-        } else {
-            canvas.removeKeyListener(this);
-        }
     }
 }

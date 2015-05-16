@@ -19,7 +19,6 @@ package rv.ui.screens;
 import java.awt.Font;
 import java.util.Locale;
 import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import rv.Viewer;
@@ -27,7 +26,7 @@ import rv.comm.rcssserver.GameState;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class GameStateOverlay implements Screen {
+public class GameStateOverlay extends ScreenBase {
 
     private class GameStateBar {
         private static final int   BAR_HEIGHT      = 24;
@@ -111,9 +110,6 @@ public class GameStateOverlay implements Screen {
     public GameStateOverlay(Viewer viewer) {
         this.viewer = viewer;
         gsBar = new GameStateBar(20, 20);
-    }
-
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
     }
 
     /**

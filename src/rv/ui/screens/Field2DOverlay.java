@@ -17,7 +17,6 @@
 package rv.ui.screens;
 
 import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
@@ -32,7 +31,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
  * 
  * @author justin
  */
-public class Field2DOverlay implements Screen, GameStateChangeListener {
+public class Field2DOverlay extends ScreenBase implements GameStateChangeListener {
 
     private final WorldModel world;
 
@@ -40,16 +39,7 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     private float            fieldLength  = 120;
     private int              screenWidth  = 1;
     private int              screenHeight = 1;
-    private boolean          visible      = false;
     private int              yPos         = 10;
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
 
     public void setyPos(int yPos) {
         this.yPos = yPos;
@@ -58,10 +48,6 @@ public class Field2DOverlay implements Screen, GameStateChangeListener {
     public Field2DOverlay(WorldModel world) {
         this.world = world;
         world.getGameState().addListener(this);
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
     }
 
     private void setView(GL2 gl, GLU glu) {

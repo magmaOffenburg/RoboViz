@@ -30,7 +30,11 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public interface Screen {
 
-    public void setEnabled(GLCanvas canvas, boolean enabled);
+    void setEnabled(GLCanvas canvas, boolean enabled);
 
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp);
+    void render(GL2 gl, GLU glu, GLUT glut, Viewport vp);
+
+    boolean isVisible();
+
+    void setVisible(boolean visible);
 }
