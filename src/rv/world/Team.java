@@ -91,13 +91,6 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         this.score = score;
     }
 
-    /**
-     * Clears all agents on the team.
-     */
-    public void resetPlayers() {
-        agents.clear();
-    }
-
     public Team(float[] defaultColor, int id, ContentManager content,
             Configuration.TeamColors config) {
         this.defaultColor = defaultColor;
@@ -116,7 +109,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     }
 
     @Override
-    public void sceneGraphChanged(SceneGraph sg) {
+    public synchronized void sceneGraphChanged(SceneGraph sg) {
         agents.clear();
 
         // Add agents from scene graph to this team
@@ -127,17 +120,10 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
             if (agentNode != null)
                 agents.add(new Agent(this, i, agentNode, sg, content));
         }
-
-        // do {
-        // int agentID = agents.size() + 1;
-        // agentNode = findAgent(agentID, sg);
-        // if (agentNode != null)
-        // agents.add(new Agent(this, agentID, agentNode, sg, content));
-        // } while (agentNode != null);
     }
 
     @Override
-    public void update(SceneGraph sg) {
+    public synchronized void update(SceneGraph sg) {
         for (Agent agent : agents)
             agent.update(sg);
     }
