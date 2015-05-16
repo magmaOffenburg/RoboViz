@@ -115,7 +115,7 @@ public class Viewer extends GLProgram implements GLEventListener {
     private GLInfo                           glInfo;
     private final Configuration              config;
     private String                           ssName                = null;
-    private String                           logFileName;
+    private String                           logFilePath;
     private String                           drawingFilter;
     private Mode                             mode                  = Mode.LIVE;
 
@@ -182,8 +182,30 @@ public class Viewer extends GLProgram implements GLEventListener {
         super(config.graphics.frameWidth, config.graphics.frameHeight);
         this.config = config;
 
-        initComponents(caps);
         parseArgs(args);
+        checkLogFile();
+        initComponents(caps);
+    }
+
+    private void parseArgs(String[] args) {
+        StringArgument LOG_FILE = new StringArgument("logFile", null);
+        StringArgument SERVER_HOST = new StringArgument("serverHost", null);
+        IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
+        StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
+
+        logFilePath = LOG_FILE.parse(args);
+        config.networking.overrideServerHost(SERVER_HOST.parse(args));
+        config.networking.overrideServerPort(SERVER_PORT.parse(args));
+        drawingFilter = DRAWING_FILTER.parse(args);
+        Argument.endParse(args);
+    }
+
+    private void checkLogFile() {
+        if (logFilePath != null) {
+            mode = Mode.LOGFILE;
+            if (!new File(logFilePath).exists())
+                exitError("Could not find log file " + logFilePath);
+        }
     }
 
     private void initComponents(GLCapabilities caps) {
@@ -203,19 +225,6 @@ public class Viewer extends GLProgram implements GLEventListener {
         restoreConfig();
         frame.setVisible(true);
         attachDrawableAndStart(canvas);
-    }
-
-    private void parseArgs(String[] args) {
-        StringArgument LOG_FILE = new StringArgument("logFile", null);
-        StringArgument SERVER_HOST = new StringArgument("serverHost", null);
-        IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
-        StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
-
-        logFileName = LOG_FILE.parse(args);
-        config.networking.overrideServerHost(SERVER_HOST.parse(args));
-        config.networking.overrideServerPort(SERVER_PORT.parse(args));
-        drawingFilter = DRAWING_FILTER.parse(args);
-        Argument.endParse(args);
     }
 
     private void restoreConfig() {
@@ -287,16 +296,15 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     public void exitError(String msg) {
         System.err.println(msg);
-        animator.stop();
-        frame.dispose();
+        if (animator != null)
+            animator.stop();
+        if (frame != null)
+            frame.dispose();
         System.exit(1);
     }
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        if (logFileName != null)
-            mode = Mode.LOGFILE;
-
         GL2 gl = drawable.getGL().getGL2();
 
         if (!init) { // print OpenGL renderer info
@@ -323,16 +331,10 @@ public class Viewer extends GLProgram implements GLEventListener {
 
             netManager.getServer().addChangeListener(world.getGameState());
         } else {
-            File log = new File(logFileName);
-            if (log.exists()) {
-                if (!init)
-                    logPlayer = new LogPlayer(new File(logFileName), world);
-                else
-                    logPlayer.setWorldModel(world);
-            } else {
-                System.err.println("Could not find log file " + logFileName);
-                System.exit(0);
-            }
+            if (!init)
+                logPlayer = new LogPlayer(new File(logFilePath), world);
+            else
+                logPlayer.setWorldModel(world);
         }
         ui = new UserInterface(this, drawingFilter);
         ui.init();
