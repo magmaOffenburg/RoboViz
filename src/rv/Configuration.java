@@ -53,12 +53,13 @@ public class Configuration {
         public boolean useVsync         = true;
         public boolean useFsaa          = false;
         public boolean isMaximized      = false;
+        public boolean centerFrame      = true;
         public int     fsaaSamples      = 4;
         public int     targetFPS        = 60;
         public int     frameWidth       = 800;
         public int     frameHeight      = 600;
-        public Integer frameX           = null;
-        public Integer frameY           = null;
+        public int     frameX           = 0;
+        public int     frameY           = 0;
         public int     shadowResolution = 1024;
 
         private void read(BufferedReader in) throws IOException {
@@ -77,6 +78,7 @@ public class Configuration {
             frameHeight = getNextInt(in);
             frameX = getNextInteger(in);
             frameY = getNextInteger(in);
+            centerFrame = getNextBool(in);
             isMaximized = getNextBool(in);
             getNextLine(in);
         }
@@ -97,6 +99,7 @@ public class Configuration {
             writeVal(out, "Frame Height", frameHeight);
             writeVal(out, "Frame X", frameX);
             writeVal(out, "Frame Y", frameY);
+            writeVal(out, "Center Frame", centerFrame);
             writeVal(out, "Frame Maximized", isMaximized);
             out.write("\n");
         }

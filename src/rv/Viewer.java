@@ -225,7 +225,7 @@ public class Viewer extends GLProgram implements GLEventListener {
 
         frame.setSize(graphics.frameWidth, graphics.frameHeight);
 
-        if (frameX == null || frameY == null)
+        if (graphics.centerFrame)
             frame.setLocationRelativeTo(null);
         else
             frame.setLocation(frameX, frameY);
@@ -243,6 +243,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         graphics.frameY = location.y;
         graphics.frameWidth = size.width;
         graphics.frameHeight = size.height;
+        graphics.centerFrame = false;
         graphics.isMaximized = (state & Frame.MAXIMIZED_BOTH) > 0;
 
         config.write();

@@ -11,8 +11,9 @@ FSAA Samples         : 8
 Target FPS           : 60
 Frame Width          : 800
 Frame Height         : 600
-Frame X              : null
-Frame Y              : null
+Frame X              : 0
+Frame Y              : 0
+Center Frame         : true
 Frame Maximized      : false
 
 Networking Settings:
