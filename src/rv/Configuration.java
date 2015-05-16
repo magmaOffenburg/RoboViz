@@ -52,8 +52,9 @@ public class Configuration {
         public boolean useStereo        = false;
         public boolean useVsync         = true;
         public boolean useFsaa          = false;
-        public boolean isMaximized      = false;
         public boolean centerFrame      = true;
+        public boolean isMaximized      = false;
+        public boolean saveFrameState   = true;
         public int     fsaaSamples      = 4;
         public int     targetFPS        = 60;
         public int     frameWidth       = 800;
@@ -80,6 +81,7 @@ public class Configuration {
             frameY = getNextInteger(in);
             centerFrame = getNextBool(in);
             isMaximized = getNextBool(in);
+            saveFrameState = getNextBool(in);
             getNextLine(in);
         }
 
@@ -101,6 +103,7 @@ public class Configuration {
             writeVal(out, "Frame Y", frameY);
             writeVal(out, "Center Frame", centerFrame);
             writeVal(out, "Frame Maximized", isMaximized);
+            writeVal(out, "Save Frame State", saveFrameState);
             out.write("\n");
         }
     }

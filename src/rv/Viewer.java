@@ -168,7 +168,8 @@ public class Viewer extends GLProgram implements GLEventListener {
     }
 
     public void shutdown() {
-        storeConfig();
+        if (config.graphics.saveFrameState)
+            storeConfig();
         frame.dispose();
         System.exit(0);
     }

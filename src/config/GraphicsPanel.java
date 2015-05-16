@@ -49,6 +49,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     JCheckBox                    vsyncCB;
     JCheckBox                    maximizedCB;
     JCheckBox                    centerCB;
+    JCheckBox                    saveStateCB;
     JTextField                   samplesTF;
     JTextField                   shadowResTB;
     JSpinner                     fpsSpinner;
@@ -157,7 +158,6 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         fwSpinner = createSpinner(config.frameWidth, 1, 10000);
         fhSpinner = createSpinner(config.frameHeight, 1, 10000);
         maximizedCB = new JCheckBox("Maximized", config.isMaximized);
-
         centerCB = new JCheckBox("Center Position", config.centerFrame);
         centerCB.addActionListener(new ActionListener() {
             @Override
@@ -166,6 +166,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
             }
         });
         updateFramePosition();
+        saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
 
         int y = 0;
         addLabel("X: ", panel, c, 0, y);
@@ -184,6 +185,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         y++;
         addConstrained(centerCB, panel, c, 1, y);
         addConstrained(maximizedCB, panel, c, 2, y);
+        addConstrained(saveStateCB, panel, c, 3, y);
 
         return panel;
     }
@@ -260,5 +262,6 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         config.frameHeight = (Integer) fhSpinner.getValue();
         config.centerFrame = centerCB.isSelected();
         config.isMaximized = maximizedCB.isSelected();
+        config.saveFrameState = saveStateCB.isSelected();
     }
 }
