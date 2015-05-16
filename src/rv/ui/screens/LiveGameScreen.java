@@ -128,13 +128,11 @@ public class LiveGameScreen extends ViewerScreenBase {
         case KeyEvent.VK_U:
             viewer.getNetManager().getServer().requestFullState();
             break;
+        case KeyEvent.VK_B:
+            resetTimeIfExpired();
+            viewer.getNetManager().getServer().dropBall();
+            break;
         }
-    }
-
-    @Override
-    protected void bPressed() {
-        resetTimeIfExpired();
-        viewer.getNetManager().getServer().dropBall();
     }
 
     private void resetTimeIfExpired() {

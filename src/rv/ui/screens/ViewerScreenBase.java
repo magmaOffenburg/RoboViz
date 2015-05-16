@@ -209,12 +209,9 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             if (!e.isControlDown())
                 viewer.getUI().getShortcutHelpPanel().showFrame(viewer.getFrame());
             break;
-        case KeyEvent.VK_B:
-            if (e.isControlDown()) {
-                viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
-            } else {
-                bPressed();
-            }
+        case KeyEvent.VK_0:
+        case KeyEvent.VK_NUMPAD0:
+            viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
             break;
         case KeyEvent.VK_ESCAPE:
             viewer.getWorldModel().setSelectedObject(null);
@@ -234,10 +231,6 @@ public abstract class ViewerScreenBase implements Screen, KeyListener, MouseList
             fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
             break;
         }
-    }
-
-    protected void bPressed() {
-
     }
 
     private void selectPlayer(int playerID, boolean leftTeam) {
