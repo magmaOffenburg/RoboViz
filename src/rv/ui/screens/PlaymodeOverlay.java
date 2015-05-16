@@ -81,7 +81,6 @@ public class PlaymodeOverlay implements Screen, KeyListener {
         tr.beginRendering(vp.w, vp.h);
 
         tr.setColor(0.6f, 0.6f, 0.6f, 1.0f);
-
         drawText(filterText + getCaret(), tr.getBounds(filterText), vp, 0, h, y);
 
         for (int i = 0; i < filteredModes.size(); i++) {
@@ -132,14 +131,10 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
                 viewer.getNetManager().getServer().resetTime();
             viewer.getNetManager().getServer().setPlayMode(modes[index]);
-            setEnabled((GLCanvas) viewer.getCanvas(), false);
-            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
-            masterScreen.removeOverlay(this);
+            close();
             break;
         case KeyEvent.VK_ESCAPE:
-            setEnabled((GLCanvas) viewer.getCanvas(), false);
-            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
-            masterScreen.removeOverlay(this);
+            close();
             break;
         case KeyEvent.VK_BACK_SPACE:
             filterTextChanged();
@@ -156,6 +151,12 @@ public class PlaymodeOverlay implements Screen, KeyListener {
         else if (value > max)
             return min;
         return value;
+    }
+
+    private void close() {
+        setEnabled((GLCanvas) viewer.getCanvas(), false);
+        masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
+        masterScreen.removeOverlay(this);
     }
 
     @Override
