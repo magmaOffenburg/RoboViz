@@ -134,17 +134,17 @@ public class PlaymodeOverlay extends ScreenBase implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DOWN:
-            index = wrap(index + 1, 0, modes.length - 1);
+            index = wrap(index + 1, 0, filteredModes.size() - 1);
             break;
         case KeyEvent.VK_UP:
-            index = wrap(index - 1, 0, modes.length - 1);
+            index = wrap(index - 1, 0, filteredModes.size() - 1);
             break;
         case KeyEvent.VK_ENTER:
             // changing the play mode doesn't have any effect if the game has ended
             float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
             if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
                 viewer.getNetManager().getServer().resetTime();
-            viewer.getNetManager().getServer().setPlayMode(modes[index]);
+            viewer.getNetManager().getServer().setPlayMode(filteredModes.get(index));
             setVisible(false);
             break;
         case KeyEvent.VK_ESCAPE:
