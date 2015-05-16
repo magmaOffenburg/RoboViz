@@ -19,6 +19,8 @@ package config;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -45,9 +47,13 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     JCheckBox                    fsaaCB;
     JCheckBox                    stereoCB;
     JCheckBox                    vsyncCB;
+    JCheckBox                    maximizedCB;
+    JCheckBox                    centerCB;
     JTextField                   samplesTF;
     JTextField                   shadowResTB;
     JSpinner                     fpsSpinner;
+    JSpinner                     fxSpinner;
+    JSpinner                     fySpinner;
     JSpinner                     fwSpinner;
     JSpinner                     fhSpinner;
     final JLabel                 shadowResLabel = new JLabel("Shadow Resolution: ",
@@ -73,6 +79,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         addConstrained(initLightingPanel(), this, c, 0, 0);
         addConstrained(initAAPanel(), this, c, 0, 1);
         addConstrained(initGeneral(), this, c, 0, 2);
+        addConstrained(initFramePanel(), this, c, 0, 3);
     }
 
     private void addConstrained(JComponent comp, JComponent container, GridBagConstraints c, int x,
@@ -124,28 +131,71 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
         stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
         vsyncCB = new JCheckBox("V-Sync", config.useVsync);
-        fpsSpinner = new JSpinner(new SpinnerNumberModel(config.targetFPS, 1, 60, 1));
-        fwSpinner = new JSpinner(new SpinnerNumberModel(config.frameWidth, 1, 10000, 1));
-        fhSpinner = new JSpinner(new SpinnerNumberModel(config.frameHeight, 1, 10000, 1));
+        fpsSpinner = createSpinner(config.targetFPS, 1, 60);
 
         int y = 0;
         addConstrained(stereoCB, panel, c, 0, y);
 
         addConstrained(vsyncCB, panel, c, 1, y);
 
-        y++;
-        addLabel("FPS: ", panel, c, 0, y);
-        addConstrained(fpsSpinner, panel, c, 1, y);
-
-        y++;
-        addLabel("Frame Width: ", panel, c, 0, y);
-        addConstrained(fwSpinner, panel, c, 1, y);
-
-        y++;
-        addLabel("Frame Height: ", panel, c, 0, y);
-        addConstrained(fhSpinner, panel, c, 1, y);
+        addLabel("FPS: ", panel, c, 2, y);
+        addConstrained(fpsSpinner, panel, c, 3, y);
 
         return panel;
+    }
+
+    JPanel initFramePanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Frame"));
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipadx = 10;
+
+        fxSpinner = createSpinner(config.frameX, -100, 10000);
+        fySpinner = createSpinner(config.frameY, -100, 10000);
+        fwSpinner = createSpinner(config.frameWidth, 1, 10000);
+        fhSpinner = createSpinner(config.frameHeight, 1, 10000);
+        maximizedCB = new JCheckBox("Maximized", config.isMaximized);
+
+        centerCB = new JCheckBox("Center Position", config.centerFrame);
+        centerCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateFramePosition();
+            }
+        });
+        updateFramePosition();
+
+        int y = 0;
+        addLabel("X: ", panel, c, 0, y);
+        addConstrained(fxSpinner, panel, c, 1, y);
+
+        addLabel("Width: ", panel, c, 2, y);
+        addConstrained(fwSpinner, panel, c, 3, y);
+
+        y++;
+        addLabel("Y: ", panel, c, 0, y);
+        addConstrained(fySpinner, panel, c, 1, y);
+
+        addLabel("Height: ", panel, c, 2, y);
+        addConstrained(fhSpinner, panel, c, 3, y);
+
+        y++;
+        addConstrained(centerCB, panel, c, 1, y);
+        addConstrained(maximizedCB, panel, c, 2, y);
+
+        return panel;
+    }
+
+    void updateFramePosition() {
+        boolean enabled = !centerCB.isSelected();
+        fxSpinner.setEnabled(enabled);
+        fySpinner.setEnabled(enabled);
+    }
+
+    JSpinner createSpinner(int value, int min, int max) {
+        return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
     }
 
     JPanel initLightingPanel() {
@@ -204,7 +254,11 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         }
 
         config.targetFPS = (Integer) fpsSpinner.getValue();
+        config.frameX = (Integer) fxSpinner.getValue();
+        config.frameY = (Integer) fySpinner.getValue();
         config.frameWidth = (Integer) fwSpinner.getValue();
         config.frameHeight = (Integer) fhSpinner.getValue();
+        config.centerFrame = centerCB.isSelected();
+        config.isMaximized = maximizedCB.isSelected();
     }
 }
