@@ -121,10 +121,10 @@ public class PlaymodeOverlay implements Screen, KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DOWN:
-            index = Math.min(index + 1, modes.length - 1);
+            index = wrap(index + 1, 0, modes.length - 1);
             break;
         case KeyEvent.VK_UP:
-            index = Math.max(index - 1, 0);
+            index = wrap(index - 1, 0, modes.length - 1);
             break;
         case KeyEvent.VK_ENTER:
             // changing the play mode doesn't have any effect if the game has ended
@@ -148,6 +148,14 @@ public class PlaymodeOverlay implements Screen, KeyListener {
             resetFilter(filterText);
             break;
         }
+    }
+
+    private int wrap(int value, int min, int max) {
+        if (value < min)
+            return max;
+        else if (value > max)
+            return min;
+        return value;
     }
 
     @Override
