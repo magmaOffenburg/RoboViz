@@ -194,6 +194,9 @@ public class Viewer extends GLProgram implements GLEventListener {
         StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
         logFilePath = LOG_FILE.parse(args);
+        if (logFilePath != null) // handle linux home directory
+            logFilePath = logFilePath.replaceFirst("^~", System.getProperty("user.home"));
+
         config.networking.overrideServerHost(SERVER_HOST.parse(args));
         config.networking.overrideServerPort(SERVER_PORT.parse(args));
         drawingFilter = DRAWING_FILTER.parse(args);
@@ -204,7 +207,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         if (logFilePath != null) {
             mode = Mode.LOGFILE;
             if (!new File(logFilePath).exists())
-                exitError("Could not find log file " + logFilePath);
+                exitError("Could not find log file '" + logFilePath + "'");
         }
     }
 
