@@ -17,6 +17,7 @@
 package rv.comm.rcssserver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
@@ -303,7 +304,7 @@ public class GameState implements ServerChangeListener {
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
-            for (GameStateChangeListener l : listeners) {
+            for (GameStateChangeListener l : Collections.synchronizedList(listeners)) {
                 if (playStateChanges > 0)
                     l.gsPlayStateChanged(this);
                 if (timeChanges > 0)
