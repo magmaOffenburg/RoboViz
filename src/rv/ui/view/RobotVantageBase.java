@@ -21,6 +21,9 @@ public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeL
 
     @Override
     public void apply(GL2 gl, GLU glu, Viewport vp) {
+        if (viewMatrix == null) {
+            return;
+        }
         gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(fovY, getAspect(vp), near, far);
