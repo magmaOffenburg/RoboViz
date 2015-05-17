@@ -200,7 +200,7 @@ public class PlaymodeOverlay extends ScreenBase implements KeyListener {
     private void resetFilter(String filter) {
         filteredModes.clear();
         for (String mode : modes) {
-            if (filter == null || mode.contains(filter)) {
+            if (filter == null || mode.toLowerCase().contains(filter.toLowerCase())) {
                 filteredModes.add(mode);
             }
         }
