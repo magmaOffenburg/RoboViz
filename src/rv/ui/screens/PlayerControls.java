@@ -63,8 +63,6 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
     private final LogPlayer player;
     private Container       container;
-    private RoundButton     fileOpenButton;
-    private RoundButton     rewindButton;
     private RoundButton     previousFrameButton;
     private RoundButton     playPauseButton;
     private RoundButton     nextFrameButton;
@@ -100,15 +98,14 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 0, 0);
 
-        fileOpenButton = createButton(c, "file_open", "Open Logfile...", new ActionListener() {
+        createButton(c, "file_open", "Open Logfile...", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!player.isPlaying())
-                    player.openFile(frame);
+                player.openFile(frame);
             }
         });
 
-        rewindButton = createButton(c, "rewind", "Rewind", new ActionListener() {
+        createButton(c, "rewind", "Rewind", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 player.rewind();
@@ -222,8 +219,6 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
     private void updateButtons(Boolean playing, boolean atEnd) {
         boolean isValid = player.isValid();
-        fileOpenButton.setEnabled(!playing);
-        rewindButton.setEnabled(isValid && (!playing || atEnd));
         previousFrameButton.setEnabled(isValid && !playing);
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
