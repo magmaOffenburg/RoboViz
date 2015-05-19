@@ -222,9 +222,9 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         previousFrameButton.setEnabled(isValid && !playing);
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
-        previousGoalButton.setEnabled(isValid && player.hasGoals());
+        previousGoalButton.setEnabled(isValid && player.hasPreviousGoal());
         previousGoalButton.setToolTipText(getGoalMessage("Previous"));
-        nextGoalButton.setEnabled(isValid && player.hasGoals());
+        nextGoalButton.setEnabled(isValid && player.hasNextGoal());
         nextGoalButton.setToolTipText(getGoalMessage("Next"));
         nextFrameButton.setEnabled(isValid && !playing && !atEnd);
         playbackSpeedSpinner.setEnabled(isValid);

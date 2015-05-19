@@ -177,7 +177,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void stepBackwardGoal() {
-        int relativeFrame = getFrame();
+        int relativeFrame = getDesiredFrame();
         int closestFrame = -1;
         for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
             if (goalFrame < relativeFrame && goalFrame > closestFrame) {
@@ -185,13 +185,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
             }
         }
         if (closestFrame != -1) {
-            int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
-            setDesiredFrame(targetFrame);
+            setDesiredFrame(closestFrame);
         }
     }
 
     public void stepForwardGoal() {
-        int relativeFrame = getFrame() + GOAL_WINDOW_FRAMES;
+        int relativeFrame = getDesiredFrame() + GOAL_WINDOW_FRAMES;
         int closestFrame = Integer.MAX_VALUE;
         for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
             if (goalFrame > relativeFrame && goalFrame < closestFrame) {
@@ -199,9 +198,32 @@ public class LogPlayer implements ISubscribe<Boolean> {
             }
         }
         if (closestFrame != Integer.MAX_VALUE) {
-            int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
-            setDesiredFrame(targetFrame);
+            setDesiredFrame(closestFrame);
         }
+    }
+
+    public boolean hasPreviousGoal() {
+        if (goalFrames.isEmpty())
+            return false;
+
+        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
+        for (Integer goalFrame : syncGoalFrames) {
+            if (getDesiredFrame() > goalFrame)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasNextGoal() {
+        if (goalFrames.isEmpty())
+            return false;
+
+        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
+        for (Integer goalFrame : syncGoalFrames) {
+            if (getDesiredFrame() < goalFrame)
+                return true;
+        }
+        return false;
     }
 
     public boolean hasGoals() {
@@ -214,6 +236,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void setDesiredFrame(int frame) {
         desiredFrame = frame;
+        observers.onStateChange(playing);
     }
 
     @Override
@@ -280,6 +303,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         new FindGoalsThread(file, new FindGoalsThread.ResultCallback() {
             @Override
             public void goalFound(int goalFrame) {
+                goalFrame = Math.max(0, goalFrame - GOAL_WINDOW_FRAMES);
                 goalFrames.add(goalFrame);
                 observers.onStateChange(playing);
             }
