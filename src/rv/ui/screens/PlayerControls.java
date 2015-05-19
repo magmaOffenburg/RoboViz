@@ -70,6 +70,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
     private RoundButton     nextGoalButton;
     private JSpinner        playbackSpeedSpinner;
     private JSlider         slider;
+    private boolean         sliderUpdate;
 
     private PlayerControls(LogPlayer player) {
         super("Logplayer");
@@ -170,16 +171,15 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         });
         container.add(playbackSpeedSpinner, c);
 
-        slider = new JSlider(0, player.getNumFrames(), player.getFrame());
+        slider = new JSlider(0, player.getNumFrames(), player.getDesiredFrame());
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if (slider.isEnabled()) {
+                if (slider.isEnabled() && !sliderUpdate) {
                     int frame = slider.getValue();
                     player.setDesiredFrame(frame);
-                    if (frame < player.getNumFrames()) {
+                    if (frame < player.getNumFrames())
                         updateButtons(player.isPlaying(), false);
-                    }
                 }
             }
         });
@@ -242,11 +242,13 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
     }
 
     private void updateSlider(Boolean playing) {
+        sliderUpdate = true;
         if (slider.getMaximum() < player.getNumFrames()) {
             slider.setMaximum(player.getNumFrames());
         }
-        slider.setValue(player.getFrame());
-        slider.setEnabled(player.isValid() && !playing);
+        slider.setValue(player.getDesiredFrame());
+        slider.setEnabled(player.isValid());
+        sliderUpdate = false;
     }
 
     public void dispose() {

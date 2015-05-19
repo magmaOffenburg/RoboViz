@@ -18,7 +18,6 @@ package rv.comm.rcssserver;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -61,7 +60,7 @@ public class Logfile implements ILogfileReader {
     /**
      * Opens the file for buffered reading
      * 
-     * @throws FileNotFoundException
+     * @throws IOException
      */
     private void open() throws IOException {
         br = TarBz2ZipUtil.createBufferedReader(logsrc);

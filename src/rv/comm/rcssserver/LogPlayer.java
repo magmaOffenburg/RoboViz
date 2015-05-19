@@ -16,8 +16,6 @@
 
 package rv.comm.rcssserver;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -26,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.Timer;
 import js.math.Maths;
 import rv.util.observer.IObserver;
 import rv.util.observer.ISubscribe;
@@ -41,18 +38,17 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements ISubscribe<Boolean> {
 
-    private static final int       DEFAULT_TIMER_DELAY = 150;
-
-    private static final int       GOAL_WINDOW_FRAMES  = 60;
+    private static final int       MS_PER_MESSAGE     = 200;
+    private static final int       GOAL_WINDOW_FRAMES = 60;
 
     private ILogfileReader         logfile;
+    private LogRunnerThread        logRunner;
     private final MessageParser    parser;
-    private Timer                  timer;
     private boolean                playing;
-    private double                 playbackSpeed       = 1;
-    private Integer                desiredFrame        = null;
-    private List<Integer>          goalFrames          = new ArrayList<>();
-    private boolean                goalsProcessed      = false;
+    private double                 playbackSpeed      = 1;
+    private Integer                desiredFrame       = null;
+    private List<Integer>          goalFrames         = new ArrayList<>();
+    private boolean                goalsProcessed     = false;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -75,33 +71,14 @@ public class LogPlayer implements ISubscribe<Boolean> {
         fileChooser = new JFileChooser();
         openLogfile(file);
 
-        timer = new Timer(DEFAULT_TIMER_DELAY, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (desiredFrame != null) {
-                        setCurrentFrame(desiredFrame);
-                        desiredFrame = null;
-                    }
-                    play();
-                } catch (Exception e1) {
-                    System.out.println("Invalid Logfile.");
-                    e1.printStackTrace();
-                    timer.stop();
-                    logfile = null;
-                    observers.onStateChange(false);
-                }
-            }
-        });
-        timer.setRepeats(true);
-        timer.setDelay(DEFAULT_TIMER_DELAY);
-
         parser = new MessageParser(world);
 
         if (!logfile.isValid()) {
             System.out.println("Logfile could not be loaded.");
             return;
         }
-        timer.start();
+
+        startRunnerThread();
     }
 
     public void setWorldModel(WorldModel world) {
@@ -120,7 +97,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
         return logfile != null && logfile.isAtEndOfLog();
     }
 
-    public int getFrame() {
+    public int getDesiredFrame() {
+        return desiredFrame == null ? getFrame() : desiredFrame;
+    }
+
+    private int getFrame() {
         if (logfile == null) {
             return 0;
         }
@@ -136,33 +117,17 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void pause() {
         setPlaying(false);
-        timer.stop();
-    }
-
-    public void stop() {
-        setPlaying(false);
-        timer.stop();
-        logfile.close();
     }
 
     public void resume() {
-        if (!playing)
-            timer.start();
+        setPlaying(true);
     }
 
     public void rewind() {
-        try {
-            logfile.rewind();
-            parseFrame();
-            observers.onStateChange(playing);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setDesiredFrame(0);
     }
 
     public void setPlayBackSpeed(double factor) {
-        int newDelay = (int) (DEFAULT_TIMER_DELAY / factor);
-        timer.setDelay(Maths.clamp(newDelay, 15, 1500));
         playbackSpeed = Maths.clamp(factor, 0.25, 10);
         observers.onStateChange(playing);
     }
@@ -183,18 +148,6 @@ public class LogPlayer implements ISubscribe<Boolean> {
         String msg = logfile.getCurrentFrameMessage();
         if (msg != null)
             parser.parse(msg);
-    }
-
-    public void play() throws IOException, ParseException {
-        setPlaying(true);
-
-        if (logfile.isAtEndOfLog())
-            pause();
-        else {
-            parseFrame();
-            logfile.stepForward();
-            observers.onStateChange(playing);
-        }
     }
 
     public void stepBackward() {
@@ -227,8 +180,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         }
         if (closestFrame != -1) {
             int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
-            setCurrentFrame(targetFrame);
-            observers.onStateChange(playing);
+            setDesiredFrame(targetFrame);
         }
     }
 
@@ -242,8 +194,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         }
         if (closestFrame != Integer.MAX_VALUE) {
             int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
-            setCurrentFrame(targetFrame);
-            observers.onStateChange(playing);
+            setDesiredFrame(targetFrame);
         }
     }
 
@@ -257,33 +208,6 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void setDesiredFrame(int frame) {
         desiredFrame = frame;
-    }
-
-    private void setCurrentFrame(int frame) {
-        if (frame == getFrame()) {
-            return;
-        }
-        try {
-            // when jumping forwards we have to make sure not to jump over a full
-            // frame
-            int currentFrame = frame;
-            boolean needHeader = true;
-            do {
-                logfile.stepAnywhere(currentFrame);
-                try {
-                    parseFrame();
-                    needHeader = false;
-                } catch (IndexOutOfBoundsException e) {
-                    // the frame misses some information from the last full frame
-                    // DIRTY: I have no idea currently how this can be detected in a
-                    // nicer way
-                }
-                currentFrame--;
-            } while (needHeader && currentFrame >= 0);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -331,10 +255,19 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 logfile.close();
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
+
             startGoalFinder(file);
-        } catch (Exception e3) {
-            e3.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    private void startRunnerThread() {
+        if (logRunner != null) {
+            logRunner.interrupt();
+        }
+        logRunner = new LogRunnerThread();
+        logRunner.start();
     }
 
     private void startGoalFinder(File file) {
@@ -350,5 +283,71 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 LogPlayer.this.goalsProcessed = true;
             }
         }).start();
+    }
+
+    private class LogRunnerThread extends Thread {
+        @Override
+        public void run() {
+            setPlaying(true);
+
+            while (true) {
+                if (logfile.isAtEndOfLog())
+                    pause();
+
+                int previousFrame = getFrame();
+                int nextFrame = getFrame();
+                try {
+                    if (playing) {
+                        Thread.sleep((int) (MS_PER_MESSAGE / playbackSpeed));
+                        nextFrame++;
+                    } else {
+                        Thread.sleep(MS_PER_MESSAGE);
+                    }
+
+                    if (desiredFrame != null) {
+                        nextFrame = desiredFrame;
+                        desiredFrame = null;
+                    }
+                } catch (InterruptedException e) {
+                }
+
+                setCurrentFrame(previousFrame, nextFrame);
+                observers.onStateChange(playing);
+            }
+        }
+
+        private void setCurrentFrame(int previousFrame, int frame) {
+            if (frame == getFrame()) {
+                return;
+            }
+
+            try {
+                if (previousFrame + 1 == frame) {
+                    logfile.stepForward();
+                    parseFrame();
+                } else {
+                    stepAnywhere(frame);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        private void stepAnywhere(int frame) throws ParseException, IOException {
+            // when jumping forwards we have to make sure not to jump over a full frame
+            int currentFrame = frame;
+            boolean needHeader = true;
+            do {
+                logfile.stepAnywhere(currentFrame);
+                try {
+                    parseFrame();
+                    needHeader = false;
+                } catch (IndexOutOfBoundsException e) {
+                    // the frame misses some information from the last full frame
+                    // DIRTY: I have no idea currently how this can be detected in a
+                    // nicer way
+                }
+                currentFrame--;
+            } while (needHeader && currentFrame >= 0);
+        }
     }
 }
