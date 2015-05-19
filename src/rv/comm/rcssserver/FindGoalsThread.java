@@ -6,7 +6,9 @@ import java.text.ParseException;
 import rv.world.WorldModel;
 
 public class FindGoalsThread extends Thread {
+
     public interface ResultCallback {
+
         void goalFound(int goalFrame);
 
         void finished();

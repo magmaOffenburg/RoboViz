@@ -27,6 +27,8 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
@@ -40,6 +42,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
+import rv.util.SwingUtil;
 import rv.util.observer.IObserver;
 
 /**
@@ -158,7 +161,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         });
 
         c.gridx++;
-        c.insets = new Insets(5, 35, 0, 0);
+        c.insets = new Insets(5, 25, 0, 0);
         playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.25, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
@@ -280,8 +283,16 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
                 return;
             }
             this.iconName = iconName;
-            setIcon(getImageIcon(iconName));
-            setRolloverIcon(getImageIcon(iconName + "_highlight"));
+            ImageIcon icon = getImageIcon(iconName);
+            setIcon(icon);
+            createRolloverIcon(icon);
+        }
+
+        private void createRolloverIcon(ImageIcon icon) {
+            RescaleOp op = new RescaleOp(1.6f, -75, null);
+            BufferedImage bufferIcon = SwingUtil.imageIconToBufferedImage(icon);
+            op.filter(bufferIcon, bufferIcon);
+            setRolloverIcon(new ImageIcon(bufferIcon));
         }
 
         private ImageIcon getImageIcon(String iconName) {

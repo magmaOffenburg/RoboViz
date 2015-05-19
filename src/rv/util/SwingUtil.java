@@ -2,11 +2,14 @@ package rv.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class SwingUtil {
@@ -64,5 +67,14 @@ public class SwingUtil {
             return new Color(color[0], color[1], color[2], color[3]);
         else
             return new Color(color[0], color[1], color[2], 1);
+    }
+
+    public static BufferedImage imageIconToBufferedImage(ImageIcon icon) {
+        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics graphics = bufferedImage.createGraphics();
+        icon.paintIcon(null, graphics, 0, 0);
+        graphics.dispose();
+        return bufferedImage;
     }
 }
