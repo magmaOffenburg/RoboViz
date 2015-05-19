@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="14px"
+   version="1.1"
+   viewBox="0 0 13 14"
+   width="13px"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="arrow_right.svg"
+   inkscape:export-filename="C:\Users\Jens\RoboCup\robovizConvert\resources\images\source\arrow_right.png"
+   inkscape:export-xdpi="83.571426"
+   inkscape:export-ydpi="83.571426">
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview14"
+     showgrid="false"
+     inkscape:zoom="13.054279"
+     inkscape:cx="8.9614178"
+     inkscape:cy="5.8883177"
+     inkscape:window-x="338"
+     inkscape:window-y="98"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <desc
+     id="desc6" />
+  <defs
+     id="defs8" />
+  <g
+     fill="none"
+     fill-rule="evenodd"
+     id="Page-1"
+     stroke="none"
+     stroke-width="1"
+     style="fill:#ffffff">
+    <g
+       fill="#000000"
+       id="Icons-AV"
+       transform="translate(-88.000000, -88.000000)"
+       style="fill:#ffffff">
+      <g
+         id="play-arrow"
+         transform="translate(88.500000, 88.000000)"
+         style="fill:#ffffff">
+        <path
+           d="M0,0 L0,14 L11,7 L0,0 Z"
+           id="Shape"
+           style="fill:#ffffff" />
+      </g>
+    </g>
+  </g>
+</svg>
