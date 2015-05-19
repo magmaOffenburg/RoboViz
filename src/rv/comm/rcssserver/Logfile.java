@@ -162,4 +162,9 @@ public class Logfile implements ILogfileReader {
         super.finalize();
         close();
     }
+
+    @Override
+    public File getFile() {
+        return logsrc;
+    }
 }

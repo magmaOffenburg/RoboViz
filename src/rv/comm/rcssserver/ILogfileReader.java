@@ -1,5 +1,6 @@
 package rv.comm.rcssserver;
 
+import java.io.File;
 import java.io.IOException;
 
 public interface ILogfileReader {
@@ -47,4 +48,5 @@ public interface ILogfileReader {
      */
     public abstract void stepAnywhere(int frame) throws IOException;
 
+    public abstract File getFile();
 }

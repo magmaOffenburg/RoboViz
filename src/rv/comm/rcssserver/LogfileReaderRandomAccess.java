@@ -159,4 +159,9 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
     public void stepAnywhere(int frame) throws IOException {
         setCurrentFrame(frame);
     }
+
+    @Override
+    public File getFile() {
+        return logsrc;
+    }
 }

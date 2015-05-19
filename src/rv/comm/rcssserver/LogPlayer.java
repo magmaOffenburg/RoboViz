@@ -303,6 +303,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
      * Allows the user to choose a logfile to open.
      */
     public void openFile(JFrame parent) {
+        if (logfile != null) {
+            File logDir = new File(logfile.getFile().getPath());
+            fileChooser.setCurrentDirectory(logDir);
+        }
         int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.CANCEL_OPTION) {
             return;

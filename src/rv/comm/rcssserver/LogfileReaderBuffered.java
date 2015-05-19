@@ -16,6 +16,7 @@
 
 package rv.comm.rcssserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -170,5 +171,10 @@ public class LogfileReaderBuffered implements ILogfileReader {
      */
     private int getBufferIndex(int frame) {
         return frame - bufferZeroFrame;
+    }
+
+    @Override
+    public File getFile() {
+        return decoratee.getFile();
     }
 }
