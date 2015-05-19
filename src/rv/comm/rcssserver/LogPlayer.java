@@ -128,7 +128,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void setPlayBackSpeed(double factor) {
-        playbackSpeed = Maths.clamp(factor, 0.25, 10);
+        playbackSpeed = Maths.clamp(factor, -10, 10);
         observers.onStateChange(playing);
     }
 
@@ -297,9 +297,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 int previousFrame = getFrame();
                 int nextFrame = getFrame();
                 try {
-                    if (playing) {
-                        Thread.sleep((int) (MS_PER_MESSAGE / playbackSpeed));
-                        nextFrame++;
+                    if (playing && playbackSpeed != 0) {
+                        Thread.sleep(Math.abs((int) (MS_PER_MESSAGE / playbackSpeed)));
+                        if (playbackSpeed > 0)
+                            nextFrame++;
+                        else
+                            nextFrame--;
                     } else {
                         Thread.sleep(MS_PER_MESSAGE);
                     }
