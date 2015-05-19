@@ -58,22 +58,16 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         return instance = new PlayerControls(player);
     }
 
-    private Container       container;
-
-    private RoundButton     fileOpenButton;
-
     private final LogPlayer player;
-
+    private Container       container;
+    private RoundButton     fileOpenButton;
     private RoundButton     rewindButton;
-
-    private RoundButton     stepBackwardButton;
-
-    private RoundButton     stepForwardButton;
-
+    private RoundButton     previousFrameButton;
     private RoundButton     playPauseButton;
-
+    private RoundButton     nextFrameButton;
+    private RoundButton     previousGoalButton;
+    private RoundButton     nextGoalButton;
     private JSpinner        playbackSpeedSpinner;
-
     private JSlider         slider;
 
     private PlayerControls(LogPlayer player) {
@@ -88,7 +82,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
      */
     private void createControls() {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(330, 120);
+        frame.setSize(380, 120);
         frame.setResizable(false);
         container = frame.getContentPane();
 
@@ -118,7 +112,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
             }
         });
 
-        stepBackwardButton = createButton(c, "previous_frame", "Step back", new ActionListener() {
+        previousFrameButton = createButton(c, "previous_frame", "Step back", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
@@ -141,7 +135,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
             }
         });
 
-        stepForwardButton = createButton(c, "next_frame", "Step forward", new ActionListener() {
+        nextFrameButton = createButton(c, "next_frame", "Step forward", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!player.isPlaying())
@@ -149,8 +143,22 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
             }
         });
 
+        previousGoalButton = createButton(c, "previous_goal", null, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.stepBackwardGoal();
+            }
+        });
+
+        nextGoalButton = createButton(c, "next_goal", null, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.stepForwardGoal();
+            }
+        });
+
         c.gridx++;
-        c.insets = new Insets(5, 50, 0, 0);
+        c.insets = new Insets(5, 35, 0, 0);
         playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, 0.25, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
@@ -213,12 +221,26 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         boolean isValid = player.isValid();
         fileOpenButton.setEnabled(!playing);
         rewindButton.setEnabled(isValid && (!playing || atEnd));
+        previousFrameButton.setEnabled(isValid && !playing);
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
+        previousGoalButton.setEnabled(isValid && player.hasGoals());
+        previousGoalButton.setToolTipText(getGoalMessage("Previous"));
+        nextGoalButton.setEnabled(isValid && player.hasGoals());
+        nextGoalButton.setToolTipText(getGoalMessage("Next"));
+        nextFrameButton.setEnabled(isValid && !playing && !atEnd);
         playbackSpeedSpinner.setEnabled(isValid);
         playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
-        stepBackwardButton.setEnabled(isValid && !playing);
-        stepForwardButton.setEnabled(isValid && !playing && !atEnd);
+    }
+
+    private String getGoalMessage(String direction) {
+        if (!player.hasGoals()) {
+            if (player.goalsProcessed()) {
+                return "No goals";
+            }
+            return "No goals found yet";
+        }
+        return direction + " goal";
     }
 
     private void updateSlider(Boolean playing) {

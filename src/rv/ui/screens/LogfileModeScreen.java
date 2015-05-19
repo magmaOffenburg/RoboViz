@@ -75,6 +75,12 @@ public class LogfileModeScreen extends ViewerScreenBase {
             if (!player.isPlaying())
                 player.stepForward();
             break;
+        case KeyEvent.VK_G:
+            player.stepBackwardGoal();
+            break;
+        case KeyEvent.VK_H:
+            player.stepForwardGoal();
+            break;
         }
     }
 }

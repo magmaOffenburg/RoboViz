@@ -21,6 +21,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -40,12 +43,16 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     private static final int       DEFAULT_TIMER_DELAY = 150;
 
+    private static final int       GOAL_WINDOW_FRAMES  = 60;
+
     private ILogfileReader         logfile;
     private final MessageParser    parser;
     private Timer                  timer;
     private boolean                playing;
     private double                 playbackSpeed       = 1;
     private Integer                desiredFrame        = null;
+    private List<Integer>          goalFrames          = new ArrayList<>();
+    private boolean                goalsProcessed      = false;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -210,6 +217,44 @@ public class LogPlayer implements ISubscribe<Boolean> {
         }
     }
 
+    public void stepBackwardGoal() {
+        int relativeFrame = getFrame();
+        int closestFrame = -1;
+        for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
+            if (goalFrame < relativeFrame && goalFrame > closestFrame) {
+                closestFrame = goalFrame;
+            }
+        }
+        if (closestFrame != -1) {
+            int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
+            setCurrentFrame(targetFrame);
+            observers.onStateChange(playing);
+        }
+    }
+
+    public void stepForwardGoal() {
+        int relativeFrame = getFrame() + GOAL_WINDOW_FRAMES;
+        int closestFrame = Integer.MAX_VALUE;
+        for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
+            if (goalFrame > relativeFrame && goalFrame < closestFrame) {
+                closestFrame = goalFrame;
+            }
+        }
+        if (closestFrame != Integer.MAX_VALUE) {
+            int targetFrame = Math.max(closestFrame - GOAL_WINDOW_FRAMES, 0);
+            setCurrentFrame(targetFrame);
+            observers.onStateChange(playing);
+        }
+    }
+
+    public boolean hasGoals() {
+        return !goalFrames.isEmpty();
+    }
+
+    public boolean goalsProcessed() {
+        return goalsProcessed;
+    }
+
     public void setDesiredFrame(int frame) {
         desiredFrame = frame;
     }
@@ -282,8 +327,24 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 logfile.close();
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
+            startGoalFinder(file);
         } catch (Exception e3) {
             e3.printStackTrace();
         }
+    }
+
+    private void startGoalFinder(File file) {
+        new FindGoalsThread(file, new FindGoalsThread.ResultCallback() {
+            @Override
+            public void goalFound(int goalFrame) {
+                goalFrames.add(goalFrame);
+                observers.onStateChange(playing);
+            }
+
+            @Override
+            public void finished() {
+                LogPlayer.this.goalsProcessed = true;
+            }
+        }).start();
     }
 }
