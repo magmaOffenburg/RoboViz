@@ -74,7 +74,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         fileChooser = new JFileChooser();
         parser = new MessageParser(world);
 
-        if (logfile == null)
+        if (file == null)
             return;
 
         openLogfile(file);
