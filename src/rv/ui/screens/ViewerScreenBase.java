@@ -225,8 +225,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             setRobotVantage(RobotVantageType.THIRD_PERSON);
             break;
         case KeyEvent.VK_I:
-            AgentOverheadType[] vals = AgentOverheadType.values();
-            agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
+            nextAgentOverheadType();
+            if (agentOverheadType == AgentOverheadType.ANNOTATIONS
+                    && !viewer.getDrawings().hasAnnotations())
+                nextAgentOverheadType();
             break;
         case KeyEvent.VK_N:
             showNumPlayers = !showNumPlayers;
@@ -241,6 +243,11 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         Agent agent = team.getAgentByID(playerID);
         if (agent != null)
             viewer.getWorldModel().setSelectedObject(agent);
+    }
+
+    private void nextAgentOverheadType() {
+        AgentOverheadType[] vals = AgentOverheadType.values();
+        agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
     }
 
     @Override

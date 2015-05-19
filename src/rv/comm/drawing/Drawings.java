@@ -203,4 +203,8 @@ public class Drawings {
             changed = false;
         }
     }
+
+    public boolean hasAnnotations() {
+        return !annotationSets.isEmpty();
+    }
 }
