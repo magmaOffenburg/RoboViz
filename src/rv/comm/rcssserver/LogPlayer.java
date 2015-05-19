@@ -69,9 +69,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
         observers = new Subject<>();
         playing = false;
         fileChooser = new JFileChooser();
-        openLogfile(file);
-
         parser = new MessageParser(world);
+
+        if (logfile == null)
+            return;
+
+        openLogfile(file);
 
         if (!logfile.isValid()) {
             System.out.println("Logfile could not be loaded.");
@@ -241,6 +244,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
             openLogfile(logFile);
             resume();
         }
+        startRunnerThread();
     }
 
     /**
@@ -255,7 +259,6 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 logfile.close();
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
-
             startGoalFinder(file);
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,6 +286,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 LogPlayer.this.goalsProcessed = true;
             }
         }).start();
+    }
+
+    public boolean hasLogfile() {
+        return logfile != null;
     }
 
     private class LogRunnerThread extends Thread {

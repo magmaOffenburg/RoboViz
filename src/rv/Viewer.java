@@ -52,6 +52,7 @@ import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.util.SwingUtil;
 import rv.util.commandline.Argument;
+import rv.util.commandline.BooleanArgument;
 import rv.util.commandline.IntegerArgument;
 import rv.util.commandline.StringArgument;
 import rv.world.WorldModel;
@@ -115,7 +116,7 @@ public class Viewer extends GLProgram implements GLEventListener {
     private GLInfo                           glInfo;
     private final Configuration              config;
     private String                           ssName                = null;
-    private String                           logFilePath;
+    private File                             logFile;
     private String                           drawingFilter;
     private Mode                             mode                  = Mode.LIVE;
 
@@ -183,32 +184,36 @@ public class Viewer extends GLProgram implements GLEventListener {
         this.config = config;
 
         parseArgs(args);
-        checkLogFile();
         initComponents(caps);
     }
 
     private void parseArgs(String[] args) {
         StringArgument LOG_FILE = new StringArgument("logFile", null);
+        BooleanArgument LOG_MODE = new BooleanArgument("logMode");
         StringArgument SERVER_HOST = new StringArgument("serverHost", null);
         IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
         StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
-        logFilePath = LOG_FILE.parse(args);
-        if (logFilePath != null) // handle linux home directory
-            logFilePath = logFilePath.replaceFirst("^~", System.getProperty("user.home"));
-
+        handleLogModeArgs(LOG_FILE.parse(args), LOG_MODE.parse(args));
         config.networking.overrideServerHost(SERVER_HOST.parse(args));
         config.networking.overrideServerPort(SERVER_PORT.parse(args));
         drawingFilter = DRAWING_FILTER.parse(args);
         Argument.endParse(args);
     }
 
-    private void checkLogFile() {
+    private void handleLogModeArgs(String logFilePath, boolean logMode) {
         if (logFilePath != null) {
+            // handle linux home directory
+            logFilePath = logFilePath.replaceFirst("^~", System.getProperty("user.home"));
+
+            logFile = new File(logFilePath);
             mode = Mode.LOGFILE;
             if (!new File(logFilePath).exists())
                 exitError("Could not find log file '" + logFilePath + "'");
         }
+
+        if (logMode)
+            mode = Mode.LOGFILE;
     }
 
     private void initComponents(GLCapabilities caps) {
@@ -262,6 +267,51 @@ public class Viewer extends GLProgram implements GLEventListener {
         config.write();
     }
 
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        GL2 gl = drawable.getGL().getGL2();
+
+        if (!init) { // print OpenGL renderer info
+            glInfo = new GLInfo(drawable.getGL());
+            glInfo.print();
+        }
+
+        // initialize / load content
+        contentManager = new ContentManager(config.teamColors);
+        if (!contentManager.init(drawable, glInfo)) {
+            exitError("Problems loading resource files!");
+        }
+
+        SceneGraph oldSceneGraph = null;
+        if (init)
+            oldSceneGraph = world.getSceneGraph();
+        world = new WorldModel();
+        world.init(drawable.getGL(), contentManager, config, mode);
+        drawings = new Drawings();
+
+        if (mode == Mode.LIVE) {
+            netManager = new NetworkManager();
+            netManager.init(this, config);
+            netManager.getServer().addChangeListener(world.getGameState());
+        } else {
+            if (!init)
+                logPlayer = new LogPlayer(logFile, world);
+            else
+                logPlayer.setWorldModel(world);
+        }
+        ui = new UserInterface(this, drawingFilter);
+        ui.init();
+        renderer = new Renderer(this);
+        renderer.init(drawable, contentManager, glInfo);
+
+        if (init && oldSceneGraph != null)
+            world.setSceneGraph(oldSceneGraph);
+        world.addSceneGraphListener(contentManager);
+
+        gl.glClearColor(0, 0, 0, 1);
+        init = true;
+    }
+
     public void addKeyListener(KeyListener l) {
         (new AWTKeyAdapter(l)).addTo(canvas);
     }
@@ -304,52 +354,6 @@ public class Viewer extends GLProgram implements GLEventListener {
         if (frame != null)
             frame.dispose();
         System.exit(1);
-    }
-
-    @Override
-    public void init(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-
-        if (!init) { // print OpenGL renderer info
-            glInfo = new GLInfo(drawable.getGL());
-            glInfo.print();
-        }
-
-        // initialize / load content
-        contentManager = new ContentManager(config.teamColors);
-        if (!contentManager.init(drawable, glInfo)) {
-            exitError("Problems loading resource files!");
-        }
-
-        SceneGraph oldSceneGraph = null;
-        if (init)
-            oldSceneGraph = world.getSceneGraph();
-        world = new WorldModel();
-        world.init(drawable.getGL(), contentManager, config, mode);
-        drawings = new Drawings();
-
-        if (mode == Mode.LIVE) {
-            netManager = new NetworkManager();
-            netManager.init(this, config);
-
-            netManager.getServer().addChangeListener(world.getGameState());
-        } else {
-            if (!init)
-                logPlayer = new LogPlayer(new File(logFilePath), world);
-            else
-                logPlayer.setWorldModel(world);
-        }
-        ui = new UserInterface(this, drawingFilter);
-        ui.init();
-        renderer = new Renderer(this);
-        renderer.init(drawable, contentManager, glInfo);
-
-        if (init && oldSceneGraph != null)
-            world.setSceneGraph(oldSceneGraph);
-        world.addSceneGraphListener(contentManager);
-
-        gl.glClearColor(0, 0, 0, 1);
-        init = true;
     }
 
     public void update(GL glGeneric) {

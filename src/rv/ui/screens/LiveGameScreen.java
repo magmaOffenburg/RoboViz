@@ -37,14 +37,14 @@ import rv.world.objects.Ball;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LiveGameScreen extends ViewerScreenBase implements ServerComm.ServerChangeListener {
-    private final PlaymodeOverlay   playmodeOverlay;
-    private final ConnectionOverlay connectionOverlay;
+    private final PlaymodeOverlay playmodeOverlay;
+    private final InfoOverlay     connectionOverlay;
 
     public LiveGameScreen(Viewer viewer) {
         super(viewer);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
-        connectionOverlay = new ConnectionOverlay();
+        connectionOverlay = new InfoOverlay("Disconnected");
         overlays.add(connectionOverlay);
     }
 

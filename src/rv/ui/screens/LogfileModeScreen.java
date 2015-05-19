@@ -20,16 +20,26 @@ import java.awt.event.KeyEvent;
 import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
 import rv.comm.rcssserver.LogPlayer;
+import rv.util.observer.IObserver;
 
 public class LogfileModeScreen extends ViewerScreenBase {
 
     private final LogPlayer      player;
     private final PlayerControls playDialog;
+    private final InfoOverlay    openFileOverlay;
 
     public LogfileModeScreen(Viewer viewer) {
         super(viewer);
         this.player = viewer.getLogPlayer();
         playDialog = PlayerControls.getInstance(player);
+        openFileOverlay = new InfoOverlay("Please open a logfile.");
+        overlays.add(openFileOverlay);
+        player.attach(new IObserver<Boolean>() {
+            @Override
+            public void update(Boolean playing) {
+                openFileOverlay.setVisible(!player.hasLogfile());
+            }
+        });
     }
 
     @Override

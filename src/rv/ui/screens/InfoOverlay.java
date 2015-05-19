@@ -25,15 +25,16 @@ import rv.effects.EffectManager;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class ConnectionOverlay extends ScreenBase {
+public class InfoOverlay extends ScreenBase {
 
-    private final String       msg = "Disconnected";
     private final TextRenderer tr;
     private final Rectangle2D  b;
+    private String             message;
 
-    public ConnectionOverlay() {
+    public InfoOverlay(String message) {
+        this.message = message;
         tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, 24), true, true);
-        b = tr.getBounds(msg);
+        b = tr.getBounds(this.message);
     }
 
     @Override
@@ -46,9 +47,9 @@ public class ConnectionOverlay extends ScreenBase {
         int y = vp.h - (int) ((vp.h - b.getHeight()) / 2);
         tr.beginRendering(vp.w, vp.h);
         tr.setColor(0, 0, 0, 0);
-        tr.draw(msg, x - 1, y - 1);
+        tr.draw(message, x - 1, y - 1);
         tr.setColor(1, 1, 1, 1);
-        tr.draw(msg, x, y);
+        tr.draw(message, x, y);
         tr.endRendering();
     }
 }
