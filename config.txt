@@ -14,6 +14,7 @@ Frame Height         : 600
 Frame X              : 0
 Frame Y              : 0
 Center Frame         : true
+Third Person FOV     : 80
 Frame Maximized      : false
 Save Frame State     : true
 

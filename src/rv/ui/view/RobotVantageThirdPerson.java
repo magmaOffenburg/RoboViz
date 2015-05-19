@@ -22,17 +22,15 @@ import rv.world.objects.Agent;
 
 public class RobotVantageThirdPerson extends RobotVantageBase {
 
-    private static final float FOV_DEGREES    = 80.0f;
+    private static final int CAMERA_AVERAGE = 20;
+    private Vec3f            avgPos[], avgForward[];
 
-    private static final int   CAMERA_AVERAGE = 20;
-    private Vec3f              avgPos[], avgForward[];
+    private int              ct             = 0;
 
-    private int                ct             = 0;
+    private Vec3f            lastAvgF       = new Vec3f(0);
 
-    private Vec3f              lastAvgF       = new Vec3f(0);
-
-    public RobotVantageThirdPerson(Agent agent) {
-        super(agent, FOV_DEGREES);
+    public RobotVantageThirdPerson(Agent agent, int fov) {
+        super(agent, fov);
         avgPos = new Vec3f[CAMERA_AVERAGE];
         avgForward = new Vec3f[CAMERA_AVERAGE];
         updateView();

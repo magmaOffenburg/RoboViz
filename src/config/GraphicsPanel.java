@@ -52,6 +52,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     JTextField                   samplesTF;
     JTextField                   shadowResTB;
     JSpinner                     fpsSpinner;
+    JSpinner                     fovSpinner;
     JSpinner                     fxSpinner;
     JSpinner                     fySpinner;
     JSpinner                     fwSpinner;
@@ -131,6 +132,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
         vsyncCB = new JCheckBox("V-Sync", config.useVsync);
         fpsSpinner = createSpinner(config.targetFPS, 1, 60);
+        fovSpinner = createSpinner(config.thirdPersonFOV, 1, 300);
 
         int y = 0;
         addConstrained(stereoCB, panel, c, 0, y);
@@ -139,6 +141,12 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
         addLabel("FPS: ", panel, c, 2, y);
         addConstrained(fpsSpinner, panel, c, 3, y);
+
+        y++;
+        JLabel label = new JLabel("Third Person FOV: ");
+        label.setPreferredSize(new Dimension(95, label.getPreferredSize().height));
+        addConstrained(label, panel, c, 2, y);
+        addConstrained(fovSpinner, panel, c, 3, y);
 
         return panel;
     }
@@ -254,6 +262,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         }
 
         config.targetFPS = (Integer) fpsSpinner.getValue();
+        config.thirdPersonFOV = (Integer) fovSpinner.getValue();
         config.frameX = (Integer) fxSpinner.getValue();
         config.frameY = (Integer) fySpinner.getValue();
         config.frameWidth = (Integer) fwSpinner.getValue();

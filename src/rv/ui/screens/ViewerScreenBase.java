@@ -371,7 +371,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             if (type == RobotVantageType.FIRST_PERSON)
                 robotVantage = new RobotVantageFirstPerson(agent);
             else
-                robotVantage = new RobotVantageThirdPerson(agent);
+                robotVantage = new RobotVantageThirdPerson(agent,
+                        viewer.getConfig().graphics.thirdPersonFOV);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
             robotVantageType = type;
