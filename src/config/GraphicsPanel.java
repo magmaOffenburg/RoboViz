@@ -37,7 +37,6 @@ import config.RVConfigure.SaveListener;
 
 public class GraphicsPanel extends JPanel implements SaveListener {
 
-    final RVConfigure            configProg;
     final Configuration.Graphics config;
 
     JCheckBox                    bloomCB;
@@ -62,7 +61,6 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     final JLabel                 samplesLabel   = new JLabel("Samples: ", SwingConstants.RIGHT);
 
     public GraphicsPanel(RVConfigure configProg) {
-        this.configProg = configProg;
         config = configProg.config.graphics;
         initGUI();
         configProg.listeners.add(this);

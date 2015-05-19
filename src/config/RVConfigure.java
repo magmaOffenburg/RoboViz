@@ -64,12 +64,13 @@ public class RVConfigure extends JFrame {
         c.gridy = 0;
         add(new NetworkPanel(this), c);
 
-        c.gridx = 0;
         c.gridy = 1;
         add(new GraphicsPanel(this), c);
 
-        c.gridx = 0;
         c.gridy = 2;
+        add(new GeneralPanel(this), c);
+
+        c.gridy = 3;
         JPanel southPanel = new JPanel(new GridLayout(1, 2));
         add(southPanel, c);
 
@@ -93,7 +94,7 @@ public class RVConfigure extends JFrame {
         southPanel.add(startButton);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(600, 600);
+        setSize(550, 600);
         setResizable(false);
         getRootPane().setDefaultButton(startButton);
         pack();

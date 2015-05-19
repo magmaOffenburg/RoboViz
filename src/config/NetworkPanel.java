@@ -39,14 +39,12 @@ import config.RVConfigure.SaveListener;
 public class NetworkPanel extends JPanel implements SaveListener {
 
     final Configuration.Networking config;
-    final RVConfigure              configProg;
     JTextField                     serverHostTF;
     JTextField                     serverPortTF;
     JTextField                     drawingPortTF;
     JTextField                     autoConnectDelayTF;
 
     public NetworkPanel(RVConfigure configProg) {
-        this.configProg = configProg;
         this.config = configProg.config.networking;
         configProg.listeners.add(this);
         initGUI();
@@ -60,11 +58,9 @@ public class NetworkPanel extends JPanel implements SaveListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
 
-        c.gridx = 0;
         c.gridy = 0;
         add(initServerControls(), c);
 
-        c.gridx = 0;
         c.gridy = 1;
         add(initDrawingControls(), c);
     }
