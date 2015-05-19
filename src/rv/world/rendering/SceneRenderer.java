@@ -35,16 +35,16 @@ public interface SceneRenderer {
      * 
      * @return true if initialization successful
      */
-    public boolean init(GL2 gl, Configuration.Graphics conf, ContentManager cm);
+    boolean init(GL2 gl, Configuration.Graphics conf, ContentManager cm);
 
     /**
      * Renders world model scene to currently bound frame buffer according to this renderer's
      * implementation
      */
-    public void render(GL2 gl, WorldModel world, Drawings drawings);
+    void render(GL2 gl, WorldModel world, Drawings drawings);
 
     /**
      * Release any resources used by renderer
      */
-    public void dispose(GL gl);
+    void dispose(GL gl);
 }

@@ -18,9 +18,9 @@ package rv.comm.drawing;
 
 public interface VisibleNamedObject {
 
-    public boolean isVisible();
+    boolean isVisible();
 
-    public void setVisible(boolean visible);
+    void setVisible(boolean visible);
 
-    public String getName();
+    String getName();
 }

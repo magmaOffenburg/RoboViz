@@ -105,7 +105,7 @@ public class ServerComm {
     }
 
     public interface ServerChangeListener {
-        public void connectionChanged(ServerComm server);
+        void connectionChanged(ServerComm server);
     }
 
     private final List<ServerChangeListener> changeListeners = new ArrayList<>();

@@ -33,5 +33,5 @@ public interface IObserver<T> {
      * @param content
      *            reference to the object containing changed state
      */
-    public void update(T content);
+    void update(T content);
 }

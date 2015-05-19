@@ -34,7 +34,7 @@ public interface IPublishSubscribe<T> {
      * @param observer
      *            The observer that wants to be added
      */
-    public void attach(IObserver<T> observer);
+    void attach(IObserver<T> observer);
 
     /**
      * Removes an observer from the list of observers

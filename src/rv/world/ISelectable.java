@@ -26,13 +26,13 @@ import js.math.vector.Vec3f;
  * @author Justin Stoecker
  */
 public interface ISelectable {
-    public Vec3f getPosition();
+    Vec3f getPosition();
 
-    public BoundingBox getBoundingBox();
+    BoundingBox getBoundingBox();
 
-    public void setSelected(boolean selected);
+    void setSelected(boolean selected);
 
-    public boolean isSelected();
+    boolean isSelected();
 
-    public void renderSelected(GL2 gl);
+    void renderSelected(GL2 gl);
 }

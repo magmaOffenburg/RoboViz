@@ -37,12 +37,12 @@ public interface ISceneGraphItem {
      * given a chance to locate its respective node in the scene graph and store a reference to it
      * for future scene graph updates.
      */
-    public void sceneGraphChanged(SceneGraph sg);
+    void sceneGraphChanged(SceneGraph sg);
 
     /**
      * When called, the object implementing this interface can pull data from the scene graph and
      * store it in its internal state. It is expected that the implementing object will keep a
      * reference to its node in the scene graph through the findNode method.
      */
-    public void update(SceneGraph sg);
+    void update(SceneGraph sg);
 }

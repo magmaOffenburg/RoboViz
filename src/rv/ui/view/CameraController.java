@@ -30,9 +30,9 @@ import javax.media.opengl.awt.GLCanvas;
  */
 public interface CameraController extends MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener {
-    public void attachToCanvas(GLCanvas canvas);
+    void attachToCanvas(GLCanvas canvas);
 
-    public void detachFromCanvas(GLCanvas canvas);
+    void detachFromCanvas(GLCanvas canvas);
 
-    public void update(double elapsedMS);
+    void update(double elapsedMS);
 }

@@ -37,5 +37,5 @@ public interface IUpdatable {
      * @param elapsedMS
      *            - milliseconds since previous update
      */
-    public void update(GL2 gl, WorldModel world, UserInterface ui, double elapsedMS);
+    void update(GL2 gl, WorldModel world, UserInterface ui, double elapsedMS);
 }

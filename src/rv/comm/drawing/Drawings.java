@@ -57,7 +57,7 @@ public class Drawings {
 
     /** Interface for listeners of set list change events */
     public interface ShapeListListener extends EventListener {
-        public void setListChanged(SetListChangeEvent evt);
+        void setListChanged(SetListChangeEvent evt);
     }
 
     private final ArrayList<ShapeListListener>             listeners            = new ArrayList<>();

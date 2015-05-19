@@ -32,13 +32,13 @@ public class GameState implements ServerChangeListener {
 
     public interface GameStateChangeListener {
         /** Called when measurements (field dimensions, etc.) or rules change */
-        public void gsMeasuresAndRulesChanged(GameState gs);
+        void gsMeasuresAndRulesChanged(GameState gs);
 
         /** Called when team names, scores, or play mode change */
-        public void gsPlayStateChanged(GameState gs);
+        void gsPlayStateChanged(GameState gs);
 
         /** Called when the time or half changes */
-        public void gsTimeChanged(GameState gs);
+        void gsTimeChanged(GameState gs);
     }
 
     // Measurements and Rules

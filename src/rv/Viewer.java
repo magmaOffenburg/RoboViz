@@ -96,7 +96,7 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     /** Event listener interface when the main RoboVis window is resized */
     public interface WindowResizeListener {
-        public void windowResized(WindowResizeEvent event);
+        void windowResized(WindowResizeEvent event);
     }
 
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();

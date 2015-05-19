@@ -45,7 +45,7 @@ import rv.world.objects.SkyBox;
 public class WorldModel {
 
     public interface SelectionChangeListener {
-        public void selectionChanged(ISelectable newSelection);
+        void selectionChanged(ISelectable newSelection);
     }
 
     /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
