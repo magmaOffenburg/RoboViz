@@ -156,17 +156,20 @@ public class Configuration {
     }
 
     public class General {
-        public boolean recordLogs = false;
+        public boolean recordLogs       = false;
+        public String  logfileDirectory = null;
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
-            recordLogs = Boolean.parseBoolean(getVal(getNextLine(in)));
+            recordLogs = getNextBool(in);
+            logfileDirectory = getNextString(in);
             getNextLine(in);
         }
 
         private void write(BufferedWriter out) throws IOException {
             out.write("General Settings:\n");
             writeVal(out, "Record Logfiles", recordLogs);
+            writeVal(out, "Logfile Directory", logfileDirectory);
             out.write("\n");
         }
     }

@@ -25,6 +25,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import js.math.Maths;
+import rv.Configuration;
 import rv.util.observer.IObserver;
 import rv.util.observer.ISubscribe;
 import rv.util.observer.Subject;
@@ -41,6 +42,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private static final int       MS_PER_MESSAGE     = 200;
     private static final int       GOAL_WINDOW_FRAMES = 60;
 
+    private final Configuration    config;
     private ILogfileReader         logfile;
     private LogRunnerThread        logRunner;
     private final MessageParser    parser;
@@ -64,7 +66,8 @@ public class LogPlayer implements ISubscribe<Boolean> {
      * @param world
      *            reference to the world model
      */
-    public LogPlayer(File file, WorldModel world) {
+    public LogPlayer(File file, WorldModel world, Configuration config) {
+        this.config = config;
 
         observers = new Subject<>();
         playing = false;
@@ -230,9 +233,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
      * Allows the user to choose a logfile to open.
      */
     public void openFile(JFrame parent) {
-        if (logfile != null) {
-            File logDir = new File(logfile.getFile().getPath());
-            fileChooser.setCurrentDirectory(logDir);
+        String logfileDirectory = config.general.logfileDirectory;
+        if (logfileDirectory != null && !logfileDirectory.isEmpty()) {
+            fileChooser.setCurrentDirectory(new File(logfileDirectory));
         }
         int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.CANCEL_OPTION) {
