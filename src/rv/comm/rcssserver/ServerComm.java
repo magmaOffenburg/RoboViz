@@ -166,8 +166,11 @@ public class ServerComm {
 
     private void setupNewLogfile() {
         String s = Calendar.getInstance().getTime().toString();
-        s = s.replaceAll("\\s+", "_");
-        File logFile = new File(String.format("roboviz_log_%s.log", s));
+        s = s.replaceAll("[\\s:]+", "_");
+        File logDir = new File("logfiles");
+        if (!logDir.exists())
+            logDir.mkdir();
+        File logFile = new File(String.format("logfiles/roboviz_log_%s.log", s));
         System.out.println("Recording to new logfile: " + logFile.getName());
         try {
             logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
