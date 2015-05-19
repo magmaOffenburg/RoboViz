@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class SwingUtil {
+
     public static GraphicsDevice getCurrentScreen(JFrame frame) {
         return getCurrentScreen(frame.getLocation(), frame.getSize());
     }

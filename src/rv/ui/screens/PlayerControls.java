@@ -99,7 +99,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 0, 0);
 
-        createButton(c, "file_open", "Open Logfile...", new ActionListener() {
+        createButton(c, "file_open", "Open logfile...", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 player.openFile(frame);
@@ -223,22 +223,12 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
         previousGoalButton.setEnabled(isValid && player.hasPreviousGoal());
-        previousGoalButton.setToolTipText(getGoalMessage("Previous"));
+        previousGoalButton.setToolTipText(player.getPreviousGoalMessage());
         nextGoalButton.setEnabled(isValid && player.hasNextGoal());
-        nextGoalButton.setToolTipText(getGoalMessage("Next"));
+        nextGoalButton.setToolTipText(player.getNextGoalMessage());
         nextFrameButton.setEnabled(isValid && !playing && !atEnd);
         playbackSpeedSpinner.setEnabled(isValid);
         playbackSpeedSpinner.setValue(player.getPlayBackSpeed());
-    }
-
-    private String getGoalMessage(String direction) {
-        if (!player.hasGoals()) {
-            if (player.goalsProcessed()) {
-                return "No goals";
-            }
-            return "No goals found yet";
-        }
-        return direction + " goal";
     }
 
     private void updateSlider(Boolean playing) {

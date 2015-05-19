@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import js.math.Maths;
 import rv.Configuration;
+import rv.util.StringUtil;
 import rv.util.observer.IObserver;
 import rv.util.observer.ISubscribe;
 import rv.util.observer.Subject;
@@ -206,8 +207,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         if (goalFrames.isEmpty())
             return false;
 
-        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
-        for (Integer goalFrame : syncGoalFrames) {
+        for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
             if (getDesiredFrame() > goalFrame)
                 return true;
         }
@@ -218,16 +218,50 @@ public class LogPlayer implements ISubscribe<Boolean> {
         if (goalFrames.isEmpty())
             return false;
 
-        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
-        for (Integer goalFrame : syncGoalFrames) {
+        for (Integer goalFrame : Collections.synchronizedList(goalFrames)) {
             if (getDesiredFrame() < goalFrame)
                 return true;
         }
         return false;
     }
 
-    public boolean hasGoals() {
-        return !goalFrames.isEmpty();
+    public String getPreviousGoalMessage() {
+        return formatGoalMessage(getPreviousGoalNumber(), "previous");
+    }
+
+    public String getNextGoalMessage() {
+        return formatGoalMessage(getNextGoalNumber(), "next");
+    }
+
+    private String formatGoalMessage(Integer targetGoalFrame, String direction) {
+        if ((goalFrames.isEmpty() && goalsProcessed()) || targetGoalFrame == null) {
+            return "No " + direction + " goals";
+        }
+        return StringUtil.capitalize(direction) + " goal: " + targetGoalFrame + "/"
+                + goalFrames.size();
+    }
+
+    private Integer getPreviousGoalNumber() {
+        Integer previousGoalNumber = null;
+        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
+        for (int i = 0; i < syncGoalFrames.size(); i++) {
+            if (getDesiredFrame() > syncGoalFrames.get(i)) {
+                previousGoalNumber = i + 1;
+            }
+        }
+        return previousGoalNumber;
+    }
+
+    private Integer getNextGoalNumber() {
+        Integer nextGoalNumber = null;
+        List<Integer> syncGoalFrames = Collections.synchronizedList(goalFrames);
+        for (int i = 0; i < syncGoalFrames.size(); i++) {
+            if (getDesiredFrame() < syncGoalFrames.get(i)) {
+                nextGoalNumber = i + 1;
+                break;
+            }
+        }
+        return nextGoalNumber;
     }
 
     public boolean goalsProcessed() {
