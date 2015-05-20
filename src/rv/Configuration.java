@@ -181,11 +181,7 @@ public class Configuration {
     }
 
     public class TeamColors {
-        private final HashMap<String, float[]> colorByTeamName = new HashMap<>();
-
-        public float[] find(String teamName) {
-            return colorByTeamName.get(teamName);
-        }
+        public final HashMap<String, float[]> colorByTeamName = new HashMap<>();
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);

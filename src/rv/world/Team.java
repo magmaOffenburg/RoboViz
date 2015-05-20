@@ -79,7 +79,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
         this.name = name;
 
-        float[] color = config.find(name);
+        float[] color = config.colorByTeamName.get(name);
         if (color == null) {
             color = defaultColor;
         }

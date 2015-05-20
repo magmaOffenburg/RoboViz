@@ -1,6 +1,7 @@
 package rv.util;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
@@ -77,5 +78,9 @@ public class SwingUtil {
         icon.paintIcon(null, graphics, 0, 0);
         graphics.dispose();
         return bufferedImage;
+    }
+
+    public static void setPreferredWidth(Component component, int width) {
+        component.setPreferredSize(new Dimension(width, component.getPreferredSize().height));
     }
 }

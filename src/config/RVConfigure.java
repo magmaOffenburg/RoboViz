@@ -71,6 +71,9 @@ public class RVConfigure extends JFrame {
         add(new GeneralPanel(this), c);
 
         c.gridy = 3;
+        add(new TeamColorsPanel(this), c);
+
+        c.gridy = 4;
         JPanel southPanel = new JPanel(new GridLayout(1, 2));
         add(southPanel, c);
 

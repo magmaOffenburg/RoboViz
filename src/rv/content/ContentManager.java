@@ -290,7 +290,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 
     private void updateTeamColor(String teamName, String materialName, float[] defaultColor) {
         ObjMaterial mat = getMaterial(materialName);
-        float[] color = config.find(teamName);
+        float[] color = config.colorByTeamName.get(teamName);
         if (color == null) {
             color = defaultColor;
         }

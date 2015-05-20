@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import rv.Configuration;
+import rv.util.SwingUtil;
 import config.RVConfigure.SaveListener;
 
 public class GraphicsPanel extends JPanel implements SaveListener {
@@ -151,13 +152,13 @@ public class GraphicsPanel extends JPanel implements SaveListener {
 
         y++;
         JLabel label = new JLabel("First Person FOV: ");
-        label.setPreferredSize(new Dimension(95, label.getPreferredSize().height));
+        SwingUtil.setPreferredWidth(label, 95);
         addConstrained(label, panel, c, 2, y);
         addConstrained(fpFovSpinner, panel, c, 3, y);
 
         y++;
         label = new JLabel("Third Person FOV: ");
-        label.setPreferredSize(new Dimension(95, label.getPreferredSize().height));
+        SwingUtil.setPreferredWidth(label, 95);
         addConstrained(label, panel, c, 2, y);
         addConstrained(tpFovSpinner, panel, c, 3, y);
 
