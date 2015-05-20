@@ -40,8 +40,12 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements ISubscribe<Boolean> {
 
-    private static final int       MS_PER_MESSAGE     = 200;
-    private static final int       GOAL_WINDOW_FRAMES = 60;
+    /** the $monitorLoggerStep value from spark.rb */
+    private static final float     SECONDS_PER_FRAME           = 0.2f;
+    /** how many seconds before a goal to jump to */
+    private static final int       GOAL_WINDOW_SECONDS         = 12;
+    /** time within which to jump over goals for nicer stepping during playback */
+    private static final float     GOAL_STEP_THRESHOLD_SECONDS = 1f;
 
     private final Configuration    config;
     private ILogfileReader         logfile;
@@ -49,10 +53,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private FindGoalsThread        goalFinder;
     private final MessageParser    parser;
     private boolean                playing;
-    private double                 playbackSpeed      = 1;
-    private Integer                desiredFrame       = null;
-    private List<Integer>          goalFrames         = new ArrayList<>();
-    private boolean                goalsProcessed     = false;
+    private double                 playbackSpeed               = 1;
+    private Integer                desiredFrame                = null;
+    private List<Integer>          goalFrames                  = new ArrayList<>();
+    private boolean                goalsProcessed              = false;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -167,7 +171,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void stepBackwardGoal() {
-        int relativeFrame = getDesiredFrame();
+        int relativeFrame = getDesiredFrame() - getGoalStepThresholdFrames();
         int closestFrame = -1;
         for (Integer goalFrame : getGoalFrames()) {
             if (goalFrame < relativeFrame && goalFrame > closestFrame) {
@@ -180,7 +184,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void stepForwardGoal() {
-        int relativeFrame = getDesiredFrame();
+        int relativeFrame = getDesiredFrame() + getGoalStepThresholdFrames();
         int closestFrame = Integer.MAX_VALUE;
         for (Integer goalFrame : getGoalFrames()) {
             if (goalFrame > relativeFrame && goalFrame < closestFrame) {
@@ -190,6 +194,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
         if (closestFrame != Integer.MAX_VALUE) {
             setDesiredFrame(closestFrame);
         }
+    }
+
+    private int getGoalStepThresholdFrames() {
+        float fps = 1 / SECONDS_PER_FRAME;
+        return (int) (fps * GOAL_STEP_THRESHOLD_SECONDS);
     }
 
     public boolean hasPreviousGoal() {
@@ -336,7 +345,8 @@ public class LogPlayer implements ISubscribe<Boolean> {
         goalFinder = new FindGoalsThread(file, new FindGoalsThread.ResultCallback() {
             @Override
             public void goalFound(int goalFrame) {
-                goalFrame = Math.max(0, goalFrame - GOAL_WINDOW_FRAMES);
+                int goalWindowFrames = (int) ((1 / SECONDS_PER_FRAME) * GOAL_WINDOW_SECONDS);
+                goalFrame = Math.max(0, goalFrame - goalWindowFrames);
                 goalFrames.add(goalFrame);
                 observers.onStateChange(playing);
             }
@@ -368,14 +378,15 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 int previousFrame = getFrame();
                 int nextFrame = getFrame();
                 try {
+                    float msPerFrame = SECONDS_PER_FRAME * 1000;
                     if (playing && playbackSpeed != 0) {
-                        Thread.sleep(Math.abs((int) (MS_PER_MESSAGE / playbackSpeed)));
+                        Thread.sleep(Math.abs((int) (msPerFrame / playbackSpeed)));
                         if (playbackSpeed > 0)
                             nextFrame++;
                         else
                             nextFrame--;
                     } else {
-                        Thread.sleep(MS_PER_MESSAGE);
+                        Thread.sleep((int) msPerFrame);
                     }
 
                     if (desiredFrame != null) {
