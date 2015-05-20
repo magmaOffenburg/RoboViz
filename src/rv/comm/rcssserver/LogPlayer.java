@@ -180,7 +180,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void stepForwardGoal() {
-        int relativeFrame = getDesiredFrame() + GOAL_WINDOW_FRAMES;
+        int relativeFrame = getDesiredFrame();
         int closestFrame = Integer.MAX_VALUE;
         for (Integer goalFrame : getGoalFrames()) {
             if (goalFrame > relativeFrame && goalFrame < closestFrame) {
