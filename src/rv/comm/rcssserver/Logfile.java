@@ -81,6 +81,11 @@ public class Logfile implements ILogfileReader {
     }
 
     @Override
+    public void setNumFrames(int numFrames) {
+        this.numFrames = numFrames;
+    }
+
+    @Override
     public int getNumFrames() {
         return numFrames;
     }

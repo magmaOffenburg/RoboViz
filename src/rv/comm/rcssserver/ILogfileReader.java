@@ -12,6 +12,8 @@ public interface ILogfileReader {
 
     boolean isAtEndOfLog();
 
+    void setNumFrames(int numFrames);
+
     int getNumFrames();
 
     int getCurrentFrame();

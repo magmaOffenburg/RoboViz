@@ -78,6 +78,11 @@ public class LogfileReaderBuffered implements ILogfileReader {
     }
 
     @Override
+    public void setNumFrames(int numFrames) {
+        decoratee.setNumFrames(numFrames);
+    }
+
+    @Override
     public int getNumFrames() {
         return decoratee.getNumFrames();
     }

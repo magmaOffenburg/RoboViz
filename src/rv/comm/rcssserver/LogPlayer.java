@@ -50,13 +50,13 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private final Configuration    config;
     private ILogfileReader         logfile;
     private LogRunnerThread        logRunner;
-    private FindGoalsThread        goalFinder;
+    private LogAnalyzerThread      logAnalyzer;
     private final MessageParser    parser;
     private boolean                playing;
     private double                 playbackSpeed               = 1;
     private Integer                desiredFrame                = null;
     private List<Integer>          goalFrames                  = new ArrayList<>();
-    private boolean                goalsProcessed              = false;
+    private boolean                logAnalyzed                 = false;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -263,11 +263,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     private List<Integer> getGoalFrames() {
-        return goalsProcessed ? goalFrames : Collections.synchronizedList(goalFrames);
+        return logAnalyzed ? goalFrames : Collections.synchronizedList(goalFrames);
     }
 
     public boolean goalsProcessed() {
-        return goalsProcessed;
+        return logAnalyzed;
     }
 
     public void setDesiredFrame(int frame) {
@@ -321,10 +321,10 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 logfile.close();
                 desiredFrame = null;
                 getGoalFrames().clear();
-                goalsProcessed = false;
+                logAnalyzed = false;
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
-            startGoalFinder(file);
+            startAnalyzerThread(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -338,11 +338,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
         logRunner.start();
     }
 
-    private void startGoalFinder(File file) {
-        if (goalFinder != null) {
-            goalFinder.abort();
+    private void startAnalyzerThread(File file) {
+        if (logAnalyzer != null) {
+            logAnalyzer.abort();
         }
-        goalFinder = new FindGoalsThread(file, new FindGoalsThread.ResultCallback() {
+        logAnalyzer = new LogAnalyzerThread(file, new LogAnalyzerThread.ResultCallback() {
             @Override
             public void goalFound(int goalFrame) {
                 int goalWindowFrames = (int) ((1 / SECONDS_PER_FRAME) * GOAL_WINDOW_SECONDS);
@@ -352,11 +352,13 @@ public class LogPlayer implements ISubscribe<Boolean> {
             }
 
             @Override
-            public void finished() {
-                LogPlayer.this.goalsProcessed = true;
+            public void finished(int numFrames) {
+                LogPlayer.this.logAnalyzed = true;
+                logfile.setNumFrames(numFrames);
+                observers.onStateChange(playing);
             }
         });
-        goalFinder.start();
+        logAnalyzer.start();
     }
 
     private class LogRunnerThread extends Thread {

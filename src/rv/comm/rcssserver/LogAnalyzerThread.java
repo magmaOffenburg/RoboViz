@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.text.ParseException;
 import rv.world.WorldModel;
 
-public class FindGoalsThread extends Thread {
+public class LogAnalyzerThread extends Thread {
 
     public interface ResultCallback {
 
         void goalFound(int goalFrame);
 
-        void finished();
+        void finished(int numFrames);
     }
 
     private final File           file;
@@ -24,7 +24,7 @@ public class FindGoalsThread extends Thread {
     private int                  lastScoreRight = -1;
     private boolean              aborted        = false;
 
-    public FindGoalsThread(File file, ResultCallback callback) {
+    public LogAnalyzerThread(File file, ResultCallback callback) {
         super();
         this.file = file;
         this.callback = callback;
@@ -55,6 +55,8 @@ public class FindGoalsThread extends Thread {
             }
         }
         processFrame();
+
+        callback.finished(logfile.getNumFrames());
     }
 
     private void processFrame() {
