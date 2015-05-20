@@ -63,6 +63,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
     private final LogPlayer player;
     private Container       container;
+    private RoundButton     rewindButton;
     private RoundButton     previousFrameButton;
     private RoundButton     playPauseButton;
     private RoundButton     nextFrameButton;
@@ -106,7 +107,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
             }
         });
 
-        createButton(c, "rewind", "Rewind", new ActionListener() {
+        rewindButton = createButton(c, "rewind", "Rewind", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 player.rewind();
@@ -219,6 +220,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
     private void updateButtons(Boolean playing, boolean atEnd) {
         boolean isValid = player.isValid();
+        rewindButton.setEnabled(isValid);
         previousFrameButton.setEnabled(isValid && !playing);
         playPauseButton.setEnabled(isValid && !atEnd);
         playPauseButton.setIcon(playing ? "pause" : "play");
