@@ -325,9 +325,9 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     @Override
     public void gsPlayStateChanged(GameState gs) {
         if (prevScoreL != -1 && prevScoreR != -1) {
-            if (gs.getScoreLeft() > prevScoreL && gs.getTeamLeft() != null)
+            if (gs.getScoreLeft() != prevScoreL && gs.getTeamLeft() != null)
                 addTeamScoredOverlay(gs.getTeamLeft());
-            if (gs.getScoreRight() > prevScoreR && gs.getTeamRight() != null)
+            if (gs.getScoreRight() != prevScoreR && gs.getTeamRight() != null)
                 addTeamScoredOverlay(gs.getTeamRight());
         }
 
@@ -336,12 +336,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     }
 
     private void addTeamScoredOverlay(String teamName) {
-        addTextOverlay(new TextOverlay(String.format("Goal %s!", teamName), 4000, new float[] { 1,
-                1, 1, 1 }));
-    }
-
-    protected void addTextOverlay(TextOverlay textOverlay) {
-        textOverlays.add(textOverlay);
+        TextOverlay overlay = new TextOverlay(String.format("Goal %s!", teamName),
+                viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 });
+        overlay.setEnabled(true);
+        textOverlays.add(overlay);
     }
 
     private void setRobotVantage(RobotVantageType type) {

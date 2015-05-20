@@ -53,12 +53,6 @@ public class LogfileModeScreen extends ViewerScreenBase {
     }
 
     @Override
-    protected void addTextOverlay(TextOverlay textOverlay) {
-        super.addTextOverlay(textOverlay);
-        textOverlay.setTimeScale(viewer.getLogPlayer().getPlayBackSpeed());
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
         switch (e.getKeyCode()) {

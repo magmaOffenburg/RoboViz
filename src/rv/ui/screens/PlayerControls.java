@@ -98,7 +98,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(0, 5, 0, 0);
 
         createButton(c, "file_open", "Open logfile...", new ActionListener() {
             @Override
@@ -160,7 +160,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         });
 
         c.gridx++;
-        c.insets = new Insets(5, 25, 0, 0);
+        c.insets = new Insets(0, 25, 0, 0);
         playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, -10, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
@@ -189,7 +189,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         c.gridwidth = c.gridx + 1;
         c.gridx = 0;
         c.gridy = 1;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(15, 5, 0, 0);
         container.add(slider, c);
     }
 

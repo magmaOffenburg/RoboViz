@@ -16,6 +16,8 @@
 
 package rv.ui.screens;
 
+import rv.comm.rcssserver.GameState;
+import rv.world.WorldModel;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
@@ -24,22 +26,19 @@ import java.awt.geom.Rectangle2D;
  * 
  * @author justin
  */
-public class TextOverlay {
+public class TextOverlay implements GameState.GameStateChangeListener {
 
-    private final String  text;
-    private int           fadeDuration = 750;
-    private int           duration;
-    private int           x, y;
-    private float         a            = 1;
-    private long          elapsed      = 0;
-    private long          lastTime     = 0;
-    private double        timeScale    = 1;
-    private boolean       done         = false;
-    private final float[] color;
+    private static final int FADE_DURATION = 750;
 
-    public void setFadeDuration(int fadeDuration) {
-        this.fadeDuration = fadeDuration;
-    }
+    private final String     text;
+    private final WorldModel world;
+    private int              duration;
+    private int              x, y;
+    private float            a             = 1;
+    private float            startTime     = 0;
+    private float            curTime       = 0;
+    private boolean          done          = false;
+    private final float[]    color;
 
     public void setDuration(int duration) {
         this.duration = duration;
@@ -49,27 +48,33 @@ public class TextOverlay {
         return done;
     }
 
-    public void setTimeScale(double timeScale) {
-        this.timeScale = timeScale;
+    public void setEnabled(boolean enabled) {
+        if (enabled) {
+            world.getGameState().addListener(this);
+        } else {
+            world.getGameState().removeListener(this);
+        }
     }
 
-    public TextOverlay(String text, int duration, float[] color) {
+    public TextOverlay(String text, WorldModel world, int duration, float[] color) {
+        this.world = world;
         this.duration = duration;
+        this.startTime = world.getGameState().getTime();
+        curTime = startTime;
         this.text = text;
         this.color = color;
     }
 
     private void update() {
-        long curTime = System.currentTimeMillis();
-        if (lastTime != 0)
-            elapsed += (curTime - lastTime) * timeScale;
-        lastTime = curTime;
+        int elapsedMS = Math.abs((int) ((curTime - startTime) * 1000));
 
-        if (fadeDuration > 0 && elapsed > duration)
-            a = color[3] * Math.max(1 - (float) (elapsed - duration) / fadeDuration, 0);
+        if (elapsedMS > duration)
+            a = color[3] * Math.max(1 - (float) (elapsedMS - duration) / FADE_DURATION, 0);
 
-        if (a == 0)
+        if (a == 0) {
             done = true;
+            setEnabled(false);
+        }
     }
 
     private void calcXY(BorderTextRenderer tr, int w, int h) {
@@ -85,5 +90,18 @@ public class TextOverlay {
         Color textColor = new Color(color[0], color[1], color[2], a);
         Color shadowColor = new Color(0, 0, 0, a);
         tr.drawWithShadow(text, x, y, textColor, shadowColor);
+    }
+
+    @Override
+    public void gsMeasuresAndRulesChanged(GameState gs) {
+    }
+
+    @Override
+    public void gsPlayStateChanged(GameState gs) {
+    }
+
+    @Override
+    public void gsTimeChanged(GameState gs) {
+        curTime = gs.getTime();
     }
 }

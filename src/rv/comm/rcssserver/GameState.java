@@ -304,7 +304,7 @@ public class GameState implements ServerChangeListener {
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
-            for (GameStateChangeListener l : Collections.synchronizedList(listeners)) {
+            for (GameStateChangeListener l : new ArrayList<>(listeners)) {
                 if (playStateChanges > 0)
                     l.gsPlayStateChanged(this);
                 if (timeChanges > 0)
