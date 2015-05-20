@@ -3,15 +3,29 @@ package rv.comm.rcssserver;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import rv.world.Team;
 import rv.world.WorldModel;
 
 public class LogAnalyzerThread extends Thread {
+
+    public class Goal {
+
+        public final int frame;
+        public final int viewFrame;
+        public final int scoringTeam;
+
+        public Goal(int frame, int viewFrame, int scoringTeam) {
+            this.frame = frame;
+            this.viewFrame = viewFrame;
+            this.scoringTeam = scoringTeam;
+        }
+    }
 
     public interface ResultCallback {
 
         void stepSizeFound(float stepSize, int numFrames);
 
-        void goalFound(int goalFrame);
+        void goalFound(Goal goal);
 
         void finished(int numFrames);
     }
@@ -27,7 +41,7 @@ public class LogAnalyzerThread extends Thread {
     private int                  numPauseFrames = 0;
     private Float                startTime      = null;
     private Float                lastTime       = null;
-    private boolean              stepSizeFound  = false;
+    private Float                stepSize       = null;
     private boolean              aborted        = false;
 
     public LogAnalyzerThread(File file, ResultCallback callback) {
@@ -83,9 +97,18 @@ public class LogAnalyzerThread extends Thread {
         int scoreLeft = world.getGameState().getScoreLeft();
         int scoreRight = world.getGameState().getScoreRight();
 
-        if (lastScoreLeft != -1 && lastScoreRight != -1
-                && (scoreLeft != lastScoreLeft || scoreRight != lastScoreRight)) {
-            callback.goalFound(logfile.getCurrentFrame());
+        int scoringTeam = -1;
+        if (lastScoreLeft != -1 && scoreRight != lastScoreRight) {
+            scoringTeam = Team.RIGHT;
+        } else if (lastScoreRight != -1 && scoreRight != lastScoreRight) {
+            scoringTeam = Team.LEFT;
+        }
+
+        if (scoringTeam != -1) {
+            int frame = logfile.getCurrentFrame();
+            int goalWindowFrames = (int) ((1 / stepSize) * LogPlayer.GOAL_WINDOW_SECONDS);
+            int viewFrame = Math.max(0, frame - goalWindowFrames);
+            callback.goalFound(new Goal(frame, viewFrame, scoringTeam));
         }
 
         lastScoreLeft = scoreLeft;
@@ -93,7 +116,7 @@ public class LogAnalyzerThread extends Thread {
     }
 
     private void processStepSize() {
-        if (stepSizeFound)
+        if (stepSize != null)
             return;
 
         Float time = world.getGameState().getTime();
@@ -113,7 +136,7 @@ public class LogAnalyzerThread extends Thread {
                 float halfTime = world.getGameState().getHalfTime();
                 int numFrames = (int) ((1 / stepSize) * halfTime) + numPauseFrames;
                 callback.stepSizeFound(stepSize, numFrames);
-                stepSizeFound = true;
+                this.stepSize = stepSize;
             }
 
             lastTime = time;

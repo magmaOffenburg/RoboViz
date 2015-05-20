@@ -19,6 +19,8 @@ package rv.ui.screens;
 import java.awt.event.KeyEvent;
 import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
+import rv.comm.rcssserver.GameState;
+import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.comm.rcssserver.LogPlayer;
 import rv.util.observer.IObserver;
 
@@ -85,6 +87,20 @@ public class LogfileModeScreen extends ViewerScreenBase {
         case KeyEvent.VK_H:
             player.stepForwardGoal();
             break;
+        }
+    }
+
+    @Override
+    public void gsPlayStateChanged(GameState gs) {
+        int frame = player.getFrame();
+        if (player.getAnalyzedFrames() > frame) {
+            for (Goal goal : player.getGoals()) {
+                if (goal.frame == frame) {
+                    addTeamScoredOverlay(gs, goal.scoringTeam);
+                }
+            }
+        } else {
+            super.gsPlayStateChanged(gs);
         }
     }
 }

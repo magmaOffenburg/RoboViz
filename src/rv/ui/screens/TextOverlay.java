@@ -16,10 +16,10 @@
 
 package rv.ui.screens;
 
-import rv.comm.rcssserver.GameState;
-import rv.world.WorldModel;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import rv.comm.rcssserver.GameState;
+import rv.world.WorldModel;
 
 /**
  * A 2D overlay that displays text on the screen

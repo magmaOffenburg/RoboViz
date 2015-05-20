@@ -325,17 +325,26 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     @Override
     public void gsPlayStateChanged(GameState gs) {
         if (prevScoreL != -1 && prevScoreR != -1) {
-            if (gs.getScoreLeft() != prevScoreL && gs.getTeamLeft() != null)
-                addTeamScoredOverlay(gs.getTeamLeft());
-            if (gs.getScoreRight() != prevScoreR && gs.getTeamRight() != null)
-                addTeamScoredOverlay(gs.getTeamRight());
+            if (gs.getScoreLeft() != prevScoreL)
+                addTeamScoredOverlay(gs, Team.LEFT);
+            if (gs.getScoreRight() != prevScoreR)
+                addTeamScoredOverlay(gs, Team.RIGHT);
         }
 
         prevScoreL = gs.getScoreLeft();
         prevScoreR = gs.getScoreRight();
     }
 
-    private void addTeamScoredOverlay(String teamName) {
+    protected void addTeamScoredOverlay(GameState gs, int team) {
+        String teamName;
+        if (team == Team.LEFT && gs.getTeamLeft() != null) {
+            teamName = gs.getTeamLeft();
+        } else if (team == Team.RIGHT && gs.getTeamRight() != null) {
+            teamName = gs.getTeamRight();
+        } else {
+            return;
+        }
+
         TextOverlay overlay = new TextOverlay(String.format("Goal %s!", teamName),
                 viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 });
         overlay.setEnabled(true);

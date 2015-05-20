@@ -17,7 +17,6 @@
 package rv.comm.rcssserver;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;

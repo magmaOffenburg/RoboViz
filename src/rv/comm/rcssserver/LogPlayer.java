@@ -20,12 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import js.math.Maths;
 import rv.Configuration;
+import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.util.StringUtil;
 import rv.util.observer.IObserver;
 import rv.util.observer.ISubscribe;
@@ -43,7 +43,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     /** the $monitorLoggerStep value from spark.rb */
     private static float           SECONDS_PER_FRAME           = 0.2f;
     /** how many seconds before a goal to jump to */
-    private static final int       GOAL_WINDOW_SECONDS         = 12;
+    public static final int        GOAL_WINDOW_SECONDS         = 12;
     /** time within which to jump over goals for nicer stepping during playback */
     private static final float     GOAL_STEP_THRESHOLD_SECONDS = 1f;
 
@@ -55,8 +55,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
     private boolean                playing;
     private double                 playbackSpeed               = 1;
     private Integer                desiredFrame                = null;
-    private List<Integer>          goalFrames                  = new ArrayList<>();
+    private List<Goal>             goals                       = new ArrayList<>();
     private boolean                logAnalyzed                 = false;
+    private int                    analyzedFrames              = 0;
 
     /** the list of observers that are informed if something changes */
     private final Subject<Boolean> observers;
@@ -113,7 +114,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
         return desiredFrame == null ? getFrame() : desiredFrame;
     }
 
-    private int getFrame() {
+    public int getFrame() {
         if (logfile == null) {
             return 0;
         }
@@ -173,9 +174,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public void stepBackwardGoal() {
         int relativeFrame = getDesiredFrame() - getGoalStepThresholdFrames();
         int closestFrame = -1;
-        for (Integer goalFrame : getGoalFrames()) {
-            if (goalFrame < relativeFrame && goalFrame > closestFrame) {
-                closestFrame = goalFrame;
+        for (Goal goal : goals) {
+            if (goal.viewFrame < relativeFrame && goal.viewFrame > closestFrame) {
+                closestFrame = goal.viewFrame;
             }
         }
         if (closestFrame != -1) {
@@ -186,9 +187,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public void stepForwardGoal() {
         int relativeFrame = getDesiredFrame() + getGoalStepThresholdFrames();
         int closestFrame = Integer.MAX_VALUE;
-        for (Integer goalFrame : getGoalFrames()) {
-            if (goalFrame > relativeFrame && goalFrame < closestFrame) {
-                closestFrame = goalFrame;
+        for (Goal goal : goals) {
+            if (goal.viewFrame > relativeFrame && goal.viewFrame < closestFrame) {
+                closestFrame = goal.viewFrame;
             }
         }
         if (closestFrame != Integer.MAX_VALUE) {
@@ -202,22 +203,22 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public boolean hasPreviousGoal() {
-        if (goalFrames.isEmpty())
+        if (goals.isEmpty())
             return false;
 
-        for (Integer goalFrame : getGoalFrames()) {
-            if (getDesiredFrame() > goalFrame)
+        for (Goal goal : goals) {
+            if (getDesiredFrame() > goal.viewFrame)
                 return true;
         }
         return false;
     }
 
     public boolean hasNextGoal() {
-        if (goalFrames.isEmpty())
+        if (goals.isEmpty())
             return false;
 
-        for (Integer goalFrame : getGoalFrames()) {
-            if (getDesiredFrame() < goalFrame)
+        for (Goal goal : goals) {
+            if (getDesiredFrame() < goal.viewFrame)
                 return true;
         }
         return false;
@@ -232,18 +233,16 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     private String formatGoalMessage(Integer targetGoalFrame, String direction) {
-        if ((goalFrames.isEmpty() && goalsProcessed()) || targetGoalFrame == null) {
+        if ((goals.isEmpty() && logAnalyzed) || targetGoalFrame == null) {
             return "No " + direction + " goals";
         }
-        return StringUtil.capitalize(direction) + " goal: " + targetGoalFrame + "/"
-                + goalFrames.size();
+        return StringUtil.capitalize(direction) + " goal: " + targetGoalFrame + "/" + goals.size();
     }
 
     private Integer getPreviousGoalNumber() {
         Integer previousGoalNumber = null;
-        List<Integer> syncGoalFrames = getGoalFrames();
-        for (int i = 0; i < syncGoalFrames.size(); i++) {
-            if (getDesiredFrame() > syncGoalFrames.get(i)) {
+        for (int i = 0; i < goals.size(); i++) {
+            if (getDesiredFrame() > goals.get(i).viewFrame) {
                 previousGoalNumber = i + 1;
             }
         }
@@ -252,9 +251,8 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     private Integer getNextGoalNumber() {
         Integer nextGoalNumber = null;
-        List<Integer> syncGoalFrames = getGoalFrames();
-        for (int i = 0; i < syncGoalFrames.size(); i++) {
-            if (getDesiredFrame() < syncGoalFrames.get(i)) {
+        for (int i = 0; i < goals.size(); i++) {
+            if (getDesiredFrame() < goals.get(i).viewFrame) {
                 nextGoalNumber = i + 1;
                 break;
             }
@@ -262,12 +260,16 @@ public class LogPlayer implements ISubscribe<Boolean> {
         return nextGoalNumber;
     }
 
-    private List<Integer> getGoalFrames() {
-        return logAnalyzed ? goalFrames : Collections.synchronizedList(goalFrames);
+    public List<Goal> getGoals() {
+        return goals;
     }
 
-    public boolean goalsProcessed() {
+    public boolean logAnalyzed() {
         return logAnalyzed;
+    }
+
+    public int getAnalyzedFrames() {
+        return analyzedFrames;
     }
 
     public void setDesiredFrame(int frame) {
@@ -320,8 +322,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
             if (logfile != null) {
                 logfile.close();
                 desiredFrame = null;
-                getGoalFrames().clear();
+                goals.clear();
                 logAnalyzed = false;
+                analyzedFrames = 0;
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
             startAnalyzerThread(file);
@@ -350,10 +353,9 @@ public class LogPlayer implements ISubscribe<Boolean> {
             }
 
             @Override
-            public void goalFound(int goalFrame) {
-                int goalWindowFrames = (int) ((1 / SECONDS_PER_FRAME) * GOAL_WINDOW_SECONDS);
-                goalFrame = Math.max(0, goalFrame - goalWindowFrames);
-                goalFrames.add(goalFrame);
+            public void goalFound(Goal goal) {
+                goals.add(goal);
+                analyzedFrames = goal.frame;
                 observers.onStateChange(playing);
             }
 
@@ -361,6 +363,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
             public void finished(int numFrames) {
                 LogPlayer.this.logAnalyzed = true;
                 logfile.setNumFrames(numFrames);
+                analyzedFrames = numFrames;
                 observers.onStateChange(playing);
             }
         });
