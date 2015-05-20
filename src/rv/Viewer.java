@@ -208,8 +208,10 @@ public class Viewer extends GLProgram implements GLEventListener {
 
             logFile = new File(logFilePath);
             mode = Mode.LOGFILE;
-            if (!new File(logFilePath).exists())
-                exitError("Could not find log file '" + logFilePath + "'");
+            if (!logFile.exists())
+                exitError("Could not find logfile '" + logFilePath + "'");
+            else if (logFile.isDirectory())
+                exitError("The specified logfile '" + logFilePath + "' is a directory");
         }
 
         if (logMode)
