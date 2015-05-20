@@ -20,9 +20,9 @@ public class FindGoalsThread extends Thread {
     private WorldModel           world;
     private MessageParser        parser;
     private ILogfileReader       logfile;
-    private boolean              lastFrameGoalLeft  = false;
-    private boolean              lastFrameGoalRight = false;
-    private boolean              aborted            = false;
+    private int                  lastScoreLeft  = -1;
+    private int                  lastScoreRight = -1;
+    private boolean              aborted        = false;
 
     public FindGoalsThread(File file, ResultCallback callback) {
         super();
@@ -66,26 +66,16 @@ public class FindGoalsThread extends Thread {
                 e.printStackTrace();
             }
 
-            switch (world.getGameState().getPlayMode()) {
-            case "Goal_Left":
-                if (!lastFrameGoalLeft) {
-                    callback.goalFound(logfile.getCurrentFrame());
-                    lastFrameGoalLeft = true;
-                    lastFrameGoalRight = false;
-                }
-                break;
-            case "Goal_Right":
-                if (!lastFrameGoalRight) {
-                    callback.goalFound(logfile.getCurrentFrame());
-                    lastFrameGoalLeft = false;
-                    lastFrameGoalRight = true;
-                }
-                break;
-            default:
-                lastFrameGoalLeft = false;
-                lastFrameGoalRight = false;
-                break;
+            int scoreLeft = world.getGameState().getScoreLeft();
+            int scoreRight = world.getGameState().getScoreRight();
+
+            if (lastScoreLeft != -1 && lastScoreRight != -1
+                    && (scoreLeft != lastScoreLeft || scoreRight != lastScoreRight)) {
+                callback.goalFound(logfile.getCurrentFrame());
             }
+
+            lastScoreLeft = scoreLeft;
+            lastScoreRight = scoreRight;
         }
     }
 }
