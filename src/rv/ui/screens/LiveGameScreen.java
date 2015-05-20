@@ -25,6 +25,7 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
+import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.Annotation;
@@ -44,8 +45,17 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         super(viewer);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
-        connectionOverlay = new InfoOverlay("Disconnected");
+        connectionOverlay = new InfoOverlay(getConnectionMessage());
         overlays.add(connectionOverlay);
+    }
+
+    private String getConnectionMessage() {
+        Configuration.Networking config = viewer.getConfig().networking;
+        String server = config.getServerHost() + ":" + config.getServerPort();
+        if (config.autoConnect)
+            return "Trying to connect to " + server + "...";
+        else
+            return "Press C to connect to " + server + ".";
     }
 
     @Override
