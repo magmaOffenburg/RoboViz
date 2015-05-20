@@ -7,6 +7,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
@@ -31,7 +33,8 @@ import rv.world.objects.Agent;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener,
-        MouseMotionListener, GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
+        MouseMotionListener, MouseWheelListener, GameState.GameStateChangeListener,
+        WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
@@ -51,6 +54,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     private RobotVantageBase           robotVantage      = null;
     private RobotVantageType           robotVantageType  = RobotVantageType.NONE;
+    private int                        firstPersonFOV;
+    private int                        thirdPersonFOV;
 
     private AgentOverheadType          agentOverheadType = AgentOverheadType.ANNOTATIONS;
     protected final BorderTextRenderer tr;
@@ -69,6 +74,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new BorderTextRenderer(font, true, false);
+
+        Configuration.Graphics config = viewer.getConfig().graphics;
+        firstPersonFOV = config.firstPersonFOV;
+        thirdPersonFOV = config.thirdPersonFOV;
     }
 
     @Override
@@ -163,6 +172,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             canvas.addKeyListener(this);
             canvas.addMouseListener(this);
             canvas.addMouseMotionListener(this);
+            canvas.addMouseWheelListener(this);
             viewer.getUI().getCameraControl().attachToCanvas(canvas);
             viewer.getWorldModel().getGameState().addListener(this);
             viewer.getWorldModel().addSelectionChangeListener(this);
@@ -170,6 +180,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             canvas.removeKeyListener(this);
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
+            canvas.removeMouseWheelListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
             viewer.getWorldModel().getGameState().removeListener(this);
             viewer.getWorldModel().removeSelectionChangeListener(this);
@@ -235,6 +246,14 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             showNumPlayers = !showNumPlayers;
             fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
             break;
+        case KeyEvent.VK_W:
+        case KeyEvent.VK_UP:
+            changeFOV(-1);
+            break;
+        case KeyEvent.VK_S:
+        case KeyEvent.VK_DOWN:
+            changeFOV(1);
+            break;
         }
     }
 
@@ -249,6 +268,22 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     private void nextAgentOverheadType() {
         AgentOverheadType[] vals = AgentOverheadType.values();
         agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
+    }
+
+    private void changeFOV(int amount) {
+        if (robotVantage == null)
+            return;
+
+        switch (robotVantageType) {
+        case FIRST_PERSON:
+            firstPersonFOV += amount;
+            robotVantage.setFOV(firstPersonFOV);
+            break;
+        case THIRD_PERSON:
+            thirdPersonFOV += amount;
+            robotVantage.setFOV(thirdPersonFOV);
+            break;
+        }
     }
 
     @Override
@@ -314,6 +349,11 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     }
 
     @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        changeFOV(e.getWheelRotation() < 0 ? -1 : 1);
+    }
+
+    @Override
     public void gsTimeChanged(GameState gs) {
 
     }
@@ -376,11 +416,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
         Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
         if (differentType || oldAgent != agent) {
-            Configuration.Graphics config = viewer.getConfig().graphics;
             if (type == RobotVantageType.FIRST_PERSON)
-                robotVantage = new RobotVantageFirstPerson(agent, config.firstPersonFOV);
+                robotVantage = new RobotVantageFirstPerson(agent, firstPersonFOV);
             else
-                robotVantage = new RobotVantageThirdPerson(agent, config.thirdPersonFOV);
+                robotVantage = new RobotVantageThirdPerson(agent, thirdPersonFOV);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
             robotVantageType = type;

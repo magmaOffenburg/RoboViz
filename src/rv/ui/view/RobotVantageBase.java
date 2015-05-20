@@ -56,4 +56,8 @@ public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeL
     protected float getAspect(Viewport vp) {
         return vp.getAspect();
     }
+
+    public void setFOV(int fovY) {
+        this.fovY = fovY;
+    }
 }
