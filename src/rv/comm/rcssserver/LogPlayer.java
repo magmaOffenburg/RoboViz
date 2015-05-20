@@ -41,7 +41,7 @@ import rv.world.WorldModel;
 public class LogPlayer implements ISubscribe<Boolean> {
 
     /** the $monitorLoggerStep value from spark.rb */
-    private static final float     SECONDS_PER_FRAME           = 0.2f;
+    private static float           SECONDS_PER_FRAME           = 0.2f;
     /** how many seconds before a goal to jump to */
     private static final int       GOAL_WINDOW_SECONDS         = 12;
     /** time within which to jump over goals for nicer stepping during playback */
@@ -343,6 +343,12 @@ public class LogPlayer implements ISubscribe<Boolean> {
             logAnalyzer.abort();
         }
         logAnalyzer = new LogAnalyzerThread(file, new LogAnalyzerThread.ResultCallback() {
+            @Override
+            public void stepSizeFound(float stepSize, int numFrames) {
+                SECONDS_PER_FRAME = stepSize;
+                logfile.setNumFrames(numFrames);
+            }
+
             @Override
             public void goalFound(int goalFrame) {
                 int goalWindowFrames = (int) ((1 / SECONDS_PER_FRAME) * GOAL_WINDOW_SECONDS);

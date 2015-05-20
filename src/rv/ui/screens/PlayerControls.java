@@ -184,10 +184,6 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
                 }
             }
         });
-        slider.setEnabled(false);
-        slider.setMajorTickSpacing(1000);
-        slider.setMinorTickSpacing(500);
-        slider.setPaintTicks(true);
         slider.setToolTipText("Select Frame");
 
         c.gridwidth = c.gridx + 1;

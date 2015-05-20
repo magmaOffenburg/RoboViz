@@ -9,6 +9,8 @@ public class LogAnalyzerThread extends Thread {
 
     public interface ResultCallback {
 
+        void stepSizeFound(float stepSize, int numFrames);
+
         void goalFound(int goalFrame);
 
         void finished(int numFrames);
@@ -22,6 +24,10 @@ public class LogAnalyzerThread extends Thread {
     private ILogfileReader       logfile;
     private int                  lastScoreLeft  = -1;
     private int                  lastScoreRight = -1;
+    private int                  numPauseFrames = 0;
+    private Float                startTime      = null;
+    private Float                lastTime       = null;
+    private boolean              stepSizeFound  = false;
     private boolean              aborted        = false;
 
     public LogAnalyzerThread(File file, ResultCallback callback) {
@@ -68,16 +74,49 @@ public class LogAnalyzerThread extends Thread {
                 e.printStackTrace();
             }
 
-            int scoreLeft = world.getGameState().getScoreLeft();
-            int scoreRight = world.getGameState().getScoreRight();
+            processGoals();
+            processStepSize();
+        }
+    }
 
-            if (lastScoreLeft != -1 && lastScoreRight != -1
-                    && (scoreLeft != lastScoreLeft || scoreRight != lastScoreRight)) {
-                callback.goalFound(logfile.getCurrentFrame());
+    private void processGoals() {
+        int scoreLeft = world.getGameState().getScoreLeft();
+        int scoreRight = world.getGameState().getScoreRight();
+
+        if (lastScoreLeft != -1 && lastScoreRight != -1
+                && (scoreLeft != lastScoreLeft || scoreRight != lastScoreRight)) {
+            callback.goalFound(logfile.getCurrentFrame());
+        }
+
+        lastScoreLeft = scoreLeft;
+        lastScoreRight = scoreRight;
+    }
+
+    private void processStepSize() {
+        if (stepSizeFound)
+            return;
+
+        Float time = world.getGameState().getTime();
+
+        if (startTime == null) {
+            startTime = time;
+        } else {
+            if (startTime.equals(time)) {
+                numPauseFrames++;
+                return;
             }
 
-            lastScoreLeft = scoreLeft;
-            lastScoreRight = scoreRight;
+            time -= startTime;
+            if (lastTime != null && !time.equals(lastTime)) {
+                float stepSize = time - lastTime;
+                // estimate total number of frames
+                float halfTime = world.getGameState().getHalfTime();
+                int numFrames = (int) ((1 / stepSize) * halfTime) + numPauseFrames;
+                callback.stepSizeFound(stepSize, numFrames);
+                stepSizeFound = true;
+            }
+
+            lastTime = time;
         }
     }
 }
