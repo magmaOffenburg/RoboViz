@@ -108,17 +108,22 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         fsaaCB = new JCheckBox("Enabled", config.useFsaa);
         fsaaCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                samplesTF.setEnabled(fsaaCB.isSelected());
-                samplesLabel.setEnabled(fsaaCB.isSelected());
+                updateAAEnabled();
             }
         });
         samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
+        updateAAEnabled();
 
         addConstrained(fsaaCB, panel, c, 0, 0);
         addConstrained(samplesLabel, panel, c, 1, 0);
         addConstrained(samplesTF, panel, c, 2, 0);
 
         return panel;
+    }
+
+    void updateAAEnabled() {
+        samplesTF.setEnabled(fsaaCB.isSelected());
+        samplesLabel.setEnabled(fsaaCB.isSelected());
     }
 
     JPanel initGeneral() {
@@ -168,10 +173,10 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         centerCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateFramePosition();
+                updateFramePositionEnabled();
             }
         });
-        updateFramePosition();
+        updateFramePositionEnabled();
         saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
 
         int y = 0;
@@ -196,7 +201,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         return panel;
     }
 
-    void updateFramePosition() {
+    void updateFramePositionEnabled() {
         boolean enabled = !centerCB.isSelected();
         fxSpinner.setEnabled(enabled);
         fySpinner.setEnabled(enabled);
@@ -219,14 +224,13 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         shadowCB = new JCheckBox("Shadows", config.useShadows);
         shadowCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent arg0) {
-                softShadowCB.setEnabled(shadowCB.isSelected());
-                shadowResTB.setEnabled(shadowCB.isSelected());
-                shadowResLabel.setEnabled(shadowCB.isSelected());
+                updateShadowsEnabled();
             }
         });
 
         softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
         shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);
+        updateShadowsEnabled();
 
         addConstrained(phongCB, panel, c, 0, 0);
         addConstrained(bloomCB, panel, c, 1, 0);
@@ -237,6 +241,12 @@ public class GraphicsPanel extends JPanel implements SaveListener {
         addConstrained(shadowResTB, panel, c, 2, 2);
 
         return panel;
+    }
+
+    void updateShadowsEnabled() {
+        softShadowCB.setEnabled(shadowCB.isSelected());
+        shadowResTB.setEnabled(shadowCB.isSelected());
+        shadowResLabel.setEnabled(shadowCB.isSelected());
     }
 
     @Override

@@ -39,6 +39,7 @@ import config.RVConfigure.SaveListener;
 public class NetworkPanel extends JPanel implements SaveListener {
 
     final Configuration.Networking config;
+    JCheckBox                      autoConnectCB;
     JTextField                     serverHostTF;
     JTextField                     serverPortTF;
     JTextField                     drawingPortTF;
@@ -105,16 +106,21 @@ public class NetworkPanel extends JPanel implements SaveListener {
 
         c.gridx = 1;
         c.gridy = 3;
-        final JCheckBox autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
+        autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
         autoConnectCB.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                config.autoConnect = autoConnectCB.isSelected();
-                autoConnectDelayTF.setEnabled(autoConnectCB.isSelected());
+                updateAutoConnectEnabled();
             }
         });
+        updateAutoConnectEnabled();
+
         panel.add(autoConnectCB, c);
 
         return panel;
+    }
+
+    void updateAutoConnectEnabled() {
+        autoConnectDelayTF.setEnabled(autoConnectCB.isSelected());
     }
 
     JPanel initDrawingControls() {
@@ -145,6 +151,8 @@ public class NetworkPanel extends JPanel implements SaveListener {
         } catch (Exception e) {
             serverPortTF.setText("" + config.serverPort);
         }
+
+        config.autoConnect = autoConnectCB.isSelected();
 
         try {
             config.autoConnectDelay = Integer.parseInt(autoConnectDelayTF.getText());
