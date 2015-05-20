@@ -159,23 +159,11 @@ public class LogPlayer implements ISubscribe<Boolean> {
     }
 
     public void stepBackward() {
-        try {
-            logfile.stepBackward();
-            parseFrame();
-            observers.onStateChange(playing);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setDesiredFrame(getFrame() - 1);
     }
 
     public void stepForward() {
-        try {
-            logfile.stepForward();
-            parseFrame();
-            observers.onStateChange(playing);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setDesiredFrame(getFrame() + 1);
     }
 
     public void stepBackwardGoal() {
