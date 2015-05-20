@@ -43,14 +43,13 @@ import javax.swing.event.ChangeListener;
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
 import rv.util.SwingUtil;
-import rv.util.observer.IObserver;
 
 /**
  * Dialog containing the media player controls for log mode
  * 
  * @author dorer
  */
-class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
+class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeListener {
 
     private static PlayerControls instance;
 
@@ -77,7 +76,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         super("Logplayer");
         this.player = player;
         createControls();
-        this.player.attach(this);
+        this.player.addListener(this);
     }
 
     /**
@@ -103,7 +102,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         createButton(c, "file_open", "Open logfile...", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                player.openFile(frame);
+                player.openFileDialog(frame);
             }
         });
 
@@ -203,13 +202,7 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         return button;
     }
 
-    /**
-     * Called in case the player state has changed
-     * 
-     * @param playing
-     *            true if the player is playing
-     */
-    public void update(Boolean playing) {
+    public void playerStateChanged(boolean playing) {
         updateButtons(playing, player.isAtEnd());
         updateSlider(playing);
     }
@@ -243,9 +236,6 @@ class PlayerControls extends FramePanelBase implements IObserver<Boolean> {
         frame.dispose();
     }
 
-    /**
-     * Allows to have round swing buttons
-     */
     class RoundButton extends JButton {
 
         private Shape  shape;

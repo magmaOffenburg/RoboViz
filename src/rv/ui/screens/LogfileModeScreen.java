@@ -22,7 +22,6 @@ import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.comm.rcssserver.LogPlayer;
-import rv.util.observer.IObserver;
 
 public class LogfileModeScreen extends ViewerScreenBase {
 
@@ -36,9 +35,9 @@ public class LogfileModeScreen extends ViewerScreenBase {
         playDialog = PlayerControls.getInstance(player);
         openFileOverlay = new InfoOverlay("Please open a logfile.");
         overlays.add(openFileOverlay);
-        player.attach(new IObserver<Boolean>() {
+        player.addListener(new LogPlayer.StateChangeListener() {
             @Override
-            public void update(Boolean playing) {
+            public void playerStateChanged(boolean playing) {
                 openFileOverlay.setVisible(!player.isValid());
             }
         });

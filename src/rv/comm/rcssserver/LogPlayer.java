@@ -27,9 +27,6 @@ import js.math.Maths;
 import rv.Configuration;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.util.StringUtil;
-import rv.util.observer.IObserver;
-import rv.util.observer.ISubscribe;
-import rv.util.observer.Subject;
 import rv.world.WorldModel;
 
 /**
@@ -38,32 +35,31 @@ import rv.world.WorldModel;
  * @author justin
  * 
  */
-public class LogPlayer implements ISubscribe<Boolean> {
+public class LogPlayer {
+
+    public interface StateChangeListener {
+        void playerStateChanged(boolean playing);
+    }
 
     /** the $monitorLoggerStep value from spark.rb */
-    private static float           SECONDS_PER_FRAME           = 0.2f;
+    private static float                    SECONDS_PER_FRAME           = 0.2f;
     /** how many seconds before a goal to jump to */
-    public static final int        GOAL_WINDOW_SECONDS         = 12;
+    public static final int                 GOAL_WINDOW_SECONDS         = 12;
     /** time within which to jump over goals for nicer stepping during playback */
-    private static final float     GOAL_STEP_THRESHOLD_SECONDS = 1f;
+    private static final float              GOAL_STEP_THRESHOLD_SECONDS = 1f;
 
-    private final Configuration    config;
-    private ILogfileReader         logfile;
-    private LogRunnerThread        logRunner;
-    private LogAnalyzerThread      logAnalyzer;
-    private final MessageParser    parser;
-    private boolean                playing;
-    private double                 playbackSpeed               = 1;
-    private Integer                desiredFrame                = null;
-    private List<Goal>             goals                       = new ArrayList<>();
-    private boolean                logAnalyzed                 = false;
-    private int                    analyzedFrames              = 0;
-
-    /** the list of observers that are informed if something changes */
-    private final Subject<Boolean> observers;
-
-    /** file chooser for opening logfiles (instance attribute to stay in the selected path) */
-    private final JFileChooser     fileChooser;
+    private final Configuration             config;
+    private ILogfileReader                  logfile;
+    private LogRunnerThread                 logRunner;
+    private LogAnalyzerThread               logAnalyzer;
+    private final MessageParser             parser;
+    private boolean                         playing;
+    private double                          playbackSpeed               = 1;
+    private Integer                         desiredFrame                = null;
+    private final List<Goal>                goals                       = new ArrayList<>();
+    private final List<StateChangeListener> listeners                   = new ArrayList<>();
+    private boolean                         logAnalyzed                 = false;
+    private int                             analyzedFrames              = 0;
 
     /**
      * Default constructor. Opens the passed logfile and starts playing.
@@ -76,9 +72,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
     public LogPlayer(File file, WorldModel world, Configuration config) {
         this.config = config;
 
-        observers = new Subject<>();
         playing = false;
-        fileChooser = new JFileChooser();
         parser = new MessageParser(world);
 
         if (file == null)
@@ -96,6 +90,16 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void setWorldModel(WorldModel world) {
         parser.setWorldModel(world);
+    }
+
+    public void addListener(StateChangeListener l) {
+        listeners.add(l);
+        stateChanged();
+    }
+
+    private void stateChanged() {
+        for (StateChangeListener l : listeners)
+            l.playerStateChanged(playing);
     }
 
     public boolean isValid() {
@@ -142,7 +146,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void setPlayBackSpeed(double factor) {
         playbackSpeed = Maths.clamp(factor, -10, 10);
-        observers.onStateChange(playing);
+        stateChanged();
     }
 
     public void increasePlayBackSpeed() {
@@ -274,26 +278,18 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     public void setDesiredFrame(int frame) {
         desiredFrame = frame;
-        observers.onStateChange(playing);
-    }
-
-    @Override
-    public void attach(IObserver<Boolean> observer) {
-        observers.attach(observer);
-        observers.onStateChange(false);
+        stateChanged();
     }
 
     private void setPlaying(boolean playing) {
         if (playing != this.playing) {
             this.playing = playing;
-            observers.onStateChange(playing);
+            stateChanged();
         }
     }
 
-    /**
-     * Allows the user to choose a logfile to open.
-     */
-    public void openFile(JFrame parent) {
+    public void openFileDialog(JFrame parent) {
+        JFileChooser fileChooser = new JFileChooser();
         String logfileDirectory = config.general.logfileDirectory;
         if (logfileDirectory != null && !logfileDirectory.isEmpty()) {
             fileChooser.setCurrentDirectory(new File(logfileDirectory));
@@ -353,7 +349,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
             public void goalFound(Goal goal) {
                 goals.add(goal);
                 analyzedFrames = goal.frame;
-                observers.onStateChange(playing);
+                stateChanged();
             }
 
             @Override
@@ -361,7 +357,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 LogPlayer.this.logAnalyzed = true;
                 logfile.setNumFrames(numFrames);
                 analyzedFrames = numFrames;
-                observers.onStateChange(playing);
+                stateChanged();
             }
         });
         logAnalyzer.start();
@@ -405,7 +401,7 @@ public class LogPlayer implements ISubscribe<Boolean> {
                 }
 
                 setCurrentFrame(previousFrame, nextFrame);
-                observers.onStateChange(playing);
+                stateChanged();
             }
         }
 
