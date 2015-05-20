@@ -197,9 +197,6 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             selectPlayer(keyCode - KeyEvent.VK_F1 + 1, !e.isAltDown());
 
         switch (keyCode) {
-        case KeyEvent.VK_Q:
-            viewer.shutdown();
-            break;
         case KeyEvent.VK_SPACE:
             viewer.getUI().getBallTracker().toggleEnabled();
             break;
