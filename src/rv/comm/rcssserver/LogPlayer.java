@@ -313,9 +313,6 @@ public class LogPlayer implements ISubscribe<Boolean> {
 
     /**
      * Creates a new instance of a buffered logfile reader representing the passed file.
-     * 
-     * @param file
-     *            the logfile to open
      */
     private void openLogfile(File file) {
         try {

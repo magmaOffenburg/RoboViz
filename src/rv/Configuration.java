@@ -57,6 +57,7 @@ public class Configuration {
         public boolean saveFrameState   = true;
         public int     fsaaSamples      = 4;
         public int     targetFPS        = 60;
+        public int     firstPersonFOV   = 120;
         public int     thirdPersonFOV   = 80;
         public int     frameWidth       = 800;
         public int     frameHeight      = 600;
@@ -76,6 +77,7 @@ public class Configuration {
             useFsaa = getNextBool(in);
             fsaaSamples = getNextInt(in);
             targetFPS = getNextInt(in);
+            firstPersonFOV = getNextInt(in);
             thirdPersonFOV = getNextInt(in);
             frameWidth = getNextInt(in);
             frameHeight = getNextInt(in);
@@ -99,6 +101,7 @@ public class Configuration {
             writeVal(out, "FSAA", useFsaa);
             writeVal(out, "FSAA Samples", fsaaSamples);
             writeVal(out, "Target FPS", targetFPS);
+            writeVal(out, "First Person FOV", firstPersonFOV);
             writeVal(out, "Third Person FOV", thirdPersonFOV);
             writeVal(out, "Frame Width", frameWidth);
             writeVal(out, "Frame Height", frameHeight);

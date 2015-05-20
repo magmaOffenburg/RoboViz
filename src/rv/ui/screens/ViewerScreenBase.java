@@ -16,6 +16,7 @@ import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
 import js.math.BoundingBox;
 import js.math.vector.Vec3f;
+import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.rcssserver.GameState;
@@ -375,11 +376,11 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
         Agent agent = (Agent) viewer.getWorldModel().getSelectedObject();
         if (differentType || oldAgent != agent) {
+            Configuration.Graphics config = viewer.getConfig().graphics;
             if (type == RobotVantageType.FIRST_PERSON)
-                robotVantage = new RobotVantageFirstPerson(agent);
+                robotVantage = new RobotVantageFirstPerson(agent, config.firstPersonFOV);
             else
-                robotVantage = new RobotVantageThirdPerson(agent,
-                        viewer.getConfig().graphics.thirdPersonFOV);
+                robotVantage = new RobotVantageThirdPerson(agent, config.thirdPersonFOV);
             viewer.getRenderer().setVantage(robotVantage);
             viewer.getUI().getCameraControl().detachFromCanvas((GLCanvas) viewer.getCanvas());
             robotVantageType = type;

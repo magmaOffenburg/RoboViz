@@ -26,11 +26,8 @@ import rv.world.objects.Agent;
 
 public class RobotVantageFirstPerson extends RobotVantageBase {
 
-    /** matches the agent's FOV for debugging purposes */
-    private static final float FOV_DEGREES = 120.f;
-
-    public RobotVantageFirstPerson(Agent agent) {
-        super(agent, FOV_DEGREES);
+    public RobotVantageFirstPerson(Agent agent, int fovDegrees) {
+        super(agent, fovDegrees);
         updateView();
     }
 

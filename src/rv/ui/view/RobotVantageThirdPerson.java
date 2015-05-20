@@ -24,13 +24,11 @@ public class RobotVantageThirdPerson extends RobotVantageBase {
 
     private static final int CAMERA_AVERAGE = 20;
     private Vec3f            avgPos[], avgForward[];
-
     private int              ct             = 0;
-
     private Vec3f            lastAvgF       = new Vec3f(0);
 
-    public RobotVantageThirdPerson(Agent agent, int fov) {
-        super(agent, fov);
+    public RobotVantageThirdPerson(Agent agent, int fovDegrees) {
+        super(agent, fovDegrees);
         avgPos = new Vec3f[CAMERA_AVERAGE];
         avgForward = new Vec3f[CAMERA_AVERAGE];
         updateView();
