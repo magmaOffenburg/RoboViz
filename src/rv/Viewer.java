@@ -227,6 +227,7 @@ public class Viewer extends GLProgram implements GLEventListener {
 
     private void initComponents(GLCapabilities caps) {
         canvas = new GLCanvas(caps);
+        canvas.setFocusTraversalKeysEnabled(false);
 
         frame = new JFrame("RoboViz");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

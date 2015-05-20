@@ -251,6 +251,9 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         case KeyEvent.VK_DOWN:
             changeFOV(1);
             break;
+        case KeyEvent.VK_TAB:
+            cyclePlayers(e.isShiftDown() ? -1 : 1);
+            break;
         }
     }
 
@@ -260,6 +263,32 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         Agent agent = team.getAgentByID(playerID);
         if (agent != null)
             viewer.getWorldModel().setSelectedObject(agent);
+    }
+
+    private void cyclePlayers(int direction) {
+        WorldModel worldModel = viewer.getWorldModel();
+        ISelectable selection = worldModel.getSelectedObject();
+        if (!(selection instanceof Agent))
+            return;
+
+        Agent agent = (Agent) selection;
+        if (agent.getTeam().getAgents().size() <= 1)
+            return;
+
+        Agent nextAgent = null;
+        int nextID = agent.getID();
+        do {
+            nextID += direction;
+            if (nextID > Team.MAX_AGENTS)
+                nextID = 0;
+            else if (nextID < 0)
+                nextID = Team.MAX_AGENTS;
+
+            nextAgent = agent.getTeam().getAgentByID(nextID);
+        } while (nextAgent == null && nextID != agent.getID());
+
+        if (nextAgent != null)
+            worldModel.setSelectedObject(nextAgent);
     }
 
     private void nextAgentOverheadType() {
@@ -285,17 +314,14 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
@@ -322,27 +348,22 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
     }
 
     @Override
@@ -352,12 +373,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     @Override
     public void gsTimeChanged(GameState gs) {
-
     }
 
     @Override
     public void gsMeasuresAndRulesChanged(GameState gs) {
-
     }
 
     @Override

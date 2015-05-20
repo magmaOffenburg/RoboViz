@@ -39,7 +39,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     public static final int                LEFT       = 0;
     public static final int                RIGHT      = 1;
 
-    private static final int               MAX_AGENTS = 11;
+    public static final int                MAX_AGENTS = 11;
 
     private final Configuration.TeamColors config;
     private final ContentManager           content;
