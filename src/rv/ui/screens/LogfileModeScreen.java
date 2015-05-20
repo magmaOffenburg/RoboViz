@@ -37,7 +37,7 @@ public class LogfileModeScreen extends ViewerScreenBase {
         player.attach(new IObserver<Boolean>() {
             @Override
             public void update(Boolean playing) {
-                openFileOverlay.setVisible(!player.hasLogfile());
+                openFileOverlay.setVisible(!player.isValid());
             }
         });
     }

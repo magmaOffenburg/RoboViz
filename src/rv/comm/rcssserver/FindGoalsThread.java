@@ -22,11 +22,16 @@ public class FindGoalsThread extends Thread {
     private ILogfileReader       logfile;
     private boolean              lastFrameGoalLeft  = false;
     private boolean              lastFrameGoalRight = false;
+    private boolean              aborted            = false;
 
     public FindGoalsThread(File file, ResultCallback callback) {
         super();
         this.file = file;
         this.callback = callback;
+    }
+
+    public void abort() {
+        this.aborted = true;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class FindGoalsThread extends Thread {
             e.printStackTrace();
         }
 
-        while (!logfile.isAtEndOfLog()) {
+        while (!logfile.isAtEndOfLog() && !aborted) {
             processFrame();
             try {
                 logfile.stepForward();
