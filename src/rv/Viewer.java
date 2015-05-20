@@ -202,6 +202,8 @@ public class Viewer extends GLProgram implements GLEventListener {
     }
 
     private void handleLogModeArgs(String logFilePath, boolean logMode) {
+        String error = null;
+
         if (logFilePath != null) {
             // handle linux home directory
             logFilePath = logFilePath.replaceFirst("^~", System.getProperty("user.home"));
@@ -209,9 +211,14 @@ public class Viewer extends GLProgram implements GLEventListener {
             logFile = new File(logFilePath);
             mode = Mode.LOGFILE;
             if (!logFile.exists())
-                exitError("Could not find logfile '" + logFilePath + "'");
+                error = "Could not find logfile '" + logFilePath + "'";
             else if (logFile.isDirectory())
-                exitError("The specified logfile '" + logFilePath + "' is a directory");
+                error = "The specified logfile '" + logFilePath + "' is a directory";
+        }
+
+        if (error != null) {
+            System.err.println(error);
+            logFile = null;
         }
 
         if (logMode)

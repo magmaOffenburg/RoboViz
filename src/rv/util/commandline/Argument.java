@@ -11,7 +11,7 @@ public abstract class Argument<T> {
     public static void endParse(String... args) {
         for (String arg : args) {
             if (!arg.equals("")) {
-                System.out.println(String.format("Unknown argument '%s'.", arg));
+                System.err.println(String.format("Unknown argument '%s'.", arg));
             }
         }
     }
@@ -45,7 +45,7 @@ public abstract class Argument<T> {
                 args[i] = "";
                 String stringValue = extractStringValue(arg);
                 if (found) {
-                    System.out
+                    System.err
                             .println(String
                                     .format("Duplicate '--%s' argument with value '%s' found, using the first value '%s' instead.",
                                             name, stringValue, result));
@@ -90,6 +90,6 @@ public abstract class Argument<T> {
     }
 
     protected void printInvalidArgInfo(Object value) {
-        System.out.println(getInvalidArgString(value));
+        System.err.println(getInvalidArgString(value));
     }
 }
