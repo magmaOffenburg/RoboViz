@@ -58,24 +58,25 @@ public class RVConfigure extends JFrame {
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
+        c.anchor = GridBagConstraints.NORTH;
 
         c.gridx = 0;
         c.gridy = 0;
-        add(new NetworkPanel(this), c);
-
-        c.gridy = 1;
         add(new GraphicsPanel(this), c);
 
+        JPanel networkPanel = new NetworkPanel(this);
+        c.gridx = 0;
         c.gridy = 2;
-        add(new GeneralPanel(this), c);
-
+        networkPanel.add(new GeneralPanel(this), c);
         c.gridy = 3;
-        add(new TeamColorsPanel(this), c);
-
+        networkPanel.add(new TeamColorsPanel(this), c);
         c.gridy = 4;
         JPanel southPanel = new JPanel(new GridLayout(1, 2));
-        add(southPanel, c);
+        networkPanel.add(southPanel, c);
+
+        c.gridx = 1;
+        c.gridy = 0;
+        add(networkPanel);
 
         saveButton = new JButton("Save");
         saveButton.addActionListener(new ActionListener() {
@@ -97,8 +98,8 @@ public class RVConfigure extends JFrame {
         southPanel.add(startButton);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(550, 600);
         setResizable(false);
+        getContentPane().setBackground(networkPanel.getBackground());
         getRootPane().setDefaultButton(startButton);
         pack();
         Point desiredLocation = new Point(config.graphics.frameX, config.graphics.frameY);
