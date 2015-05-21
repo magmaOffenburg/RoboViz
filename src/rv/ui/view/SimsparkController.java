@@ -16,6 +16,8 @@
 
 package rv.ui.view;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -33,7 +35,7 @@ import rv.ui.UserInterface;
  * 
  * @author justin
  */
-public class SimsparkController implements CameraController, GameStateChangeListener {
+public class SimsparkController implements CameraController, GameStateChangeListener, FocusListener {
 
     private final UserInterface ui;
 
@@ -291,5 +293,20 @@ public class SimsparkController implements CameraController, GameStateChangeList
     }
 
     public void gsTimeChanged(GameState gs) {
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        rotate = false;
+        moveF = false;
+        moveB = false;
+        moveL = false;
+        moveR = false;
+        moveU = false;
+        moveD = false;
     }
 }
