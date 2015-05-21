@@ -90,7 +90,7 @@ public class Configuration {
         }
 
         private void write(BufferedWriter out) throws IOException {
-            out.write("Graphics Settings:\n");
+            writeSection(out, "Graphics Settings");
             writeVal(out, "Bloom", useBloom);
             writeVal(out, "Phong", usePhong);
             writeVal(out, "Shadows", useShadows);
@@ -110,7 +110,7 @@ public class Configuration {
             writeVal(out, "Center Frame", centerFrame);
             writeVal(out, "Frame Maximized", isMaximized);
             writeVal(out, "Save Frame State", saveFrameState);
-            out.write("\n");
+            out.write(getNewline());
         }
     }
 
@@ -135,13 +135,13 @@ public class Configuration {
         }
 
         private void write(BufferedWriter out) throws IOException {
-            out.write("Networking Settings:\n");
+            writeSection(out, "Networking Settings");
             writeVal(out, "Auto-Connect", autoConnect);
             writeVal(out, "Auto-Connect Delay", autoConnectDelay);
             writeVal(out, "Server Host", serverHost);
             writeVal(out, "Server Port", serverPort);
             writeVal(out, "Drawing Port", listenPort);
-            out.write("\n");
+            out.write(getNewline());
         }
 
         public void overrideServerHost(String serverHost) {
@@ -173,10 +173,10 @@ public class Configuration {
         }
 
         private void write(BufferedWriter out) throws IOException {
-            out.write("General Settings:\n");
+            writeSection(out, "General Settings");
             writeVal(out, "Record Logfiles", recordLogs);
             writeVal(out, "Logfile Directory", logfileDirectory);
-            out.write("\n");
+            out.write(getNewline());
         }
     }
 
@@ -204,13 +204,13 @@ public class Configuration {
         }
 
         private void write(BufferedWriter out) throws IOException {
-            out.write("Team Colors:\n");
+            writeSection(out, "Team Colors");
             for (String teamName : colorByTeamName.keySet()) {
                 float[] color = colorByTeamName.get(teamName);
-                out.write(String.format(Locale.US, "%-20s : %f %f %f\n", teamName, color[0],
-                        color[1], color[2]));
+                out.write(String.format(Locale.US, "%-20s : %f %f %f" + getNewline(), teamName,
+                        color[0], color[1], color[2]));
             }
-            out.write("\n");
+            out.write(getNewline());
         }
     }
 
@@ -247,16 +247,28 @@ public class Configuration {
         return getVal(getNextLine(in));
     }
 
+    private static void writeSection(Writer out, String name) throws IOException {
+        out.write(name + ":" + getNewline());
+    }
+
     private static void writeVal(Writer out, String name, int value) throws IOException {
-        out.write(String.format("%-20s : %d\n", name, value));
+        out.write(formatProperty('d', name, value));
     }
 
     private static void writeVal(Writer out, String name, boolean value) throws IOException {
-        out.write(String.format("%-20s : %b\n", name, value));
+        out.write(formatProperty('b', name, value));
     }
 
     private static void writeVal(Writer out, String name, String value) throws IOException {
-        out.write(String.format("%-20s : %s\n", name, value));
+        out.write(formatProperty('s', name, value));
+    }
+
+    private static String formatProperty(char type, String name, Object value) {
+        return String.format("%-20s : %" + type + getNewline(), name, value);
+    }
+
+    private static String getNewline() {
+        return System.getProperty("line.separator");
     }
 
     public void write() {
