@@ -203,7 +203,7 @@ public class LogPlayer {
 
     private int getGoalStepThresholdFrames() {
         float fps = 1 / SECONDS_PER_FRAME;
-        return (int) (fps * GOAL_STEP_THRESHOLD_SECONDS);
+        return (int) Math.ceil(fps * GOAL_STEP_THRESHOLD_SECONDS);
     }
 
     public boolean hasPreviousGoal() {
@@ -384,13 +384,13 @@ public class LogPlayer {
                 try {
                     float msPerFrame = SECONDS_PER_FRAME * 1000;
                     if (playing && playbackSpeed != 0) {
-                        Thread.sleep(Math.abs((int) (msPerFrame / playbackSpeed)));
+                        Thread.sleep(Math.abs((int) Math.ceil(msPerFrame / playbackSpeed)));
                         if (playbackSpeed > 0)
                             nextFrame++;
                         else
                             nextFrame--;
                     } else {
-                        Thread.sleep((int) msPerFrame);
+                        Thread.sleep((int) Math.ceil(msPerFrame));
                     }
 
                     if (desiredFrame != null) {

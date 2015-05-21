@@ -106,7 +106,7 @@ public class LogAnalyzerThread extends Thread {
 
         if (scoringTeam != -1) {
             int frame = logfile.getCurrentFrame();
-            int goalWindowFrames = (int) ((1 / stepSize) * LogPlayer.GOAL_WINDOW_SECONDS);
+            int goalWindowFrames = (int) Math.ceil((1 / stepSize) * LogPlayer.GOAL_WINDOW_SECONDS);
             int viewFrame = Math.max(0, frame - goalWindowFrames);
             callback.goalFound(new Goal(frame, viewFrame, scoringTeam));
         }
@@ -134,7 +134,7 @@ public class LogAnalyzerThread extends Thread {
                 float stepSize = time - lastTime;
                 // estimate total number of frames
                 float halfTime = world.getGameState().getHalfTime();
-                int numFrames = (int) ((1 / stepSize) * halfTime) + numPauseFrames;
+                int numFrames = (int) Math.ceil(((1 / stepSize) * halfTime) + numPauseFrames);
                 callback.stepSizeFound(stepSize, numFrames);
                 this.stepSize = stepSize;
             }
