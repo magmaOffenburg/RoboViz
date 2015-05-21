@@ -211,7 +211,7 @@ public class LogPlayer {
             return false;
 
         for (Goal goal : goals) {
-            if (getDesiredFrame() > goal.viewFrame)
+            if (getDesiredFrame() - getGoalStepThresholdFrames() > goal.viewFrame)
                 return true;
         }
         return false;
@@ -222,7 +222,7 @@ public class LogPlayer {
             return false;
 
         for (Goal goal : goals) {
-            if (getDesiredFrame() < goal.viewFrame)
+            if (getDesiredFrame() + getGoalStepThresholdFrames() < goal.viewFrame)
                 return true;
         }
         return false;
