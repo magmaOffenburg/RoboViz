@@ -46,7 +46,7 @@ public class LogPlayer {
     /** how many seconds before a goal to jump to */
     public static final int                 GOAL_WINDOW_SECONDS         = 12;
     /** time within which to jump over goals for nicer stepping during playback */
-    private static final float              GOAL_STEP_THRESHOLD_SECONDS = 1f;
+    private static final float              GOAL_STEP_THRESHOLD_SECONDS = 3f;
 
     private final Configuration             config;
     private ILogfileReader                  logfile;
