@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import rv.Configuration;
+import rv.util.SwingUtil;
 import config.RVConfigure.SaveListener;
 
 public class GeneralPanel extends JPanel implements SaveListener {
@@ -52,6 +53,7 @@ public class GeneralPanel extends JPanel implements SaveListener {
 
         recordLogsCB = new JCheckBox("Record Logfiles", config.recordLogs);
         logDirectoryTF = new JTextField(config.logfileDirectory);
+        SwingUtil.setPreferredWidth(logDirectoryTF, 150);
         openDirectoryButton = new JButton("...");
         openDirectoryButton.addActionListener(new ActionListener() {
             @Override

@@ -100,7 +100,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
         }
 
         teamColorTable = new JTable(tableModel);
-        teamColorTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
+        teamColorTable.setDefaultRenderer(Color.class, new ColorRenderer());
         teamColorTable.setDefaultEditor(Color.class, new ColorEditor());
         teamColorTable.getColumnModel().getColumn(1).setMaxWidth(30);
         teamColorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -154,12 +154,10 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
      */
     private class ColorRenderer extends JLabel implements TableCellRenderer {
 
-        Border  unselectedBorder = null;
-        Border  selectedBorder   = null;
-        boolean isBordered       = true;
+        Border unselectedBorder = null;
+        Border selectedBorder   = null;
 
-        public ColorRenderer(boolean isBordered) {
-            this.isBordered = isBordered;
+        public ColorRenderer() {
             setOpaque(true);
         }
 
@@ -167,20 +165,18 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
                 boolean isSelected, boolean hasFocus, int row, int column) {
             Color newColor = (Color) color;
             setBackground(newColor);
-            if (isBordered) {
-                if (isSelected) {
-                    if (selectedBorder == null) {
-                        selectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
-                                table.getSelectionBackground());
-                    }
-                    setBorder(selectedBorder);
-                } else {
-                    if (unselectedBorder == null) {
-                        unselectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
-                                table.getBackground());
-                    }
-                    setBorder(unselectedBorder);
+            if (isSelected) {
+                if (selectedBorder == null) {
+                    selectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
+                            table.getSelectionBackground());
                 }
+                setBorder(selectedBorder);
+            } else {
+                if (unselectedBorder == null) {
+                    unselectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
+                            table.getBackground());
+                }
+                setBorder(unselectedBorder);
             }
 
             setToolTipText("RGB value: " + newColor.getRed() + ", " + newColor.getGreen() + ", "
@@ -217,6 +213,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
             if (EDIT.equals(e.getActionCommand())) {
                 button.setBackground(currentColor);
                 colorChooser.setColor(currentColor);
+                dialog.setLocationRelativeTo(configProg);
                 dialog.setVisible(true);
 
                 fireEditingStopped();
