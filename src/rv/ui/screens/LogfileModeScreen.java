@@ -40,6 +40,12 @@ public class LogfileModeScreen extends ViewerScreenBase {
             public void playerStateChanged(boolean playing) {
                 openFileOverlay.setVisible(!player.isValid());
             }
+
+            @Override
+            public void logfileChanged() {
+                prevScoreL = -1;
+                prevScoreR = -1;
+            }
         });
     }
 

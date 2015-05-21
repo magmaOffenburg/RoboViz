@@ -196,5 +196,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     @Override
     public void connectionChanged(ServerComm server) {
         connectionOverlay.setVisible(!server.isConnected());
+        if (!server.isConnected()) {
+            prevScoreL = -1;
+            prevScoreR = -1;
+        }
     }
 }

@@ -60,8 +60,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     private AgentOverheadType          agentOverheadType = AgentOverheadType.ANNOTATIONS;
     protected final BorderTextRenderer tr;
 
-    private int                        prevScoreL        = -1;
-    private int                        prevScoreR        = -1;
+    protected int                      prevScoreL        = -1;
+    protected int                      prevScoreR        = -1;
     private boolean                    showNumPlayers    = false;
 
     public ViewerScreenBase(Viewer viewer) {

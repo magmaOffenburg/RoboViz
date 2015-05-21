@@ -202,9 +202,14 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
         return button;
     }
 
+    @Override
     public void playerStateChanged(boolean playing) {
         updateButtons(playing, player.isAtEnd());
         updateSlider(playing);
+    }
+
+    @Override
+    public void logfileChanged() {
     }
 
     private void updateButtons(Boolean playing, boolean atEnd) {

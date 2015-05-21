@@ -38,7 +38,10 @@ import rv.world.WorldModel;
 public class LogPlayer {
 
     public interface StateChangeListener {
+
         void playerStateChanged(boolean playing);
+
+        void logfileChanged();
     }
 
     /** the $monitorLoggerStep value from spark.rb */
@@ -321,6 +324,9 @@ public class LogPlayer {
             }
             logfile = new LogfileReaderBuffered(new Logfile(file), 200);
             startAnalyzerThread(file);
+
+            for (StateChangeListener l : listeners)
+                l.logfileChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
