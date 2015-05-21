@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import rv.Configuration;
+import rv.Globals;
 import rv.util.SwingUtil;
 import config.RVConfigure.SaveListener;
 
@@ -207,6 +208,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
             colorChooser = new JColorChooser();
             dialog = JColorChooser.createDialog(button, "Pick a Color", true, colorChooser, this,
                     null);
+            dialog.setIconImage(Globals.getIcon());
         }
 
         public void actionPerformed(ActionEvent e) {
