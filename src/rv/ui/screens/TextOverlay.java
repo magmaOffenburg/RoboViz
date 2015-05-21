@@ -28,16 +28,18 @@ import rv.world.WorldModel;
  */
 public class TextOverlay implements GameState.GameStateChangeListener {
 
-    private static final int FADE_DURATION = 750;
+    private static final int FADE_DURATION   = 750;
 
     private final String     text;
     private final WorldModel world;
     private int              duration;
     private int              x, y;
-    private float            a             = 1;
-    private float            startTime     = 0;
-    private float            curTime       = 0;
-    private boolean          done          = false;
+    private float            alpha           = 1;
+    private int              elapsedReal     = 0;
+    private long             lastTimeReal    = 0;
+    private float            startTimeServer = 0;
+    private float            curTimeServer   = 0;
+    private boolean          expired         = false;
     private final float[]    color;
 
     public void setDuration(int duration) {
@@ -45,7 +47,7 @@ public class TextOverlay implements GameState.GameStateChangeListener {
     }
 
     public boolean isExpired() {
-        return done;
+        return expired;
     }
 
     public void setEnabled(boolean enabled) {
@@ -59,20 +61,26 @@ public class TextOverlay implements GameState.GameStateChangeListener {
     public TextOverlay(String text, WorldModel world, int duration, float[] color) {
         this.world = world;
         this.duration = duration;
-        this.startTime = world.getGameState().getTime();
-        curTime = startTime;
+        this.startTimeServer = world.getGameState().getTime();
+        curTimeServer = startTimeServer;
         this.text = text;
         this.color = color;
     }
 
     private void update() {
-        int elapsedMS = Math.abs((int) ((curTime - startTime) * 1000));
+        long curTimeReal = System.currentTimeMillis();
+        if (lastTimeReal != 0)
+            elapsedReal += (curTimeReal - lastTimeReal);
+        lastTimeReal = curTimeReal;
 
-        if (elapsedMS > duration)
-            a = color[3] * Math.max(1 - (float) (elapsedMS - duration) / FADE_DURATION, 0);
+        int elapsedServer = Math.abs((int) ((curTimeServer - startTimeServer) * 1000));
 
-        if (a == 0) {
-            done = true;
+        int elapsed = Math.max(elapsedServer, elapsedReal);
+        if (elapsed > duration)
+            alpha = color[3] * Math.max(1 - (float) (elapsed - duration) / FADE_DURATION, 0);
+
+        if (alpha == 0) {
+            expired = true;
             setEnabled(false);
         }
     }
@@ -87,8 +95,8 @@ public class TextOverlay implements GameState.GameStateChangeListener {
         if (duration > 0)
             update();
         calcXY(tr, w, h);
-        Color textColor = new Color(color[0], color[1], color[2], a);
-        Color shadowColor = new Color(0, 0, 0, a);
+        Color textColor = new Color(color[0], color[1], color[2], alpha);
+        Color shadowColor = new Color(0, 0, 0, alpha);
         tr.drawWithShadow(text, x, y, textColor, shadowColor);
     }
 
@@ -102,6 +110,6 @@ public class TextOverlay implements GameState.GameStateChangeListener {
 
     @Override
     public void gsTimeChanged(GameState gs) {
-        curTime = gs.getTime();
+        curTimeServer = gs.getTime();
     }
 }
