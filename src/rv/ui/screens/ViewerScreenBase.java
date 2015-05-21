@@ -25,7 +25,7 @@ import rv.comm.rcssserver.GameState;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
 import rv.ui.view.RobotVantageThirdPerson;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;

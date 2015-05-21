@@ -30,7 +30,7 @@ import javax.swing.WindowConstants;
 import rv.Configuration;
 import rv.Globals;
 import rv.Viewer;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 
 public class RVConfigure extends JFrame {
 

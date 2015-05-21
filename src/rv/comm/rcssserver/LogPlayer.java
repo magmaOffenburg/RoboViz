@@ -27,6 +27,7 @@ import js.math.Maths;
 import rv.Configuration;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.util.StringUtil;
+import rv.util.swing.FileChooser;
 import rv.world.WorldModel;
 
 /**
@@ -292,7 +293,7 @@ public class LogPlayer {
     }
 
     public void openFileDialog(JFrame parent) {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new FileChooser();
         String logfileDirectory = config.general.logfileDirectory;
         if (logfileDirectory != null && !logfileDirectory.isEmpty()) {
             fileChooser.setCurrentDirectory(new File(logfileDirectory));

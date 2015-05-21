@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import rv.Globals;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 
 public class FramePanelBase {
     protected final JFrame frame;

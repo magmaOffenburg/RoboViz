@@ -1,4 +1,4 @@
-package rv.util;
+package rv.util.swing;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -8,15 +8,15 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 
 public class SwingUtil {
 
-    public static GraphicsDevice getCurrentScreen(JFrame frame) {
-        return getCurrentScreen(frame.getLocation(), frame.getSize());
+    public static GraphicsDevice getCurrentScreen(Window window) {
+        return getCurrentScreen(window.getLocation(), window.getSize());
     }
 
     public static GraphicsDevice getCurrentScreen(Point location, Dimension size) {
@@ -47,8 +47,8 @@ public class SwingUtil {
         return percentage < 0 ? 0 : percentage;
     }
 
-    public static Point getCurrentScreenLocation(JFrame frame) {
-        GraphicsDevice currentScreen = getCurrentScreen(frame);
+    public static Point getCurrentScreenLocation(Window window) {
+        GraphicsDevice currentScreen = getCurrentScreen(window);
         if (currentScreen == GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()) {
             return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
@@ -57,11 +57,24 @@ public class SwingUtil {
         return currentScreen.getDefaultConfiguration().getBounds().getLocation();
     }
 
-    public static void centerOnScreenAtLocation(JFrame frame, Point desiredLocation) {
-        GraphicsDevice currentScreen = getCurrentScreen(desiredLocation, frame.getSize());
+    public static void centerOnScreenAtLocation(Window window, Point desiredLocation) {
+        GraphicsDevice currentScreen = getCurrentScreen(desiredLocation, window.getSize());
         Rectangle2D screenBounds = currentScreen.getDefaultConfiguration().getBounds();
-        frame.setLocation((int) screenBounds.getCenterX() - (frame.getWidth() / 2),
-                (int) screenBounds.getCenterY() - (frame.getHeight() / 2));
+        window.setLocation((int) screenBounds.getCenterX() - (window.getWidth() / 2),
+                (int) screenBounds.getCenterY() - (window.getHeight() / 2));
+    }
+
+    /**
+     * A version of setLocationRelativeTo() that takes the maximum window bounds into account
+     * (taskbar).
+     */
+    public static void setLocationRelativeTo(Window window, Component component) {
+        window.setLocationRelativeTo(component);
+        Point screenLocation = getCurrentScreenLocation(window);
+        if (window.getX() < screenLocation.x)
+            window.setLocation(screenLocation.x, window.getY());
+        if (window.getY() < screenLocation.y)
+            window.setLocation(window.getX(), screenLocation.y);
     }
 
     public static Color toColor(float[] color) {

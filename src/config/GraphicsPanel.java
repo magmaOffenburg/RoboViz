@@ -33,7 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import rv.Configuration;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 import config.RVConfigure.SaveListener;
 
 public class GraphicsPanel extends JPanel implements SaveListener {

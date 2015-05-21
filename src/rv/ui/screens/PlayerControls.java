@@ -42,7 +42,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 
 /**
  * Dialog containing the media player controls for log mode

@@ -12,10 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import rv.Configuration;
-import rv.util.SwingUtil;
+import rv.util.swing.FileChooser;
+import rv.util.swing.SwingUtil;
 import config.RVConfigure.SaveListener;
 
 public class GeneralPanel extends JPanel implements SaveListener {
+
     final RVConfigure           configProg;
     final Configuration.General config;
 
@@ -58,7 +60,7 @@ public class GeneralPanel extends JPanel implements SaveListener {
         openDirectoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser(logDirectoryTF.getText());
+                JFileChooser fileChooser = new FileChooser(logDirectoryTF.getText());
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 fileChooser.setAcceptAllFileFilterUsed(false);
                 if (fileChooser.showOpenDialog(configProg) != JFileChooser.CANCEL_OPTION)

@@ -22,7 +22,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import rv.Configuration;
 import rv.Globals;
-import rv.util.SwingUtil;
+import rv.util.swing.SwingUtil;
 import config.RVConfigure.SaveListener;
 
 public class TeamColorsPanel extends JPanel implements SaveListener {
@@ -215,7 +215,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
             if (EDIT.equals(e.getActionCommand())) {
                 button.setBackground(currentColor);
                 colorChooser.setColor(currentColor);
-                dialog.setLocationRelativeTo(configProg);
+                SwingUtil.setLocationRelativeTo(dialog, configProg);
                 dialog.setVisible(true);
 
                 fireEditingStopped();
