@@ -49,8 +49,8 @@ public class SimsparkController implements CameraController, GameStateChangeList
     protected Vec2f             lastMouse = new Vec2f(0);
 
     float                       dL, dR, dF, dB, dU, dD = 0;
-    final float                 dMax      = 1;
-    final float                 dChange   = 0.08f;
+    float                       dMax      = 1;
+    float                       dChange   = 0.08f;
 
     private CameraSetting[]     cameras;
 
@@ -227,6 +227,10 @@ public class SimsparkController implements CameraController, GameStateChangeList
         case KeyEvent.VK_PAGE_UP:
             moveU = true;
             break;
+        case KeyEvent.VK_SHIFT:
+            dChange = 1;
+            dMax = 0.5f;
+            break;
         }
     }
 
@@ -257,6 +261,10 @@ public class SimsparkController implements CameraController, GameStateChangeList
         case KeyEvent.VK_PAGE_UP:
             moveU = false;
             break;
+        case KeyEvent.VK_SHIFT:
+            dChange = 0.08f;
+            dMax = 1;
+            break;
         }
     }
 
@@ -266,6 +274,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         canvas.addMouseMotionListener(this);
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
+        canvas.addFocusListener(this);
     }
 
     @Override
@@ -274,6 +283,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         canvas.removeMouseMotionListener(this);
         canvas.removeMouseListener(this);
         canvas.removeMouseWheelListener(this);
+        canvas.removeFocusListener(this);
     }
 
     @Override
@@ -308,5 +318,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
         moveR = false;
         moveU = false;
         moveD = false;
+        dChange = 0.08f;
+        dMax = 1;
     }
 }
