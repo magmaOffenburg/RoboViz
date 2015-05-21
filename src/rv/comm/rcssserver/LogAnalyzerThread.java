@@ -98,10 +98,10 @@ public class LogAnalyzerThread extends Thread {
         int scoreRight = world.getGameState().getScoreRight();
 
         int scoringTeam = -1;
-        if (lastScoreLeft != -1 && scoreRight != lastScoreRight) {
-            scoringTeam = Team.RIGHT;
-        } else if (lastScoreRight != -1 && scoreRight != lastScoreRight) {
+        if (lastScoreLeft != -1 && scoreLeft != lastScoreLeft) {
             scoringTeam = Team.LEFT;
+        } else if (lastScoreRight != -1 && scoreRight != lastScoreRight) {
+            scoringTeam = Team.RIGHT;
         }
 
         if (scoringTeam != -1) {
