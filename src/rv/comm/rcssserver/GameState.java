@@ -189,6 +189,16 @@ public class GameState implements ServerChangeListener {
         listeners.remove(l);
     }
 
+    public void reset() {
+        teamLeft = null;
+        teamRight = null;
+        scoreLeft = 0;
+        scoreRight = 0;
+        playMode = "<Play Mode>";
+        time = 0;
+        half = 0;
+    }
+
     /**
      * Parses expression and updates state
      */

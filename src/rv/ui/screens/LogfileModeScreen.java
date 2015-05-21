@@ -29,7 +29,7 @@ public class LogfileModeScreen extends ViewerScreenBase {
     private final PlayerControls playDialog;
     private final InfoOverlay    openFileOverlay;
 
-    public LogfileModeScreen(Viewer viewer) {
+    public LogfileModeScreen(final Viewer viewer) {
         super(viewer);
         this.player = viewer.getLogPlayer();
         playDialog = PlayerControls.getInstance(player);
@@ -45,6 +45,7 @@ public class LogfileModeScreen extends ViewerScreenBase {
             public void logfileChanged() {
                 prevScoreL = -1;
                 prevScoreR = -1;
+                viewer.getWorldModel().reset();
             }
         });
     }

@@ -54,6 +54,8 @@ public class WorldModel {
 
     private final GameState                          gameState    = new GameState();
     private SceneGraph                               sceneGraph   = null;
+    private ContentManager                           cm;
+    private Configuration                            config;
 
     private final ArrayList<ISceneGraphItem>         sgItems      = new ArrayList<>();
 
@@ -165,18 +167,15 @@ public class WorldModel {
     }
 
     public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode) {
+        this.cm = cm;
+        this.config = config;
         GL2 gl = glObj.getGL2();
 
         field = new Field(cm.getModel("models/newfield.obj"), cm);
         gameState.addListener(field);
         gameState.addListener(cm);
 
-        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
-                config.teamColors);
-        gameState.addListener(leftTeam);
-        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
-                config.teamColors);
-        gameState.addListener(rightTeam);
+        initTeams();
 
         sgItems.add(leftTeam);
         sgItems.add(rightTeam);
@@ -197,6 +196,15 @@ public class WorldModel {
         lighting.addLight(d1);
     }
 
+    private void initTeams() {
+        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
+                config.teamColors);
+        gameState.addListener(leftTeam);
+        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
+                config.teamColors);
+        gameState.addListener(rightTeam);
+    }
+
     public void update(GL gl, double elapsedMS, UserInterface ui) {
         // Allow scene graph items to update their states prior to rendering.
         // This is done in the update loop rather than the scene graph update
@@ -213,5 +221,12 @@ public class WorldModel {
     public void dispose(GL gl) {
         if (field != null)
             field.dispose(gl);
+    }
+
+    public void reset() {
+        gameState.reset();
+        if (cm != null && config != null)
+            initTeams();
+        setSceneGraph(null);
     }
 }
