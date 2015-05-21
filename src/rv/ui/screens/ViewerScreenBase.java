@@ -194,7 +194,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F11 && e.isControlDown())
-            selectPlayer(keyCode - KeyEvent.VK_F1 + 1, !e.isAltDown());
+            selectPlayer(keyCode - KeyEvent.VK_F1 + 1, !e.isShiftDown());
 
         switch (keyCode) {
         case KeyEvent.VK_SPACE:

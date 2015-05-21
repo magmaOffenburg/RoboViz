@@ -19,12 +19,17 @@ package rv;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EventObject;
@@ -38,7 +43,9 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import js.jogl.GLInfo;
@@ -229,7 +236,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         canvas = new GLCanvas(caps);
         canvas.setFocusTraversalKeysEnabled(false);
 
-        frame = new JFrame("RoboViz");
+        frame = new RVFrame("RoboViz");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -432,5 +439,18 @@ public class Viewer extends GLProgram implements GLEventListener {
         }
 
         renderer.render(drawable, config.graphics);
+    }
+
+    private class RVFrame extends JFrame {
+
+        public RVFrame(String title) throws HeadlessException {
+            super(title);
+        }
+
+        @Override
+        public void list(PrintStream out, int indent) {
+            // hack to suppress the output of java.awt.Window's
+            // hardcoded debugging hotkey Ctrl+Shift+F1
+        }
     }
 }

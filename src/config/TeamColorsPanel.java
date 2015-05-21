@@ -140,7 +140,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
         }
     }
 
-    class TeamColorsTableModel extends DefaultTableModel {
+    private class TeamColorsTableModel extends DefaultTableModel {
         @Override
         public Class getColumnClass(int columnIndex) {
             return getValueAt(0, columnIndex).getClass();
@@ -148,7 +148,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
     }
 
     /**
-     * @see http
+     * @see http 
      *      ://www.java2s.com/Code/Java/Swing-JFC/Tablewithacustomcellrendererandeditorforthecolordata
      *      .htm
      */
@@ -190,7 +190,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
     }
 
     /**
-     * @see http
+     * @see http 
      *      ://www.java2s.com/Code/Java/Swing-JFC/Tablewithacustomcellrendererandeditorforthecolordata
      *      .htm
      */
