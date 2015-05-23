@@ -194,10 +194,14 @@ public class WorldModel {
     }
 
     private void initTeams() {
-        if (leftTeam != null)
+        if (leftTeam != null) {
+            gameState.removeListener(leftTeam);
             sgItems.remove(leftTeam);
-        if (rightTeam != null)
+        }
+        if (rightTeam != null) {
+            gameState.removeListener(rightTeam);
             sgItems.remove(rightTeam);
+        }
 
         leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
                 config.teamColors);
