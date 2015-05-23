@@ -177,9 +177,6 @@ public class WorldModel {
 
         initTeams();
 
-        sgItems.add(leftTeam);
-        sgItems.add(rightTeam);
-
         ball = new Ball(cm);
         sgItems.add(ball);
 
@@ -197,12 +194,20 @@ public class WorldModel {
     }
 
     private void initTeams() {
+        if (leftTeam != null)
+            sgItems.remove(leftTeam);
+        if (rightTeam != null)
+            sgItems.remove(rightTeam);
+
         leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
                 config.teamColors);
         gameState.addListener(leftTeam);
         rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
                 config.teamColors);
         gameState.addListener(rightTeam);
+
+        sgItems.add(leftTeam);
+        sgItems.add(rightTeam);
     }
 
     public void update(GL gl, double elapsedMS, UserInterface ui) {

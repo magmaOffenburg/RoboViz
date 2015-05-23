@@ -16,7 +16,6 @@
 
 package rv.world;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import js.jogl.model.ObjMaterial;
