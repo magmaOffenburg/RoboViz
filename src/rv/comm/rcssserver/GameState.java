@@ -18,6 +18,7 @@ package rv.comm.rcssserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
 
@@ -91,7 +92,7 @@ public class GameState implements ServerChangeListener {
     private float                               time;
     private int                                 half;
 
-    private final List<GameStateChangeListener> listeners            = new ArrayList<>();
+    private final List<GameStateChangeListener> listeners            = new CopyOnWriteArrayList<>();
 
     public float getFieldLength() {
         return fieldLength;
@@ -313,7 +314,7 @@ public class GameState implements ServerChangeListener {
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
-            for (GameStateChangeListener l : new ArrayList<>(listeners)) {
+            for (GameStateChangeListener l : listeners) {
                 if (playStateChanges > 0)
                     l.gsPlayStateChanged(this);
                 if (timeChanges > 0)

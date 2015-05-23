@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import js.math.Maths;
@@ -60,8 +61,8 @@ public class LogPlayer {
     private boolean                         playing;
     private double                          playbackSpeed               = 1;
     private Integer                         desiredFrame                = null;
-    private final List<Goal>                goals                       = new ArrayList<>();
-    private final List<StateChangeListener> listeners                   = new ArrayList<>();
+    private final List<Goal>                goals                       = new CopyOnWriteArrayList<>();
+    private final List<StateChangeListener> listeners                   = new CopyOnWriteArrayList<>();
     private boolean                         logAnalyzed                 = false;
     private int                             analyzedFrames              = 0;
 

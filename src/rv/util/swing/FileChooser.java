@@ -6,7 +6,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 public class FileChooser extends JFileChooser {
-    
+
     public FileChooser() {
         super();
     }

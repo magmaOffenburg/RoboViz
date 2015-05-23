@@ -18,6 +18,7 @@ package rv.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import js.jogl.model.ObjMaterial;
 import rv.Configuration;
 import rv.Objects;
@@ -97,7 +98,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         this.id = id;
         this.content = content;
         this.config = config;
-        agents = new ArrayList<>();
+        agents = new CopyOnWriteArrayList<>();
 
         name = (id == LEFT) ? "<left>" : "<right>";
 
@@ -109,7 +110,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     }
 
     @Override
-    public synchronized void sceneGraphChanged(SceneGraph sg) {
+    public void sceneGraphChanged(SceneGraph sg) {
         agents.clear();
 
         // Add agents from scene graph to this team
@@ -123,7 +124,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     }
 
     @Override
-    public synchronized void update(SceneGraph sg) {
+    public void update(SceneGraph sg) {
         for (Agent agent : agents)
             agent.update(sg);
     }
