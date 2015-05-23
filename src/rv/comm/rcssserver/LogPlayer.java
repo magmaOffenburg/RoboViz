@@ -208,7 +208,7 @@ public class LogPlayer {
 
     private int getGoalStepThresholdFrames() {
         float fps = 1 / SECONDS_PER_FRAME;
-        return (int) Math.ceil(fps * GOAL_STEP_THRESHOLD_SECONDS);
+        return (int) Math.round(fps * GOAL_STEP_THRESHOLD_SECONDS);
     }
 
     public boolean hasPreviousGoal() {
@@ -251,7 +251,7 @@ public class LogPlayer {
     private Integer getPreviousGoalNumber() {
         Integer previousGoalNumber = null;
         for (int i = 0; i < goals.size(); i++) {
-            if (getDesiredFrame() > goals.get(i).viewFrame) {
+            if (getDesiredFrame() - getGoalStepThresholdFrames() > goals.get(i).viewFrame) {
                 previousGoalNumber = i + 1;
             }
         }
@@ -261,7 +261,7 @@ public class LogPlayer {
     private Integer getNextGoalNumber() {
         Integer nextGoalNumber = null;
         for (int i = 0; i < goals.size(); i++) {
-            if (getDesiredFrame() < goals.get(i).viewFrame) {
+            if (getDesiredFrame() + getGoalStepThresholdFrames() < goals.get(i).viewFrame) {
                 nextGoalNumber = i + 1;
                 break;
             }
@@ -307,7 +307,7 @@ public class LogPlayer {
         File logFile = fileChooser.getSelectedFile();
         if (logFile.exists()) {
             openLogfile(logFile);
-            resume();
+            rewind();
             startRunnerThread();
         }
     }
@@ -392,13 +392,13 @@ public class LogPlayer {
                 try {
                     float msPerFrame = SECONDS_PER_FRAME * 1000;
                     if (playing && playbackSpeed != 0) {
-                        Thread.sleep(Math.abs((int) Math.ceil(msPerFrame / playbackSpeed)));
+                        Thread.sleep(Math.abs((int) Math.round(msPerFrame / playbackSpeed)));
                         if (playbackSpeed > 0)
                             nextFrame++;
                         else
                             nextFrame--;
                     } else {
-                        Thread.sleep((int) Math.ceil(msPerFrame));
+                        Thread.sleep((int) Math.round(msPerFrame));
                     }
 
                     if (desiredFrame != null) {
