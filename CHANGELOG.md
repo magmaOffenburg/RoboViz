@@ -4,7 +4,7 @@
 *Note: Java 7 is required to compile RoboViz now, whereas the version on the SourceForge repository works with Java 6.*
 
 * Unified Log Mode and Live Mode - Log Mode now has the same features and shortcuts as Live Mode, except for a few necessary restrictions (server commands and drawings)
-* Log Player:
+* **Log Player:**
 	* fixed another Logplayer window being created when dragging RoboViz to a different monitor on Linux
 	* added a separate thread for log playback to prevent the UI from freezing when jumping a lot of frames (especially noticable with the slider)
 	* added a "Jump to previous / next" goal feature (a separate thread analyzes the logfile in the background to find goals, so the functionality is not available right away)
@@ -15,7 +15,7 @@
 	* the "ms per frame"-value is now extracted from the logfile, making it so that the playback speed is independant of the `$monitorLoggerStep` value of the server config while recording it
 	* removed the progress slider from the RoboViz main window
 	* fixed score / team colors / names etc. not being reset properly when switching logfiles
-* Shortcuts:
+* **Shortcuts:**
 	* added a `F1` shortcut that displays a help page with a list of all shortcuts
 	* changed the ball selection shortcut from `Ctrl+0` to just `0`
 	* fixed `Numpad 0` not working with the ball selection shortcut
@@ -38,14 +38,14 @@
 	* added a `G` shortcut to jump to the previous goal (log mode)
 	* added a `H` shortcut to jump to the next goal (log mode)
 	* changed the cycle annotations shortcut (`I`) to only toggle between "none" and "player numbers" if there aren't any custom agent annotations
-* Playmode Overlay:
+* **Playmode Overlay:**
 	* allow cycling through playmodes (pressing up while the first playmode is selected selects the last playmode and vice-versa)
 	* allow filtering playmodes by a string
-* Field 2D Overlay:
+* **Field 2D Overlay:**
 	* made the field transparent and thus less obstructive
 	* slightly decreased the size of the ball
 	* the overlay is now rendered under the connection overlay
-* Command-line arguments:
+* **Command-line arguments:**
 	* instead of simply passing a log file path as the first argument to the start scripts, it now has to be in the from of `--logFile=path`
 	* fixed file paths starting with `~` not working on Linux
 	* output a more helpful error message for invalid logfile paths (includes the path now)
@@ -54,7 +54,7 @@
 	* added a `--serverHost=` argument that allows overriding the server host specified in the config
 	* added a `--serverPort=` argument that allows overriding the server port specified in the config
 	* added a `--drawingFilter=` argument that allows specifying the filter for the drawings panel
-* Configuration Window:
+* **Configuration Window:**
 	* added a UI for settings that could only be changed in the `config.txt` file before:
 		* Record Logfiles
 		* VSync
@@ -68,14 +68,14 @@
 	* now uses the same look and feel as the other windows
 	* made "Start RoboViz" the default button (allows to use `Enter` as a shortcut)
 	* made sure OS-specific line endings are used when saving the config (previously `LF` was used even on Windows)
-* Bugfixes:
+* **Bugfixes:**
 	* fixed taking screenshots and recording logfiles on Windows
 	* fixed the `config.bat` not working
 	* fixed the ball's velocity not being reset to `(0 0 0)` when it's beamed
 	* fixed `ConcurrentModificationException`s
 	* fixed the main window not using the RoboViz icon on Linux
 	* fixed RoboViz thinking that modifier keys are still pressed if they are pressed while the application loses focus and are then released 
-* Other changes and improvements:
+* **Other changes and improvements:**
 	* screenshots are now saved in a `screenshots/` subdirectory
 	* logfiles are now saved in a `logs/` subdirectory
 	* more helpful "disconnected" overlay in live mode (displays server IP and port)
