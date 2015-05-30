@@ -176,6 +176,13 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         return false;
     }
 
+    @Override
+    protected void controlAltClick(MouseEvent e) {
+        boolean fAir = e.isShiftDown();
+        Vec3f fieldPos = viewer.getUI().getObjectPicker().pickField();
+        pushBallTowardPosition(fieldPos, fAir);
+    }
+
     private void moveSelection(Vec3f pos) {
         if (pos != null) {
             ISelectable selected = viewer.getWorldModel().getSelectedObject();
@@ -190,6 +197,31 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
                 boolean leftTeam = a.getTeam().getID() == Team.LEFT;
                 viewer.getNetManager().getServer().moveAgent(serverPos, leftTeam, a.getID());
             }
+        }
+    }
+
+    private void pushBallTowardPosition(Vec3f pos, boolean fAir) {
+        if (pos != null) {
+            Vec3f targetPos = WorldModel.COORD_TFN.transform(pos);
+            Vec3f ballPos = WorldModel.COORD_TFN.transform(viewer.getWorldModel().getBall()
+                    .getPosition());
+            ballPos.z = viewer.getWorldModel().getGameState().getBallRadius();
+            Vec3f vel;
+            float xDiff = targetPos.x - ballPos.x;
+            float yDiff = targetPos.y - ballPos.y;
+            float xyDist = (float) Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            if (fAir) {
+                final float AIR_XY_POWER_FACTOR = (float) Math.sqrt(9.81 * xyDist
+                        * (.82 + .022 * xyDist)); // with no drag = (float)Math.sqrt(9.81*xyDist/2);
+                final float Z_POWER = AIR_XY_POWER_FACTOR;
+                vel = new Vec3f((float) Math.cos(Math.atan2(yDiff, xDiff)) * AIR_XY_POWER_FACTOR,
+                        (float) Math.sin(Math.atan2(yDiff, xDiff)) * AIR_XY_POWER_FACTOR, Z_POWER);
+            } else {
+                final float GROUND_XY_POWER_FACTOR = 1.475f;
+                vel = new Vec3f(xDiff * GROUND_XY_POWER_FACTOR, yDiff * GROUND_XY_POWER_FACTOR,
+                        0.0f);
+            }
+            viewer.getNetManager().getServer().moveBall(ballPos, vel);
         }
     }
 
