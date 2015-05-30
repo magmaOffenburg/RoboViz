@@ -1,3 +1,5 @@
+cd ..
+
 IF EXIST %BIN% GOTO COMPILE
 mkdir %BIN%
 
@@ -15,8 +17,8 @@ copy lib\commons-compress-1.5.jar %BIN%\lib\
 copy scripts\roboviz.bat %BIN%\roboviz.bat
 copy scripts\config.bat %BIN%\config.bat
 copy scripts\setEnvironment.bat %BIN%\setEnvironment.bat
-copy LICENSE %BIN%\
-copy NOTICE %BIN%\
+copy LICENSE.md %BIN%\
+copy NOTICE.md %BIN%\
 copy config.txt %BIN%\
 
 cd %BIN%
