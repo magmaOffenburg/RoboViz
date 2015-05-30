@@ -28,8 +28,8 @@
 	* added a `Shift+Click` shortcut to move the ball to a position with a velocity
 	* added a `Shift+Alt+Click` shortcut to move the ball to a position at a 45 degree angle
 	* added an `E` shortcut to toggle third person perspective
-	* added `W / Up / Mouse wheel up` shortcuts to increase the FOV in Robot Vantage mode
-	* added `S / Down / Mouse wheel down` shortcuts to decrease the FOV in Robot Vantage mode
+	* added `W / Up / Mouse wheel up` shortcuts to decrease the FOV in Robot Vantage mode
+	* added `S / Down / Mouse wheel down` shortcuts to increase the FOV in Robot Vantage mode
 	* it's now possible to hold `Shift` more more precise camera movement
 	* added a `Shift+R` shortcut to reset the server time (needs rcssserver3d-0.6.9)
 	* all shortcuts that change playmodes now reset the server time if necessary (time >= 600)
