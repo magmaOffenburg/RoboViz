@@ -328,8 +328,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     public void mouseClicked(MouseEvent e) {
         if (robotVantage == null && e.getButton() == MouseEvent.BUTTON1) {
             viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
-            if (e.isControlDown() && e.isAltDown()) {
-                controlAltClick(e);
+            if (e.isShiftDown()) {
+                shiftClick(e);
             } else {
                 boolean handled = false;
                 ISelectable selectedObject = viewer.getWorldModel().getSelectedObject();
@@ -349,7 +349,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         return false;
     }
 
-    protected void controlAltClick(MouseEvent e) {
+    protected void shiftClick(MouseEvent e) {
     }
 
     @Override

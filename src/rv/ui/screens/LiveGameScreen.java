@@ -177,8 +177,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     }
 
     @Override
-    protected void controlAltClick(MouseEvent e) {
-        boolean fAir = e.isShiftDown();
+    protected void shiftClick(MouseEvent e) {
+        boolean fAir = e.isControlDown();
         Vec3f fieldPos = viewer.getUI().getObjectPicker().pickField();
         pushBallTowardPosition(fieldPos, fAir);
     }
