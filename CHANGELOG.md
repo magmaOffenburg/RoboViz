@@ -77,7 +77,7 @@
 	* fixed RoboViz thinking that modifier keys are still pressed if they are pressed while the application loses focus and are then released 
 * **Other changes and improvements:**
 	* screenshots are now saved in a `screenshots/` subdirectory
-	* logfiles are now saved in a `logs/` subdirectory
+	* logfiles are now saved in a `logfiles/` subdirectory
 	* more helpful "disconnected" overlay in live mode (displays server IP and port)
 	* major improvements to the behavior of windows with multi-monitor setups (among other things, dialogs are now displayed relative the the main window as opposed to always being on the primiary monitor)
 	* added a way to select players with the drawing API
