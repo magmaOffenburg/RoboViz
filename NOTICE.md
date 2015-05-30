@@ -5,3 +5,6 @@
 
 This product includes software developed by the following individuals:
 Justin Stoecker
+Klaus Dorer
+Jens Fischer
+Patrick MacAlpine
