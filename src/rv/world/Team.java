@@ -99,7 +99,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         this.config = config;
         agents = new CopyOnWriteArrayList<>();
 
-        name = (id == LEFT) ? "<left>" : "<right>";
+        name = (id == LEFT) ? "<Left>" : "<Right>";
 
         teamColor = new ObjMaterial(name);
         teamColor.setDiffuse(defaultColor);
@@ -171,10 +171,10 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
     public void gsPlayStateChanged(GameState gs) {
         // update team name & score
         if (id == LEFT) {
-            setName(gs.getTeamLeft() == null ? "<left>" : gs.getTeamLeft());
+            setName(gs.getTeamLeft() == null ? "<Left>" : gs.getTeamLeft());
             score = gs.getScoreLeft();
         } else {
-            setName(gs.getTeamRight() == null ? "<right>" : gs.getTeamRight());
+            setName(gs.getTeamRight() == null ? "<Right>" : gs.getTeamRight());
             score = gs.getScoreRight();
         }
     }
