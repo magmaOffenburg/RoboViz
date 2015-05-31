@@ -1,6 +1,7 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
+import js.io.ByteUtil;
 import rv.Viewer;
 import rv.world.objects.Agent;
 
@@ -13,7 +14,17 @@ public class Control extends Command {
     public Control(ByteBuffer buf, Viewer viewer) {
         super();
         this.viewer = viewer;
-        agent = Command.readAgent(buf, viewer.getWorldModel());
+
+	int type = ByteUtil.uValue(buf.get());
+
+        switch (type) {
+	case AGENT_SELECT:
+	    agent = Command.readAgent(buf, viewer.getWorldModel());
+	    break;
+        default:
+            System.err.println("Unknown control : " + type);
+            agent = null;
+        }
     }
 
     @Override
