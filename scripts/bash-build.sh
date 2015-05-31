@@ -31,6 +31,7 @@ cp ../scripts/roboviz.sh $BIN/
 cp ../scripts/config.sh $BIN/
 cp ../LICENSE.md $BIN/
 cp ../NOTICE.md $BIN/
+cp ../CHANGELOG.md $BIN/
 cp ../config.txt $BIN/
 
 # create JAR and delete bytecode directories
