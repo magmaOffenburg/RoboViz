@@ -1,0 +1,7 @@
+language: java
+
+script:
+  - cd scripts
+  - ./build-linux32.sh
+  - ./build-linux64.sh
+  - ./build-macosx.sh
