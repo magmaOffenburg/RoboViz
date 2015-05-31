@@ -326,7 +326,7 @@ public class GameState implements ServerChangeListener {
 
     @Override
     public void connectionChanged(ServerComm server) {
-        if (!server.isConnected()) {
+        if (server.isConnected()) {
             scoreLeft = 0;
             scoreRight = 0;
             teamLeft = null;
