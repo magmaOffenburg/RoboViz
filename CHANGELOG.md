@@ -1,4 +1,4 @@
-1.0.0
+1.1.0
 ------------------------------
 
 *Note: Java 7 is required to compile RoboViz now, whereas the version on the SourceForge repository works with Java 6.*
@@ -25,8 +25,8 @@
 	* added `Ctrl+Shift+[F1-F11]` shortcuts to select players from the right team
 	* added a `Tab` shortcut to select the next player in the current team
 	* added a `Shift+Tab` shortcut to select the previous player in the current team
-	* added a `Shift+Click` shortcut to move the ball to a position with a velocity
-	* added a `Ctrl+Shift+Click` shortcut to launch the ball to a position at a 45 degree angle
+	* added a `Ctrl+Alt+Click` shortcut to move the ball to a position with a velocity
+	* added a `Shift+Alt+Click` shortcut to launch the ball to a position at a 45 degree angle
 	* added an `E` shortcut to toggle third person perspective
 	* added `W / Up / Mouse wheel up` shortcuts to decrease the FOV in Robot Vantage mode
 	* added `S / Down / Mouse wheel down` shortcuts to increase the FOV in Robot Vantage mode
