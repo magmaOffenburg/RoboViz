@@ -236,7 +236,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         case KeyEvent.VK_I:
             nextAgentOverheadType();
             if (agentOverheadType == AgentOverheadType.ANNOTATIONS
-                    && !viewer.getDrawings().hasAnnotations())
+                    && !teamHasAnnotations(viewer.getWorldModel().getLeftTeam())
+                    && !teamHasAnnotations(viewer.getWorldModel().getRightTeam()))
                 nextAgentOverheadType();
             break;
         case KeyEvent.VK_N:
@@ -310,6 +311,15 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             robotVantage.setFOV(thirdPersonFOV);
             break;
         }
+    }
+
+    private boolean teamHasAnnotations(Team team) {
+        for (Agent agent : team.getAgents()) {
+            if (agent.getAnnotation() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

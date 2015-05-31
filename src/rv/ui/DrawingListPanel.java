@@ -26,7 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -186,7 +186,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
         String regex = regexField.getText();
 
         model.clear();
-        ArrayList<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
+        List<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
         for (BufferedSet<Shape> shapeSet : shapeSets) {
             if (shapeSet != null) {
                 CheckListItem item = new CheckListItem(shapeSet);
@@ -197,7 +197,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
             }
         }
 
-        ArrayList<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
+        List<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
         for (BufferedSet<Annotation> annotationSet : annotationSets) {
             if (annotationSet != null) {
                 CheckListItem item = new CheckListItem(annotationSet);

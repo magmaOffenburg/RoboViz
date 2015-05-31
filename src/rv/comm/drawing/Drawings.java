@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import rv.comm.drawing.annotations.AgentAnnotation;
@@ -37,14 +39,14 @@ public class Drawings {
     /** Event object launched when the list of sets is modified */
     public class SetListChangeEvent extends EventObject {
 
-        private final ArrayList<BufferedSet<Shape>>      shapeSets;
-        private final ArrayList<BufferedSet<Annotation>> annotationSets;
+        private final ArrayList<BufferedSet<Shape>>                 shapeSets;
+        private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets;
 
         public ArrayList<BufferedSet<Shape>> getShapeSets() {
             return shapeSets;
         }
 
-        public ArrayList<BufferedSet<Annotation>> getAnnotationSets() {
+        public CopyOnWriteArrayList<BufferedSet<Annotation>> getAnnotationSets() {
             return annotationSets;
         }
 
@@ -60,13 +62,13 @@ public class Drawings {
         void setListChanged(SetListChangeEvent evt);
     }
 
-    private final ArrayList<ShapeListListener>             listeners            = new ArrayList<>();
-    private final HashMap<String, BufferedSet<Shape>>      shapeSetListing      = new HashMap<>();
-    private final HashMap<String, BufferedSet<Annotation>> annotationSetListing = new HashMap<>();
-    private final ArrayList<BufferedSet<Shape>>            shapeSets            = new ArrayList<>();
-    private final ArrayList<BufferedSet<Annotation>>       annotationSets       = new ArrayList<>();
-    private boolean                                        changed              = false;
-    private boolean                                        visible              = true;
+    private final ArrayList<ShapeListListener>                  listeners            = new ArrayList<>();
+    private final HashMap<String, BufferedSet<Shape>>           shapeSetListing      = new HashMap<>();
+    private final HashMap<String, BufferedSet<Annotation>>      annotationSetListing = new HashMap<>();
+    private final ArrayList<BufferedSet<Shape>>                 shapeSets            = new ArrayList<>();
+    private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets       = new CopyOnWriteArrayList<>();
+    private boolean                                             changed              = false;
+    private boolean                                             visible              = true;
 
     public boolean isVisible() {
         return visible;
@@ -76,7 +78,7 @@ public class Drawings {
         visible = !visible;
     }
 
-    public ArrayList<BufferedSet<Annotation>> getAnnotationSets() {
+    public List<BufferedSet<Annotation>> getAnnotationSets() {
         return annotationSets;
     }
 
@@ -202,9 +204,5 @@ public class Drawings {
             fireShapeChangeListener();
             changed = false;
         }
-    }
-
-    public boolean hasAnnotations() {
-        return !annotationSets.isEmpty();
     }
 }
