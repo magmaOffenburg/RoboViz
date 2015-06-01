@@ -15,12 +15,12 @@ public class Control extends Command {
         super();
         this.viewer = viewer;
 
-	int type = ByteUtil.uValue(buf.get());
+        int type = ByteUtil.uValue(buf.get());
 
         switch (type) {
-	case AGENT_SELECT:
-	    agent = Command.readAgent(buf, viewer.getWorldModel());
-	    break;
+        case AGENT_SELECT:
+            agent = Command.readAgent(buf, viewer.getWorldModel());
+            break;
         default:
             System.err.println("Unknown control : " + type);
             agent = null;
