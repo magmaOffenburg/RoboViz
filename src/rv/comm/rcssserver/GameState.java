@@ -98,6 +98,7 @@ public class GameState implements ServerChangeListener {
 
     private float                               serverSpeed          = -1;
     private TreeMap<Long, Float>                serverMsgDeltas      = new TreeMap<Long, Float>();
+    private float                               accumulatedServerTime_S;
 
     private final List<GameStateChangeListener> listeners            = new CopyOnWriteArrayList<>();
 
@@ -355,19 +356,31 @@ public class GameState implements ServerChangeListener {
         // Add message time info to map
         if (serverMsgDeltas.isEmpty()) {
             serverMsgDeltas.put(msgTime, -1.0f);
+            accumulatedServerTime_S = 0;
         } else {
             serverMsgDeltas.lastEntry();
             long lastMsgTime = serverMsgDeltas.lastEntry().getKey();
             float lastMsgTimeDelta_S = (msgTime - lastMsgTime) / 1000.0f;
             // float lastMsgTimeDelta_S = (msgTime - lastMsgTime)/1000000000.0f;
+
+            float serverTimeDelta_S;
+            if (time - lastGameTime > 0) {
+                // We have a game time change for the amount of time passed
+                serverTimeDelta_S = time - lastGameTime;
+            } else {
+                // The game is paused so use DEFAULT_MSG_DELTA_S for amount of time passed
+                serverTimeDelta_S = DEFAULT_MSG_DELTA_S;
+            }
+
             if (msgTime - lastMsgTime > 0) {
-                if (time - lastGameTime > 0) {
-                    // We have a game time change for the amount of time passed
-                    serverMsgDeltas.put(msgTime, (time - lastGameTime) / lastMsgTimeDelta_S);
-                } else {
-                    // The game is paused so use DEFAULT_MSG_DELTA_S for amount of time passed
-                    serverMsgDeltas.put(msgTime, DEFAULT_MSG_DELTA_S / lastMsgTimeDelta_S);
-                }
+                serverMsgDeltas.put(msgTime, (serverTimeDelta_S + accumulatedServerTime_S)
+                        / lastMsgTimeDelta_S);
+                accumulatedServerTime_S = 0;
+            } else {
+                // Messages are coming in so fast that they have the same time stamp so just save
+                // the time delta to
+                // add to the next entry with a new time stamp
+                accumulatedServerTime_S += serverTimeDelta_S;
             }
         }
 
@@ -394,7 +407,6 @@ public class GameState implements ServerChangeListener {
         } else {
             serverSpeed = sumDeltas / numEntries;
         }
-        ;
     }
 
     @Override
