@@ -16,7 +16,12 @@
 
 package rv.comm.rcssserver;
 
+import java.lang.Float;
+import java.lang.Integer;
+import java.lang.Long;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
@@ -88,8 +93,11 @@ public class GameState implements ServerChangeListener {
     private int                                 scoreLeft;
     private int                                 scoreRight;
     private String                              playMode             = "<Play Mode>";
-    private float                               time;
+    private float                               time                 = 0;
     private int                                 half;
+
+    private float                               serverSpeed          = -1;
+    private TreeMap<Long, Float>                serverMsgDeltas      = new TreeMap<Long, Float>();
 
     private final List<GameStateChangeListener> listeners            = new CopyOnWriteArrayList<>();
 
@@ -181,6 +189,14 @@ public class GameState implements ServerChangeListener {
         return half;
     }
 
+    public String getServerSpeed() {
+        if (serverSpeed < 0) {
+            return "---";
+        }
+
+        return Integer.toString(Math.round(100 * serverSpeed)) + "%";
+    }
+
     public void addListener(GameStateChangeListener l) {
         listeners.add(l);
     }
@@ -197,6 +213,8 @@ public class GameState implements ServerChangeListener {
         playMode = "<Play Mode>";
         time = 0;
         half = 0;
+        serverSpeed = -1;
+        serverMsgDeltas.clear();
     }
 
     /**
@@ -209,6 +227,10 @@ public class GameState implements ServerChangeListener {
         int measureOrRuleChanges = 0;
         int timeChanges = 0;
         int playStateChanges = 0;
+
+        long msgTime = System.currentTimeMillis();
+        // long msgTime = System.nanoTime();
+        float lastGameTime = time;
 
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
@@ -311,6 +333,8 @@ public class GameState implements ServerChangeListener {
             }
         }
 
+        updateServerSpeed(msgTime, lastGameTime);
+
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
             for (GameStateChangeListener l : listeners) {
@@ -324,6 +348,55 @@ public class GameState implements ServerChangeListener {
         }
     }
 
+    private void updateServerSpeed(long msgTime, float lastGameTime) {
+        final long TIME_WINDOW_MS = 5000;
+        final float DEFAULT_MSG_DELTA_S = 0.04f;
+
+        // Add message time info to map
+        if (serverMsgDeltas.isEmpty()) {
+            serverMsgDeltas.put(msgTime, -1.0f);
+        } else {
+            serverMsgDeltas.lastEntry();
+            long lastMsgTime = serverMsgDeltas.lastEntry().getKey();
+            float lastMsgTimeDelta_S = (msgTime - lastMsgTime) / 1000.0f;
+            // float lastMsgTimeDelta_S = (msgTime - lastMsgTime)/1000000000.0f;
+            if (msgTime - lastMsgTime > 0) {
+                if (time - lastGameTime > 0) {
+                    // We have a game time change for the amount of time passed
+                    serverMsgDeltas.put(msgTime, (time - lastGameTime) / lastMsgTimeDelta_S);
+                } else {
+                    // The game is paused so use DEFAULT_MSG_DELTA_S for amount of time passed
+                    serverMsgDeltas.put(msgTime, DEFAULT_MSG_DELTA_S / lastMsgTimeDelta_S);
+                }
+            }
+        }
+
+        // Remove map entries outside of time window
+        SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW_MS);
+        while (!oldEntries.isEmpty()) {
+            serverMsgDeltas.remove(oldEntries.firstKey());
+        }
+
+        float sumDeltas = 0;
+        int numEntries = 0;
+
+        Float[] deltas = serverMsgDeltas.values().toArray(new Float[0]);
+        for (int i = 0; i < deltas.length; i++) {
+            float delta = deltas[i].floatValue();
+            if (delta > 0) {
+                sumDeltas += delta;
+                numEntries++;
+            }
+        }
+
+        if (numEntries == 0) {
+            serverSpeed = -1;
+        } else {
+            serverSpeed = sumDeltas / numEntries;
+        }
+        ;
+    }
+
     @Override
     public void connectionChanged(ServerComm server) {
         if (server.isConnected()) {
@@ -331,6 +404,8 @@ public class GameState implements ServerChangeListener {
             scoreRight = 0;
             teamLeft = null;
             teamRight = null;
+            serverSpeed = -1;
+            serverMsgDeltas.clear();
         }
     }
 }

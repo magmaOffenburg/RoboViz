@@ -46,6 +46,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     protected final Viewer             viewer;
 
+    private final GameStateOverlay     gameStateOverlay;
     private final Field2DOverlay       fieldOverlay;
     protected final List<Screen>       overlays          = new ArrayList<>();
 
@@ -66,7 +67,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
-        overlays.add(new GameStateOverlay(viewer));
+        gameStateOverlay = new GameStateOverlay(viewer);
+        overlays.add(gameStateOverlay);
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
@@ -467,5 +469,9 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
                 setRobotVantage(RobotVantageType.NONE);
             }
         }
+    }
+
+    protected void toggleShowServerSpeed() {
+        gameStateOverlay.toggleShowServerSpeed();
     }
 }

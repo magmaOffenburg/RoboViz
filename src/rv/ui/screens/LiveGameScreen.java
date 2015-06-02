@@ -149,6 +149,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             resetTimeIfExpired();
             viewer.getNetManager().getServer().dropBall();
             break;
+        case KeyEvent.VK_M:
+            toggleShowServerSpeed();
+            break;
         }
     }
 
