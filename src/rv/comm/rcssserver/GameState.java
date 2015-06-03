@@ -229,8 +229,8 @@ public class GameState implements ServerChangeListener {
         int timeChanges = 0;
         int playStateChanges = 0;
 
-        long msgTime = System.currentTimeMillis();
-        // long msgTime = System.nanoTime();
+        // long msgTime_NS = System.nanoTime();
+        long msgTime_MS = System.currentTimeMillis();
         float lastGameTime = time;
 
         for (SExp se : exp.getChildren()) {
@@ -334,7 +334,8 @@ public class GameState implements ServerChangeListener {
             }
         }
 
-        updateServerSpeed(msgTime, lastGameTime);
+        // updateServerSpeed(msgTime_NS, lastGameTime);
+        updateServerSpeed(msgTime_MS, lastGameTime);
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
@@ -350,6 +351,7 @@ public class GameState implements ServerChangeListener {
     }
 
     private void updateServerSpeed(long msgTime, float lastGameTime) {
+        // final long TIME_WINDOW_NS = 5000000000l;
         final long TIME_WINDOW_MS = 5000;
         final float DEFAULT_MSG_DELTA_S = 0.04f;
 
@@ -358,10 +360,7 @@ public class GameState implements ServerChangeListener {
             serverMsgDeltas.put(msgTime, -1.0f);
             accumulatedServerTime_S = 0;
         } else {
-            serverMsgDeltas.lastEntry();
-            long lastMsgTime = serverMsgDeltas.lastEntry().getKey();
-            float lastMsgTimeDelta_S = (msgTime - lastMsgTime) / 1000.0f;
-            // float lastMsgTimeDelta_S = (msgTime - lastMsgTime)/1000000000.0f;
+            long lastMsgTime = serverMsgDeltas.lastKey();
 
             float serverTimeDelta_S;
             if (time - lastGameTime > 0) {
@@ -373,39 +372,41 @@ public class GameState implements ServerChangeListener {
             }
 
             if (msgTime - lastMsgTime > 0) {
-                serverMsgDeltas.put(msgTime, (serverTimeDelta_S + accumulatedServerTime_S)
-                        / lastMsgTimeDelta_S);
+                serverMsgDeltas.put(msgTime, serverTimeDelta_S + accumulatedServerTime_S);
                 accumulatedServerTime_S = 0;
             } else {
                 // Messages are coming in so fast that they have the same time stamp so just save
-                // the time delta to
-                // add to the next entry with a new time stamp
+                // the time delta to add to the next entry with a new time stamp
                 accumulatedServerTime_S += serverTimeDelta_S;
             }
         }
 
         // Remove map entries outside of time window
+        // SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW_NS);
         SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW_MS);
         while (!oldEntries.isEmpty()) {
             serverMsgDeltas.remove(oldEntries.firstKey());
         }
 
         float sumDeltas = 0;
-        int numEntries = 0;
 
         Float[] deltas = serverMsgDeltas.values().toArray(new Float[0]);
-        for (int i = 0; i < deltas.length; i++) {
+        for (int i = 1; i < deltas.length; i++) {
             float delta = deltas[i].floatValue();
             if (delta > 0) {
                 sumDeltas += delta;
-                numEntries++;
             }
         }
 
-        if (numEntries == 0) {
-            serverSpeed = -1;
+        // long timePassed_NS = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
+        long timePassed_MS = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
+
+        // if (timePassed_NS > 0) {
+        if (timePassed_MS > 0) {
+            // serverSpeed = sumDeltas / (timePassed_NS / 1000000000.0f);
+            serverSpeed = sumDeltas / (timePassed_MS / 1000.0f);
         } else {
-            serverSpeed = sumDeltas / numEntries;
+            serverSpeed = -1;
         }
     }
 
