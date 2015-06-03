@@ -27,7 +27,7 @@ import rv.world.WorldModel;
 import rv.world.objects.Agent;
 
 /**
- * Client -> RoboVis command
+ * Client -> RoboViz command
  * 
  * @author Justin Stoecker
  */
@@ -183,7 +183,7 @@ public abstract class Command {
     }
 
     /**
-     * Reads a series of floats from a buffer and converts them from SimSpark coordinates to RoboVis
+     * Reads a series of floats from a buffer and converts them from SimSpark coordinates to RoboViz
      * coordinates
      */
     public static float[] readCoords(ByteBuffer buf, int n) {

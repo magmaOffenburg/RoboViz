@@ -36,7 +36,7 @@ public class DrawOption extends Command {
         this.drawings = viewer.getDrawings();
 
         int type = ByteUtil.uValue(buf.get());
-        
+
         switch (type) {
         case SWAP_BUFFERS:
             setName = getString(buf);

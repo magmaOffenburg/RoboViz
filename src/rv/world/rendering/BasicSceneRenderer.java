@@ -81,7 +81,7 @@ public class BasicSceneRenderer implements SceneRenderer {
 
             // NOTE: this is a hack to avoid rendering certain meshes that are
             // replaced by
-            // RoboVis; in particular, the field and skybox are treated
+            // RoboViz; in particular, the field and skybox are treated
             // differently
             for (String s : suppressedMeshes)
                 if (node.getName().endsWith(s))

@@ -38,7 +38,7 @@ import rv.world.rendering.VSMPhongWorldRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
- * Controls all rendering for the main RoboVis window
+ * Controls all rendering for the main RoboViz window
  * 
  * @author justin
  */

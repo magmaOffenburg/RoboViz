@@ -20,7 +20,7 @@ import java.security.acl.Group;
 import java.util.Locale;
 
 /**
- * Utility class for creating draw commands for RoboVis shapes
+ * Utility class for creating draw commands for RoboViz shapes
  * 
  * @author Justin Stoecker
  */

@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * Configuration parameters for RoboVis startup
+ * Configuration parameters for RoboViz startup
  * 
  * @author Justin Stoecker
  */

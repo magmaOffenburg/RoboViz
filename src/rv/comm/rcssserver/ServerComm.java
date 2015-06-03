@@ -38,7 +38,7 @@ import rv.ui.DebugInfo;
 import rv.world.WorldModel;
 
 /**
- * Communication interface between RoboVis and SimSpark server
+ * Communication interface between RoboViz and SimSpark server
  * 
  * @see http://simspark.sourceforge.net/wiki/index.php/Network_Protocol
  * @author Justin Stoecker

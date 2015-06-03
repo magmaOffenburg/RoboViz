@@ -27,7 +27,7 @@ import java.util.Locale;
 import javax.swing.Timer;
 
 /**
- * Program for testing network drawing on RoboVis with all shapes both animated
+ * Program for testing network drawing on RoboViz with all shapes both animated
  * and static
  * 
  * @author Justin Stoecker

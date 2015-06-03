@@ -76,7 +76,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         LOGFILE, LIVE,
     }
 
-    /** Event object for when the main RoboVis window is resized */
+    /** Event object for when the main RoboViz window is resized */
     public class WindowResizeEvent extends EventObject {
 
         private final Viewport       window;
@@ -97,7 +97,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         }
     }
 
-    /** Event listener interface when the main RoboVis window is resized */
+    /** Event listener interface when the main RoboViz window is resized */
     public interface WindowResizeListener {
         void windowResized(WindowResizeEvent event);
     }
