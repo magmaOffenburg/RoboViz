@@ -35,7 +35,7 @@ import javax.swing.Timer;
 public class RVTester {
 
     private static final int TEST_DURATION = 10000;
-    private static final int ROBOVIS_PORT  = 32769;
+    private static final int ROBOVIZ_PORT = 32769;
 
     private DatagramSocket   socket;
     private InetAddress      address;
@@ -153,54 +153,54 @@ public class RVTester {
 
     private void swapBuffers(String group) throws IOException {
         byte[] buf = RVDraw.newBufferSwap(group);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void drawCircle(float[] center, float radius, float thickness,
             Color color, String group) throws IOException {
         byte[] buf = RVDraw.newCircle(center, radius, thickness, color, group);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void drawLine(float[] a, float[] b, float thickness, Color color,
             String group) throws IOException {
         byte[] buf = RVDraw.newLine(a, b, thickness, color, group);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void drawPoint(float[] p, float size, Color color, String group)
             throws IOException {
         byte[] buf = RVDraw.newPoint(p, size, color, group);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void drawSphere(float[] p, float radius, Color color, String group)
             throws IOException {
         byte[] buf = RVDraw.newSphere(p, radius, color, group);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void drawPolygon(float[][] v, Color color, String set)
             throws IOException {
         byte[] buf = RVDraw.newPolygon(v, color, set);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
     
     public void drawAnnotation(String text, float[] pos, Color color, String set)
             throws IOException {
         byte[] buf = RVDraw.newAnnotation(text, pos, color, set);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
     
     public void drawAgentAnnotation(String text, boolean leftTeam,
             int agentNum, Color color) throws IOException {
         byte[] buf = RVDraw.newAgentAnnotation(text, leftTeam, agentNum, color);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public void selectAgent(boolean leftTeam, int agentNum) throws IOException {
         byte[] buf = RVDraw.newSelectAgent(leftTeam, agentNum);
-        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIZ_PORT));
     }
 
     public static void main(String[] args) throws Exception {
