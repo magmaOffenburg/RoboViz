@@ -131,6 +131,21 @@ public class RVTester {
         swapBuffers("static");
     }
 
+    /** Method for selecting all agents */
+    private void selectAgents() throws Exception {
+        // Select left team agents
+        for (int i = 1; i <= 11; i++) {
+            selectAgent(true, i);
+            Thread.sleep(500);
+        }
+
+        // Select right team agents
+        for (int i = 1; i <= 11; i++) {
+            selectAgent(false, i);
+            Thread.sleep(500);
+        }
+    }
+
     public void runTest() throws IOException {
         animationTimer.start();
         renderStaticShapes();
@@ -183,11 +198,17 @@ public class RVTester {
         socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
     }
 
+    public void selectAgent(boolean leftTeam, int agentNum) throws IOException {
+        byte[] buf = RVDraw.newSelectAgent(leftTeam, agentNum);
+        socket.send(new DatagramPacket(buf, buf.length, address, ROBOVIS_PORT));
+    }
+
     public static void main(String[] args) throws Exception {
         RVTester tester = new RVTester();
         tester.runTest();
         Thread.sleep(TEST_DURATION);
         tester.drawAgentAnnotation(null, true, 1, Color.CYAN);
         tester.animationTimer.stop();
+        tester.selectAgents();
     }
 }

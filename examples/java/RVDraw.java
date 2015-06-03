@@ -264,4 +264,19 @@ public class RVDraw {
 
         return buf.array();
     }
+
+    /**
+     * Selects the agent with the given team and uniform number. 
+     */
+    public static byte[] newSelectAgent(boolean leftTeam, int agentNum) {
+
+        int numBytes = 3;
+        ByteBuffer buf = ByteBuffer.allocate(numBytes);
+        
+        buf.put((byte) 3);
+        buf.put((byte) 0);
+        buf.put((byte)(leftTeam ? agentNum - 1 : agentNum + 127));
+
+        return buf.array();
+    }
 }

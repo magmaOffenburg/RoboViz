@@ -32,6 +32,7 @@
 #include <netdb.h>
 #include <string>
 #include <math.h>
+#include <sstream> 
 #include "rvdraw.h"
 
 using namespace std;
@@ -114,6 +115,23 @@ void drawAnnotation(const string* text, float x, float y, float z, float r,
   delete[] buf;
 }
 
+void drawAgentAnnotation(const string* text, bool leftTeam, int agentNum, 
+    float r, float g, float b) {
+  float color[3] = {r,g,b};
+
+  int bufSize = -1;
+  unsigned char* buf = newAgentAnnotation(text, leftTeam, agentNum, color, &bufSize);
+  sendto(sockfd, buf, bufSize, 0, p->ai_addr, p->ai_addrlen);
+  delete[] buf;
+}
+
+void selectAgent(bool leftTeam, int agentNum) {
+  int bufSize = -1;
+  unsigned char *buf = newSelectAgent(leftTeam, agentNum, &bufSize);
+  sendto(sockfd, buf, bufSize, 0, p->ai_addr, p->ai_addrlen);
+  delete[] buf;
+}
+
 float maxf(float a, float b) {
   return a > b ? a : b;
 }
@@ -181,12 +199,46 @@ void renderStaticShapes() {
   swapBuffers(&staticSets);
 }
 
+void annotateAgents() {
+  // Annotate left team agents
+  for (int i = 1; i <= 11; i++) {
+    ostringstream stream;
+    stream << "L" << i;
+    const string annotation = stream.str(); 
+    drawAgentAnnotation(&annotation, true, i, 0, 0, 1); 
+  }
+
+  // Annotate right team agents
+  for (int i = 1; i <= 11; i++) {
+    ostringstream stream;
+    stream << "R" << i;
+    const string annotation = stream.str(); 
+    drawAgentAnnotation(&annotation, false, i, 1, 0, 0); 
+  }  
+}
+
+void selectAgents() {
+  // Select left team agents
+  for (int i = 1; i <= 11; i++) {
+    selectAgent(true, i); 
+    usleep(500000);
+  }
+
+  // Select right team agents
+  for (int i = 1; i <= 11; i++) {
+    selectAgent(false, i); 
+    usleep(500000);
+  } 
+}
+
 void runTest() {
   renderStaticShapes();
   for (int i = 0; i < TEST_DURATION / 17; i++) {
     renderAnimatedShapes();
     usleep(16000);
   }
+  annotateAgents();
+  selectAgents();
 }
 
 int main(int argc, char *argv[])
