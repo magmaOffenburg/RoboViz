@@ -35,9 +35,16 @@ public class DrawOption extends Command {
     public DrawOption(ByteBuffer buf, Viewer viewer) {
         this.drawings = viewer.getDrawings();
 
-        // currently only one type of draw option (swap buffers)
         int type = ByteUtil.uValue(buf.get());
-        setName = getString(buf);
+        
+        switch (type) {
+        case SWAP_BUFFERS:
+            setName = getString(buf);
+            break;
+        default:
+            System.err.println("Unknown draw option : " + type);
+            setName = null;
+        }
     }
 
     @Override

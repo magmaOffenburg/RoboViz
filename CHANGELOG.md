@@ -80,7 +80,8 @@
 	* logfiles are now saved in a `logfiles/` subdirectory
 	* more helpful "disconnected" overlay in live mode (displays server IP and port)
 	* major improvements to the behavior of windows with multi-monitor setups (among other things, dialogs are now displayed relative the the main window as opposed to always being on the primiary monitor)
-	* added a way to select players with the drawing API
+	* added a select players command to the drawing API: `| 3 | 0 | Agent/Team |`
+	* the swap buffers command now prints an error when the second byte does not equal 0 instead of ignoring it, making the behavior consistent with the rest of the drawing API
 	* added a black outline for the player numbers texts
 	* moved `config.txt` out of `resources/` into the root directory for easier access
 	* moved build scripts to the `scripts/` subdirectory
