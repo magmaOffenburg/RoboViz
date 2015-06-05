@@ -16,12 +16,7 @@
 
 package rv.comm.rcssserver;
 
-import java.lang.Float;
-import java.lang.Integer;
-import java.lang.Long;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
@@ -45,62 +40,68 @@ public class GameState implements ServerChangeListener {
         void gsTimeChanged(GameState gs);
     }
 
+    public interface ServerMessageReceivedListener {
+        /** Called when a valid message from the server is received */
+        void gsServerMessageReceived(GameState gs);
+
+        /** Called after a message from the server has been processed (parsed) */
+        void gsServerMessageProcessed(GameState gs);
+    }
+
     // Measurements and Rules
-    public static final String                  FIELD_LENGTH         = "FieldLength";
-    public static final String                  FIELD_WIDTH          = "FieldWidth";
-    public static final String                  FIELD_HEIGHT         = "FieldHeight";
-    public static final String                  GOAL_WIDTH           = "GoalWidth";
-    public static final String                  GOAL_DEPTH           = "GoalDepth";
-    public static final String                  GOAL_HEIGHT          = "GoalHeight";
-    public static final String                  FREE_KICK_DST        = "FreeKickDistance";
-    public static final String                  WAIT_BEFORE_KO       = "WaitBeforeKickOff";
-    public static final String                  AGENT_RADIUS         = "AgentRadius";
-    public static final String                  BALL_RADIUS          = "BallRadius";
-    public static final String                  BALL_MASS            = "BallMass";
-    public static final String                  RULE_GOAL_PAUSE_TIME = "RuleGoalPauseTime";
-    public static final String                  RULE_KICK_PAUSE_TIME = "RuleKickInPauseTime";
-    public static final String                  RULE_HALF_TIME       = "RuleHalfTime";
+    public static final String                        FIELD_LENGTH         = "FieldLength";
+    public static final String                        FIELD_WIDTH          = "FieldWidth";
+    public static final String                        FIELD_HEIGHT         = "FieldHeight";
+    public static final String                        GOAL_WIDTH           = "GoalWidth";
+    public static final String                        GOAL_DEPTH           = "GoalDepth";
+    public static final String                        GOAL_HEIGHT          = "GoalHeight";
+    public static final String                        FREE_KICK_DST        = "FreeKickDistance";
+    public static final String                        WAIT_BEFORE_KO       = "WaitBeforeKickOff";
+    public static final String                        AGENT_RADIUS         = "AgentRadius";
+    public static final String                        BALL_RADIUS          = "BallRadius";
+    public static final String                        BALL_MASS            = "BallMass";
+    public static final String                        RULE_GOAL_PAUSE_TIME = "RuleGoalPauseTime";
+    public static final String                        RULE_KICK_PAUSE_TIME = "RuleKickInPauseTime";
+    public static final String                        RULE_HALF_TIME       = "RuleHalfTime";
 
     // Play State
-    public static final String                  PLAY_MODES           = "play_modes";
-    public static final String                  TEAM_LEFT            = "team_left";
-    public static final String                  TEAM_RIGHT           = "team_right";
-    public static final String                  SCORE_LEFT           = "score_left";
-    public static final String                  SCORE_RIGHT          = "score_right";
-    public static final String                  PLAY_MODE            = "play_mode";
+    public static final String                        PLAY_MODES           = "play_modes";
+    public static final String                        TEAM_LEFT            = "team_left";
+    public static final String                        TEAM_RIGHT           = "team_right";
+    public static final String                        SCORE_LEFT           = "score_left";
+    public static final String                        SCORE_RIGHT          = "score_right";
+    public static final String                        PLAY_MODE            = "play_mode";
 
     // Time
-    public static final String                  TIME                 = "time";
-    public static final String                  HALF                 = "half";
+    public static final String                        TIME                 = "time";
+    public static final String                        HALF                 = "half";
 
-    private float                               fieldLength;
-    private float                               fieldWidth;
-    private float                               fieldHeight;
-    private float                               goalWidth;
-    private float                               goalDepth;
-    private float                               goalHeight;
-    private float                               freeKickDist;
-    private float                               waitBeforeKickoff;
-    private float                               agentRadius;
-    private float                               ballRadius;
-    private float                               ballMass;
-    private float                               ruleGoalPauseTime;
-    private float                               ruleKickPauseTime;
-    private float                               ruleHalfTime;
-    private String[]                            playModes;
-    private String                              teamLeft;
-    private String                              teamRight;
-    private int                                 scoreLeft;
-    private int                                 scoreRight;
-    private String                              playMode             = "<Play Mode>";
-    private float                               time                 = 0;
-    private int                                 half;
+    private float                                     fieldLength;
+    private float                                     fieldWidth;
+    private float                                     fieldHeight;
+    private float                                     goalWidth;
+    private float                                     goalDepth;
+    private float                                     goalHeight;
+    private float                                     freeKickDist;
+    private float                                     waitBeforeKickoff;
+    private float                                     agentRadius;
+    private float                                     ballRadius;
+    private float                                     ballMass;
+    private float                                     ruleGoalPauseTime;
+    private float                                     ruleKickPauseTime;
+    private float                                     ruleHalfTime;
+    private String[]                                  playModes;
+    private String                                    teamLeft;
+    private String                                    teamRight;
+    private int                                       scoreLeft;
+    private int                                       scoreRight;
+    private String                                    playMode             = "<Play Mode>";
+    private float                                     time;
+    private int                                       half;
 
-    private float                               serverSpeed          = -1;
-    private TreeMap<Long, Float>                serverMsgDeltas      = new TreeMap<Long, Float>();
-    private float                               accumulatedServerTime_S;
+    private final List<GameStateChangeListener>       listeners            = new CopyOnWriteArrayList<>();
 
-    private final List<GameStateChangeListener> listeners            = new CopyOnWriteArrayList<>();
+    private final List<ServerMessageReceivedListener> smListeners          = new CopyOnWriteArrayList<>();
 
     public float getFieldLength() {
         return fieldLength;
@@ -190,20 +191,20 @@ public class GameState implements ServerChangeListener {
         return half;
     }
 
-    public String getServerSpeed() {
-        if (serverSpeed < 0) {
-            return "---";
-        }
-
-        return Integer.toString(Math.round(100 * serverSpeed)) + "%";
-    }
-
     public void addListener(GameStateChangeListener l) {
         listeners.add(l);
     }
 
     public void removeListener(GameStateChangeListener l) {
         listeners.remove(l);
+    }
+
+    public void addListener(ServerMessageReceivedListener l) {
+        smListeners.add(l);
+    }
+
+    public void removeListener(ServerMessageReceivedListener l) {
+        smListeners.remove(l);
     }
 
     public void reset() {
@@ -214,8 +215,6 @@ public class GameState implements ServerChangeListener {
         playMode = "<Play Mode>";
         time = 0;
         half = 0;
-        serverSpeed = -1;
-        serverMsgDeltas.clear();
     }
 
     /**
@@ -225,13 +224,13 @@ public class GameState implements ServerChangeListener {
         if (exp.getChildren() == null)
             return;
 
+        for (ServerMessageReceivedListener l : smListeners) {
+            l.gsServerMessageReceived(this);
+        }
+
         int measureOrRuleChanges = 0;
         int timeChanges = 0;
         int playStateChanges = 0;
-
-        // long msgTime_NS = System.nanoTime();
-        long msgTime_MS = System.currentTimeMillis();
-        float lastGameTime = time;
 
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
@@ -334,8 +333,9 @@ public class GameState implements ServerChangeListener {
             }
         }
 
-        // updateServerSpeed(msgTime_NS, lastGameTime);
-        updateServerSpeed(msgTime_MS, lastGameTime);
+        for (ServerMessageReceivedListener l : smListeners) {
+            l.gsServerMessageProcessed(this);
+        }
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
@@ -350,66 +350,6 @@ public class GameState implements ServerChangeListener {
         }
     }
 
-    private void updateServerSpeed(long msgTime, float lastGameTime) {
-        // final long TIME_WINDOW_NS = 5000000000l;
-        final long TIME_WINDOW_MS = 5000;
-        final float DEFAULT_MSG_DELTA_S = 0.04f;
-
-        // Add message time info to map
-        if (serverMsgDeltas.isEmpty()) {
-            serverMsgDeltas.put(msgTime, -1.0f);
-            accumulatedServerTime_S = 0;
-        } else {
-            long lastMsgTime = serverMsgDeltas.lastKey();
-
-            float serverTimeDelta_S;
-            if (time - lastGameTime > 0) {
-                // We have a game time change for the amount of time passed
-                serverTimeDelta_S = time - lastGameTime;
-            } else {
-                // The game is paused so use DEFAULT_MSG_DELTA_S for amount of time passed
-                serverTimeDelta_S = DEFAULT_MSG_DELTA_S;
-            }
-
-            if (msgTime - lastMsgTime > 0) {
-                serverMsgDeltas.put(msgTime, serverTimeDelta_S + accumulatedServerTime_S);
-                accumulatedServerTime_S = 0;
-            } else {
-                // Messages are coming in so fast that they have the same time stamp so just save
-                // the time delta to add to the next entry with a new time stamp
-                accumulatedServerTime_S += serverTimeDelta_S;
-            }
-        }
-
-        // Remove map entries outside of time window
-        // SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW_NS);
-        SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW_MS);
-        while (!oldEntries.isEmpty()) {
-            serverMsgDeltas.remove(oldEntries.firstKey());
-        }
-
-        float sumDeltas = 0;
-
-        Float[] deltas = serverMsgDeltas.values().toArray(new Float[serverMsgDeltas.size()]);
-        for (int i = 1; i < deltas.length; i++) {
-            float delta = deltas[i];
-            if (delta > 0) {
-                sumDeltas += delta;
-            }
-        }
-
-        // long timePassed_NS = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
-        long timePassed_MS = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
-
-        // if (timePassed_NS > 0) {
-        if (timePassed_MS > 0) {
-            // serverSpeed = sumDeltas / (timePassed_NS / 1000000000.0f);
-            serverSpeed = sumDeltas / (timePassed_MS / 1000.0f);
-        } else {
-            serverSpeed = -1;
-        }
-    }
-
     @Override
     public void connectionChanged(ServerComm server) {
         if (server.isConnected()) {
@@ -417,8 +357,6 @@ public class GameState implements ServerChangeListener {
             scoreRight = 0;
             teamLeft = null;
             teamRight = null;
-            serverSpeed = -1;
-            serverMsgDeltas.clear();
         }
     }
 }

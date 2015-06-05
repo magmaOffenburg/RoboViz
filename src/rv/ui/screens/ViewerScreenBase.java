@@ -46,7 +46,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
     protected final Viewer             viewer;
 
-    private final GameStateOverlay     gameStateOverlay;
+    protected final GameStateOverlay   gameStateOverlay;
     private final Field2DOverlay       fieldOverlay;
     protected final List<Screen>       overlays          = new ArrayList<>();
 

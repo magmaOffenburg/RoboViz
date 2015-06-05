@@ -30,6 +30,7 @@ import rv.Viewer;
 import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.ServerComm;
+import rv.comm.rcssserver.ServerSpeedBenchmarker;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -44,6 +45,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 
     public LiveGameScreen(Viewer viewer) {
         super(viewer);
+        ServerSpeedBenchmarker ssb = new ServerSpeedBenchmarker();
+        viewer.getWorldModel().getGameState().addListener(ssb);
+        gameStateOverlay.addServerSpeedBenchmarker(ssb);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
         connectionOverlay = new InfoOverlay(getConnectionMessage());
