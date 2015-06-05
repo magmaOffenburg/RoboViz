@@ -23,6 +23,7 @@ import javax.media.opengl.glu.GLU;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
+import rv.comm.rcssserver.ServerSpeedBenchmarker;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
@@ -45,11 +46,17 @@ public class GameStateOverlay extends ScreenBase {
 
         private int                y;
 
+        private boolean            showServerSpeed = false;
+
         public GameStateBar(int x, int y) {
             this.x = x;
             this.y = y;
             tr1 = new TextRenderer(new Font("Arial", Font.PLAIN, 22), true, false);
             tr2 = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
+        }
+
+        void toggleShowServerSpeed() {
+            showServerSpeed = !showServerSpeed;
         }
 
         void render(GL2 gl, GameState gs, int screenW, int screenH) {
@@ -100,12 +107,17 @@ public class GameStateOverlay extends ScreenBase {
             tr2.setColor(0.9f, 0.9f, 0.9f, 1);
             tr2.beginRendering(screenW, screenH);
             tr2.draw("Playmode: " + gs.getPlayMode(), x, y - 20);
+            if (showServerSpeed && ssb != null) {
+                tr2.draw("Server Speed: " + ssb.getServerSpeed(), x + NAME_WIDTH + SCORE_BOX_WIDTH,
+                        y - 20);
+            }
             tr2.endRendering();
         }
     }
 
-    private final Viewer       viewer;
-    private final GameStateBar gsBar;
+    private final Viewer           viewer;
+    private final GameStateBar     gsBar;
+    private ServerSpeedBenchmarker ssb = null;
 
     public GameStateOverlay(Viewer viewer) {
         this.viewer = viewer;
@@ -165,6 +177,14 @@ public class GameStateOverlay extends ScreenBase {
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
         gsBar.y = vp.h - GameStateBar.BAR_HEIGHT - 20;
         gsBar.render(gl, viewer.getWorldModel().getGameState(), vp.w, vp.h);
+    }
+
+    public void toggleShowServerSpeed() {
+        gsBar.toggleShowServerSpeed();
+    }
+
+    public void addServerSpeedBenchmarker(ServerSpeedBenchmarker benchmarker) {
+        ssb = benchmarker;
     }
 
     static void drawBox(GL2 gl, float x, float y, float w, float h) {
