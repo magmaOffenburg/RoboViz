@@ -390,9 +390,9 @@ public class GameState implements ServerChangeListener {
 
         float sumDeltas = 0;
 
-        Float[] deltas = serverMsgDeltas.values().toArray(new Float[0]);
+        Float[] deltas = serverMsgDeltas.values().toArray(new Float[serverMsgDeltas.size()]);
         for (int i = 1; i < deltas.length; i++) {
-            float delta = deltas[i].floatValue();
+            float delta = deltas[i];
             if (delta > 0) {
                 sumDeltas += delta;
             }
