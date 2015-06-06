@@ -50,14 +50,6 @@ public class TextOverlay implements GameState.GameStateChangeListener {
         return expired;
     }
 
-    public void setEnabled(boolean enabled) {
-        if (enabled) {
-            world.getGameState().addListener(this);
-        } else {
-            world.getGameState().removeListener(this);
-        }
-    }
-
     public TextOverlay(String text, WorldModel world, int duration, float[] color) {
         this.world = world;
         this.duration = duration;
@@ -65,6 +57,7 @@ public class TextOverlay implements GameState.GameStateChangeListener {
         curTimeServer = startTimeServer;
         this.text = text;
         this.color = color;
+        world.getGameState().addListener(this);
     }
 
     private void update() {
@@ -81,7 +74,7 @@ public class TextOverlay implements GameState.GameStateChangeListener {
 
         if (alpha == 0) {
             expired = true;
-            setEnabled(false);
+            world.getGameState().removeListener(this);
         }
     }
 
