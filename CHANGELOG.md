@@ -31,13 +31,14 @@
 	* added `W / Up / Mouse wheel up` shortcuts to decrease the FOV in Robot Vantage mode
 	* added `S / Down / Mouse wheel down` shortcuts to increase the FOV in Robot Vantage mode
 	* it's now possible to hold `Shift` more more precise camera movement
-	* added a `Shift+R` shortcut to reset the server time (needs rcssserver3d-0.6.9)
+	* added a `Shift+R` shortcut to reset the server time (needs [[r386]](http://sourceforge.net/p/simspark/svn/386/))
 	* all shortcuts that change playmodes now reset the server time if necessary (time >= 600)
 	* added a `U` shortcut to request a full state update from the server (for when RoboViz gets out of sync, like missing agents)
 	* changed the `Z` (increase playback speed) and `X` (decrease playback speed) shortcuts to `X` and `C` (more convenient on QWERTZ keyboards)
 	* added a `G` shortcut to jump to the previous goal (log mode)
 	* added a `H` shortcut to jump to the next goal (log mode)
 	* changed the cycle annotations shortcut (`I`) to only toggle between "none" and "player numbers" if there aren't any custom agent annotations
+	* added a `M` shortcut toggling the display of the estimated server speed (in percent, relative to real time) in live mode
 * **Playmode Overlay:**
 	* allow cycling through playmodes (pressing up while the first playmode is selected selects the last playmode and vice-versa)
 	* allow filtering playmodes by a string
@@ -80,7 +81,7 @@
 	* logfiles are now saved in a `logfiles/` subdirectory
 	* more helpful "disconnected" overlay in live mode (displays server IP and port)
 	* major improvements to the behavior of windows with multi-monitor setups (among other things, dialogs are now displayed relative the the main window as opposed to always being on the primiary monitor)
-	* added a select players command to the drawing API: `| 3 | 0 | Agent/Team |`
+	* added a "select player" command to the drawing API: `| 3 | 0 | Agent/Team |`
 	* the swap buffers command now prints an error when the second byte does not equal 0 instead of ignoring it, making the behavior consistent with the rest of the drawing API
 	* added a black outline for the player numbers texts
 	* moved `config.txt` out of `resources/` into the root directory for easier access
@@ -88,3 +89,4 @@
 	* removed the separate start scripts for Log Mode
 	* added a more helpful error message for the drawing API failing to parse float values
 	* made sure the GameState Overlay is still rendered after losing the server connection to be able to see the current score
+	* added the new rcssserver3d robot body type models (needs [[r395]](http://sourceforge.net/p/simspark/svn/395/))
