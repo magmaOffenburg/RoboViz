@@ -91,12 +91,14 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        super.render(gl, glu, glut, vp);
-
         tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
         if (viewer.getDrawings().isVisible())
+            // Render annotations before other things so that screen overlays may be later rendered
+            // on top of the annotations
             renderAnnotations();
         tr.endRendering();
+
+        super.render(gl, glu, glut, vp);
     }
 
     @Override
