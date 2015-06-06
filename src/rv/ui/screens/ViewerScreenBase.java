@@ -103,13 +103,15 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         }
         tr.endRendering();
 
-        for (Screen overlay : overlays)
-            if (overlay.isVisible())
-                overlay.render(gl, glu, glut, vp);
-
         vp.apply(gl);
         if (textOverlays.size() > 0)
             renderTextOverlays(vp.w, vp.h);
+
+        // Render screen overlays last so that they may cover text and won't have other text
+        // accidentally drawn over them
+        for (Screen overlay : overlays)
+            if (overlay.isVisible())
+                overlay.render(gl, glu, glut, vp);
     }
 
     private String formatNumTeamPlayers(Team team) {
