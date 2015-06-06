@@ -80,6 +80,9 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         Configuration.Graphics config = viewer.getConfig().graphics;
         firstPersonFOV = config.firstPersonFOV;
         thirdPersonFOV = config.thirdPersonFOV;
+
+        viewer.getWorldModel().getGameState().addListener(this);
+        viewer.getWorldModel().addSelectionChangeListener(this);
     }
 
     @Override
@@ -176,16 +179,12 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             canvas.addMouseMotionListener(this);
             canvas.addMouseWheelListener(this);
             viewer.getUI().getCameraControl().attachToCanvas(canvas);
-            viewer.getWorldModel().getGameState().addListener(this);
-            viewer.getWorldModel().addSelectionChangeListener(this);
         } else {
             canvas.removeKeyListener(this);
             canvas.removeMouseListener(this);
             canvas.removeMouseMotionListener(this);
             canvas.removeMouseWheelListener(this);
             viewer.getUI().getCameraControl().detachFromCanvas(canvas);
-            viewer.getWorldModel().getGameState().removeListener(this);
-            viewer.getWorldModel().removeSelectionChangeListener(this);
         }
 
         for (Screen overlay : overlays)
