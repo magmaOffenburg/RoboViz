@@ -108,18 +108,19 @@ public class ServerComm {
         void connectionChanged(ServerComm server);
     }
 
-    private final List<ServerChangeListener> changeListeners = new ArrayList<>();
+    private final List<ServerChangeListener> changeListeners  = new ArrayList<>();
     private Timer                            autoConnectTimer;
 
     private Socket                           socket;
-    private PrintWriter                      out             = null;
+    private PrintWriter                      out              = null;
     private final WorldModel                 world;
     private DataInputStream                  in;
-    private boolean                          connected       = false;
+    private boolean                          connected        = false;
     private final String                     serverHost;
     private final int                        serverPort;
-    private PrintWriter                      logfileOutput   = null;
-    private boolean                          recordLogs      = false;
+    private PrintWriter                      logfileOutput    = null;
+    private boolean                          recordLogs       = false;
+    private String                           logfileDirectory = null;
 
     private void setConnected(boolean connected) {
         this.connected = connected;
@@ -162,16 +163,23 @@ public class ServerComm {
         }
 
         recordLogs = viewerMode != Viewer.Mode.LOGFILE && config.general.recordLogs;
+        logfileDirectory = config.general.logfileDirectory;
     }
 
     private void setupNewLogfile() {
-        String s = Calendar.getInstance().getTime().toString();
-        s = s.replaceAll("[\\s:]+", "_");
-        File logDir = new File("logfiles");
+        String logDirPath = "logfiles";
+        if (logfileDirectory != null && !logfileDirectory.isEmpty()) {
+            logDirPath = logfileDirectory;
+        }
+
+        File logDir = new File(logDirPath);
         if (!logDir.exists())
             logDir.mkdir();
-        File logFile = new File(String.format("logfiles/roboviz_log_%s.log", s));
-        System.out.println("Recording to new logfile: " + logFile.getName());
+
+        String s = Calendar.getInstance().getTime().toString();
+        s = s.replaceAll("[\\s:]+", "_");
+        File logFile = new File(logDirPath + String.format("/roboviz_log_%s.log", s));
+        System.out.println("Recording to new logfile: " + logFile.getPath());
         try {
             logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
         } catch (IOException e) {
