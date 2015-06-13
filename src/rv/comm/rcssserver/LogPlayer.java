@@ -382,6 +382,12 @@ public class LogPlayer {
         public void run() {
             setPlaying(true);
 
+            try {
+                // Make sure we parse and render the first frame of the log
+                parseFrame();
+            } catch (Exception e) {
+            }
+
             while (!aborted) {
                 if (logfile.isAtEndOfLog())
                     pause();
