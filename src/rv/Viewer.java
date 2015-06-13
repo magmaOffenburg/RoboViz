@@ -72,6 +72,8 @@ import com.jogamp.opengl.util.awt.Screenshot;
  */
 public class Viewer extends GLProgram implements GLEventListener {
 
+    private static final String VERSION = "1.1.0";
+
     public enum Mode {
         LOGFILE, LIVE,
     }
@@ -187,6 +189,8 @@ public class Viewer extends GLProgram implements GLEventListener {
 
         parseArgs(args);
         initComponents(caps);
+
+        System.out.println("RoboViz " + VERSION + "\n");
     }
 
     private void parseArgs(String[] args) {

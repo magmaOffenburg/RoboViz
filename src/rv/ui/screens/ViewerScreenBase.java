@@ -421,8 +421,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             return;
         }
 
-        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName),
-                viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
+        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), viewer
+                .getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
     }
 
     private void setRobotVantage(RobotVantageType type) {

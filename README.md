@@ -11,8 +11,8 @@ Except for the available shortcuts, the information on the [original website](ht
 
 Contributions of any form are welcome. That includes:
 - Bug reports and feature suggestions by [opening an issue](https://github.com/magmaOffenburg/RoboViz/issues/new).
-- Code contributions by opening a [pull request](https://github.com/magmaOffenburg/RoboViz/pulls?q=is%3Aopen+is%3Apr).
+- Code contributions by creating a [pull request](https://github.com/magmaOffenburg/RoboViz/pulls?q=is%3Aopen+is%3Apr).
 
-Some basic guidelines can be found [here](CONTRIBUTING.md).
+Some basic contribution guidelines can be found [here](CONTRIBUTING.md).
 
 [![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/Gama11/RoboViz)
