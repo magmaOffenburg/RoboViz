@@ -132,7 +132,7 @@ public class Agent implements ISelectable {
                     headCenter = headTransform.transform(new Vec3f(0));
                     headDirection = headTransform.transform(new Vec3f(0, 0, 1)).minus(headCenter)
                             .normalize();
-                } else if (node.getName().endsWith("body.obj")) {
+                } else if (node.getName().matches(".*body[0-9]*[.]obj$")) {
                     // Store body direction for third person view
                     Matrix bodyRot = modelMat;
                     Vec3f bodyCenter = bodyRot.transform(new Vec3f(0));
