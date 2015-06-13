@@ -73,6 +73,11 @@ public class LogfileReaderBuffered implements ILogfileReader {
     }
 
     @Override
+    public boolean isAtBeginningOfLog() {
+        return currentFrame == 0;
+    }
+
+    @Override
     public boolean isAtEndOfLog() {
         return decoratee.isAtEndOfLog() && getBufferIndex(currentFrame) == buffer.size() - 1;
     }
