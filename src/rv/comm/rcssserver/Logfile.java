@@ -76,6 +76,11 @@ public class Logfile implements ILogfileReader {
     }
 
     @Override
+    public boolean isAtBeginningOfLog() {
+        return curFramePtr == 0;
+    }
+
+    @Override
     public boolean isAtEndOfLog() {
         return curFrameMsg == null;
     }

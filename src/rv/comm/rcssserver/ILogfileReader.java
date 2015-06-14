@@ -10,6 +10,8 @@ public interface ILogfileReader {
      */
     boolean isValid();
 
+    boolean isAtBeginningOfLog();
+
     boolean isAtEndOfLog();
 
     void setNumFrames(int numFrames);

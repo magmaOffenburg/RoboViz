@@ -114,6 +114,10 @@ public class LogPlayer {
         return playing;
     }
 
+    public boolean isAtBeginning() {
+        return logfile != null && logfile.isAtBeginningOfLog();
+    }
+
     public boolean isAtEnd() {
         return logfile != null && logfile.isAtEndOfLog();
     }
@@ -389,7 +393,8 @@ public class LogPlayer {
             }
 
             while (!aborted) {
-                if (logfile.isAtEndOfLog())
+                if ((logfile.isAtEndOfLog() && playbackSpeed > 0)
+                        || (logfile.isAtBeginningOfLog() && playbackSpeed < 0))
                     pause();
 
                 int previousFrame = getFrame();

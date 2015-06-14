@@ -178,8 +178,10 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
                 if (slider.isEnabled() && !sliderUpdate) {
                     int frame = slider.getValue();
                     player.setDesiredFrame(frame);
-                    if (frame < player.getNumFrames())
-                        updateButtons(player.isPlaying(), false);
+
+                    boolean atBeginning = frame == 0;
+                    boolean atEnd = !(frame < player.getNumFrames());
+                    updateButtons(player.isPlaying(), atBeginning, atEnd);
                 }
             }
         });
@@ -204,7 +206,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
     @Override
     public void playerStateChanged(boolean playing) {
-        updateButtons(playing, player.isAtEnd());
+        updateButtons(playing, player.isAtBeginning(), player.isAtEnd());
         updateSlider(playing);
     }
 
@@ -212,11 +214,12 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
     public void logfileChanged() {
     }
 
-    private void updateButtons(Boolean playing, boolean atEnd) {
+    private void updateButtons(Boolean playing, boolean atBeginning, boolean atEnd) {
         boolean isValid = player.isValid();
-        rewindButton.setEnabled(isValid);
-        previousFrameButton.setEnabled(isValid && !playing);
-        playPauseButton.setEnabled(isValid && !atEnd);
+        rewindButton.setEnabled(isValid && !atBeginning);
+        previousFrameButton.setEnabled(isValid && !playing && !atBeginning);
+        playPauseButton.setEnabled(isValid && (!atEnd || player.getPlayBackSpeed() <= 0)
+                && (!atBeginning || player.getPlayBackSpeed() >= 0));
         playPauseButton.setIcon(playing ? "pause" : "play");
         previousGoalButton.setEnabled(isValid && player.hasPreviousGoal());
         previousGoalButton.setToolTipText(player.getPreviousGoalMessage());
