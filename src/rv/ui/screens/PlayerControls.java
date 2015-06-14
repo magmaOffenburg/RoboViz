@@ -38,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import rv.comm.rcssserver.LogPlayer;
@@ -216,7 +217,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
     private void updateButtons(Boolean playing, boolean atBeginning, boolean atEnd) {
         boolean isValid = player.isValid();
-        rewindButton.setEnabled(isValid && !atBeginning);
+        rewindButton.setEnabled(isValid);
         previousFrameButton.setEnabled(isValid && !playing && !atBeginning);
         playPauseButton.setEnabled(isValid && (!atEnd || player.getPlayBackSpeed() <= 0)
                 && (!atBeginning || player.getPlayBackSpeed() >= 0));
@@ -235,7 +236,18 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
         if (slider.getMaximum() < player.getNumFrames()) {
             slider.setMaximum(player.getNumFrames());
         }
-        slider.setValue(player.getDesiredFrame());
+
+        if (!player.logfileHasDrawCmds()) {
+            slider.setValue(player.getDesiredFrame());
+        } else {
+            // Swing is not thread safe and running draw commands with the call to set the value of
+            // slider can lock things up if we don't protect against this
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    slider.setValue(player.getDesiredFrame());
+                }
+            });
+        }
         slider.setEnabled(player.isValid());
         sliderUpdate = false;
     }

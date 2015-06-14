@@ -187,4 +187,14 @@ public class LogfileReaderBuffered implements ILogfileReader {
     public File getFile() {
         return decoratee.getFile();
     }
+
+    @Override
+    public void addListener(LogfileListener l) {
+        decoratee.addListener(l);
+    }
+
+    @Override
+    public void removeListener(LogfileListener l) {
+        decoratee.removeListener(l);
+    }
 }

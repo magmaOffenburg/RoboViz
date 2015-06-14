@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +35,7 @@ import javax.swing.Timer;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
+import rv.comm.drawing.DrawComm.DrawCommListener;
 import rv.ui.DebugInfo;
 import rv.world.WorldModel;
 
@@ -43,7 +45,7 @@ import rv.world.WorldModel;
  * @see http://simspark.sourceforge.net/wiki/index.php/Network_Protocol
  * @author Justin Stoecker
  */
-public class ServerComm {
+public class ServerComm implements DrawCommListener {
 
     /**
      * Receives messages from rcssserver3d and hands them off to a message parser to handle the data
@@ -52,11 +54,6 @@ public class ServerComm {
     private class MessageReceiver extends Thread {
 
         private final MessageParser parser = new MessageParser(world);
-
-        private void writeToLogfile(String msg) {
-            logfileOutput.write(msg);
-            logfileOutput.write("\n");
-        }
 
         @Override
         public void run() {
@@ -121,6 +118,7 @@ public class ServerComm {
     private PrintWriter                      logfileOutput    = null;
     private boolean                          recordLogs       = false;
     private String                           logfileDirectory = null;
+    private String                           drawCommands     = "";
 
     private void setConnected(boolean connected) {
         this.connected = connected;
@@ -138,6 +136,15 @@ public class ServerComm {
 
     public boolean isConnected() {
         return connected;
+    }
+
+    private void writeToLogfile(String msg) {
+        synchronized (this) {
+            logfileOutput.write(drawCommands);
+            drawCommands = "";
+        }
+        logfileOutput.write(msg);
+        logfileOutput.write("\n");
     }
 
     public ServerComm(WorldModel world, Configuration config, Viewer.Mode viewerMode) {
@@ -313,5 +320,14 @@ public class ServerComm {
 
     public void requestFullState() {
         sendMessage("(reqfullstate)");
+    }
+
+    @Override
+    public void drawCommandReceived(byte[] cmd) {
+        if (logfileOutput != null) {
+            synchronized (this) {
+                drawCommands += Arrays.toString(cmd);
+            }
+        }
     }
 }

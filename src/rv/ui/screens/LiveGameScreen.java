@@ -27,8 +27,6 @@ import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
-import rv.comm.drawing.BufferedSet;
-import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;
 import rv.world.ISelectable;
@@ -73,31 +71,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         }
     }
 
-    private void renderAnnotations() {
-        List<BufferedSet<Annotation>> sets = viewer.getDrawings().getAnnotationSets();
-        if (sets.size() > 0) {
-            for (BufferedSet<Annotation> set : sets) {
-                if (set.isVisible()) {
-                    ArrayList<Annotation> annotations = set.getFrontSet();
-                    for (Annotation a : annotations) {
-                        if (a != null) {
-                            renderBillboardText(a.getText(), new Vec3f(a.getPos()), a.getColor());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        tr.beginRendering(viewer.getScreen().w, viewer.getScreen().h);
-        if (viewer.getDrawings().isVisible())
-            // Render annotations before other things so that screen overlays may be later rendered
-            // on top of the annotations
-            renderAnnotations();
-        tr.endRendering();
-
         super.render(gl, glu, glut, vp);
     }
 
@@ -118,18 +93,12 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             resetTimeIfExpired();
             viewer.getNetManager().getServer().kickOff(false);
             break;
-        case KeyEvent.VK_P:
-            viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());
-            break;
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null
                     && viewer.getWorldModel().getGameState().getPlayModes() != null) {
                 setEnabled((GLCanvas) viewer.getCanvas(), false);
                 playmodeOverlay.setVisible(true);
             }
-            break;
-        case KeyEvent.VK_T:
-            viewer.getDrawings().toggle();
             break;
         case KeyEvent.VK_C:
             if (!viewer.getNetManager().getServer().isConnected()) {

@@ -312,7 +312,7 @@ public class Viewer extends GLProgram implements GLEventListener {
             netManager.getServer().addChangeListener(world.getGameState());
         } else {
             if (!init)
-                logPlayer = new LogPlayer(logFile, world, config);
+                logPlayer = new LogPlayer(logFile, world, config, this);
             else
                 logPlayer.setWorldModel(world);
         }
