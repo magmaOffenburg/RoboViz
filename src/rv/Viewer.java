@@ -304,6 +304,7 @@ public class Viewer extends GLProgram implements GLEventListener {
         world = new WorldModel();
         world.init(drawable.getGL(), contentManager, config, mode);
         drawings = new Drawings();
+        ui = new UserInterface(this, drawingFilter);
 
         if (mode == Mode.LIVE) {
             netManager = new NetworkManager();
@@ -315,7 +316,7 @@ public class Viewer extends GLProgram implements GLEventListener {
             else
                 logPlayer.setWorldModel(world);
         }
-        ui = new UserInterface(this, drawingFilter);
+
         ui.init();
         renderer = new Renderer(this);
         renderer.init(drawable, contentManager, glInfo);
