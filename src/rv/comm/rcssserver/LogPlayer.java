@@ -25,6 +25,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import js.math.Maths;
 import rv.Configuration;
+import rv.Viewer;
+import rv.comm.rcssserver.ILogfileReader.LogfileListener;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.util.StringUtil;
 import rv.util.swing.FileChooser;
@@ -36,7 +38,7 @@ import rv.world.WorldModel;
  * @author justin
  * 
  */
-public class LogPlayer {
+public class LogPlayer implements LogfileListener {
 
     public interface StateChangeListener {
 
@@ -64,6 +66,9 @@ public class LogPlayer {
     private final List<StateChangeListener> listeners                   = new CopyOnWriteArrayList<>();
     private boolean                         logAnalyzed                 = false;
     private int                             analyzedFrames              = 0;
+    private final Viewer                    viewer;
+    private boolean                         logfileHasDrawCmds          = false;
+    private boolean                         foundStepSize               = false;
 
     /**
      * Default constructor. Opens the passed logfile and starts playing.
@@ -73,8 +78,9 @@ public class LogPlayer {
      * @param world
      *            reference to the world model
      */
-    public LogPlayer(File file, WorldModel world, Configuration config) {
+    public LogPlayer(File file, WorldModel world, Configuration config, Viewer viewer) {
         this.config = config;
+        this.viewer = viewer;
 
         playing = false;
         parser = new MessageParser(world);
@@ -149,6 +155,7 @@ public class LogPlayer {
     }
 
     public void rewind() {
+        viewer.getDrawings().clearAllShapeSets();
         setDesiredFrame(0);
     }
 
@@ -289,6 +296,10 @@ public class LogPlayer {
         stateChanged();
     }
 
+    public boolean logfileHasDrawCmds() {
+        return logfileHasDrawCmds;
+    }
+
     private void setPlaying(boolean playing) {
         if (playing != this.playing) {
             this.playing = playing;
@@ -326,8 +337,11 @@ public class LogPlayer {
                 goals.clear();
                 logAnalyzed = false;
                 analyzedFrames = 0;
+                logfileHasDrawCmds = false;
+                foundStepSize = false;
             }
-            logfile = new LogfileReaderBuffered(new Logfile(file), 200);
+            logfile = new LogfileReaderBuffered(new Logfile(file, viewer, true), 200);
+            logfile.addListener(this);
             startAnalyzerThread(file);
 
             for (StateChangeListener l : listeners)
@@ -352,6 +366,7 @@ public class LogPlayer {
         logAnalyzer = new LogAnalyzerThread(file, new LogAnalyzerThread.ResultCallback() {
             @Override
             public void stepSizeFound(float stepSize, int numFrames) {
+                foundStepSize = true;
                 SECONDS_PER_FRAME = stepSize;
                 logfile.setNumFrames(numFrames);
             }
@@ -370,7 +385,7 @@ public class LogPlayer {
                 analyzedFrames = numFrames;
                 stateChanged();
             }
-        });
+        }, viewer, this);
         logAnalyzer.start();
     }
 
@@ -455,6 +470,15 @@ public class LogPlayer {
                 }
                 currentFrame--;
             } while (needHeader && currentFrame >= 0);
+        }
+    }
+
+    @Override
+    public void haveDrawCmds() {
+        logfileHasDrawCmds = true;
+        if (!foundStepSize) {
+            // We know this is a roboviz log so use the default step size for this
+            SECONDS_PER_FRAME = 0.04f;
         }
     }
 }

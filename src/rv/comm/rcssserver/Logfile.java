@@ -19,6 +19,12 @@ package rv.comm.rcssserver;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import rv.Viewer;
+import rv.comm.drawing.commands.Command;
 
 /**
  * Abstraction for a log that can be viewed frame by frame. Supports unpacked, single file zipped
@@ -27,33 +33,50 @@ import java.io.IOException;
  * @author justin
  */
 public class Logfile implements ILogfileReader {
-
     /** used for sequentially playing frames */
-    private BufferedReader br;
+    private BufferedReader              br;
 
     /** the file to read from */
-    private final File     logsrc;
+    private final File                  logsrc;
 
     /** index of the frame that is currently buffered */
-    private int            curFramePtr;
+    private int                         curFramePtr;
 
     /** the number of frames in the logfile, initially estimated */
-    private int            numFrames;
+    private int                         numFrames;
 
     /** stores the server message at the current frame position */
-    private String         curFrameMsg;
+    private String                      curFrameMsg;
+
+    /** viewer needed for parsing draw commands */
+    private final Viewer                viewer;
+
+    /** if we should execute draw commands */
+    private final boolean               execDrawCmds;
+
+    /** if draw commands have been found in the log */
+    private boolean                     haveDrawCmds;
+
+    private final List<LogfileListener> listeners = new ArrayList<>();
 
     /**
      * Default constructor
      * 
      * @param file
      *            the logfile to open
+     * @param viewer
+     *            viewer needed for parsing draw commands
+     * @param execDrawCmds
+     *            if draw commands should be executed
      * @throws Exception
      *             if the logfile can not be opened
      */
-    public Logfile(File file) throws Exception {
+    public Logfile(File file, Viewer viewer, boolean execDrawCmds) throws Exception {
         this.logsrc = file;
+        this.viewer = viewer;
+        this.execDrawCmds = execDrawCmds;
         numFrames = 1700;
+        haveDrawCmds = false;
         open();
     }
 
@@ -66,6 +89,9 @@ public class Logfile implements ILogfileReader {
         br = TarBz2ZipUtil.createBufferedReader(logsrc);
         if (br != null) {
             curFrameMsg = br.readLine();
+            if (curFrameMsg != null && curFrameMsg.startsWith("[")) {
+                curFrameMsg = processDrawCmds(curFrameMsg);
+            }
         }
         curFramePtr = 0;
     }
@@ -140,6 +166,9 @@ public class Logfile implements ILogfileReader {
             return null;
 
         curFrameMsg = br.readLine();
+        if (curFrameMsg != null && curFrameMsg.startsWith("[")) {
+            curFrameMsg = processDrawCmds(curFrameMsg);
+        }
         curFramePtr++;
         if (curFramePtr >= numFrames) {
             // the number of frames was estimated too low
@@ -175,5 +204,61 @@ public class Logfile implements ILogfileReader {
     @Override
     public File getFile() {
         return logsrc;
+    }
+
+    @Override
+    public void addListener(LogfileListener l) {
+        listeners.add(l);
+    }
+
+    @Override
+    public void removeListener(LogfileListener l) {
+        listeners.remove(l);
+    }
+
+    public String processDrawCmds(String line) {
+        if (line == null) {
+            return null;
+        }
+
+        while (line.startsWith("[")) {
+            if (!haveDrawCmds) {
+                haveDrawCmds = true;
+                for (LogfileListener l : listeners)
+                    l.haveDrawCmds();
+            }
+
+            int endIndex = line.indexOf("]");
+            if (endIndex == -1) {
+                break;
+            }
+
+            if (execDrawCmds) {
+                String drawCmd = line.substring(0, endIndex);
+                String[] drawCmdByteValues = drawCmd.substring(1, drawCmd.length()).split(",");
+                byte[] drawCmdBytes = new byte[drawCmdByteValues.length];
+                for (int i = 0; i < drawCmdBytes.length; i++) {
+                    try {
+                        drawCmdBytes[i] = Byte.parseByte(drawCmdByteValues[i].trim());
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+                ByteBuffer buf = ByteBuffer.wrap(drawCmdBytes);
+
+                Command cmd = null;
+                try {
+                    cmd = Command.parse(buf, viewer);
+                    if (cmd != null) {
+                        cmd.execute();
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            line = line.substring(endIndex + 1);
+        }
+
+        return line;
     }
 }

@@ -22,6 +22,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import js.io.ByteUtil;
 import rv.Viewer;
 import rv.comm.drawing.commands.Command;
@@ -71,9 +73,23 @@ public class DrawComm {
         }
     }
 
-    private final static boolean SHOW_WARNINGS = true;
-    private final Viewer         viewer;
-    private ReceiveThread        packetReceiver;
+    public interface DrawCommListener {
+        void drawCommandReceived(byte[] command);
+    }
+
+    private final List<DrawCommListener> listeners     = new ArrayList<>();
+
+    private final static boolean         SHOW_WARNINGS = true;
+    private final Viewer                 viewer;
+    private ReceiveThread                packetReceiver;
+
+    public void addListener(DrawCommListener l) {
+        listeners.add(l);
+    }
+
+    public void removeListener(DrawCommListener l) {
+        listeners.remove(l);
+    }
 
     /** Creates a new AgentComm */
     public DrawComm(Viewer viewer, int port) throws SocketException {
@@ -108,6 +124,8 @@ public class DrawComm {
                 }
                 return;
             } else {
+                for (DrawCommListener l : listeners)
+                    l.drawCommandReceived(pktData);
                 cmd.execute();
             }
         }

@@ -5,6 +5,10 @@ import java.io.IOException;
 
 public interface ILogfileReader {
 
+    public interface LogfileListener {
+        void haveDrawCmds();
+    }
+
     /**
      * @return true if the reader represents a valid logfile
      */
@@ -51,6 +55,10 @@ public interface ILogfileReader {
      * Moves the current frame back by one frame.
      */
     void stepAnywhere(int frame) throws IOException;
+
+    void addListener(LogfileListener l);
+
+    void removeListener(LogfileListener l);
 
     File getFile();
 }

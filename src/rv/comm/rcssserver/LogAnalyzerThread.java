@@ -3,6 +3,7 @@ package rv.comm.rcssserver;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import rv.Viewer;
 import rv.world.Team;
 import rv.world.WorldModel;
 
@@ -43,11 +44,15 @@ public class LogAnalyzerThread extends Thread {
     private Float                lastTime       = null;
     private Float                stepSize       = null;
     private boolean              aborted        = false;
+    private final Viewer         viewer;
+    private final LogPlayer      logPlayer;
 
-    public LogAnalyzerThread(File file, ResultCallback callback) {
+    public LogAnalyzerThread(File file, ResultCallback callback, Viewer viewer, LogPlayer logPlayer) {
         super();
         this.file = file;
         this.callback = callback;
+        this.viewer = viewer;
+        this.logPlayer = logPlayer;
     }
 
     public void abort() {
@@ -61,7 +66,8 @@ public class LogAnalyzerThread extends Thread {
         logfile = null;
 
         try {
-            logfile = new LogfileReaderBuffered(new Logfile(file), 200);
+            logfile = new LogfileReaderBuffered(new Logfile(file, viewer, false), 200);
+            logfile.addListener(logPlayer);
         } catch (Exception e) {
             e.printStackTrace();
         }

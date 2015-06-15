@@ -29,7 +29,7 @@ import rv.comm.rcssserver.ServerComm;
  */
 public class NetworkManager {
 
-    private DrawComm   agentComm;
+    private DrawComm   agentComm = null;
     private ServerComm serverComm;
 
     public DrawComm getAgentComm() {
@@ -47,11 +47,16 @@ public class NetworkManager {
             e.printStackTrace();
         }
         serverComm = new ServerComm(viewer.getWorldModel(), config, viewer.getMode());
+        if (agentComm != null) {
+            agentComm.addListener(serverComm);
+        }
     }
 
     public void shutdown() {
-        if (agentComm != null)
+        if (agentComm != null) {
             agentComm.shutdown();
+            agentComm.removeListener(serverComm);
+        }
         serverComm.disconnect();
     }
 }
