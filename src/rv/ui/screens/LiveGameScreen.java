@@ -18,12 +18,7 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
-import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
@@ -34,7 +29,6 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 import rv.world.objects.Ball;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 public class LiveGameScreen extends ViewerScreenBase implements ServerComm.ServerChangeListener {
 
@@ -69,11 +63,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         } else {
             viewer.getNetManager().getServer().removeChangeListener(this);
         }
-    }
-
-    @Override
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        super.render(gl, glu, glut, vp);
     }
 
     @Override

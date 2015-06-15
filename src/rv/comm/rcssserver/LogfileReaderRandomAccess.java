@@ -96,6 +96,11 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
     }
 
     @Override
+    public boolean isAtBeginningOfLog() {
+        return false;
+    }
+
+    @Override
     public boolean isAtEndOfLog() {
         return brFramePtr == numFrames;
     }
@@ -166,7 +171,18 @@ public class LogfileReaderRandomAccess implements ILogfileReader {
     }
 
     @Override
+    public void addListener(LogfileListener l) {
+
+    }
+
+    @Override
+    public void removeListener(LogfileListener l) {
+
+    }
+
+    @Override
     public File getFile() {
         return logsrc;
     }
+
 }
