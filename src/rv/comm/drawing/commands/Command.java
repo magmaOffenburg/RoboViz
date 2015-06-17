@@ -64,11 +64,11 @@ public abstract class Command {
     }
 
     /**
-     * Extracts the index of the agent the command is intended for.
+     * Extracts the id of the agent the command is intended for.
      * 
      * @param b
      *            - byte that represents both the agent and the team
-     * @return the index of the agent in a team's agent array
+     * @return the id of the agent
      */
     protected static int parseAgent(byte b) {
         int ub = ByteUtil.uValue(b);
@@ -87,11 +87,11 @@ public abstract class Command {
     protected static Agent getAgent(WorldModel world, byte teamAgent) {
         int uTeamAgent = ByteUtil.uValue(teamAgent);
         int teamID = uTeamAgent / 128;
-        int agent = teamID == 0 ? uTeamAgent : uTeamAgent - 128;
+        int agentID = (teamID == 0 ? uTeamAgent : uTeamAgent - 128) + 1;
 
         Team team = teamID == Team.LEFT ? world.getLeftTeam() : world.getRightTeam();
 
-        return team.getAgents().get(agent - 1);
+        return team.getAgentByID(agentID);
     }
 
     /**
@@ -195,10 +195,9 @@ public abstract class Command {
     public static Agent readAgent(ByteBuffer buf, WorldModel world) {
         int agentTeam = ByteUtil.uValue(buf.get());
         Team team = (agentTeam / 128 == Team.LEFT) ? world.getLeftTeam() : world.getRightTeam();
-        Agent agent = null;
-        int agentIndex = agentTeam % 128;
-        if (agentIndex < team.getAgents().size())
-            agent = team.getAgents().get(agentIndex);
+        Agent agent;
+        int agentID = agentTeam % 128 + 1;
+        agent = team.getAgentByID(agentID);
         return agent;
     }
 }
