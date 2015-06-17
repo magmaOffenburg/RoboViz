@@ -110,15 +110,22 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
     @Override
     public void sceneGraphChanged(SceneGraph sg) {
-        agents.clear();
-
         // Add agents from scene graph to this team
         // TODO: hopefully we can have the scene graph store agent IDs directly
         // to avoid this computation and guessing
         for (int i = 1; i <= MAX_AGENTS; i++) {
+            Agent existingAgent = getAgentByID(i);
             Node agentNode = findAgent(i, sg);
-            if (agentNode != null)
-                agents.add(new Agent(this, i, agentNode, sg, content));
+            if (agentNode != null) {
+                Agent newAgent = new Agent(this, i, agentNode, sg, content);
+                if (existingAgent != null) {
+                    newAgent.setAnnotation(existingAgent.getAnnotation());
+                    agents.remove(existingAgent);
+                }
+                agents.add(newAgent);
+            } else if (existingAgent != null) {
+                agents.remove(existingAgent);
+            }
         }
     }
 
