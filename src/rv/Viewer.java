@@ -72,7 +72,7 @@ import com.jogamp.opengl.util.awt.Screenshot;
  */
 public class Viewer extends GLProgram implements GLEventListener {
 
-    private static final String VERSION = "1.1.0";
+    private static final String VERSION = "1.1.1";
 
     public enum Mode {
         LOGFILE, LIVE,

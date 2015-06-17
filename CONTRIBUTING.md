@@ -12,4 +12,6 @@ Please include the following in bug reports:
 
 ## Contributing code
 
+Pull requests should be directed to the dev branch - the master branch should be in sync with the latest release.
+
 The repository includes an Eclipse source formatter file ([`source_format.xml`](https://github.com/Gama11/RoboViz/blob/master/source_format.xml)), be sure to use it to format your code. Eclipse's "Organize Imports" feature should also be used. Both of these can be configured to run each time a source file is saved.
