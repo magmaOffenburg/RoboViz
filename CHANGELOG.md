@@ -1,3 +1,16 @@
+1.1.1
+------------------------------
+
+* fixed third person robot vantage not working with new robot models
+* fixed the first frame of logfiles not being parsed
+* draw commands are now recorded with "Record Logfiles" and replayable in log mode
+* changed the drawings panel shortcut to `Y`
+* improved the enabled status handling of some log player buttons
+* fixed the log player not pausing when reaching the start of the file with negative playback speed
+* fixed camera position shortcuts (`1`-`8`) not always working right away in log mode
+* fixed draw commands including agent IDs to use to use the agent's uniform number instead of the index in the current team array
+* fixed agent annotations being discarded after scene graph changes
+
 1.1.0
 ------------------------------
 
