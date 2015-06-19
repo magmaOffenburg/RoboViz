@@ -170,7 +170,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
     }
 
     protected void renderBillboardText(String text, Vec3f pos3D, float[] color) {
-        Camera3D camera = viewer.getUI().getCamera();
+        Camera3D camera = viewer.getRenderer().getVantage();
         Vec3f screenPos = camera.project(pos3D, viewer.getScreen());
         int x = (int) (screenPos.x - tr.getBounds(text).getWidth() / 2);
         int y = (int) screenPos.y;
