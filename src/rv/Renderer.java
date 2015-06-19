@@ -61,6 +61,10 @@ public class Renderer implements WindowResizeListener {
         this.vantage = vantage;
     }
 
+    public Camera3D getVantage() {
+        return vantage;
+    }
+
     public EffectManager getEffectManager() {
         return effectManager;
     }
