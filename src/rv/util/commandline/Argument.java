@@ -44,7 +44,7 @@ public abstract class Argument<T> {
 
                 args[i] = "";
                 String stringValue = extractStringValue(arg);
-                if (found) {
+                if (found && !name.equals("logFile")) {
                     System.err
                             .println(String
                                     .format("Duplicate '--%s' argument with value '%s' found, using the first value '%s' instead.",
