@@ -52,11 +52,11 @@ public class EffectManager implements GLDisposable {
             ContentManager cm) {
 
         // configure sun
-        Vec3f lightPos = new Vec3f(-8, 7, -6);
+        Vec3f lightPos = new Vec3f(-11, 10, 9);
         Vec3f lightDir = lightPos.times(-1).normalize();
         DirLight light = new DirLight(lightDir);
         LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0),
-                Vec3f.unitY(), 24, 24, 30);
+                Vec3f.unitY(), 40, 40, 40);
 
         if (config.useBloom) {
             bloom = new Bloom();
