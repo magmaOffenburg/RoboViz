@@ -216,6 +216,12 @@ public class LogPlayer implements LogfileListener {
         }
     }
 
+    public String getFilePath() {
+        if (logfile == null)
+            return null;
+        return logfile.getFile().getPath();
+    }
+
     private int getGoalStepThresholdFrames() {
         float fps = 1 / SECONDS_PER_FRAME;
         return (int) Math.round(fps * GOAL_STEP_THRESHOLD_SECONDS);

@@ -49,6 +49,7 @@ import js.jogl.view.Viewport;
 import rv.comm.NetworkManager;
 import rv.comm.drawing.Drawings;
 import rv.comm.rcssserver.LogPlayer;
+import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
@@ -70,8 +71,8 @@ import com.jogamp.opengl.util.awt.Screenshot;
  * 
  * @author Justin Stoecker
  */
-public class Viewer extends GLProgram implements GLEventListener {
-
+public class Viewer extends GLProgram implements GLEventListener, ServerComm.ServerChangeListener,
+        LogPlayer.StateChangeListener {
     private static final String VERSION = "1.1.1";
 
     public enum Mode {
@@ -310,10 +311,13 @@ public class Viewer extends GLProgram implements GLEventListener {
             netManager = new NetworkManager();
             netManager.init(this, config);
             netManager.getServer().addChangeListener(world.getGameState());
+            netManager.getServer().addChangeListener(this);
         } else {
-            if (!init)
+            if (!init) {
                 logPlayer = new LogPlayer(logFile, world, config, this);
-            else
+                logPlayer.addListener(this);
+                logfileChanged();
+            } else
                 logPlayer.setWorldModel(world);
         }
 
@@ -439,6 +443,30 @@ public class Viewer extends GLProgram implements GLEventListener {
         }
 
         renderer.render(drawable, config.graphics);
+    }
+
+    @Override
+    public void connectionChanged(ServerComm server) {
+        if (mode != Mode.LIVE)
+            return;
+
+        String host = server.isConnected() ? config.networking.serverHost : null;
+        frame.setTitle(formatTitle(host));
+    }
+
+    @Override
+    public void playerStateChanged(boolean playing) {
+    }
+
+    @Override
+    public void logfileChanged() {
+        frame.setTitle(formatTitle(logPlayer.getFilePath()));
+    }
+
+    private String formatTitle(String current) {
+        if (current == null)
+            return "RoboViz";
+        return "RoboViz - " + current;
     }
 
     private class RVFrame extends JFrame {
