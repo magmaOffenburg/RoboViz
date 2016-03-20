@@ -1,3 +1,10 @@
+1.1.2
+------------------------------
+* fixing drawing of annotations in different robot vantages
+* fixed incorrect shadow rendering near field corners
+* adjusted .sh start scripts so they can run from any directory
+* added current server IP / logfile path to window title
+
 1.1.1
 ------------------------------
 
