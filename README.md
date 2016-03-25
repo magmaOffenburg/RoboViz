@@ -15,4 +15,4 @@ Contributions of any form are welcome. That includes:
 
 Some basic contribution guidelines can be found [here](CONTRIBUTING.md).
 
-[![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/Gama11/RoboViz)
+[![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
