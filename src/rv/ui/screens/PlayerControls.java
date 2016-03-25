@@ -239,17 +239,19 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
         if (!player.logfileHasDrawCmds()) {
             slider.setValue(player.getDesiredFrame());
+            slider.setEnabled(player.isValid());
+            sliderUpdate = false;
         } else {
             // Swing is not thread safe and running draw commands with the call to set the value of
             // slider can lock things up if we don't protect against this
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     slider.setValue(player.getDesiredFrame());
+                    slider.setEnabled(player.isValid());
+                    sliderUpdate = false;
                 }
             });
         }
-        slider.setEnabled(player.isValid());
-        sliderUpdate = false;
     }
 
     public void dispose() {

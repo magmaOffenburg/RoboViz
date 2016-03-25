@@ -53,9 +53,6 @@ public class Logfile implements ILogfileReader {
     /** if we should execute draw commands */
     private final boolean               execDrawCmds;
 
-    /** if draw commands have been found in the log */
-    private boolean                     haveDrawCmds;
-
     private final List<LogfileListener> listeners = new ArrayList<>();
 
     /**
@@ -75,7 +72,6 @@ public class Logfile implements ILogfileReader {
         this.viewer = viewer;
         this.execDrawCmds = execDrawCmds;
         numFrames = 1700;
-        haveDrawCmds = false;
         open();
     }
 
@@ -221,11 +217,8 @@ public class Logfile implements ILogfileReader {
         }
 
         while (line.startsWith("[")) {
-            if (!haveDrawCmds) {
-                haveDrawCmds = true;
-                for (LogfileListener l : listeners)
-                    l.haveDrawCmds();
-            }
+            for (LogfileListener l : listeners)
+                l.haveDrawCmds();
 
             int endIndex = line.indexOf("]");
             if (endIndex == -1) {
