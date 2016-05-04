@@ -7,6 +7,16 @@ RoboViz is a monitor and vizualization tool for the [RoboCup 3D Soccer Simulatio
 
 Except for the available shortcuts, the information on the [original website](https://sites.google.com/site/umroboviz) is still largely accurate. A complete list of shortcuts is available via a help window opened with the `F1` hotkey. Alternatively, it's also available as a `.html` file in `resources/help/controls.html`.
 
+## Command line arguments
+
+| Argument           | Description                                                               |
+|--------------------|---------------------------------------------------------------------------|
+| `--logMode`        | Start RoboViz in log instead of live mode.                                |
+| `--logFile=`       | Opens the log file at the specified path right away. Implies `--logMode`. |
+| `--serverHost=`    | Overrides the server host specified in `config.txt`.                      |
+| `--serverPort=`    | Overrides the server port specified in `config.txt`.                      |
+| `--drawingFilter=` | The initial filter used in the drawings panel - default is `.*`.          |
+
 ## Contributing
 
 Contributions of any form are welcome. That includes:
