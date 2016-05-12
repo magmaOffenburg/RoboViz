@@ -20,21 +20,27 @@ import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import js.jogl.view.Viewport;
-import rv.effects.EffectManager;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
+import js.jogl.view.Viewport;
+import rv.effects.EffectManager;
 
 public class InfoOverlay extends ScreenBase {
 
     private final TextRenderer tr;
-    private final Rectangle2D  b;
+    private Rectangle2D        b;
     private String             message;
+    private boolean            messageChanged;
 
-    public InfoOverlay(String message) {
+    public InfoOverlay() {
         this.message = message;
         tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, 24), true, true);
-        b = tr.getBounds(this.message);
+    }
+
+    public InfoOverlay setMessage(String message) {
+        this.message = message;
+        messageChanged = true;
+        return this;
     }
 
     @Override
@@ -42,6 +48,15 @@ public class InfoOverlay extends ScreenBase {
         gl.glColor4f(0, 0, 0, 0.7f);
         EffectManager.renderScreenQuad(gl);
         gl.glColor4f(1, 1, 1, 1);
+
+        if (messageChanged) {
+            b = tr.getBounds(this.message);
+            messageChanged = false;
+        }
+
+        if (b == null) {
+            return;
+        }
 
         int x = (int) ((vp.w - b.getWidth()) / 2);
         int y = vp.h - (int) ((vp.h - b.getHeight()) / 2);

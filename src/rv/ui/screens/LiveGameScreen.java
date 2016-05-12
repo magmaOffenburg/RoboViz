@@ -22,6 +22,7 @@ import javax.media.opengl.awt.GLCanvas;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
+import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;
 import rv.world.ISelectable;
@@ -42,14 +43,21 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         gameStateOverlay.addServerSpeedBenchmarker(ssb);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
-        connectionOverlay = new InfoOverlay(getConnectionMessage());
+        connectionOverlay = new InfoOverlay().setMessage(getConnectionMessage());
         overlays.add(connectionOverlay);
     }
 
     private String getConnectionMessage() {
         Configuration.Networking config = viewer.getConfig().networking;
         String server = config.getServerHost() + ":" + config.getServerPort();
-        if (config.autoConnect)
+        GameState gameState = viewer.getWorldModel().getGameState();
+        // in competitions, the server is restarted for the second half
+        // display a viewer-friendly message in that case to let them know why the game has
+        // "stopped"
+        if (gameState.isInitialized()
+                && Math.abs(gameState.getTime() - gameState.getHalfTime()) < 0.1)
+            return "Waiting for second half...";
+        else if (config.autoConnect)
             return "Trying to connect to " + server + "...";
         else
             return "Press C to connect to " + server + ".";
@@ -198,6 +206,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 
     @Override
     public void connectionChanged(ServerComm server) {
+        connectionOverlay.setMessage(getConnectionMessage());
         connectionOverlay.setVisible(!server.isConnected());
         if (!server.isConnected()) {
             prevScoreL = -1;

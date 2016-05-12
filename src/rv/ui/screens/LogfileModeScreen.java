@@ -33,7 +33,7 @@ public class LogfileModeScreen extends ViewerScreenBase {
         super(viewer);
         this.player = viewer.getLogPlayer();
         playDialog = PlayerControls.getInstance(player);
-        openFileOverlay = new InfoOverlay("Please open a logfile.");
+        openFileOverlay = new InfoOverlay().setMessage("Please open a logfile.");
         overlays.add(openFileOverlay);
         player.addListener(new LogPlayer.StateChangeListener() {
             @Override

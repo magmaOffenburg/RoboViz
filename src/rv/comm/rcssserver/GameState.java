@@ -76,6 +76,7 @@ public class GameState implements ServerChangeListener {
     public static final String                        TIME                 = "time";
     public static final String                        HALF                 = "half";
 
+    private boolean                                   initialized;
     private float                                     fieldLength;
     private float                                     fieldWidth;
     private float                                     fieldHeight;
@@ -102,6 +103,10 @@ public class GameState implements ServerChangeListener {
     private final List<GameStateChangeListener>       listeners            = new CopyOnWriteArrayList<>();
 
     private final List<ServerMessageReceivedListener> smListeners          = new CopyOnWriteArrayList<>();
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     public float getFieldLength() {
         return fieldLength;
@@ -208,6 +213,7 @@ public class GameState implements ServerChangeListener {
     }
 
     public void reset() {
+        initialized = false;
         teamLeft = null;
         teamRight = null;
         scoreLeft = 0;
@@ -332,6 +338,8 @@ public class GameState implements ServerChangeListener {
                 }
             }
         }
+
+        initialized = true;
 
         for (ServerMessageReceivedListener l : smListeners) {
             l.gsServerMessageProcessed(this);
