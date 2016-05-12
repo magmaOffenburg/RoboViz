@@ -24,6 +24,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilitiesImmutable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
@@ -35,7 +36,6 @@ import rv.ui.screens.Screen;
 import rv.ui.view.CamTargetTracker;
 import rv.ui.view.CameraController;
 import rv.ui.view.SimsparkController;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * User interface controls

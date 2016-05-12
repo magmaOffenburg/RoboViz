@@ -41,8 +41,8 @@ public class RobotVantageFirstPerson extends RobotVantageBase {
         }
         up = m.transform(new Vec3f(0, 1, 0));
         right = forward.cross(up).normalize();
-        viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y, c.z
-                + forward.z, 0, 1, 0);
+        viewMatrix = Matrix.createLookAt(c.x, c.y, c.z, c.x + forward.x, c.y + forward.y,
+                c.z + forward.z, 0, 1, 0);
     }
 
     @Override

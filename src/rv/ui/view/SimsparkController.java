@@ -35,15 +35,16 @@ import rv.ui.UserInterface;
  * 
  * @author justin
  */
-public class SimsparkController implements CameraController, GameStateChangeListener, FocusListener {
+public class SimsparkController
+        implements CameraController, GameStateChangeListener, FocusListener {
 
     private final UserInterface ui;
 
     protected boolean           rotate;
-    protected boolean           moveF;                   // camera is moving
-    protected boolean           moveB;                   // camera is moving back
-    protected boolean           moveL;                   // camera is moving left
-    protected boolean           moveR;                   // camera is moving right
+    protected boolean           moveF;                     // camera is moving
+    protected boolean           moveB;                     // camera is moving back
+    protected boolean           moveL;                     // camera is moving left
+    protected boolean           moveR;                     // camera is moving right
     protected boolean           moveU;
     protected boolean           moveD;
     protected Vec2f             lastMouse = new Vec2f(0);

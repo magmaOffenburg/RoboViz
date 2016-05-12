@@ -19,8 +19,8 @@ package rv.ui.screens;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import js.jogl.view.Viewport;
 import com.jogamp.opengl.util.gl2.GLUT;
+import js.jogl.view.Viewport;
 
 /**
  * A screen represents a visual 2D interface that is displayed on top of the 3D rendering of the

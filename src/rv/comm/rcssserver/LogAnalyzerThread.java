@@ -47,7 +47,8 @@ public class LogAnalyzerThread extends Thread {
     private final Viewer         viewer;
     private final LogPlayer      logPlayer;
 
-    public LogAnalyzerThread(File file, ResultCallback callback, Viewer viewer, LogPlayer logPlayer) {
+    public LogAnalyzerThread(File file, ResultCallback callback, Viewer viewer,
+            LogPlayer logPlayer) {
         super();
         this.file = file;
         this.callback = callback;

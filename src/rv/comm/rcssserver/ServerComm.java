@@ -255,8 +255,8 @@ public class ServerComm implements DrawCommListener {
 
     public void sendMessage(String msg) {
         if (out == null) {
-            DebugInfo.println(getClass(), String.format("Cannot send message"
-                    + " \"%s\" - not connected to server", msg));
+            DebugInfo.println(getClass(), String
+                    .format("Cannot send message" + " \"%s\" - not connected to server", msg));
             return;
         }
         char[] buf = new char[4 + msg.length()];

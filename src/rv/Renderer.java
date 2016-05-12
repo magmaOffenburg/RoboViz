@@ -21,6 +21,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.FrameBufferObject;
 import js.jogl.GLInfo;
 import js.jogl.Texture2D;
@@ -35,7 +36,6 @@ import rv.world.rendering.PhongWorldRenderer;
 import rv.world.rendering.SceneRenderer;
 import rv.world.rendering.ShadowMapRenderer;
 import rv.world.rendering.VSMPhongWorldRenderer;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * Controls all rendering for the main RoboViz window

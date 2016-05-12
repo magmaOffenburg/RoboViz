@@ -117,8 +117,8 @@ public class CamTargetTracker {
             } else {
                 scale = (d - minTetherDist) / (slowTetherRange - minTetherDist);
             }
-            tetherVelocity = Math
-                    .min(scale * (tetherVelocity + TETHER_CHANGE), MAX_TETHER_VELOCITY);
+            tetherVelocity = Math.min(scale * (tetherVelocity + TETHER_CHANGE),
+                    MAX_TETHER_VELOCITY);
             camera.moveWorld(v.normalize().times(tetherVelocity));
         }
         tetherVelocity = Math.max(tetherVelocity - TETHER_CHANGE, 0);

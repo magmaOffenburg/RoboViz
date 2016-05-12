@@ -32,9 +32,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.SwingUtil;
-import config.RVConfigure.SaveListener;
 
 public class GraphicsPanel extends JPanel implements SaveListener {
 
@@ -60,7 +60,7 @@ public class GraphicsPanel extends JPanel implements SaveListener {
     JSpinner                     fwSpinner;
     JSpinner                     fhSpinner;
     final JLabel                 shadowResLabel = new JLabel("Shadow Resolution: ",
-                                                        SwingConstants.RIGHT);
+            SwingConstants.RIGHT);
     final JLabel                 samplesLabel   = new JLabel("Samples: ", SwingConstants.RIGHT);
 
     public GraphicsPanel(RVConfigure configProg) {

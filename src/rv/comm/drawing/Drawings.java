@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+import com.jogamp.opengl.util.gl2.GLUT;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * Contains and manages shape sets

@@ -14,6 +14,7 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
 import js.math.BoundingBox;
@@ -32,11 +33,10 @@ import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
-import com.jogamp.opengl.util.gl2.GLUT;
 
-public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener,
-        MouseMotionListener, MouseWheelListener, GameState.GameStateChangeListener,
-        WorldModel.SelectionChangeListener {
+public abstract class ViewerScreenBase extends ScreenBase
+        implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener,
+        GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
@@ -75,7 +75,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
 
-        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
+        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true,
+                false);
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new BorderTextRenderer(font, true, false);
 
@@ -449,8 +450,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             return;
         }
 
-        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), viewer
-                .getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
+        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName),
+                viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
     }
 
     private void setRobotVantage(RobotVantageType type) {

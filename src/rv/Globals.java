@@ -11,8 +11,8 @@ public class Globals {
     public static Image getIcon() {
         if (icon == null) {
             try {
-                icon = ImageIO.read(Globals.class.getClassLoader().getResourceAsStream(
-                        "resources/images/icon.png"));
+                icon = ImageIO.read(Globals.class.getClassLoader()
+                        .getResourceAsStream("resources/images/icon.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

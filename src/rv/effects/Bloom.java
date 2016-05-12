@@ -144,7 +144,8 @@ public class Bloom implements GLDisposable, WindowResizeListener {
         halfSizeFBOs[1].bind(gl);
         halfSizeFBOs[1].clear(gl);
         blurShader.enable(gl);
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets,
+                0);
         gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
         input.bind(gl);
         EffectManager.renderScreenQuad(gl);

@@ -186,8 +186,8 @@ public class Agent implements ISelectable {
     @Override
     public void renderSelected(GL2 gl) {
         if (getPosition() != null) {
-            ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getTeamMaterial()
-                    .getDiffuse());
+            ContentManager.renderSelection(gl, getPosition(), 0.25f,
+                    team.getTeamMaterial().getDiffuse());
         }
     }
 

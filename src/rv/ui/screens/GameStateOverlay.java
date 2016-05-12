@@ -20,12 +20,12 @@ import java.awt.Font;
 import java.util.Locale;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 public class GameStateOverlay extends ScreenBase {
 
@@ -37,7 +37,7 @@ public class GameStateOverlay extends ScreenBase {
         private static final int   SCORE_BOX_WIDTH = 56;
         private static final int   Y_PAD           = 4;
         private static final int   PLAYMODE_WIDTH  = 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH
-                                                           + 6;
+                + 6;
 
         private final TextRenderer tr1;
         private final TextRenderer tr2;
@@ -77,8 +77,8 @@ public class GameStateOverlay extends ScreenBase {
             double rxpad = (NAME_WIDTH - tr1.getBounds(teamR).getWidth()) / 2;
             double sxpad = (SCORE_BOX_WIDTH - tr1.getBounds(scoreText).getWidth()) / 2;
 
-            drawGradientBar(gl, x - 3, y - 24, PLAYMODE_WIDTH, 24, 0.5f, new float[] { 0, 0, 0,
-                    0.5f }, new float[] { 0, 0, 0, 0 }, false);
+            drawGradientBar(gl, x - 3, y - 24, PLAYMODE_WIDTH, 24, 0.5f,
+                    new float[] { 0, 0, 0, 0.5f }, new float[] { 0, 0, 0, 0 }, false);
 
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor4f(0, 0, 0, 0.5f);

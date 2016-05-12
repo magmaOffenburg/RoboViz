@@ -43,6 +43,11 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.awt.AWTKeyAdapter;
+import com.jogamp.newt.event.awt.AWTMouseAdapter;
+import com.jogamp.opengl.util.awt.Screenshot;
 import js.jogl.GLInfo;
 import js.jogl.prog.GLProgram;
 import js.jogl.view.Viewport;
@@ -59,11 +64,6 @@ import rv.util.commandline.IntegerArgument;
 import rv.util.commandline.StringArgument;
 import rv.util.swing.SwingUtil;
 import rv.world.WorldModel;
-import com.jogamp.newt.event.KeyListener;
-import com.jogamp.newt.event.MouseListener;
-import com.jogamp.newt.event.awt.AWTKeyAdapter;
-import com.jogamp.newt.event.awt.AWTMouseAdapter;
-import com.jogamp.opengl.util.awt.Screenshot;
 
 /**
  * Program entry point / main class. Creates a window and delegates OpenGL rendering the Renderer
@@ -71,8 +71,8 @@ import com.jogamp.opengl.util.awt.Screenshot;
  * 
  * @author Justin Stoecker
  */
-public class Viewer extends GLProgram implements GLEventListener, ServerComm.ServerChangeListener,
-        LogPlayer.StateChangeListener {
+public class Viewer extends GLProgram
+        implements GLEventListener, ServerComm.ServerChangeListener, LogPlayer.StateChangeListener {
     private static final String VERSION = "1.1.2";
 
     public enum Mode {

@@ -85,7 +85,7 @@ public class RobotVantageThirdPerson extends RobotVantageBase {
         Vec3f camPos = avg.minus(avgF.times(2));
         camPos.y = 2;
 
-        viewMatrix = Matrix
-                .createLookAt(camPos.x, camPos.y, camPos.z, avg.x, avg.y, avg.z, 0, 1, 0);
+        viewMatrix = Matrix.createLookAt(camPos.x, camPos.y, camPos.z, avg.x, avg.y, avg.z, 0, 1,
+                0);
     }
 }

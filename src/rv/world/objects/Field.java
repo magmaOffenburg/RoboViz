@@ -38,8 +38,8 @@ import rv.world.ModelObject;
 @SuppressWarnings("ForLoopReplaceableByForEach")
 public class Field extends ModelObject implements GameStateChangeListener, GLDisposable {
 
-    public static final Matrix DEFAULT_MODEL_MATRIX = new Matrix(new double[] { -1.5, 0, 0, 0, 0,
-            0, 1, 0, 0, 1.5, 0, 0, 0, 0, 0, 1      });
+    public static final Matrix DEFAULT_MODEL_MATRIX = new Matrix(
+            new double[] { -1.5, 0, 0, 0, 0, 0, 1, 0, 0, 1.5, 0, 0, 0, 0, 0, 1 });
 
     private static final int   CIRCLE_SEGMENTS      = 60;
     private static final float PENALTY_WIDTH        = 2.1f;
@@ -83,18 +83,14 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
                 { hfl - LINE_THICKNESS, 0, hfw - LINE_THICKNESS },
 
                 // center line
-                { -LINE_THICKNESS, 0, hfw },
-                { -LINE_THICKNESS, 0, -hfw },
-                { LINE_THICKNESS, 0, -hfw },
-                { LINE_THICKNESS, 0, hfw },
+                { -LINE_THICKNESS, 0, hfw }, { -LINE_THICKNESS, 0, -hfw },
+                { LINE_THICKNESS, 0, -hfw }, { LINE_THICKNESS, 0, hfw },
 
                 // right goal box
-                { -hfl, 0, hgw + LINE_THICKNESS },
-                { -hfl, 0, hgw - LINE_THICKNESS },
+                { -hfl, 0, hgw + LINE_THICKNESS }, { -hfl, 0, hgw - LINE_THICKNESS },
                 { -hfl + hgl - LINE_THICKNESS, 0, hgw - LINE_THICKNESS },
                 { -hfl + hgl - LINE_THICKNESS, 0, -hgw + LINE_THICKNESS },
-                { -hfl, 0, -hgw + LINE_THICKNESS },
-                { -hfl, 0, -hgw - LINE_THICKNESS },
+                { -hfl, 0, -hgw + LINE_THICKNESS }, { -hfl, 0, -hgw - LINE_THICKNESS },
                 { -hfl + hgl + LINE_THICKNESS, 0, -hgw - LINE_THICKNESS },
                 { -hfl + hgl + LINE_THICKNESS, 0, hgw + LINE_THICKNESS },
 
@@ -153,8 +149,8 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
         if (geometryUpdated) {
             renderLines(gl);
             geometryUpdated = false;
-            lineTexture = Texture2D.loadTex(gl, "resources/textures/white.png", getClass()
-                    .getClassLoader());
+            lineTexture = Texture2D.loadTex(gl, "resources/textures/white.png",
+                    getClass().getClassLoader());
         }
 
         gl.glNormal3f(0, 1, 0);

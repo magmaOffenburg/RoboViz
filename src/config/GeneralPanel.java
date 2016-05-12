@@ -11,10 +11,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.FileChooser;
 import rv.util.swing.SwingUtil;
-import config.RVConfigure.SaveListener;
 
 public class GeneralPanel extends JPanel implements SaveListener {
 

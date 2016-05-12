@@ -20,10 +20,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.Globals;
 import rv.util.swing.SwingUtil;
-import config.RVConfigure.SaveListener;
 
 public class TeamColorsPanel extends JPanel implements SaveListener {
 
@@ -149,9 +149,8 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
     }
 
     /**
-     * @see http 
-     *      ://www.java2s.com/Code/Java/Swing-JFC/Tablewithacustomcellrendererandeditorforthecolordata
-     *      .htm
+     * @see http ://www.java2s.com/Code/Java/Swing-JFC/
+     *      Tablewithacustomcellrendererandeditorforthecolordata .htm
      */
     private class ColorRenderer extends JLabel implements TableCellRenderer {
 
@@ -187,11 +186,11 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
     }
 
     /**
-     * @see http 
-     *      ://www.java2s.com/Code/Java/Swing-JFC/Tablewithacustomcellrendererandeditorforthecolordata
-     *      .htm
+     * @see http ://www.java2s.com/Code/Java/Swing-JFC/
+     *      Tablewithacustomcellrendererandeditorforthecolordata .htm
      */
-    private class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+    private class ColorEditor extends AbstractCellEditor
+            implements TableCellEditor, ActionListener {
 
         Color                         currentColor;
         JButton                       button;
@@ -229,8 +228,8 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
             return currentColor;
         }
 
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                boolean isSelected, int row, int column) {
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                int row, int column) {
             currentColor = (Color) value;
             return button;
         }

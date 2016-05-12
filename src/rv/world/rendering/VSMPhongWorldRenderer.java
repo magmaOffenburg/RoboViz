@@ -62,8 +62,8 @@ public class VSMPhongWorldRenderer implements SceneRenderer {
         }
 
         shader.enable(gl);
-        shader.setLightViewProjection(gl, effects.getShadowRenderer().getLight()
-                .getViewProjection());
+        shader.setLightViewProjection(gl,
+                effects.getShadowRenderer().getLight().getViewProjection());
         shader.disable(gl);
 
         suppressedMeshes.add("field.obj");

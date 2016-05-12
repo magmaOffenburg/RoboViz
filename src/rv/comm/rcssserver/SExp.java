@@ -123,8 +123,9 @@ public class SExp {
             } else if (c == EXPRESSION_CLOSE) {
                 // end of current expression
                 if (curExpr == null)
-                    throw new ParseException("Trying to end s-expression, "
-                            + "but no s-expression has been started", i);
+                    throw new ParseException(
+                            "Trying to end s-expression, " + "but no s-expression has been started",
+                            i);
 
                 // if parent is null, this is the end of the list
                 if (curExpr.parent == null)
@@ -145,8 +146,9 @@ public class SExp {
 
         // if current expression isn't null there is an unclosed expression
         if (curExpr != null)
-            throw new ParseException("S-expression not closed; expecting end "
-                    + "of expression with ')'", text.length());
+            throw new ParseException(
+                    "S-expression not closed; expecting end " + "of expression with ')'",
+                    text.length());
 
         return expressions.size() == 0 ? null : expressions;
     }

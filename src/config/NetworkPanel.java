@@ -28,8 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import rv.Configuration;
 import config.RVConfigure.SaveListener;
+import rv.Configuration;
 
 /**
  * 

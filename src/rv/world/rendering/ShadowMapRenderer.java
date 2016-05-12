@@ -253,7 +253,8 @@ public class ShadowMapRenderer implements SceneRenderer {
         blurShader.enable(gl);
 
         // horizontal pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets,
+                0);
         gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
         gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT1);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -261,7 +262,8 @@ public class ShadowMapRenderer implements SceneRenderer {
         blurFBO.getColorTexture(1).bind(gl);
 
         // vertical pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2, blurParams[1].offsets, 0);
+        gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2, blurParams[1].offsets,
+                0);
         gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length, blurParams[1].weights, 0);
         gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT0);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
