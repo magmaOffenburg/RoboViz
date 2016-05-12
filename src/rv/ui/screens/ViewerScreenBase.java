@@ -86,21 +86,22 @@ public abstract class ViewerScreenBase extends ScreenBase
 
         viewer.getWorldModel().getGameState().addListener(this);
         viewer.getWorldModel().addSelectionChangeListener(this);
+        viewer.addWindowResizeListener(this);
     }
 
     private void renderAnnotations() {
         List<BufferedSet<Annotation>> sets = viewer.getDrawings().getAnnotationSets();
-        if (sets.size() > 0) {
-            for (BufferedSet<Annotation> set : sets) {
-                if (set.isVisible()) {
-                    ArrayList<Annotation> annotations = set.getFrontSet();
-                    for (Annotation a : annotations) {
-                        if (a != null) {
-                            renderBillboardText(a.getText(), new Vec3f(a.getPos()), a.getColor());
-                        }
-                    }
-                }
-            }
+        if (sets.size() <= 0)
+            return;
+
+        for (BufferedSet<Annotation> set : sets) {
+            if (!set.isVisible())
+                continue;
+
+            ArrayList<Annotation> annotations = set.getFrontSet();
+            for (Annotation a : annotations)
+                if (a != null)
+                    renderBillboardText(a.getText(), new Vec3f(a.getPos()), a.getColor());
         }
     }
 
@@ -501,5 +502,11 @@ public abstract class ViewerScreenBase extends ScreenBase
 
     protected void toggleShowServerSpeed() {
         gameStateOverlay.toggleShowServerSpeed();
+    }
+
+    @Override
+    public void windowResized(Viewer.WindowResizeEvent event) {
+        for (Screen overlay : overlays)
+            overlay.windowResized(event);
     }
 }

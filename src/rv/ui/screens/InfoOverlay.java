@@ -23,23 +23,23 @@ import javax.media.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
+import rv.Viewer;
 import rv.effects.EffectManager;
 
 public class InfoOverlay extends ScreenBase {
 
-    private final TextRenderer tr;
-    private Rectangle2D        b;
-    private String             message;
-    private boolean            messageChanged;
+    private TextRenderer tr;
+    private Rectangle2D  b;
+    private String       message;
+    private boolean      updateTextRenderer = true;
 
     public InfoOverlay() {
         this.message = message;
-        tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, 24), true, true);
     }
 
     public InfoOverlay setMessage(String message) {
         this.message = message;
-        messageChanged = true;
+        updateTextRenderer = true;
         return this;
     }
 
@@ -49,9 +49,11 @@ public class InfoOverlay extends ScreenBase {
         EffectManager.renderScreenQuad(gl);
         gl.glColor4f(1, 1, 1, 1);
 
-        if (messageChanged) {
+        if (updateTextRenderer) {
+            int size = (int) (vp.w / message.length() * 1.2);
+            tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, size), true, true);
             b = tr.getBounds(this.message);
-            messageChanged = false;
+            updateTextRenderer = false;
         }
 
         if (b == null) {
@@ -66,5 +68,10 @@ public class InfoOverlay extends ScreenBase {
         tr.setColor(1, 1, 1, 1);
         tr.draw(message, x, y);
         tr.endRendering();
+    }
+
+    @Override
+    public void windowResized(Viewer.WindowResizeEvent event) {
+        updateTextRenderer = true;
     }
 }

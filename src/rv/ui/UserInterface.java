@@ -67,11 +67,7 @@ public class UserInterface implements KeyListener {
         return picker;
     }
 
-    public Screen getActiveScreen() {
-        return activeScreen;
-    }
-
-    public void setActiveScreen(Screen activeScreen) {
+    private void setActiveScreen(Screen activeScreen) {
         GLCanvas canvas = (GLCanvas) viewer.getCanvas();
         if (this.activeScreen != null)
             this.activeScreen.setEnabled(canvas, false);
@@ -145,7 +141,6 @@ public class UserInterface implements KeyListener {
     }
 
     public void render(GL2 gl, GLU glu, GLUT glut) {
-
         gl.glDisable(GL.GL_DEPTH_TEST);
         gl.glEnable(GL.GL_BLEND);
         gl.glDisable(GL2.GL_LIGHTING);
@@ -179,14 +174,10 @@ public class UserInterface implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
+    public void keyReleased(KeyEvent e) {
     }
 
     @Override
-    public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
+    public void keyTyped(KeyEvent e) {
     }
 }

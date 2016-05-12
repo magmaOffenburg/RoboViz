@@ -21,6 +21,7 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
+import rv.Viewer;
 
 /**
  * A screen represents a visual 2D interface that is displayed on top of the 3D rendering of the
@@ -28,7 +29,7 @@ import js.jogl.view.Viewport;
  * 
  * @author justin
  */
-public interface Screen {
+public interface Screen extends Viewer.WindowResizeListener {
 
     void setEnabled(GLCanvas canvas, boolean enabled);
 
