@@ -209,8 +209,6 @@ public class ServerComm implements DrawCommListener {
             in = new DataInputStream(socket.getInputStream());
             MessageReceiver inThread = new MessageReceiver();
             inThread.start();
-            DebugInfo.println(getClass(), "connected with rcssserver3d " + socket.getInetAddress()
-                    + ":" + socket.getPort());
             if (autoConnectTimer != null)
                 autoConnectTimer.stop();
             setConnected(true);
