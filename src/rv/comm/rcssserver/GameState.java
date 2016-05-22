@@ -48,6 +48,34 @@ public class GameState implements ServerChangeListener {
         void gsServerMessageProcessed(GameState gs);
     }
 
+    public enum FoulType {
+        CROWDING(0, "crowding"), TOUCHING(1, "touching"), ILLEGALDEFENCE(2, "illegal defence"),
+        ILLEGALATTACK(3, "illegal attack"), INCAPABLE(4, "incapable"),
+        KICKOFF(5, "illegal kickoff"), CHARGING(6, "charging");
+
+        private int    idx;
+        private String str;
+
+        FoulType(int i, String s) {
+            this.idx = i;
+            this.str = s;
+        }
+
+        public String toString() {
+            return str;
+        }
+    }
+
+    public class Foul {
+
+        public float    time;
+        public int      index;
+        public FoulType type;
+        public int      team;
+        public int      unum;
+        public long     receivedTime;
+    }
+
     // Measurements and Rules
     public static final String                        FIELD_LENGTH         = "FieldLength";
     public static final String                        FIELD_WIDTH          = "FieldWidth";
@@ -76,6 +104,9 @@ public class GameState implements ServerChangeListener {
     public static final String                        TIME                 = "time";
     public static final String                        HALF                 = "half";
 
+    // Foul
+    public static final String                        FOUL                 = "foul";
+
     private boolean                                   initialized;
     private float                                     fieldLength;
     private float                                     fieldWidth;
@@ -99,6 +130,7 @@ public class GameState implements ServerChangeListener {
     private String                                    playMode             = "<Play Mode>";
     private float                                     time;
     private int                                       half;
+    private List<Foul>                                fouls                = new CopyOnWriteArrayList<Foul>();
 
     private final List<GameStateChangeListener>       listeners            = new CopyOnWriteArrayList<>();
 
@@ -194,6 +226,10 @@ public class GameState implements ServerChangeListener {
 
     public int getHalf() {
         return half;
+    }
+
+    public List<Foul> getFouls() {
+        return fouls;
     }
 
     public void addListener(GameStateChangeListener l) {
@@ -334,6 +370,29 @@ public class GameState implements ServerChangeListener {
                 case SCORE_RIGHT:
                     scoreRight = Integer.parseInt(atoms[1]);
                     playStateChanges++;
+                    break;
+                case FOUL:
+                    Foul foul = new Foul();
+                    foul.time = time;
+                    foul.index = Integer.parseInt(atoms[1]);
+                    foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[2])];
+                    foul.team = Integer.parseInt(atoms[3]);
+                    foul.unum = Integer.parseInt(atoms[4]);
+                    foul.receivedTime = System.currentTimeMillis();
+                    boolean fAlreadyHaveFoul = false;
+                    for (int i = 0; i < fouls.size(); ++i) {
+                        Foul currentFoul = fouls.get(i);
+                        if (currentFoul.type == foul.type && currentFoul.team == foul.team
+                                && currentFoul.unum == foul.unum
+                                && Math.abs(foul.time - currentFoul.time) < 1.0) {
+                            // We already have this foul so don't add it again
+                            fAlreadyHaveFoul = true;
+                            break;
+                        }
+                    }
+                    if (!fAlreadyHaveFoul) {
+                        fouls.add(foul);
+                    }
                     break;
                 }
             }
