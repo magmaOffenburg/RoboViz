@@ -450,7 +450,7 @@ public class Viewer extends GLProgram
         if (mode != Mode.LIVE)
             return;
 
-        String host = server.isConnected() ? config.networking.serverHost : null;
+        String host = server.isConnected() ? config.networking.getServerHost() : null;
         frame.setTitle(formatTitle(host));
     }
 
