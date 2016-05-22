@@ -34,7 +34,7 @@ import rv.world.WorldModel;
  * 
  * @author patmac
  */
-public class FoulListOverlay extends ScreenBase implements GameStateChangeListener {
+public class FoulListOverlay extends ScreenBase {
     private static final int   FOUL_HEIGHT        = 20;
     private static final int   FOUL_WIDTH         = 180;
     private static final float FOUL_SHOW_TIME     = 8.0f;
@@ -46,7 +46,6 @@ public class FoulListOverlay extends ScreenBase implements GameStateChangeListen
 
     public FoulListOverlay(Viewer viewer) {
         this.viewer = viewer;
-        viewer.getWorldModel().getGameState().addListener(this);
     }
 
     void render(GL2 gl, GameState gs, int screenW, int screenH) {
@@ -70,15 +69,17 @@ public class FoulListOverlay extends ScreenBase implements GameStateChangeListen
 
         List<GameState.Foul> fouls = gs.getFouls();
         float n = 1.0f;
-        for (int i = 0; i < fouls.size(); ++i) {
-            GameState.Foul f = fouls.get(i);
-            float dt = (System.currentTimeMillis() - f.receivedTime) / 1000.0f;
-            if (shouldDisplayFoul(f)) {
-                float opacity = dt > FOUL_SHOW_TIME ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME
-                        : 1.0f;
-                drawFoul(gl, x, y - (int) (20 * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH, f,
-                        opacity, f.team == 1 ? lc : rc);
-                n += opacity;
+        if (fouls.size() > 0) {
+            long currentTimeMillis = System.currentTimeMillis();
+            for (GameState.Foul f : fouls) {
+                if (shouldDisplayFoul(f, currentTimeMillis)) {
+                    float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
+                    float opacity = dt > FOUL_SHOW_TIME
+                            ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME : 1.0f;
+                    drawFoul(gl, x, y - (int) (20 * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH,
+                            f, opacity, f.team == 1 ? lc : rc);
+                    n += opacity;
+                }
             }
         }
     }
@@ -88,8 +89,8 @@ public class FoulListOverlay extends ScreenBase implements GameStateChangeListen
         render(gl, viewer.getWorldModel().getGameState(), vp.w, vp.h);
     }
 
-    void drawFoul(GL2 gl, int x, int y, int w, int h, int screenW, int screenH,
-            GameState.Foul foul, float opacity, float[] teamColor) {
+    void drawFoul(GL2 gl, int x, int y, int w, int h, int screenW, int screenH, GameState.Foul foul,
+            float opacity, float[] teamColor) {
         float[] cardFillColor;
         TextRenderer tr = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
 
@@ -136,26 +137,8 @@ public class FoulListOverlay extends ScreenBase implements GameStateChangeListen
         tr.endRendering();
     }
 
-    void removeOldFouls(GameState gs) {
-        // Remove fouls that are no longer to be displayed and out of date
-        // so that they don't block other fouls from being added later.
-        // This can be a bit trcky if we're moving backwards/forwards in
-        // time in a log.
-        List<GameState.Foul> fouls = gs.getFouls();
-        for (int i = 0; i < fouls.size(); ++i) {
-            GameState.Foul f = fouls.get(i);
-            if (!shouldDisplayFoul(f)) {
-                if (Math.abs(gs.getTime() - f.time) >= 1 || gs.getPlayMode().equals("GameOver")
-                        || gs.getPlayMode().equals("BeforeKickOff")) {
-                    fouls.remove(i);
-                    i--;
-                }
-            }
-        }
-    }
-
-    boolean shouldDisplayFoul(GameState.Foul f) {
-        float dt = (System.currentTimeMillis() - f.receivedTime) / 1000.0f;
+    public static boolean shouldDisplayFoul(GameState.Foul f, long currentTimeMillis) {
+        float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
         return dt < FOUL_SHOW_TIME + FOUL_FADE_TIME;
     }
 
@@ -164,19 +147,5 @@ public class FoulListOverlay extends ScreenBase implements GameStateChangeListen
         gl.glVertex2f(x + w, y);
         gl.glVertex2f(x + w, y + h);
         gl.glVertex2f(x, y + h);
-    }
-
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-    }
-
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-        removeOldFouls(gs);
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
-        removeOldFouls(gs);
     }
 }

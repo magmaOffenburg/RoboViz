@@ -16,10 +16,13 @@
 
 package rv.comm.rcssserver;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
+import rv.ui.screens.FoulListOverlay;
 
 /**
  * Contains soccer game state information collected from rcssserver: teams, scores, play mode, time,
@@ -260,6 +263,10 @@ public class GameState implements ServerChangeListener {
         fouls = new CopyOnWriteArrayList<Foul>();
     }
 
+    public boolean isTimeStopped() {
+        return playMode.equals("BeforeKickOff") || playMode.equals("GameOver");
+    }
+
     /**
      * Parses expression and updates state
      */
@@ -274,6 +281,27 @@ public class GameState implements ServerChangeListener {
         int measureOrRuleChanges = 0;
         int timeChanges = 0;
         int playStateChanges = 0;
+
+        if (!fouls.isEmpty()) {
+            // Remove fouls that are no longer to be displayed and out of date
+            // so that they don't block other fouls from being added later.
+            // This can be a bit tricky if we're moving backwards/forwards in
+            // time in a log.
+            ArrayList<Foul> foulsToRemove = new ArrayList<Foul>();
+            long currentTimeMillis = System.currentTimeMillis();
+            for (Foul f : fouls) {
+                if (!FoulListOverlay.shouldDisplayFoul(f, currentTimeMillis)) {
+                    if (Math.abs(time - f.time) >= 1 || isTimeStopped()) {
+                        foulsToRemove.add(f);
+                    }
+                }
+            }
+            if (!foulsToRemove.isEmpty()) {
+                fouls.removeAll(foulsToRemove);
+            }
+        }
+
+        ArrayList<Foul> foulsToAdd = new ArrayList<Foul>();
 
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
@@ -392,11 +420,15 @@ public class GameState implements ServerChangeListener {
                         }
                     }
                     if (!fAlreadyHaveFoul) {
-                        fouls.add(foul);
+                        foulsToAdd.add(foul);
                     }
                     break;
                 }
             }
+        }
+
+        if (!foulsToAdd.isEmpty()) {
+            fouls.addAll(foulsToAdd);
         }
 
         initialized = true;
