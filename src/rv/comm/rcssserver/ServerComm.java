@@ -298,6 +298,10 @@ public class ServerComm implements DrawCommListener {
         setPlayMode(left ? "free_kick_left" : "free_kick_right");
     }
 
+    public void directFreeKick(boolean left) {
+        setPlayMode(left ? "direct_free_kick_left" : "direct_free_kick_right");
+    }
+
     public void killServer() {
         sendMessage("(killsim)");
     }

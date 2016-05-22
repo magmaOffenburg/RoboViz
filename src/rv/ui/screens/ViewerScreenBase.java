@@ -34,9 +34,9 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 
-public abstract class ViewerScreenBase extends ScreenBase
-        implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener,
-        GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
+public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener,
+        MouseMotionListener, MouseWheelListener, GameState.GameStateChangeListener,
+        WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
@@ -75,8 +75,7 @@ public abstract class ViewerScreenBase extends ScreenBase
         fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
 
-        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true,
-                false);
+        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new BorderTextRenderer(font, true, false);
 
@@ -283,7 +282,9 @@ public abstract class ViewerScreenBase extends ScreenBase
             cyclePlayers(e.isShiftDown() ? -1 : 1);
             break;
         case KeyEvent.VK_T:
-            viewer.getDrawings().toggle();
+            if (!e.isShiftDown()) {
+                viewer.getDrawings().toggle();
+            }
             break;
         case KeyEvent.VK_Y:
             viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());
@@ -451,8 +452,8 @@ public abstract class ViewerScreenBase extends ScreenBase
             return;
         }
 
-        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName),
-                viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
+        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), viewer
+                .getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
     }
 
     private void setRobotVantage(RobotVantageType type) {
