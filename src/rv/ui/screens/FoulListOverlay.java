@@ -37,7 +37,7 @@ import rv.world.WorldModel;
 public class FoulListOverlay extends ScreenBase implements GameStateChangeListener {
     private static final int   FOUL_HEIGHT        = 20;
     private static final int   FOUL_WIDTH         = 180;
-    private static final float FOUL_SHOW_TIME     = 10.0f;
+    private static final float FOUL_SHOW_TIME     = 8.0f;
     private static final float FOUL_FADE_TIME     = 2.0f;
     private static final int   TOP_SCREEN_OFFSET  = 17;
     private static final int   SIDE_SCREEN_OFFSET = 17;
