@@ -257,7 +257,7 @@ public class GameState implements ServerChangeListener {
         playMode = "<Play Mode>";
         time = 0;
         half = 0;
-	fouls = new CopyOnWriteArrayList<Foul>();
+        fouls = new CopyOnWriteArrayList<Foul>();
     }
 
     /**
