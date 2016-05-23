@@ -42,16 +42,18 @@ public class FoulListOverlay extends ScreenBase {
     private static final int   TOP_SCREEN_OFFSET  = 17;
     private static final int   SIDE_SCREEN_OFFSET = 17;
 
+    private final TextRenderer tr;
+
     private final Viewer       viewer;
 
     public FoulListOverlay(Viewer viewer) {
         this.viewer = viewer;
+        tr = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
     }
 
     void render(GL2 gl, GameState gs, int screenW, int screenH) {
         int y = screenH - TOP_SCREEN_OFFSET;
         int x = screenW - FOUL_WIDTH - SIDE_SCREEN_OFFSET;
-        TextRenderer tr = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
 
         gl.glBegin(GL2.GL_QUADS);
         gl.glColor4fv(new float[] { 0.0f, 0.0f, 0.0f, 1.0f / 3.0f }, 0);
@@ -69,7 +71,7 @@ public class FoulListOverlay extends ScreenBase {
 
         List<GameState.Foul> fouls = gs.getFouls();
         float n = 1.0f;
-        if (fouls.size() > 0) {
+        if (!fouls.isEmpty()) {
             long currentTimeMillis = System.currentTimeMillis();
             for (GameState.Foul f : fouls) {
                 if (shouldDisplayFoul(f, currentTimeMillis)) {
@@ -92,7 +94,6 @@ public class FoulListOverlay extends ScreenBase {
     void drawFoul(GL2 gl, int x, int y, int w, int h, int screenW, int screenH, GameState.Foul foul,
             float opacity, float[] teamColor) {
         float[] cardFillColor;
-        TextRenderer tr = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
 
         String foulText = "#" + Integer.toString(foul.unum) + ": " + foul.type + "!";
 
