@@ -301,8 +301,6 @@ public class GameState implements ServerChangeListener {
             }
         }
 
-        ArrayList<Foul> foulsToAdd = new ArrayList<Foul>();
-
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
 
@@ -409,26 +407,21 @@ public class GameState implements ServerChangeListener {
                     foul.unum = Integer.parseInt(atoms[4]);
                     foul.receivedTime = System.currentTimeMillis();
                     boolean fAlreadyHaveFoul = false;
-                    for (int i = 0; i < fouls.size(); ++i) {
-                        Foul currentFoul = fouls.get(i);
-                        if (currentFoul.type == foul.type && currentFoul.team == foul.team
-                                && currentFoul.unum == foul.unum
-                                && Math.abs(foul.time - currentFoul.time) < 1.0) {
+                    for (Foul f : fouls) {
+                        if (f.type == foul.type && f.team == foul.team
+                                && f.unum == foul.unum
+                                && Math.abs(foul.time - f.time) < 1.0) {
                             // We already have this foul so don't add it again
                             fAlreadyHaveFoul = true;
                             break;
                         }
                     }
                     if (!fAlreadyHaveFoul) {
-                        foulsToAdd.add(foul);
+                        fouls.add(foul);
                     }
                     break;
                 }
             }
-        }
-
-        if (!foulsToAdd.isEmpty()) {
-            fouls.addAll(foulsToAdd);
         }
 
         initialized = true;
