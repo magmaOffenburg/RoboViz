@@ -17,12 +17,11 @@
 package rv.comm.rcssserver;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
-import rv.world.WorldModel;
 import rv.ui.screens.FoulListOverlay;
+import rv.world.WorldModel;
 
 /**
  * Contains soccer game state information collected from rcssserver: teams, scores, play mode, time,
@@ -52,30 +51,29 @@ public class GameState implements ServerChangeListener {
     }
 
     public enum FoulType {
-        CROWDING(0, "crowding"), TOUCHING(1, "touching"), ILLEGALDEFENCE(2, "illegal defence"),
-        ILLEGALATTACK(3, "illegal attack"), INCAPABLE(4, "incapable"),
+        CROWDING(0, "crowding"), TOUCHING(1, "touching"), ILLEGAL_DEFENCE(2, "illegal defence"),
+        ILLEGAL_ATTACK(3, "illegal attack"), INCAPABLE(4, "incapable"),
         KICKOFF(5, "illegal kickoff"), CHARGING(6, "charging");
 
-        private int    idx;
-        private String str;
+        private int    index;
+        private String name;
 
-        FoulType(int i, String s) {
-            this.idx = i;
-            this.str = s;
+        FoulType(int index, String name) {
+            this.index = index;
+            this.name = name;
         }
 
         public String toString() {
-            return str;
+            return name;
         }
     }
 
     public class Foul {
-
         public float    time;
         public int      index;
         public FoulType type;
         public int      team;
-        public int      unum;
+        public int      agentID;
         public long     receivedTime;
     }
 
@@ -133,7 +131,7 @@ public class GameState implements ServerChangeListener {
     private String                                    playMode             = "<Play Mode>";
     private float                                     time;
     private int                                       half;
-    private List<Foul>                                fouls                = new CopyOnWriteArrayList<Foul>();
+    private List<Foul>                                fouls                = new CopyOnWriteArrayList<>();
 
     private final List<GameStateChangeListener>       listeners            = new CopyOnWriteArrayList<>();
 
@@ -263,8 +261,44 @@ public class GameState implements ServerChangeListener {
         fouls = new CopyOnWriteArrayList<Foul>();
     }
 
-    public boolean isTimeStopped() {
+    private boolean isTimeStopped() {
         return playMode.equals("BeforeKickOff") || playMode.equals("GameOver");
+    }
+
+    private void removeExpiredFouls() {
+        if (fouls.isEmpty()) {
+            return;
+        }
+
+        // Remove fouls that are no longer to be displayed and out of date
+        // so that they don't block other fouls from being added later.
+        // This can be a bit tricky if we're moving backwards/forwards in
+        // time in a log.
+        ArrayList<Foul> foulsToRemove = new ArrayList<>();
+        long currentTimeMillis = System.currentTimeMillis();
+        for (Foul foul : fouls) {
+            if (!FoulListOverlay.shouldDisplayFoul(foul, currentTimeMillis)) {
+                if (Math.abs(time - foul.time) >= 1 || isTimeStopped()) {
+                    foulsToRemove.add(foul);
+                }
+            }
+        }
+        fouls.removeAll(foulsToRemove);
+    }
+
+    private void addFoul(Foul foul) {
+        boolean alreadyHaveFoul = false;
+        for (Foul f : fouls) {
+            if (f.type == foul.type && f.team == foul.team && f.agentID == foul.agentID
+                    && Math.abs(foul.time - f.time) < 1.0) {
+                // We already have this foul so don't add it again
+                alreadyHaveFoul = true;
+                break;
+            }
+        }
+        if (!alreadyHaveFoul) {
+            fouls.add(foul);
+        }
     }
 
     /**
@@ -282,24 +316,7 @@ public class GameState implements ServerChangeListener {
         int timeChanges = 0;
         int playStateChanges = 0;
 
-        if (!fouls.isEmpty()) {
-            // Remove fouls that are no longer to be displayed and out of date
-            // so that they don't block other fouls from being added later.
-            // This can be a bit tricky if we're moving backwards/forwards in
-            // time in a log.
-            ArrayList<Foul> foulsToRemove = new ArrayList<Foul>();
-            long currentTimeMillis = System.currentTimeMillis();
-            for (Foul f : fouls) {
-                if (!FoulListOverlay.shouldDisplayFoul(f, currentTimeMillis)) {
-                    if (Math.abs(time - f.time) >= 1 || isTimeStopped()) {
-                        foulsToRemove.add(f);
-                    }
-                }
-            }
-            if (!foulsToRemove.isEmpty()) {
-                fouls.removeAll(foulsToRemove);
-            }
-        }
+        removeExpiredFouls();
 
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
@@ -404,21 +421,9 @@ public class GameState implements ServerChangeListener {
                     foul.index = Integer.parseInt(atoms[1]);
                     foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[2])];
                     foul.team = Integer.parseInt(atoms[3]);
-                    foul.unum = Integer.parseInt(atoms[4]);
+                    foul.agentID = Integer.parseInt(atoms[4]);
                     foul.receivedTime = System.currentTimeMillis();
-                    boolean fAlreadyHaveFoul = false;
-                    for (Foul f : fouls) {
-                        if (f.type == foul.type && f.team == foul.team
-                                && f.unum == foul.unum
-                                && Math.abs(foul.time - f.time) < 1.0) {
-                            // We already have this foul so don't add it again
-                            fAlreadyHaveFoul = true;
-                            break;
-                        }
-                    }
-                    if (!fAlreadyHaveFoul) {
-                        fouls.add(foul);
-                    }
+                    addFoul(foul);
                     break;
                 }
             }

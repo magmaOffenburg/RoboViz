@@ -34,9 +34,9 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 
-public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener,
-        MouseMotionListener, MouseWheelListener, GameState.GameStateChangeListener,
-        WorldModel.SelectionChangeListener {
+public abstract class ViewerScreenBase extends ScreenBase
+        implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener,
+        GameState.GameStateChangeListener, WorldModel.SelectionChangeListener {
 
     enum AgentOverheadType {
         NONE, ANNOTATIONS, IDS
@@ -79,7 +79,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
         foulListOverlay.setVisible(false);
         overlays.add(foulListOverlay);
 
-        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
+        overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true,
+                false);
         Font font = new Font("Arial", Font.BOLD, 16);
         tr = new BorderTextRenderer(font, true, false);
 
@@ -157,7 +158,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             if (b == null)
                 continue;
             Vec3f p = b.getCenter();
-            p.y = p.y + 0.6f;
+            p.y += 0.6f;
             String text = "" + a.getID();
 
             AgentAnnotation aa = a.getAnnotation();
@@ -459,8 +460,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             return;
         }
 
-        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), viewer
-                .getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
+        textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName),
+                viewer.getWorldModel(), 4000, new float[] { 1, 1, 1, 1 }));
     }
 
     private void setRobotVantage(RobotVantageType type) {

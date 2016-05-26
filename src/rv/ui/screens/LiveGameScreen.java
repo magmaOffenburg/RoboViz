@@ -77,18 +77,20 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
 
+        ServerComm server = viewer.getNetManager().getServer();
+
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (e.isShiftDown())
-                viewer.getNetManager().getServer().killServer();
+                server.killServer();
             break;
         case KeyEvent.VK_K:
             resetTimeIfExpired();
-            viewer.getNetManager().getServer().kickOff(true);
+            server.kickOff(true);
             break;
         case KeyEvent.VK_J:
             resetTimeIfExpired();
-            viewer.getNetManager().getServer().kickOff(false);
+            server.kickOff(false);
             break;
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null
@@ -98,38 +100,33 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             }
             break;
         case KeyEvent.VK_C:
-            if (!viewer.getNetManager().getServer().isConnected()) {
-                viewer.getNetManager().getServer().connect();
-            }
+            if (!server.isConnected())
+                server.connect();
             break;
         case KeyEvent.VK_L:
-            if (e.isShiftDown()) {
-                resetTimeIfExpired();
-                viewer.getNetManager().getServer().directFreeKick(true);
-            } else {
-                resetTimeIfExpired();
-                viewer.getNetManager().getServer().freeKick(true);
-            }
+            resetTimeIfExpired();
+            if (e.isShiftDown())
+                server.directFreeKick(true);
+            else
+                server.freeKick(true);
             break;
         case KeyEvent.VK_R:
-            if (e.isShiftDown()) {
-                resetTimeIfExpired();
-                viewer.getNetManager().getServer().directFreeKick(false);
-            } else {
-                resetTimeIfExpired();
-                viewer.getNetManager().getServer().freeKick(false);
-            }
+            resetTimeIfExpired();
+            if (e.isShiftDown())
+                server.directFreeKick(false);
+            else
+                server.freeKick(false);
             break;
         case KeyEvent.VK_T:
             if (e.isShiftDown())
-                viewer.getNetManager().getServer().resetTime();
+                server.resetTime();
             break;
         case KeyEvent.VK_U:
-            viewer.getNetManager().getServer().requestFullState();
+            server.requestFullState();
             break;
         case KeyEvent.VK_B:
             resetTimeIfExpired();
-            viewer.getNetManager().getServer().dropBall();
+            server.dropBall();
             break;
         case KeyEvent.VK_M:
             toggleShowServerSpeed();

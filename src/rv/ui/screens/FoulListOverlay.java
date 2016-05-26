@@ -16,18 +16,15 @@
 
 package rv.ui.screens;
 
-import java.util.List;
 import java.awt.Font;
+import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import rv.Viewer;
-import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
-import rv.comm.rcssserver.GameState.GameStateChangeListener;
-import rv.world.WorldModel;
 
 /**
  * Displays a running list of fouls. Based off initial implementation by Sander van Dijk.
@@ -35,6 +32,7 @@ import rv.world.WorldModel;
  * @author patmac
  */
 public class FoulListOverlay extends ScreenBase {
+
     private static final int   FOUL_HEIGHT        = 20;
     private static final int   FOUL_WIDTH         = 180;
     private static final float FOUL_SHOW_TIME     = 8.0f;
@@ -71,17 +69,19 @@ public class FoulListOverlay extends ScreenBase {
 
         List<GameState.Foul> fouls = gs.getFouls();
         float n = 1.0f;
-        if (!fouls.isEmpty()) {
-            long currentTimeMillis = System.currentTimeMillis();
-            for (GameState.Foul f : fouls) {
-                if (shouldDisplayFoul(f, currentTimeMillis)) {
-                    float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
-                    float opacity = dt > FOUL_SHOW_TIME
-                            ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME : 1.0f;
-                    drawFoul(gl, x, y - (int) (20 * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH,
-                            f, opacity, f.team == 1 ? lc : rc);
-                    n += opacity;
-                }
+
+        if (fouls.isEmpty()) {
+            return;
+        }
+        long currentTimeMillis = System.currentTimeMillis();
+        for (GameState.Foul f : fouls) {
+            if (shouldDisplayFoul(f, currentTimeMillis)) {
+                float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
+                float opacity = dt > FOUL_SHOW_TIME ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME
+                        : 1.0f;
+                drawFoul(gl, x, y - (int) (20 * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH, f,
+                        opacity, f.team == 1 ? lc : rc);
+                n += opacity;
             }
         }
     }
@@ -95,19 +95,18 @@ public class FoulListOverlay extends ScreenBase {
             float opacity, float[] teamColor) {
         float[] cardFillColor;
 
-        String foulText = "#" + Integer.toString(foul.unum) + ": " + foul.type + "!";
+        String foulText = "#" + Integer.toString(foul.agentID) + ": " + foul.type + "!";
 
         switch (foul.type) {
         case CROWDING:
         case TOUCHING:
-        case ILLEGALDEFENCE:
-        case ILLEGALATTACK:
+        case ILLEGAL_DEFENCE:
+        case ILLEGAL_ATTACK:
         case INCAPABLE:
         case KICKOFF:
             // Yellow
             cardFillColor = new float[] { 0.8f, 0.6f, 0.0f, 1.0f };
             break;
-
         case CHARGING:
         default:
             // Red
@@ -125,10 +124,11 @@ public class FoulListOverlay extends ScreenBase {
         gl.glVertex2fv(new float[] { x + w, y - h }, 0);
         gl.glVertex2fv(new float[] { x + 16, y - h }, 0);
 
-        float[][] v = { { x + 2, y - 1 }, { x + 12, y - 3 }, { x + 10, y - 19 }, { x, y - 17 } };
+        float[][] vertices = { { x + 2, y - 1 }, { x + 12, y - 3 }, { x + 10, y - 19 },
+                { x, y - 17 } };
         gl.glColor4fv(cardFillColor, 0);
-        for (int i = 0; i < v.length; ++i) {
-            gl.glVertex2fv(v[i], 0);
+        for (float[] vertex : vertices) {
+            gl.glVertex2fv(vertex, 0);
         }
         gl.glEnd();
 
