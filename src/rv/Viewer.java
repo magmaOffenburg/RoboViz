@@ -73,6 +73,7 @@ import rv.world.WorldModel;
  */
 public class Viewer extends GLProgram
         implements GLEventListener, ServerComm.ServerChangeListener, LogPlayer.StateChangeListener {
+
     private static final String VERSION = "1.1.2";
 
     public enum Mode {
@@ -236,7 +237,7 @@ public class Viewer extends GLProgram
         canvas = new GLCanvas(caps);
         canvas.setFocusTraversalKeysEnabled(false);
 
-        frame = new RVFrame("RoboViz");
+        frame = new RVFrame(getTitle(null));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -451,7 +452,7 @@ public class Viewer extends GLProgram
             return;
 
         String host = server.isConnected() ? config.networking.getServerHost() : null;
-        frame.setTitle(formatTitle(host));
+        frame.setTitle(getTitle(host));
     }
 
     @Override
@@ -460,13 +461,14 @@ public class Viewer extends GLProgram
 
     @Override
     public void logfileChanged() {
-        frame.setTitle(formatTitle(logPlayer.getFilePath()));
+        frame.setTitle(getTitle(logPlayer.getFilePath()));
     }
 
-    private String formatTitle(String current) {
+    private String getTitle(String current) {
+        String roboviz = "RoboViz " + VERSION;
         if (current == null)
-            return "RoboViz";
-        return "RoboViz - " + current;
+            return roboviz;
+        return current + " - " + roboviz;
     }
 
     private class RVFrame extends JFrame {
