@@ -16,10 +16,13 @@
 
 package rv.comm.rcssserver;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.world.WorldModel;
+import rv.ui.screens.FoulListOverlay;
 
 /**
  * Contains soccer game state information collected from rcssserver: teams, scores, play mode, time,
@@ -46,6 +49,34 @@ public class GameState implements ServerChangeListener {
 
         /** Called after a message from the server has been processed (parsed) */
         void gsServerMessageProcessed(GameState gs);
+    }
+
+    public enum FoulType {
+        CROWDING(0, "crowding"), TOUCHING(1, "touching"), ILLEGALDEFENCE(2, "illegal defence"),
+        ILLEGALATTACK(3, "illegal attack"), INCAPABLE(4, "incapable"),
+        KICKOFF(5, "illegal kickoff"), CHARGING(6, "charging");
+
+        private int    idx;
+        private String str;
+
+        FoulType(int i, String s) {
+            this.idx = i;
+            this.str = s;
+        }
+
+        public String toString() {
+            return str;
+        }
+    }
+
+    public class Foul {
+
+        public float    time;
+        public int      index;
+        public FoulType type;
+        public int      team;
+        public int      unum;
+        public long     receivedTime;
     }
 
     // Measurements and Rules
@@ -76,6 +107,9 @@ public class GameState implements ServerChangeListener {
     public static final String                        TIME                 = "time";
     public static final String                        HALF                 = "half";
 
+    // Foul
+    public static final String                        FOUL                 = "foul";
+
     private boolean                                   initialized;
     private float                                     fieldLength;
     private float                                     fieldWidth;
@@ -99,6 +133,7 @@ public class GameState implements ServerChangeListener {
     private String                                    playMode             = "<Play Mode>";
     private float                                     time;
     private int                                       half;
+    private List<Foul>                                fouls                = new CopyOnWriteArrayList<Foul>();
 
     private final List<GameStateChangeListener>       listeners            = new CopyOnWriteArrayList<>();
 
@@ -196,6 +231,10 @@ public class GameState implements ServerChangeListener {
         return half;
     }
 
+    public List<Foul> getFouls() {
+        return fouls;
+    }
+
     public void addListener(GameStateChangeListener l) {
         listeners.add(l);
     }
@@ -221,6 +260,11 @@ public class GameState implements ServerChangeListener {
         playMode = "<Play Mode>";
         time = 0;
         half = 0;
+        fouls = new CopyOnWriteArrayList<Foul>();
+    }
+
+    public boolean isTimeStopped() {
+        return playMode.equals("BeforeKickOff") || playMode.equals("GameOver");
     }
 
     /**
@@ -237,6 +281,25 @@ public class GameState implements ServerChangeListener {
         int measureOrRuleChanges = 0;
         int timeChanges = 0;
         int playStateChanges = 0;
+
+        if (!fouls.isEmpty()) {
+            // Remove fouls that are no longer to be displayed and out of date
+            // so that they don't block other fouls from being added later.
+            // This can be a bit tricky if we're moving backwards/forwards in
+            // time in a log.
+            ArrayList<Foul> foulsToRemove = new ArrayList<Foul>();
+            long currentTimeMillis = System.currentTimeMillis();
+            for (Foul f : fouls) {
+                if (!FoulListOverlay.shouldDisplayFoul(f, currentTimeMillis)) {
+                    if (Math.abs(time - f.time) >= 1 || isTimeStopped()) {
+                        foulsToRemove.add(f);
+                    }
+                }
+            }
+            if (!foulsToRemove.isEmpty()) {
+                fouls.removeAll(foulsToRemove);
+            }
+        }
 
         for (SExp se : exp.getChildren()) {
             String[] atoms = se.getAtoms();
@@ -334,6 +397,28 @@ public class GameState implements ServerChangeListener {
                 case SCORE_RIGHT:
                     scoreRight = Integer.parseInt(atoms[1]);
                     playStateChanges++;
+                    break;
+                case FOUL:
+                    Foul foul = new Foul();
+                    foul.time = time;
+                    foul.index = Integer.parseInt(atoms[1]);
+                    foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[2])];
+                    foul.team = Integer.parseInt(atoms[3]);
+                    foul.unum = Integer.parseInt(atoms[4]);
+                    foul.receivedTime = System.currentTimeMillis();
+                    boolean fAlreadyHaveFoul = false;
+                    for (Foul f : fouls) {
+                        if (f.type == foul.type && f.team == foul.team
+                                && f.unum == foul.unum
+                                && Math.abs(foul.time - f.time) < 1.0) {
+                            // We already have this foul so don't add it again
+                            fAlreadyHaveFoul = true;
+                            break;
+                        }
+                    }
+                    if (!fAlreadyHaveFoul) {
+                        fouls.add(foul);
+                    }
                     break;
                 }
             }
