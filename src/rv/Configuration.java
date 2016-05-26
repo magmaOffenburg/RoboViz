@@ -34,7 +34,14 @@ import java.util.Locale;
  */
 public class Configuration {
 
-    private static final String CONFIG_FILE_PATH = "config.txt";
+    private static final String CONFIG_FILE_NAME = "config.txt";
+
+    private static String getConfigFilePath() {
+        String userConfig = System.getProperty("user.home") + "/.roboviz/" + CONFIG_FILE_NAME;
+        if (new File(userConfig).exists())
+            return userConfig;
+        return CONFIG_FILE_NAME;
+    }
 
     public static String getNextLine(BufferedReader in) throws IOException {
         String result = in.readLine();
@@ -272,7 +279,7 @@ public class Configuration {
     }
 
     public void write() {
-        File configFile = new File(CONFIG_FILE_PATH);
+        File configFile = new File(getConfigFilePath());
         BufferedWriter out = null;
         try {
             out = new BufferedWriter(new FileWriter(configFile));
@@ -323,7 +330,7 @@ public class Configuration {
     }
 
     public static Configuration loadFromFile() {
-        return loadFromFile(new File(CONFIG_FILE_PATH));
+        return loadFromFile(new File(getConfigFilePath()));
     }
 
     public static Configuration loadFromFile(File file) {
