@@ -286,7 +286,9 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
             cyclePlayers(e.isShiftDown() ? -1 : 1);
             break;
         case KeyEvent.VK_T:
-            viewer.getDrawings().toggle();
+            if (!e.isShiftDown()) {
+                viewer.getDrawings().toggle();
+            }
             break;
         case KeyEvent.VK_Y:
             viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());

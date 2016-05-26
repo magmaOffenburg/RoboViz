@@ -103,16 +103,26 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             }
             break;
         case KeyEvent.VK_L:
-            resetTimeIfExpired();
-            viewer.getNetManager().getServer().freeKick(true);
+            if (e.isShiftDown()) {
+                resetTimeIfExpired();
+                viewer.getNetManager().getServer().directFreeKick(true);
+            } else {
+                resetTimeIfExpired();
+                viewer.getNetManager().getServer().freeKick(true);
+            }
             break;
         case KeyEvent.VK_R:
-            if (e.isShiftDown())
-                viewer.getNetManager().getServer().resetTime();
-            else {
+            if (e.isShiftDown()) {
+                resetTimeIfExpired();
+                viewer.getNetManager().getServer().directFreeKick(false);
+            } else {
                 resetTimeIfExpired();
                 viewer.getNetManager().getServer().freeKick(false);
             }
+            break;
+        case KeyEvent.VK_T:
+            if (e.isShiftDown())
+                viewer.getNetManager().getServer().resetTime();
             break;
         case KeyEvent.VK_U:
             viewer.getNetManager().getServer().requestFullState();
