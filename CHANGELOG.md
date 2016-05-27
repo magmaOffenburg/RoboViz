@@ -9,6 +9,7 @@
 * added an overlay to display fouls (can be toggled with `Q`) (#82)
 * added `Shift+L` and `Shift+R` shortcuts to switch to the `direct_free_kick_left` / `right` play modes added in rcssserver3d 0.6.11 (#85)
 * added support for using `~/.roboviz/config.txt` instead of the local `config.txt` if present
+* added the RoboViz version to the window title
 
 1.1.2
 ------------------------------
