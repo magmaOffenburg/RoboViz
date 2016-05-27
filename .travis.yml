@@ -5,3 +5,22 @@ script:
   - ./build-linux32.sh
   - ./build-linux64.sh
   - ./build-macosx.sh
+  - cd ..
+
+before_deploy:
+  - cd bin
+  - tar czf linux32.tar.gz linux-i586/
+  - tar czf linux64.tar.gz linux-amd64/
+  - tar czf macosx.tar.gz macosx/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: En83qH7a/C0CwVucHZA6YO+7Pok2uWGVIdhjt3jQb7ymWuCfo9F6Cx+5fDgPoLmKpqXQpT896WySWbdx+mNSjomDsXd8ilSAkYFFeglfaBsIELrDRdMmYdQ9/4xyu0vSRCuQ5ji2b1nVJ9I7gQbkz1cmQcFTshyHLVCvPkjbDWk=
+  file:
+    - linux32.tar.gz
+    - linux64.tar.gz
+    - macosx.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
