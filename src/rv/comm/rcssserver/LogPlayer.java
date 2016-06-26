@@ -60,7 +60,7 @@ public class LogPlayer implements LogfileListener {
     private LogAnalyzerThread               logAnalyzer;
     private final MessageParser             parser;
     private boolean                         playing;
-    private double                          playbackSpeed               = 1.34;
+    private double                          playbackSpeed               = 1;
     private Integer                         desiredFrame                = null;
     private final List<Goal>                goals                       = new CopyOnWriteArrayList<>();
     private final List<StateChangeListener> listeners                   = new CopyOnWriteArrayList<>();

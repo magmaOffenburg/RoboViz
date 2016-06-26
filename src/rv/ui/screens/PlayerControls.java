@@ -161,7 +161,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
         c.gridx++;
         c.insets = new Insets(0, 25, 0, 0);
-        playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1.34, -10, 10, 0.25));
+        playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, -10, 10, 0.25));
         playbackSpeedSpinner.setToolTipText("Playback speed factor");
         playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
         playbackSpeedSpinner.addChangeListener(new ChangeListener() {
