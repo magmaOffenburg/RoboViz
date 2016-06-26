@@ -93,6 +93,9 @@ public class LogfileModeScreen extends ViewerScreenBase {
         case KeyEvent.VK_H:
             player.stepForwardGoal();
             break;
+        case KeyEvent.VK_Z:
+            toggleShowAllInformation(false);
+            break;
         }
     }
 
