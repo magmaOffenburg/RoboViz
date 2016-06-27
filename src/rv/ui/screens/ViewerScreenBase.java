@@ -76,7 +76,6 @@ public abstract class ViewerScreenBase extends ScreenBase
         fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
         foulListOverlay = new FoulListOverlay(viewer);
-        foulListOverlay.setVisible(false);
         overlays.add(foulListOverlay);
 
         overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true,

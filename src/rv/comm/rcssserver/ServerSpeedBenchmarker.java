@@ -26,7 +26,7 @@ import rv.comm.rcssserver.GameState.ServerMessageReceivedListener;
  * @author Patrick MacAlpine
  */
 public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
-    private static final boolean useNanos        = false;
+    private static final boolean USE_NANOS       = false;
     private long                 msgTime;
     private float                lastGameTime;
 
@@ -44,8 +44,8 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
 
     private void updateServerSpeed(GameState gs) {
         final long TIME_WINDOW;
-        if (useNanos) {
-            TIME_WINDOW = 5000000000l;
+        if (USE_NANOS) {
+            TIME_WINDOW = 5000000000L;
         } else {
             TIME_WINDOW = 5000;
         }
@@ -98,7 +98,7 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
         long timePassed = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
 
         if (timePassed > 0) {
-            if (useNanos) {
+            if (USE_NANOS) {
                 serverSpeed = sumDeltas / (timePassed / 1000000000.0f);
             } else {
                 serverSpeed = sumDeltas / (timePassed / 1000.0f);
@@ -110,7 +110,7 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
 
     @Override
     public void gsServerMessageReceived(GameState gs) {
-        if (useNanos) {
+        if (USE_NANOS) {
             msgTime = System.nanoTime();
         } else {
             msgTime = System.currentTimeMillis();

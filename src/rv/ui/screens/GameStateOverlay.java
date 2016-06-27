@@ -46,7 +46,7 @@ public class GameStateOverlay extends ScreenBase {
 
         private int                y;
 
-        private boolean            showServerSpeed = false;
+        private boolean            showServerSpeed = true;
 
         public GameStateBar(int x, int y) {
             this.x = x;
