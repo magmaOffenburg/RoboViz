@@ -33,9 +33,9 @@ import rv.Viewer;
 import rv.ui.screens.LiveGameScreen;
 import rv.ui.screens.LogfileModeScreen;
 import rv.ui.screens.Screen;
-import rv.ui.view.CamTargetTracker;
 import rv.ui.view.CameraController;
 import rv.ui.view.SimsparkController;
+import rv.ui.view.TargetTrackerCamera;
 
 /**
  * User interface controls
@@ -53,9 +53,9 @@ public class UserInterface implements KeyListener {
     private Screen                  overlay;
     private KeyListener[]           tempListeners;
     private Screen                  activeScreen;
-    private CamTargetTracker        ballTracker;
+    private TargetTrackerCamera     ballTracker;
 
-    public CamTargetTracker getBallTracker() {
+    public TargetTrackerCamera getBallTracker() {
         return ballTracker;
     }
 
@@ -107,9 +107,8 @@ public class UserInterface implements KeyListener {
         else
             setActiveScreen(new LogfileModeScreen(viewer));
 
-        ballTracker = new CamTargetTracker(viewer.getWorldModel().getBall(), camera);
-        ballTracker.setTetherDist(7);
-        ballTracker.setMinTetherDist(4);
+        ballTracker = new TargetTrackerCamera(viewer.getWorldModel().getBall(), camera,
+                viewer.getWorldModel().getGameState());
     }
 
     private FPCamera initCamera(GLCapabilitiesImmutable glcaps) {
@@ -160,13 +159,6 @@ public class UserInterface implements KeyListener {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_F12:
             viewer.takeScreenShot();
-            break;
-        case KeyEvent.VK_HOME:
-            ballTracker.changeMinTetherDist(-0.5f);
-            break;
-        case KeyEvent.VK_END:
-            ballTracker.changeMinTetherDist(0.5f);
-            ballTracker.update();
             break;
         default:
             break;
