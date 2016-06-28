@@ -215,7 +215,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     public void connectionChanged(ServerComm server) {
         connectionOverlay.setMessage(getConnectionMessage());
         connectionOverlay.setVisible(!server.isConnected());
-        if (!server.isConnected()) {
+        if (server.isConnected()) {
+            viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
+        } else {
             prevScoreL = -1;
             prevScoreR = -1;
         }
