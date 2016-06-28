@@ -47,6 +47,12 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         overlays.add(connectionOverlay);
     }
 
+    @Override
+    protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
+        super.loadOverlayVisibilities(config);
+        gameStateOverlay.setShowServerSpeed(config.serverSpeed);
+    }
+
     private String getConnectionMessage() {
         Configuration.Networking config = viewer.getConfig().networking;
         String server = config.getServerHost() + ":" + config.getServerPort();

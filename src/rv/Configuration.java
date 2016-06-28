@@ -121,6 +121,34 @@ public class Configuration {
         }
     }
 
+    public class OverlayVisibility {
+        public boolean serverSpeed     = true;
+        public boolean foulOverlay     = true;
+        public boolean fieldOverlay    = false;
+        public boolean numberOfPlayers = false;
+        public boolean playerIDs       = false;
+
+        private void read(BufferedReader in) throws IOException {
+            getNextLine(in);
+            serverSpeed = getNextBool(in);
+            foulOverlay = getNextBool(in);
+            fieldOverlay = getNextBool(in);
+            numberOfPlayers = getNextBool(in);
+            playerIDs = getNextBool(in);
+            getNextLine(in);
+        }
+
+        private void write(BufferedWriter out) throws IOException {
+            writeSection(out, "Overlay Default Visibility");
+            writeVal(out, "Server Speed", serverSpeed);
+            writeVal(out, "Foul Overlay", foulOverlay);
+            writeVal(out, "Field Overlay", fieldOverlay);
+            writeVal(out, "Number of Players", numberOfPlayers);
+            writeVal(out, "Player IDs", playerIDs);
+            out.write(getNewline());
+        }
+    }
+
     public class Networking {
         public boolean  autoConnect          = true;
         public String   serverHost           = "localhost";
@@ -221,10 +249,11 @@ public class Configuration {
         }
     }
 
-    public final Graphics   graphics   = new Graphics();
-    public final Networking networking = new Networking();
-    public final General    general    = new General();
-    public final TeamColors teamColors = new TeamColors();
+    public final Graphics          graphics          = new Graphics();
+    public final OverlayVisibility overlayVisibility = new OverlayVisibility();
+    public final Networking        networking        = new Networking();
+    public final General           general           = new General();
+    public final TeamColors        teamColors        = new TeamColors();
 
     private static String getKey(String line) {
         return line.substring(0, line.indexOf(":") - 1).trim();
@@ -284,6 +313,7 @@ public class Configuration {
         try {
             out = new BufferedWriter(new FileWriter(configFile));
             graphics.write(out);
+            overlayVisibility.write(out);
             networking.write(out);
             general.write(out);
             teamColors.write(out);
@@ -306,6 +336,7 @@ public class Configuration {
             in = new BufferedReader(new FileReader(file));
             try {
                 graphics.read(in);
+                overlayVisibility.read(in);
                 networking.read(in);
                 general.read(in);
                 teamColors.read(in);

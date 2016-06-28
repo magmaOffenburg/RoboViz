@@ -73,7 +73,6 @@ public abstract class ViewerScreenBase extends ScreenBase
         gameStateOverlay = new GameStateOverlay(viewer);
         overlays.add(gameStateOverlay);
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
-        fieldOverlay.setVisible(false);
         overlays.add(fieldOverlay);
         foulListOverlay = new FoulListOverlay(viewer);
         overlays.add(foulListOverlay);
@@ -90,6 +89,16 @@ public abstract class ViewerScreenBase extends ScreenBase
         viewer.getWorldModel().getGameState().addListener(this);
         viewer.getWorldModel().addSelectionChangeListener(this);
         viewer.addWindowResizeListener(this);
+
+        loadOverlayVisibilities(viewer.getConfig().overlayVisibility);
+    }
+
+    protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
+        fieldOverlay.setVisible(config.fieldOverlay);
+        foulListOverlay.setVisible(config.foulOverlay);
+        setShowNumPlayers(config.numberOfPlayers);
+        if (config.playerIDs)
+            agentOverheadType = AgentOverheadType.IDS;
     }
 
     private void renderAnnotations() {
@@ -271,8 +280,7 @@ public abstract class ViewerScreenBase extends ScreenBase
                 nextAgentOverheadType();
             break;
         case KeyEvent.VK_N:
-            showNumPlayers = !showNumPlayers;
-            fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
+            setShowNumPlayers(!showNumPlayers);
             break;
         case KeyEvent.VK_W:
         case KeyEvent.VK_UP:
@@ -297,6 +305,11 @@ public abstract class ViewerScreenBase extends ScreenBase
             foulListOverlay.setVisible(!foulListOverlay.isVisible());
             break;
         }
+    }
+
+    private void setShowNumPlayers(boolean showNumPlayers) {
+        this.showNumPlayers = showNumPlayers;
+        fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
     }
 
     private void selectPlayer(int playerID, boolean leftTeam) {
