@@ -6,7 +6,7 @@ Soft Shadows         : true
 Shadow Resolution    : 1024
 Stereo 3D            : false
 V-Sync               : false
-FSAA                 : false
+FSAA                 : true
 FSAA Samples         : 8
 Target FPS           : 60
 First Person FOV     : 120
