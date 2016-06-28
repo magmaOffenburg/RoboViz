@@ -21,6 +21,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -109,6 +111,7 @@ public class Viewer extends GLProgram
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
     private JFrame                           frame;
+    private boolean movedFrame;
     private GLCanvas                         canvas;
     private WorldModel                       world;
     private UserInterface                    ui;
@@ -245,6 +248,12 @@ public class Viewer extends GLProgram
                 shutdown();
             }
         });
+        frame.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                movedFrame = true;
+            }
+        });
         frame.setIconImage(Globals.getIcon());
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
@@ -275,11 +284,13 @@ public class Viewer extends GLProgram
         Dimension size = frame.getSize();
         int state = frame.getState();
 
-        graphics.frameX = location.x;
-        graphics.frameY = location.y;
+        if (movedFrame) {
+            graphics.frameX = location.x;
+            graphics.frameY = location.y;
+            graphics.centerFrame = false;
+        }
         graphics.frameWidth = size.width;
         graphics.frameHeight = size.height;
-        graphics.centerFrame = false;
         graphics.isMaximized = (state & Frame.MAXIMIZED_BOTH) > 0;
 
         config.write();
@@ -390,7 +401,6 @@ public class Viewer extends GLProgram
     }
 
     public static void main(String[] args) {
-
         final Configuration config = Configuration.loadFromFile();
 
         GLProfile glp = GLProfile.get(GLProfile.GL2);
@@ -402,7 +412,6 @@ public class Viewer extends GLProgram
         }
 
         final String[] arguments = args;
-
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new Viewer(config, caps, arguments);

@@ -66,8 +66,8 @@ public class Configuration {
         public int     targetFPS        = 60;
         public int     firstPersonFOV   = 120;
         public int     thirdPersonFOV   = 80;
-        public int     frameWidth       = 800;
-        public int     frameHeight      = 600;
+        public int     frameWidth       = 1024;
+        public int     frameHeight      = 768;
         public int     frameX           = 0;
         public int     frameY           = 0;
         public int     shadowResolution = 1024;
