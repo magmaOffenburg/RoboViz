@@ -130,6 +130,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         case KeyEvent.VK_M:
             toggleShowServerSpeed();
             break;
+        case KeyEvent.VK_Z:
+            toggleShowAllInformation(true);
+            break;
         }
     }
 

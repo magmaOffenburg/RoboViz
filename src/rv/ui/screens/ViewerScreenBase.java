@@ -51,22 +51,23 @@ public abstract class ViewerScreenBase extends ScreenBase
     protected final GameStateOverlay   gameStateOverlay;
     private final Field2DOverlay       fieldOverlay;
     private final FoulListOverlay      foulListOverlay;
-    protected final List<Screen>       overlays          = new ArrayList<>();
+    protected final List<Screen>       overlays           = new ArrayList<>();
 
     protected final BorderTextRenderer overlayTextRenderer;
-    private final List<TextOverlay>    textOverlays      = new ArrayList<>();
+    private final List<TextOverlay>    textOverlays       = new ArrayList<>();
 
-    private RobotVantageBase           robotVantage      = null;
-    private RobotVantageType           robotVantageType  = RobotVantageType.NONE;
+    private RobotVantageBase           robotVantage       = null;
+    private RobotVantageType           robotVantageType   = RobotVantageType.NONE;
     private int                        firstPersonFOV;
     private int                        thirdPersonFOV;
 
-    private AgentOverheadType          agentOverheadType = AgentOverheadType.ANNOTATIONS;
+    private AgentOverheadType          agentOverheadType  = AgentOverheadType.ANNOTATIONS;
     protected final BorderTextRenderer tr;
 
-    protected int                      prevScoreL        = -1;
-    protected int                      prevScoreR        = -1;
-    private boolean                    showNumPlayers    = false;
+    protected int                      prevScoreL         = -1;
+    protected int                      prevScoreR         = -1;
+    private boolean                    showNumPlayers     = false;
+    protected boolean                  showAllInformation = false;
 
     public ViewerScreenBase(Viewer viewer) {
         this.viewer = viewer;
@@ -510,6 +511,54 @@ public abstract class ViewerScreenBase extends ScreenBase
 
     protected void toggleShowServerSpeed() {
         gameStateOverlay.toggleShowServerSpeed();
+    }
+
+    private void getShowServerSpeed() {
+        gameStateOverlay.toggleShowServerSpeed();
+    }
+
+    private void setShowServerSpeed(boolean show) {
+        gameStateOverlay.setShowServerSpeed(show);
+    }
+
+    protected void toggleShowAllInformation(boolean liveMode) {
+        boolean haveAgentAnnotations = teamHasAnnotations(viewer.getWorldModel().getLeftTeam())
+                || teamHasAnnotations(viewer.getWorldModel().getRightTeam());
+        boolean haveAgentOverheads = agentOverheadType == AgentOverheadType.IDS
+                || (agentOverheadType == AgentOverheadType.ANNOTATIONS && haveAgentAnnotations);
+        if (!haveAgentOverheads && !showNumPlayers && !fieldOverlay.isVisible()
+                && !foulListOverlay.isVisible()
+                && (!liveMode || !gameStateOverlay.getShowServerSpeed())) {
+            showAllInformation = true;
+        } else if (haveAgentOverheads && showNumPlayers && fieldOverlay.isVisible()
+                && foulListOverlay.isVisible()
+                && (!liveMode || gameStateOverlay.getShowServerSpeed())) {
+            showAllInformation = false;
+        } else {
+            showAllInformation = !showAllInformation;
+        }
+
+        if (showAllInformation) {
+            if (!haveAgentOverheads) {
+                if (haveAgentAnnotations) {
+                    agentOverheadType = AgentOverheadType.ANNOTATIONS;
+                } else {
+                    agentOverheadType = AgentOverheadType.IDS;
+                }
+            }
+            showNumPlayers = true;
+            fieldOverlay.setVisible(true);
+            foulListOverlay.setVisible(true);
+        } else {
+            agentOverheadType = AgentOverheadType.NONE;
+            showNumPlayers = false;
+            fieldOverlay.setVisible(false);
+            foulListOverlay.setVisible(false);
+        }
+        fieldOverlay.setyPos(showNumPlayers ? 35 : 10);
+        if (liveMode) {
+            gameStateOverlay.setShowServerSpeed(showAllInformation);
+        }
     }
 
     @Override

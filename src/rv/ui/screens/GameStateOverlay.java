@@ -59,6 +59,14 @@ public class GameStateOverlay extends ScreenBase {
             showServerSpeed = !showServerSpeed;
         }
 
+        boolean getShowServerSpeed() {
+            return showServerSpeed;
+        }
+
+        void setShowServerSpeed(boolean show) {
+            showServerSpeed = show;
+        }
+
         void render(GL2 gl, GameState gs, int screenW, int screenH) {
 
             String teamL = gs.getTeamLeft() == null ? "<Left>" : gs.getTeamLeft();
@@ -181,6 +189,14 @@ public class GameStateOverlay extends ScreenBase {
 
     public void toggleShowServerSpeed() {
         gsBar.toggleShowServerSpeed();
+    }
+
+    public boolean getShowServerSpeed() {
+        return gsBar.getShowServerSpeed();
+    }
+
+    public void setShowServerSpeed(boolean show) {
+        gsBar.setShowServerSpeed(show);
     }
 
     public void addServerSpeedBenchmarker(ServerSpeedBenchmarker benchmarker) {
