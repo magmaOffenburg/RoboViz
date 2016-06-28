@@ -277,13 +277,18 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
     public void gsPlayStateChanged(GameState gs) {
         // if team name changed, update the materials
         String teamNameLeft = gs.getTeamLeft();
+        boolean swap = gs.shouldSwapColors();
+
+        final float[] BLUE = new float[] { 0.15f, 0.15f, 1.0f };
+        final float[] RED = new float[] { 1f, 0.15f, 0.15f };
+
         if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
-            updateTeamColor(teamNameLeft, "matLeft", new float[] { 0.15f, 0.15f, 1.0f });
+            updateTeamColor(teamNameLeft, "matLeft", swap ? RED : BLUE);
             this.teamNameLeft = teamNameLeft;
         }
         String teamNameRight = gs.getTeamRight();
         if (!Objects.equals(teamNameRight, this.teamNameRight)) {
-            updateTeamColor(teamNameRight, "matRight", new float[] { 1f, 0.15f, 0.15f });
+            updateTeamColor(teamNameRight, "matRight", swap ? BLUE : RED);
             this.teamNameRight = teamNameRight;
         }
     }

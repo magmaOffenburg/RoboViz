@@ -54,8 +54,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         // in competitions, the server is restarted for the second half
         // display a viewer-friendly message in that case to let them know why the game has
         // "stopped"
-        if (gameState.isInitialized()
-                && Math.abs(gameState.getTime() - gameState.getHalfTime()) < 0.1)
+        if (gameState.isHalfTime())
             return "Waiting for second half...";
         else if (config.autoConnect)
             return "Trying to connect to " + server + "...";
