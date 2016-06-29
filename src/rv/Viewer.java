@@ -111,7 +111,7 @@ public class Viewer extends GLProgram
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
     private JFrame                           frame;
-    private boolean movedFrame;
+    private boolean                          movedFrame;
     private GLCanvas                         canvas;
     private WorldModel                       world;
     private UserInterface                    ui;

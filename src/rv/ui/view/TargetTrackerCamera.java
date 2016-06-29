@@ -66,11 +66,11 @@ public class TargetTrackerCamera {
         float halfLength = gs.getFieldLength() / 2;
         float halfWidth = gs.getFieldWidth() / 2;
 
-        float xFactor = (fuzzyValue(cameraPos.x, -halfLength, halfLength) - 0.5f) * 2;
+        float xFactor = (fuzzyValue(targetPos.x, -halfLength, halfLength) - 0.5f) * 2;
         float xOffset = Math.signum(xFactor) * 0.08f * circIn(xFactor);
 
-        float zFactor = (fuzzyValue(cameraPos.z, -halfWidth, halfWidth) - 0.5f) * 2;
-        float zOffset = -0.19f + (Math.signum(xFactor) * 0.05f * circIn(zFactor));
+        float zFactor = (fuzzyValue(targetPos.z, -halfWidth, halfWidth) - 0.5f) * 2;
+        float zOffset = -0.16f + (Math.signum(zFactor) * 0.06f * circIn(zFactor));
 
         newPos.add(Vec3f.unitX().times(xOffset));
         newPos.add(Vec3f.unitY().times(0.08f));
