@@ -23,6 +23,7 @@ javac -d $BIN -cp $VIZCLASSPATH ../src/config/RVConfigure.java
 
 # copy over resources and libraries to bin folder
 rsync -r ../resources $BIN/
+rsync -r ../logs $BIN/
 rsync -r $JOGL $BIN/lib/
 rsync -r ../src/shaders $BIN/
 cp ../lib/jsgl.jar $BIN/lib/
@@ -34,7 +35,6 @@ cp ../NOTICE.md $BIN/
 cp ../CHANGELOG.md $BIN/
 cp ../config.txt $BIN/
 cp ../overlay.txt $BIN/
-cp ../logs/demo.log $BIN/logs
 
 # create JAR and delete bytecode directories
 cd $BIN/
