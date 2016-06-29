@@ -67,6 +67,7 @@ import rv.util.commandline.IntegerArgument;
 import rv.util.commandline.StringArgument;
 import rv.util.swing.SwingUtil;
 import rv.world.WorldModel;
+import rv.world.X11FullScreenHelper;
 
 /**
  * Program entry point / main class. Creates a window and delegates OpenGL rendering the Renderer
@@ -270,6 +271,7 @@ public class Viewer extends GLProgram
         frame.setResizable(false);
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
                 .setFullScreenWindow(frame);
+        X11FullScreenHelper.setFullScreenWindow(frame, true);
     }
 
     private void restoreConfig() {
