@@ -34,6 +34,7 @@ cp ../NOTICE.md $BIN/
 cp ../CHANGELOG.md $BIN/
 cp ../config.txt $BIN/
 cp ../overlay.txt $BIN/
+cp ../logs/demo.log $BIN/logs
 
 # create JAR and delete bytecode directories
 cd $BIN/
