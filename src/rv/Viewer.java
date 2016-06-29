@@ -271,7 +271,7 @@ public class Viewer extends GLProgram
         frame.setResizable(false);
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
                 .setFullScreenWindow(frame);
-        System.out.println("fullscreen: " + X11FullScreenHelper.setFullScreenWindow(frame, true));
+        X11FullScreenHelper.setFullScreenWindow(frame, true);
     }
 
     private void restoreConfig() {
