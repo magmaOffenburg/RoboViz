@@ -19,6 +19,7 @@ package rv;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -70,7 +71,7 @@ import rv.world.WorldModel;
 /**
  * Program entry point / main class. Creates a window and delegates OpenGL rendering the Renderer
  * object.
- * 
+ *
  * @author Justin Stoecker
  */
 public class Viewer extends GLProgram
@@ -111,7 +112,7 @@ public class Viewer extends GLProgram
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
     private JFrame                           frame;
-    private boolean movedFrame;
+    private boolean                          movedFrame;
     private GLCanvas                         canvas;
     private WorldModel                       world;
     private UserInterface                    ui;
@@ -206,9 +207,9 @@ public class Viewer extends GLProgram
         StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
         handleLogModeArgs("logs/demo.log", true);
-        //config.networking.overrideServerHost(SERVER_HOST.parse(args));
-        //config.networking.overrideServerPort(SERVER_PORT.parse(args));
-        //drawingFilter = DRAWING_FILTER.parse(args);
+        // config.networking.overrideServerHost(SERVER_HOST.parse(args));
+        // config.networking.overrideServerPort(SERVER_PORT.parse(args));
+        // drawingFilter = DRAWING_FILTER.parse(args);
         Argument.endParse(args);
     }
 
@@ -258,10 +259,17 @@ public class Viewer extends GLProgram
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
         restoreConfig();
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
+        setFullscreen();
         frame.setVisible(true);
+
         attachDrawableAndStart(canvas);
+    }
+
+    private void setFullscreen() {
+        frame.setUndecorated(true);
+        frame.setResizable(false);
+        GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+                .setFullScreenWindow(frame);
     }
 
     private void restoreConfig() {

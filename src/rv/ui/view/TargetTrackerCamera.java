@@ -66,8 +66,7 @@ public class TargetTrackerCamera {
         camera.setRotation(new Vec2f(-35, angle));
     }
 
-    private Vec2f rotate(Vec2f pivot, Vec2f point, float angle)
-    {
+    private Vec2f rotate(Vec2f pivot, Vec2f point, float angle) {
         float radians = (float) Math.toRadians(angle);
         float sin = (float) Math.sin(radians);
         float cos = (float) Math.cos(radians);

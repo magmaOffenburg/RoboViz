@@ -18,8 +18,6 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import javax.media.opengl.awt.GLCanvas;
 import js.math.vector.Vec3f;
 import rv.Configuration;
@@ -223,7 +221,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         connectionOverlay.setMessage(getConnectionMessage());
         connectionOverlay.setVisible(!server.isConnected());
         if (server.isConnected()) {
-           // viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
+            // viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
         } else {
             prevScoreL = -1;
             prevScoreR = -1;

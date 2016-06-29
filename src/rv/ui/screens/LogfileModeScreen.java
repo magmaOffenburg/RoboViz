@@ -17,11 +17,12 @@
 package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
-import java.io.*;
-import java.nio.file.Files;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
@@ -29,7 +30,7 @@ import rv.comm.rcssserver.LogPlayer;
 
 public class LogfileModeScreen extends ViewerScreenBase {
 
-    private final LogPlayer      player;
+    private final LogPlayer   player;
 
     private List<InfoOverlay> lineOverlays = new ArrayList<>();
 
@@ -50,7 +51,8 @@ public class LogfileModeScreen extends ViewerScreenBase {
         int i = 0;
         do {
             line = in.readLine();
-            if (line == null) continue;
+            if (line == null)
+                continue;
             InfoOverlay lineOverlay = new InfoOverlay(i).setMessage(line);
             i++;
             lineOverlay.setVisible(true);
