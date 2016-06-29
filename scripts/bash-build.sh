@@ -17,7 +17,7 @@ if [ ! -d $BIN ]; then
     mkdir -p $BIN
 fi
 
-VIZCLASSPATH=$CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:../lib/jsgl.jar:../lib/commons-compress-1.5.jar:../lib/jna-platform-4.2.2.jar:../lib/jna-4.2.2.jar:../src/
+VIZCLASSPATH=$CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl.all.jar:$JOGL/nativewindow.all.jar:$JOGL/newt.all.jar:../lib/jsgl.jar:../lib/commons-compress-1.5.jar:../src/
 javac -d $BIN -cp $VIZCLASSPATH ../src/rv/Viewer.java
 javac -d $BIN -cp $VIZCLASSPATH ../src/config/RVConfigure.java
 
@@ -28,8 +28,6 @@ rsync -r $JOGL $BIN/lib/
 rsync -r ../src/shaders $BIN/
 cp ../lib/jsgl.jar $BIN/lib/
 cp ../lib/commons-compress-1.5.jar $BIN/lib/
-cp ../lib/jna-platform-4.2.2.jar $BIN/lib/
-cp ../lib/jna-4.2.2.jar $BIN/lib/
 cp ../scripts/roboviz.sh $BIN/
 cp ../scripts/config.sh $BIN/
 cp ../LICENSE.md $BIN/
