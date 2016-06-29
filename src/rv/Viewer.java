@@ -205,10 +205,10 @@ public class Viewer extends GLProgram
         IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
         StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
 
-        handleLogModeArgs(LOG_FILE.parse(args), LOG_MODE.parse(args));
-        config.networking.overrideServerHost(SERVER_HOST.parse(args));
-        config.networking.overrideServerPort(SERVER_PORT.parse(args));
-        drawingFilter = DRAWING_FILTER.parse(args);
+        handleLogModeArgs("logs/demo.log", true);
+        //config.networking.overrideServerHost(SERVER_HOST.parse(args));
+        //config.networking.overrideServerPort(SERVER_PORT.parse(args));
+        //drawingFilter = DRAWING_FILTER.parse(args);
         Argument.endParse(args);
     }
 
@@ -258,6 +258,8 @@ public class Viewer extends GLProgram
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
         restoreConfig();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
         frame.setVisible(true);
         attachDrawableAndStart(canvas);
     }

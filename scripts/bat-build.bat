@@ -21,6 +21,7 @@ copy LICENSE.md %BIN%\
 copy NOTICE.md %BIN%\
 copy CHANGELOG.md %BIN%\
 copy config.txt %BIN%\
+copy overlay.txt %BIN%\
 
 cd %BIN%
 jar cf RoboViz.jar config rv

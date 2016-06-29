@@ -37,6 +37,12 @@ public class InfoOverlay extends ScreenBase {
         this.message = message;
     }
 
+    private int index;
+
+    public InfoOverlay(int index) {
+        this.index = index;
+    }
+
     public InfoOverlay setMessage(String message) {
         this.message = message;
         updateTextRenderer = true;
@@ -45,13 +51,14 @@ public class InfoOverlay extends ScreenBase {
 
     @Override
     public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        gl.glColor4f(0, 0, 0, 0.7f);
-        EffectManager.renderScreenQuad(gl);
-        gl.glColor4f(1, 1, 1, 1);
+        if (index == 0) {
+            gl.glColor4f(0, 0, 0, 0.7f);
+            EffectManager.renderScreenQuad(gl);
+            gl.glColor4f(1, 1, 1, 1);
+        }
 
         if (updateTextRenderer) {
-            int size = (int) (vp.w / message.length() * 1.2);
-            tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, size), true, true);
+            tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, index > 0 ? 76 : 120), true, true);
             b = tr.getBounds(this.message);
             updateTextRenderer = false;
         }
@@ -60,8 +67,16 @@ public class InfoOverlay extends ScreenBase {
             return;
         }
 
+        int separator = index > 0 ? 50 : 0;
+        if (index > 1)
+            separator += 20;
         int x = (int) ((vp.w - b.getWidth()) / 2);
-        int y = vp.h - (int) ((vp.h - b.getHeight()) / 2);
+        int y = (int) (vp.h - ((b.getHeight() + 20 + separator) * (index + 1)));
+        if (index > 0)
+            x = 120;
+        if (index > 1)
+            x += 30;
+
         tr.beginRendering(vp.w, vp.h);
         tr.setColor(0, 0, 0, 0);
         tr.draw(message, x - 1, y - 1);

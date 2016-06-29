@@ -55,40 +55,28 @@ public class TargetTrackerCamera {
         this.gs = gs;
     }
 
+    private float angle;
+
     public void update() {
-        if (!enabled)
-            return;
+        angle += 0.1f;
 
-        Vec3f targetPos = target.getPosition();
-        Vec3f cameraPos = camera.getPosition();
-        Vec3f newPos = Vec3f.lerp(cameraPos, targetPos, 0.02f);
+        Vec2f rotatedPoint = rotate(new Vec2f(0, 0), new Vec2f(22f, 0f), angle);
 
-        float halfLength = gs.getFieldLength() / 2;
-        float halfWidth = gs.getFieldWidth() / 2;
-
-        float xFactor = (fuzzyValue(cameraPos.x, -halfLength, halfLength) - 0.5f) * 2;
-        float xOffset = Math.signum(xFactor) * 0.08f * circIn(xFactor);
-
-        float zFactor = (fuzzyValue(cameraPos.z, -halfWidth, halfWidth) - 0.5f) * 2;
-        float zOffset = -0.19f + (Math.signum(xFactor) * 0.05f * circIn(zFactor));
-
-        newPos.add(Vec3f.unitX().times(xOffset));
-        newPos.add(Vec3f.unitY().times(0.08f));
-        newPos.add(Vec3f.unitZ().times(zOffset));
-
-        camera.setPosition(newPos);
-        camera.setRotation(new Vec2f(-30, 180));
+        camera.setPosition(new Vec3f(rotatedPoint.y, 10f, rotatedPoint.x));
+        camera.setRotation(new Vec2f(-35, angle));
     }
 
-    private float fuzzyValue(float value, float lower, float upper) {
-        if (value <= lower)
-            return 1;
-        if (value >= upper)
-            return 0;
-        return 1 - ((value - lower) / (upper - lower));
-    }
+    private Vec2f rotate(Vec2f pivot, Vec2f point, float angle)
+    {
+        float radians = (float) Math.toRadians(angle);
+        float sin = (float) Math.sin(radians);
+        float cos = (float) Math.cos(radians);
 
-    private float circIn(float t) {
-        return (float) -(Math.sqrt(1 - t * t) - 1);
+        float dx = point.x - pivot.x;
+        float dy = point.y - pivot.y;
+        float x = cos * dx - sin * dy + pivot.x;
+        float y = sin * dx + cos * dy + pivot.y;
+
+        return new Vec2f(x, y);
     }
 }

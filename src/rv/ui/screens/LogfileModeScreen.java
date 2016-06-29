@@ -17,6 +17,10 @@
 package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
@@ -26,38 +30,33 @@ import rv.comm.rcssserver.LogPlayer;
 public class LogfileModeScreen extends ViewerScreenBase {
 
     private final LogPlayer      player;
-    private final PlayerControls playDialog;
-    private final InfoOverlay    openFileOverlay;
+
+    private List<InfoOverlay> lineOverlays = new ArrayList<>();
 
     public LogfileModeScreen(final Viewer viewer) {
         super(viewer);
         this.player = viewer.getLogPlayer();
-        playDialog = PlayerControls.getInstance(player);
-        openFileOverlay = new InfoOverlay().setMessage("Please open a logfile.");
-        overlays.add(openFileOverlay);
-        player.addListener(new LogPlayer.StateChangeListener() {
-            @Override
-            public void playerStateChanged(boolean playing) {
-                openFileOverlay.setVisible(!player.isValid());
-            }
 
-            @Override
-            public void logfileChanged() {
-                prevScoreL = -1;
-                prevScoreR = -1;
-                viewer.getWorldModel().reset();
-            }
-        });
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(new File("overlay.txt")));
+            loadLines(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        super.setEnabled(canvas, enabled);
-        if (enabled) {
-            playDialog.showFrame(viewer.getFrame());
-        } else {
-            playDialog.hideFrame(viewer.getFrame());
-        }
+    private void loadLines(BufferedReader in) throws IOException {
+        String line;
+        int i = 0;
+        do {
+            line = in.readLine();
+            if (line == null) continue;
+            InfoOverlay lineOverlay = new InfoOverlay(i).setMessage(line);
+            i++;
+            lineOverlay.setVisible(true);
+            lineOverlays.add(lineOverlay);
+            overlays.add(lineOverlay);
+        } while (line != null);
     }
 
     @Override

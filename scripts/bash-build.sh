@@ -33,6 +33,7 @@ cp ../LICENSE.md $BIN/
 cp ../NOTICE.md $BIN/
 cp ../CHANGELOG.md $BIN/
 cp ../config.txt $BIN/
+cp ../overlay.txt $BIN/
 
 # create JAR and delete bytecode directories
 cd $BIN/

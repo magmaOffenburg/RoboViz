@@ -72,6 +72,7 @@ public abstract class ViewerScreenBase extends ScreenBase
         this.viewer = viewer;
         gameStateOverlay = new GameStateOverlay(viewer);
         overlays.add(gameStateOverlay);
+        gameStateOverlay.setVisible(false);
         fieldOverlay = new Field2DOverlay(viewer.getWorldModel());
         overlays.add(fieldOverlay);
         foulListOverlay = new FoulListOverlay(viewer);
@@ -94,8 +95,8 @@ public abstract class ViewerScreenBase extends ScreenBase
     }
 
     protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
-        fieldOverlay.setVisible(config.fieldOverlay);
-        foulListOverlay.setVisible(config.foulOverlay);
+        fieldOverlay.setVisible(false);
+        foulListOverlay.setVisible(false);
         setShowNumPlayers(config.numberOfPlayers);
         if (config.playerIDs)
             agentOverheadType = AgentOverheadType.IDS;
