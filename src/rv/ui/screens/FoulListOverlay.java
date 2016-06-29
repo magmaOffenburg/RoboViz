@@ -33,8 +33,8 @@ import rv.comm.rcssserver.GameState;
  */
 public class FoulListOverlay extends ScreenBase {
 
-    private static final int   FOUL_HEIGHT        = 20;
-    private static final int   FOUL_WIDTH         = 180;
+    private static final int   FOUL_HEIGHT        = 25;
+    private static final int   FOUL_WIDTH         = 225;
     private static final float FOUL_SHOW_TIME     = 8.0f;
     private static final float FOUL_FADE_TIME     = 2.0f;
     private static final int   TOP_SCREEN_OFFSET  = 17;
@@ -46,7 +46,7 @@ public class FoulListOverlay extends ScreenBase {
 
     public FoulListOverlay(Viewer viewer) {
         this.viewer = viewer;
-        tr = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
+        tr = new TextRenderer(new Font("Arial", Font.PLAIN, 20), true, false);
     }
 
     void render(GL2 gl, GameState gs, int screenW, int screenH) {
@@ -79,8 +79,8 @@ public class FoulListOverlay extends ScreenBase {
                 float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
                 float opacity = dt > FOUL_SHOW_TIME ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME
                         : 1.0f;
-                drawFoul(gl, x, y - (int) (20 * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH, f,
-                        opacity, f.team == 1 ? lc : rc);
+                drawFoul(gl, x, y - (int) (FOUL_HEIGHT * n), FOUL_WIDTH, FOUL_HEIGHT, screenW,
+                        screenH, f, 1, f.team == 1 ? lc : rc);
                 n += opacity;
             }
         }
@@ -119,13 +119,13 @@ public class FoulListOverlay extends ScreenBase {
 
         gl.glBegin(GL2.GL_QUADS);
         gl.glColor4fv(teamColor, 0);
-        gl.glVertex2fv(new float[] { x + 16, y }, 0);
+        gl.glVertex2fv(new float[] { x + 18, y }, 0);
         gl.glVertex2fv(new float[] { x + w, y }, 0);
         gl.glVertex2fv(new float[] { x + w, y - h }, 0);
-        gl.glVertex2fv(new float[] { x + 16, y - h }, 0);
+        gl.glVertex2fv(new float[] { x + 18, y - h }, 0);
 
-        float[][] vertices = { { x + 2, y - 1 }, { x + 12, y - 3 }, { x + 10, y - 19 },
-                { x, y - 17 } };
+        float[][] vertices = { { x + 2, y - 1 }, { x + 16, y - 3 }, { x + 14, y - FOUL_HEIGHT + 1 },
+                { x, y - FOUL_HEIGHT + 3 } };
         gl.glColor4fv(cardFillColor, 0);
         for (float[] vertex : vertices) {
             gl.glVertex2fv(vertex, 0);
@@ -134,7 +134,7 @@ public class FoulListOverlay extends ScreenBase {
 
         tr.setColor(0.9f, 0.9f, 0.9f, opacity);
         tr.beginRendering(screenW, screenH);
-        tr.draw(foulText, x + 20, y - h + 4);
+        tr.draw(foulText, x + 22, y - h + 4);
         tr.endRendering();
     }
 

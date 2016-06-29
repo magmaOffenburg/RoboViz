@@ -278,14 +278,14 @@ public class GameState implements ServerChangeListener {
         teamRight = null;
         scoreLeft = 0;
         scoreRight = 0;
-        playMode = "<Play Mode>";
+        playMode = null;
         time = 0;
         half = 0;
         fouls = new CopyOnWriteArrayList<Foul>();
     }
 
     private boolean isTimeStopped() {
-        return playMode.equals("BeforeKickOff") || playMode.equals("GameOver");
+        return "BeforeKickOff".equals(playMode) || "GameOver".equals(playMode);
     }
 
     private void removeExpiredFouls() {

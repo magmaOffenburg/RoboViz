@@ -34,7 +34,6 @@ public class InfoOverlay extends ScreenBase {
     private boolean      updateTextRenderer = true;
 
     public InfoOverlay() {
-        this.message = message;
     }
 
     public InfoOverlay setMessage(String message) {
