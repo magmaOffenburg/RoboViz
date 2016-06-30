@@ -231,6 +231,23 @@ public abstract class ViewerScreenBase extends ScreenBase
 
     @Override
     public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_W:
+        case KeyEvent.VK_UP:
+            changeFOV(-1);
+            break;
+        case KeyEvent.VK_S:
+        case KeyEvent.VK_DOWN:
+            changeFOV(1);
+            break;
+        case KeyEvent.VK_TAB:
+            cyclePlayers(e.isShiftDown() ? -1 : 1);
+            break;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F11 && e.isControlDown())
             selectPlayer(keyCode - KeyEvent.VK_F1 + 1, !e.isShiftDown());
@@ -282,17 +299,6 @@ public abstract class ViewerScreenBase extends ScreenBase
         case KeyEvent.VK_N:
             setShowNumPlayers(!showNumPlayers);
             break;
-        case KeyEvent.VK_W:
-        case KeyEvent.VK_UP:
-            changeFOV(-1);
-            break;
-        case KeyEvent.VK_S:
-        case KeyEvent.VK_DOWN:
-            changeFOV(1);
-            break;
-        case KeyEvent.VK_TAB:
-            cyclePlayers(e.isShiftDown() ? -1 : 1);
-            break;
         case KeyEvent.VK_T:
             if (!e.isShiftDown()) {
                 viewer.getDrawings().toggle();
@@ -305,6 +311,10 @@ public abstract class ViewerScreenBase extends ScreenBase
             foulListOverlay.setVisible(!foulListOverlay.isVisible());
             break;
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
     }
 
     private void setShowNumPlayers(boolean showNumPlayers) {
@@ -374,14 +384,6 @@ public abstract class ViewerScreenBase extends ScreenBase
             }
         }
         return false;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
     }
 
     @Override

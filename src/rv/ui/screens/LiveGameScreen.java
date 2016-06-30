@@ -80,8 +80,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        super.keyPressed(e);
+    public void keyReleased(KeyEvent e) {
+        super.keyReleased(e);
 
         ServerComm server = viewer.getNetManager().getServer();
 
