@@ -128,8 +128,7 @@ public class GameState implements ServerChangeListener {
     private String                                    teamRight;
     private int                                       scoreLeft;
     private int                                       scoreRight;
-    private String                                    playMode;
-    private String                                    previousPlayMode;
+    private String                                    playMode             = "<Play Mode>";
     private float                                     time;
     private int                                       half;
     private List<Foul>                                fouls                = new CopyOnWriteArrayList<>();
@@ -219,13 +218,7 @@ public class GameState implements ServerChangeListener {
     }
 
     public String getPlayMode() {
-        if (playMode == null)
-            return "<Play Mode>";
         return playMode;
-    }
-
-    public String getPreviousPlayMode() {
-        return previousPlayMode;
     }
 
     public float getTime() {
@@ -254,22 +247,6 @@ public class GameState implements ServerChangeListener {
 
     public void removeListener(ServerMessageReceivedListener l) {
         smListeners.remove(l);
-    }
-
-    public boolean isHalfTime() {
-        return initialized && Math.abs(time - ruleHalfTime) < 0.1;
-    }
-
-    public boolean shouldSwapColors() {
-        // HACK: During competitions, the server is restarted for each half. To make sure the teams
-        // don't swap their colors, we have to swap them again manually.
-        // We make sure that the playmode is BeforeKickOff and hasn't changed since the connection
-        // was established to prevent colors from swapping
-        // during uninterrupted, non-competition games.
-        // This still causes a bug when RoboViz is restarted during half time, perhaps the config
-        // needs an
-        // "isCompetition" flag for hacks like these.
-        return "BeforeKickOff".equals(playMode) && isHalfTime() && previousPlayMode == null;
     }
 
     public void reset() {
@@ -419,10 +396,7 @@ public class GameState implements ServerChangeListener {
                     break;
                 case PLAY_MODE:
                     int mode = Integer.parseInt(atoms[1]);
-                    String newPlayMode = playModes[mode];
-                    if (playMode != null && !newPlayMode.equals(playMode))
-                        previousPlayMode = playMode;
-                    playMode = newPlayMode;
+                    playMode = playModes[mode];
                     playStateChanges++;
                     break;
                 case TEAM_LEFT:
@@ -457,8 +431,9 @@ public class GameState implements ServerChangeListener {
 
         initialized = true;
 
-        for (ServerMessageReceivedListener l : smListeners)
+        for (ServerMessageReceivedListener l : smListeners) {
             l.gsServerMessageProcessed(this);
+        }
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {
@@ -480,7 +455,6 @@ public class GameState implements ServerChangeListener {
             scoreRight = 0;
             teamLeft = null;
             teamRight = null;
-            previousPlayMode = null;
         }
     }
 }

@@ -43,17 +43,12 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
     private final Configuration.TeamColors config;
     private final ContentManager           content;
-    private float[]                        defaultColor;
+    private final float[]                  defaultColor;
     private final int                      id;
     private String                         name;
     private final List<Agent>              agents;
-    private ObjMaterial                    teamColor;
+    private final ObjMaterial              teamColor;
     private int                            score;
-
-    public void setTeamMaterial(ObjMaterial teamColor) {
-        this.teamColor = teamColor;
-        defaultColor = teamColor.getAmbient();
-    }
 
     public ObjMaterial getTeamMaterial() {
         return teamColor;

@@ -22,7 +22,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import js.jogl.light.DirLight;
 import js.jogl.light.LightModel;
-import js.jogl.model.ObjMaterial;
 import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.Configuration;
@@ -43,22 +42,22 @@ import rv.world.objects.SkyBox;
  * 
  * @author Justin Stoecker
  */
-public class WorldModel implements GameState.GameStateChangeListener {
+public class WorldModel {
 
     public interface SelectionChangeListener {
         void selectionChanged(ISelectable newSelection);
     }
 
     /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
-    public static final Matrix                       COORD_TFN     = new Matrix(
+    public static final Matrix                       COORD_TFN    = new Matrix(
             new double[] { -1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 });
 
-    private final GameState                          gameState     = new GameState();
-    private SceneGraph                               sceneGraph    = null;
+    private final GameState                          gameState    = new GameState();
+    private SceneGraph                               sceneGraph   = null;
     private ContentManager                           cm;
     private Configuration                            config;
 
-    private final ArrayList<ISceneGraphItem>         sgItems       = new ArrayList<>();
+    private final ArrayList<ISceneGraphItem>         sgItems      = new ArrayList<>();
 
     private Field                                    field;
     private Ball                                     ball;
@@ -69,14 +68,8 @@ public class WorldModel implements GameState.GameStateChangeListener {
 
     private ISelectable                              selectedObject;
 
-    private boolean                                  swappedColors = false;
-
-    private final ArrayList<SceneGraphListener>      sgListeners   = new ArrayList<>();
-    private final ArrayList<SelectionChangeListener> selListeners  = new ArrayList<>();
-
-    public WorldModel() {
-        gameState.addListener(this);
-    }
+    private final ArrayList<SceneGraphListener>      sgListeners  = new ArrayList<>();
+    private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
 
     public void addSceneGraphListener(SceneGraphListener sgl) {
         sgListeners.add(sgl);
@@ -244,24 +237,5 @@ public class WorldModel implements GameState.GameStateChangeListener {
         if (cm != null && config != null)
             initTeams();
         setSceneGraph(null);
-    }
-
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-    }
-
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-        if (!swappedColors && gs.shouldSwapColors() && leftTeam != null && rightTeam != null) {
-            ObjMaterial leftMaterial = leftTeam.getTeamMaterial();
-            ObjMaterial rightMaterial = rightTeam.getTeamMaterial();
-            leftTeam.setTeamMaterial(rightMaterial);
-            rightTeam.setTeamMaterial(leftMaterial);
-            swappedColors = true;
-        }
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
     }
 }
