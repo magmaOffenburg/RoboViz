@@ -67,11 +67,11 @@ public class InfoOverlay extends ScreenBase {
             return;
         }
 
-        int separator = index > 0 ? 50 : 0;
-        if (index > 1)
-            separator += 20;
+        int sep = index > 2 ? 10 : 0;
+        int textHeight = index > 0 ? 76 : 120;
         int x = (int) ((vp.w - b.getWidth()) / 2);
-        int y = (int) (vp.h - ((b.getHeight() + 20 + separator) * (index + 1)));
+        int y = (int) (vp.h - ((textHeight + 25 + sep) * (index + 1)));
+
         if (index > 0)
             x = 120;
         if (index > 1)

@@ -1,6 +1,7 @@
 3D Soccer Simulation League
+
 Next games:
-00:00   Team1 vs Team2
-00:00   Team1 vs Team2
-00:00   Team1 vs Team2
-00:00   Team1 vs Team2
+13:00   magmaOffenburg vs FCPortugal
+13:20   BahiaRT vs magmaOffenburg
+13:40   Miracle3D vs BahiaRT
+14:00   Miracle3D vs FCPortugal
