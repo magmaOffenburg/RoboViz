@@ -216,7 +216,10 @@ public class Configuration {
     }
 
     public class TeamColors {
-        public final HashMap<String, float[]> colorByTeamName = new HashMap<>();
+        public final HashMap<String, float[]> colorByTeamName   = new HashMap<>();
+        public float[]                        defaultLeftColor  = new float[] { 0.15f, 0.15f,
+                1.0f };
+        public float[]                        defaultRightColor = new float[] { 1, 0.15f, 0.15f };
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
@@ -234,6 +237,11 @@ public class Configuration {
                     color[1] = Float.parseFloat(bits[1]);
                     color[2] = Float.parseFloat(bits[2]);
                     colorByTeamName.put(key, color);
+
+                    if ("<Left>".equals(key))
+                        defaultLeftColor = color;
+                    else if ("<Right>".equals(key))
+                        defaultRightColor = color;
                 }
             }
         }
@@ -242,8 +250,8 @@ public class Configuration {
             writeSection(out, "Team Colors");
             for (String teamName : colorByTeamName.keySet()) {
                 float[] color = colorByTeamName.get(teamName);
-                out.write(String.format(Locale.US, "%-20s : %f %f %f" + getNewline(), teamName,
-                        color[0], color[1], color[2]));
+                out.write(String.format(Locale.US, "%-20s : %.2f %.2f %.2f" + getNewline(),
+                        teamName, color[0], color[1], color[2]));
             }
             out.write(getNewline());
         }

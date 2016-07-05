@@ -203,11 +203,10 @@ public class WorldModel {
             sgItems.remove(rightTeam);
         }
 
-        leftTeam = new Team(new float[] { .15f, .15f, 1.0f, 1.0f }, Team.LEFT, cm,
-                config.teamColors);
+        Configuration.TeamColors teamColors = config.teamColors;
+        leftTeam = new Team(teamColors.defaultLeftColor, Team.LEFT, cm, teamColors);
         gameState.addListener(leftTeam);
-        rightTeam = new Team(new float[] { 1.0f, .15f, .15f, 1.0f }, Team.RIGHT, cm,
-                config.teamColors);
+        rightTeam = new Team(teamColors.defaultRightColor, Team.RIGHT, cm, teamColors);
         gameState.addListener(rightTeam);
 
         sgItems.add(leftTeam);
