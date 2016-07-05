@@ -431,9 +431,8 @@ public class GameState implements ServerChangeListener {
 
         initialized = true;
 
-        for (ServerMessageReceivedListener l : smListeners) {
+        for (ServerMessageReceivedListener l : smListeners)
             l.gsServerMessageProcessed(this);
-        }
 
         int changes = playStateChanges + timeChanges + measureOrRuleChanges;
         if (changes > 0) {

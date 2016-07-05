@@ -390,21 +390,22 @@ public abstract class ViewerScreenBase extends ScreenBase
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (robotVantage == null && e.getButton() == MouseEvent.BUTTON1) {
-            viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
-            if (e.isAltDown()) {
-                altClick(e);
-            } else {
-                boolean handled = false;
-                ISelectable selectedObject = viewer.getWorldModel().getSelectedObject();
-                if (selectedObject != null) {
-                    handled = selectedObjectClick(selectedObject, e);
-                }
+        if (robotVantage != null || e.getButton() != MouseEvent.BUTTON1)
+            return;
 
-                if (!handled) {
-                    ISelectable newSelection = viewer.getUI().getObjectPicker().pickObject();
-                    viewer.getWorldModel().setSelectedObject(newSelection);
-                }
+        viewer.getUI().getObjectPicker().updatePickRay(viewer.getScreen(), e.getX(), e.getY());
+        if (e.isAltDown()) {
+            altClick(e);
+        } else {
+            boolean handled = false;
+            ISelectable selectedObject = viewer.getWorldModel().getSelectedObject();
+            if (selectedObject != null) {
+                handled = selectedObjectClick(selectedObject, e);
+            }
+
+            if (!handled) {
+                ISelectable newSelection = viewer.getUI().getObjectPicker().pickObject();
+                viewer.getWorldModel().setSelectedObject(newSelection);
             }
         }
     }
