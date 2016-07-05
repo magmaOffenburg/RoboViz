@@ -340,13 +340,14 @@ public class Configuration {
                 networking.read(in);
                 general.read(in);
                 teamColors.read(in);
-            } catch (IOException e) {
-                System.err.println("Error reading values from config file");
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error reading values from config file '" + file
+                        + "'. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.");
+                System.exit(1);
             }
         } catch (FileNotFoundException e) {
             System.err.println("Could not find config file");
-            e.printStackTrace();
+            System.exit(1);
         } finally {
             if (in != null) {
                 try {
