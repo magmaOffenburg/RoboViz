@@ -16,6 +16,7 @@
 
 package rv.content;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,6 +44,7 @@ import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
+import rv.util.jogl.MaterialUtil;
 
 /**
  * Loads shaders and meshes used in scene graph.
@@ -288,14 +290,13 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
         }
     }
 
-    private void updateTeamColor(String teamName, String materialName, float[] defaultColor) {
+    private void updateTeamColor(String teamName, String materialName, Color defaultColor) {
         ObjMaterial mat = getMaterial(materialName);
-        float[] color = config.colorByTeamName.get(teamName);
+        Color color = config.colorByTeamName.get(teamName);
         if (color == null) {
             color = defaultColor;
         }
-        mat.setDiffuse(color);
-        mat.setAmbient(color);
+        MaterialUtil.setColor(mat, color);
     }
 
     @Override

@@ -95,8 +95,8 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
 
         int i = 0;
         for (String teamName : config.colorByTeamName.keySet()) {
-            float[] color = config.colorByTeamName.get(teamName);
-            tableModel.addRow(new Object[] { teamName, SwingUtil.toColor(color) });
+            Color color = config.colorByTeamName.get(teamName);
+            tableModel.addRow(new Object[] { teamName, color });
             i++;
         }
 
@@ -137,7 +137,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener {
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             String teamName = (String) tableModel.getValueAt(i, 0);
             Color color = (Color) tableModel.getValueAt(i, 1);
-            config.colorByTeamName.put(teamName, color.getRGBComponents(null));
+            config.colorByTeamName.put(teamName, color);
         }
     }
 

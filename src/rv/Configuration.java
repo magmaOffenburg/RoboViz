@@ -16,6 +16,7 @@
 
 package rv;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * Configuration parameters for RoboViz startup
@@ -216,10 +216,9 @@ public class Configuration {
     }
 
     public class TeamColors {
-        public final HashMap<String, float[]> colorByTeamName   = new HashMap<>();
-        public float[]                        defaultLeftColor  = new float[] { 0.15f, 0.15f,
-                1.0f };
-        public float[]                        defaultRightColor = new float[] { 1, 0.15f, 0.15f };
+        public final HashMap<String, Color> colorByTeamName   = new HashMap<>();
+        public Color                        defaultLeftColor  = new Color(0x2626ff);
+        public Color                        defaultRightColor = new Color(0xff2626);
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
@@ -229,29 +228,22 @@ public class Configuration {
                 if (line == null || line.trim().length() == 0)
                     break;
                 String key = getKey(line);
-                String val = getVal(line);
-                String[] bits = val.split("\\s+");
-                if (bits.length == 3) {
-                    float[] color = new float[3];
-                    color[0] = Float.parseFloat(bits[0]);
-                    color[1] = Float.parseFloat(bits[1]);
-                    color[2] = Float.parseFloat(bits[2]);
-                    colorByTeamName.put(key, color);
+                int val = Integer.decode(getVal(line));
+                Color color = new Color(val);
+                colorByTeamName.put(key, color);
 
-                    if ("<Left>".equals(key))
-                        defaultLeftColor = color;
-                    else if ("<Right>".equals(key))
-                        defaultRightColor = color;
-                }
+                if ("<Left>".equals(key))
+                    defaultLeftColor = color;
+                else if ("<Right>".equals(key))
+                    defaultRightColor = color;
             }
         }
 
         private void write(BufferedWriter out) throws IOException {
             writeSection(out, "Team Colors");
             for (String teamName : colorByTeamName.keySet()) {
-                float[] color = colorByTeamName.get(teamName);
-                out.write(String.format(Locale.US, "%-20s : %.2f %.2f %.2f" + getNewline(),
-                        teamName, color[0], color[1], color[2]));
+                Color color = colorByTeamName.get(teamName);
+                writeVal(out, teamName, String.format("0x%06x", color.getRGB() & 0xFFFFFF));
             }
             out.write(getNewline());
         }

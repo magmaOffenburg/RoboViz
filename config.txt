@@ -38,6 +38,6 @@ Record Logfiles      : false
 Logfile Directory    : 
 
 Team Colors:
-<Right>              : 1.00 0.15 0.15
-<Left>               : 0.15 0.15 1.00
+<Right>              : 0xff2626
+<Left>               : 0x2626ff
 

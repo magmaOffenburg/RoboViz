@@ -16,6 +16,7 @@
 
 package rv.world;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import js.jogl.model.ObjMaterial;
@@ -28,6 +29,7 @@ import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
 import rv.content.ContentManager;
+import rv.util.jogl.MaterialUtil;
 import rv.world.objects.Agent;
 
 /**
@@ -43,7 +45,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
     private final Configuration.TeamColors config;
     private final ContentManager           content;
-    private final float[]                  defaultColor;
+    private final Color                    defaultColor;
     private final int                      id;
     private String                         name;
     private final List<Agent>              agents;
@@ -79,19 +81,18 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
 
         this.name = name;
 
-        float[] color = config.colorByTeamName.get(name);
+        Color color = config.colorByTeamName.get(name);
         if (color == null) {
             color = defaultColor;
         }
-        teamColor.setDiffuse(color);
-        teamColor.setAmbient(color);
+        MaterialUtil.setColor(teamColor, color);
     }
 
     public void setScore(int score) {
         this.score = score;
     }
 
-    public Team(float[] defaultColor, int id, ContentManager content,
+    public Team(Color defaultColor, int id, ContentManager content,
             Configuration.TeamColors config) {
         this.defaultColor = defaultColor;
         this.id = id;
@@ -102,8 +103,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener {
         name = (id == LEFT) ? "<Left>" : "<Right>";
 
         teamColor = new ObjMaterial(name);
-        teamColor.setDiffuse(defaultColor);
-        teamColor.setAmbient(defaultColor);
+        MaterialUtil.setColor(teamColor, defaultColor);
         teamColor.setShininess(96);
         teamColor.setSpecular(1, 1, 1, 1);
     }
