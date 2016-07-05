@@ -171,7 +171,6 @@ public class PlaymodeOverlay extends ScreenBase implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
     @Override

@@ -40,6 +40,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         super(viewer);
         ServerSpeedBenchmarker ssb = new ServerSpeedBenchmarker();
         viewer.getWorldModel().getGameState().addListener(ssb);
+        viewer.getNetManager().getServer().addChangeListener(this);
         gameStateOverlay.addServerSpeedBenchmarker(ssb);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
@@ -67,16 +68,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             return "Trying to connect to " + server + "...";
         else
             return "Press C to connect to " + server + ".";
-    }
-
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        super.setEnabled(canvas, enabled);
-        if (enabled) {
-            viewer.getNetManager().getServer().addChangeListener(this);
-        } else {
-            viewer.getNetManager().getServer().removeChangeListener(this);
-        }
     }
 
     @Override
@@ -224,6 +215,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         if (server.isConnected()) {
             viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
         } else {
+            playmodeOverlay.setVisible(false);
             prevScoreL = -1;
             prevScoreR = -1;
         }

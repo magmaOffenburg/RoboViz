@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Timer;
 import js.math.vector.Vec3f;
 import rv.Configuration;
@@ -105,7 +105,7 @@ public class ServerComm implements DrawCommListener {
         void connectionChanged(ServerComm server);
     }
 
-    private final List<ServerChangeListener> changeListeners  = new ArrayList<>();
+    private final List<ServerChangeListener> changeListeners  = new CopyOnWriteArrayList<>();
     private Timer                            autoConnectTimer;
 
     private Socket                           socket;
