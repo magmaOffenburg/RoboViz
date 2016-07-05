@@ -14,7 +14,7 @@ public class ControlsHelpPanel extends FramePanelBase {
     public ControlsHelpPanel() {
         super("Help");
         addCloseHotkey();
-        frame.setSize(400, 500);
+        frame.setSize(600, 800);
         frame.setMinimumSize(new Dimension(400, 500));
 
         String file = "Could not load help page.";
