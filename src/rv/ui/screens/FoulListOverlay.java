@@ -34,7 +34,7 @@ import rv.comm.rcssserver.GameState;
 public class FoulListOverlay extends ScreenBase {
 
     private static final int   FOUL_HEIGHT        = 25;
-    private static final int   FOUL_WIDTH         = 225;
+    private static final int   FOUL_WIDTH         = 235;
     private static final float FOUL_SHOW_TIME     = 8.0f;
     private static final float FOUL_FADE_TIME     = 2.0f;
     private static final int   TOP_SCREEN_OFFSET  = 17;
