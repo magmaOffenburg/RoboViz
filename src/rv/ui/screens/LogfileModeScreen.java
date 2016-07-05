@@ -64,6 +64,15 @@ public class LogfileModeScreen extends ViewerScreenBase {
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
         switch (e.getKeyCode()) {
+        case KeyEvent.VK_P:
+            if (player.isPlaying())
+                player.pause();
+            else
+                player.resume();
+            break;
+        case KeyEvent.VK_R:
+            player.rewind();
+            break;
         case KeyEvent.VK_X:
             player.decreasePlayBackSpeed();
             break;
@@ -77,22 +86,6 @@ public class LogfileModeScreen extends ViewerScreenBase {
         case KeyEvent.VK_PERIOD:
             if (!player.isPlaying())
                 player.stepForward();
-            break;
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        super.keyReleased(e);
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_P:
-            if (player.isPlaying())
-                player.pause();
-            else
-                player.resume();
-            break;
-        case KeyEvent.VK_R:
-            player.rewind();
             break;
         case KeyEvent.VK_G:
             player.stepBackwardGoal();
