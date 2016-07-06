@@ -59,6 +59,9 @@ public class PlaymodeOverlay extends ScreenBase implements KeyListener {
 
     @Override
     public void setVisible(boolean visible) {
+        if (visible == this.visible)
+            return;
+
         super.setVisible(visible);
         if (visible) {
             if (viewer.getWorldModel().getGameState() != null)
