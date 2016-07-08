@@ -24,29 +24,18 @@ import rv.world.ISelectable;
 
 public class TargetTrackerCamera {
 
-    private boolean        enabled = false;
+    private boolean        enabled       = false;
     private final FPCamera camera;
     private GameState      gs;
     private ISelectable    target;
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    private double         playbackSpeed = 1;
 
     public void toggleEnabled() {
         enabled = !enabled;
     }
 
-    public ISelectable getTarget() {
-        return target;
-    }
-
-    public void setTarget(ISelectable target) {
-        this.target = target;
+    public void setPlaybackSpeed(double playbackSpeed) {
+        this.playbackSpeed = playbackSpeed;
     }
 
     public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs) {
@@ -61,20 +50,21 @@ public class TargetTrackerCamera {
 
         Vec3f targetPos = target.getPosition();
         Vec3f cameraPos = camera.getPosition();
-        Vec3f newPos = Vec3f.lerp(cameraPos, targetPos, 0.02f);
 
         float halfLength = gs.getFieldLength() / 2;
         float halfWidth = gs.getFieldWidth() / 2;
 
-        float xFactor = (fuzzyValue(targetPos.x, -halfLength, halfLength) - 0.5f) * 2;
-        float xOffset = Math.signum(xFactor) * 0.08f * circIn(xFactor);
+        float xFactor = fuzzyValue(targetPos.x, -halfLength, halfLength);
+        float xOffset = 4 * weight(xFactor);
 
-        float zFactor = (fuzzyValue(targetPos.z, -halfWidth, halfWidth) - 0.5f) * 2;
-        float zOffset = -0.16f + (Math.signum(zFactor) * 0.06f * circIn(zFactor));
+        float zFactor = fuzzyValue(targetPos.z, -halfWidth, halfWidth);
+        float zOffset = -8 + 3 * weight(zFactor);
 
-        newPos.add(Vec3f.unitX().times(xOffset));
-        newPos.add(Vec3f.unitY().times(0.08f));
-        newPos.add(Vec3f.unitZ().times(zOffset));
+        targetPos.add(Vec3f.unitX().times(xOffset));
+        targetPos.add(Vec3f.unitY().times(4));
+        targetPos.add(Vec3f.unitZ().times(zOffset));
+
+        Vec3f newPos = Vec3f.lerp(targetPos, cameraPos, (float) (1 - (0.02f * playbackSpeed)));
 
         camera.setPosition(newPos);
         camera.setRotation(new Vec2f(-30, 180));
@@ -88,7 +78,11 @@ public class TargetTrackerCamera {
         return 1 - ((value - lower) / (upper - lower));
     }
 
-    private float circIn(float t) {
-        return (float) -(Math.sqrt(1 - t * t) - 1);
+    /** maps t values from 0...1 to -1...1 using a quadratic function */
+    private float weight(float t) {
+        float result = (float) -(Math.sqrt(1 - Math.pow(2 * t - 1, 2)) - 1);
+        if (t < 0.5)
+            result *= -1;
+        return result;
     }
 }

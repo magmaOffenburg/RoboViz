@@ -466,6 +466,8 @@ public class Viewer extends GLProgram
 
     @Override
     public void playerStateChanged(boolean playing) {
+        if (getUI().getBallTracker() != null)
+            getUI().getBallTracker().setPlaybackSpeed(logPlayer.getPlayBackSpeed());
     }
 
     @Override
