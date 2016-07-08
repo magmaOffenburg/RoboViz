@@ -48,26 +48,29 @@ public class TargetTrackerCamera {
         if (!enabled)
             return;
 
-        Vec3f targetPos = target.getPosition();
-        Vec3f cameraPos = camera.getPosition();
+        float scale = (float) (1 - (0.02f * playbackSpeed));
+        Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
+        camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
+        camera.setRotation(new Vec2f(-30, 180));
+    }
+
+    /**
+     * Tries to keep the ball in the middle of the screen (unless we're near a field edge, then it
+     * shifts the position a bit to fill as much of the screen with the field as possible)
+     */
+    private Vec3f offsetTargetPosition(Vec3f targetPos) {
         float halfLength = gs.getFieldLength() / 2;
         float halfWidth = gs.getFieldWidth() / 2;
 
-        float xFactor = fuzzyValue(targetPos.x, -halfLength, halfLength);
-        float xOffset = 4 * weight(xFactor);
+        float xOffset = 4 * fuzzyValue(targetPos.x, -halfLength, halfLength);
+        float zOffset = -8 + 3 * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
 
-        float zFactor = fuzzyValue(targetPos.z, -halfWidth, halfWidth);
-        float zOffset = -8 + 3 * weight(zFactor);
-
-        targetPos.add(Vec3f.unitX().times(xOffset));
-        targetPos.add(Vec3f.unitY().times(4));
-        targetPos.add(Vec3f.unitZ().times(zOffset));
-
-        Vec3f newPos = Vec3f.lerp(targetPos, cameraPos, (float) (1 - (0.02f * playbackSpeed)));
-
-        camera.setPosition(newPos);
-        camera.setRotation(new Vec2f(-30, 180));
+        Vec3f offsetPos = targetPos.clone();
+        offsetPos.add(Vec3f.unitX().times(xOffset));
+        offsetPos.add(Vec3f.unitY().times(4));
+        offsetPos.add(Vec3f.unitZ().times(zOffset));
+        return offsetPos;
     }
 
     private float fuzzyValue(float value, float lower, float upper) {
@@ -75,7 +78,7 @@ public class TargetTrackerCamera {
             return 1;
         if (value >= upper)
             return 0;
-        return 1 - ((value - lower) / (upper - lower));
+        return weight(1 - ((value - lower) / (upper - lower)));
     }
 
     /** maps t values from 0...1 to -1...1 using a quadratic function */
