@@ -80,7 +80,7 @@ public class FoulListOverlay extends ScreenBase {
                 float opacity = dt > FOUL_SHOW_TIME ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME
                         : 1.0f;
                 drawFoul(gl, x, y - (int) (FOUL_HEIGHT * n), FOUL_WIDTH, FOUL_HEIGHT, screenW,
-                        screenH, f, 1, f.team == 1 ? lc : rc);
+                        screenH, f, opacity, f.team == 1 ? lc : rc);
                 n += opacity;
             }
         }
