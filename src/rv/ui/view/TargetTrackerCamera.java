@@ -45,7 +45,7 @@ public class TargetTrackerCamera {
     }
 
     public void update() {
-        if (!enabled)
+        if (!enabled || target.getPosition() == null)
             return;
 
         float scale = (float) (1 - (0.02f * playbackSpeed));

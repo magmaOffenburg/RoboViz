@@ -49,28 +49,30 @@ public class Ball implements ISelectable, ISceneGraphItem {
         if (node == null)
             return;
 
+        Model model = content.getModel(node.getName());
+        if (!model.isLoaded()) {
+            return;
+        }
+
         Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
         Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
-        Model model = content.getModel(node.getName());
-        if (model.isLoaded()) {
-            Vec3f[] corners = model.getMesh().getBounds().getCorners();
-            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
-            for (int j = 0; j < 8; j++) {
-                Vec3f v = modelMat.transform(corners[j]);
-                if (v.x < min.x)
-                    min.x = v.x;
-                if (v.y < min.y)
-                    min.y = v.y;
-                if (v.z < min.z)
-                    min.z = v.z;
-                if (v.x > max.x)
-                    max.x = v.x;
-                if (v.y > max.y)
-                    max.y = v.y;
-                if (v.z > max.z)
-                    max.z = v.z;
-            }
+        Vec3f[] corners = model.getMesh().getBounds().getCorners();
+        Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
+        for (int j = 0; j < 8; j++) {
+            Vec3f v = modelMat.transform(corners[j]);
+            if (v.x < min.x)
+                min.x = v.x;
+            if (v.y < min.y)
+                min.y = v.y;
+            if (v.z < min.z)
+                min.z = v.z;
+            if (v.x > max.x)
+                max.x = v.x;
+            if (v.y > max.y)
+                max.y = v.y;
+            if (v.z > max.z)
+                max.z = v.z;
         }
 
         bounds = new BoundingBox(min, max);
