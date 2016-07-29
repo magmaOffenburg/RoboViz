@@ -25,7 +25,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Configuration parameters for RoboViz startup
@@ -150,20 +154,22 @@ public class Configuration {
     }
 
     public class Networking {
-        public boolean  autoConnect          = true;
-        public String   serverHost           = "localhost";
-        public int      serverPort           = 3200;
-        public int      listenPort           = 32769;
-        public int      autoConnectDelay     = 1000;
+        public boolean      autoConnect          = true;
+        public String       serverHost           = "localhost";
+        public List<String> serverHosts;
+        public int          serverPort           = 3200;
+        public int          listenPort           = 32769;
+        public int          autoConnectDelay     = 1000;
 
-        private String  overriddenServerHost = null;
-        private Integer overriddenServerPort = null;
+        public String       overriddenServerHost = null;
+        private Integer     overriddenServerPort = null;
 
         private void read(BufferedReader in) throws IOException {
             getNextLine(in);
             autoConnect = getNextBool(in);
             autoConnectDelay = getNextInt(in);
-            serverHost = getNextString(in);
+            serverHosts = new LinkedList<String>(Arrays.asList(getNextStringList(in)));
+            serverHost = serverHosts.get(0);
             serverPort = getNextInt(in);
             listenPort = getNextInt(in);
             getNextLine(in);
@@ -173,7 +179,7 @@ public class Configuration {
             writeSection(out, "Networking Settings");
             writeVal(out, "Auto-Connect", autoConnect);
             writeVal(out, "Auto-Connect Delay", autoConnectDelay);
-            writeVal(out, "Server Host", serverHost);
+            writeVal(out, "Server Hosts", serverHosts);
             writeVal(out, "Server Port", serverPort);
             writeVal(out, "Drawing Port", listenPort);
             out.write(getNewline());
@@ -283,6 +289,11 @@ public class Configuration {
         return getVal(getNextLine(in));
     }
 
+    private static String[] getNextStringList(BufferedReader in) throws IOException {
+        String str = getVal(getNextLine(in));
+        return str.split(", ");
+    }
+
     private static void writeSection(Writer out, String name) throws IOException {
         out.write(name + ":" + getNewline());
     }
@@ -297,6 +308,21 @@ public class Configuration {
 
     private static void writeVal(Writer out, String name, String value) throws IOException {
         out.write(formatProperty('s', name, value));
+    }
+
+    private static void writeVal(Writer out, String name, List<String> values) throws IOException {
+        out.write(formatProperty('s', name, join(values, ", ")));
+    }
+
+    private static String join(Collection<String> data, String separator) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String item : data) {
+            if (!first || (first = false))
+                sb.append(separator);
+            sb.append(item);
+        }
+        return sb.toString();
     }
 
     private static String formatProperty(char type, String name, Object value) {

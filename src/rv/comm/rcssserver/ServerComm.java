@@ -113,8 +113,8 @@ public class ServerComm implements DrawCommListener {
     private final WorldModel                 world;
     private DataInputStream                  in;
     private boolean                          connected        = false;
-    private final String                     serverHost;
-    private final int                        serverPort;
+    private String                           serverHost;
+    private int                              serverPort;
     private PrintWriter                      logfileOutput    = null;
     private boolean                          recordLogs       = false;
     private String                           logfileDirectory = null;
@@ -200,6 +200,13 @@ public class ServerComm implements DrawCommListener {
 
     public void connect() {
         connect(serverHost, serverPort);
+    }
+
+    public void changeConnection(String host, int port) {
+        serverHost = host;
+        serverPort = port;
+        disconnect();
+        connect(host, port);
     }
 
     public void connect(String host, int port) {

@@ -29,7 +29,7 @@ Player IDs           : false
 Networking Settings:
 Auto-Connect         : true
 Auto-Connect Delay   : 1000
-Server Host          : localhost
+Server Hosts         : localhost
 Server Port          : 3200
 Drawing Port         : 32769
 

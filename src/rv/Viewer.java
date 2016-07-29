@@ -59,6 +59,7 @@ import rv.comm.rcssserver.LogPlayer;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
+import rv.ui.MenuBar;
 import rv.ui.UserInterface;
 import rv.util.commandline.Argument;
 import rv.util.commandline.BooleanArgument;
@@ -486,6 +487,7 @@ public class Viewer extends GLProgram
 
         public RVFrame(String title) throws HeadlessException {
             super(title);
+            setJMenuBar(new MenuBar(Viewer.this));
         }
 
         @Override
