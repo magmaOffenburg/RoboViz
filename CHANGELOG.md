@@ -1,6 +1,19 @@
+1.3.0
+------------------------------
+* server speed and foul overlay are now visible by default
+* the ball is now selected by default when connecting
+* completely reworked the ball tracking camera
+* FSAA is now enabled by default
+* increased the default window size to 1024x768
+* increased the default size of the help panel to 600x800
+* the default visibility of overlays is now configurable in `config.txt`
+* the foul overlay is now slightly bigger
+* changed the color format in `config.txt` to 0xRRGGBB
+* the default colors of the left and right team are now configurable
+
 1.2.0
 ------------------------------
-* fixed the log player getting stuck with draw commands occassionally (#78)
+* fixed the log player getting stuck with draw commands occasionally (#78)
 * fixed `--logFile` paths starting with `~` in `roboviz.sh` (#80)
 * fixed the server host displayed in the window title when overriden with `--serverHost` (#83)
 * changed the connection overlay text from `Trying to connect to <ip>...` to `Waiting for second half...` if time is at 300
