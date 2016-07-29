@@ -39,10 +39,10 @@ public class Drawings {
     /** Event object launched when the list of sets is modified */
     public class SetListChangeEvent extends EventObject {
 
-        private final ArrayList<BufferedSet<Shape>>                 shapeSets;
+        private final CopyOnWriteArrayList<BufferedSet<Shape>>      shapeSets;
         private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets;
 
-        public ArrayList<BufferedSet<Shape>> getShapeSets() {
+        public CopyOnWriteArrayList<BufferedSet<Shape>> getShapeSets() {
             return shapeSets;
         }
 
@@ -65,7 +65,7 @@ public class Drawings {
     private final ArrayList<ShapeListListener>                  listeners            = new ArrayList<>();
     private final HashMap<String, BufferedSet<Shape>>           shapeSetListing      = new HashMap<>();
     private final HashMap<String, BufferedSet<Annotation>>      annotationSetListing = new HashMap<>();
-    private final ArrayList<BufferedSet<Shape>>                 shapeSets            = new ArrayList<>();
+    private final CopyOnWriteArrayList<BufferedSet<Shape>>      shapeSets            = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets       = new CopyOnWriteArrayList<>();
     private boolean                                             changed              = false;
     private boolean                                             visible              = true;
