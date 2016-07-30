@@ -57,6 +57,9 @@ public class MenuBar extends JMenuBar {
         }
         item.setSelected(true);
         String host = serverHosts.get(selectedIndex);
+        if (host.equals(config.getServerHost()))
+            return;
+
         config.overrideServerHost(host);
         viewer.getDrawings().clearAllShapeSets();
         viewer.getNetManager().getServer().changeConnection(host, config.serverPort);
