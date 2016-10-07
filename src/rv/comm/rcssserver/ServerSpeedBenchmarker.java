@@ -19,13 +19,14 @@ package rv.comm.rcssserver;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import rv.comm.rcssserver.GameState.ServerMessageReceivedListener;
+import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 
 /**
  * Estimates the speed of the server
  * 
  * @author Patrick MacAlpine
  */
-public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
+public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, ServerChangeListener {
     private static final boolean USE_NANOS       = false;
     private long                 msgTime;
     private float                lastGameTime;
@@ -121,5 +122,12 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener {
     @Override
     public void gsServerMessageProcessed(GameState gs) {
         updateServerSpeed(gs);
+    }
+
+    @Override
+    public void connectionChanged(ServerComm server) {
+        if (server.isConnected()) {
+            serverMsgDeltas.clear();
+        }
     }
 }

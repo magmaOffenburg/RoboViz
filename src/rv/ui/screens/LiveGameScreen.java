@@ -41,6 +41,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         ServerSpeedBenchmarker ssb = new ServerSpeedBenchmarker();
         viewer.getWorldModel().getGameState().addListener(ssb);
         viewer.getNetManager().getServer().addChangeListener(this);
+        viewer.getNetManager().getServer().addChangeListener(ssb);
         gameStateOverlay.addServerSpeedBenchmarker(ssb);
         playmodeOverlay = new PlaymodeOverlay(viewer, this);
         overlays.add(playmodeOverlay);
