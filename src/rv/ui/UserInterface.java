@@ -108,7 +108,7 @@ public class UserInterface implements KeyListener {
             setActiveScreen(new LogfileModeScreen(viewer));
 
         ballTracker = new TargetTrackerCamera(viewer.getWorldModel().getBall(), camera,
-                viewer.getWorldModel().getGameState(), viewer.getScreen());
+                viewer.getWorldModel().getGameState());
     }
 
     private FPCamera initCamera(GLCapabilitiesImmutable glcaps) {
@@ -136,7 +136,7 @@ public class UserInterface implements KeyListener {
         cameraControl.update(elapsedMS);
         camera.update(elapsedMS);
 
-        ballTracker.update();
+        ballTracker.update(viewer.getScreen());
     }
 
     public void render(GL2 gl, GLU glu, GLUT glut) {

@@ -28,7 +28,6 @@ public class TargetTrackerCamera {
     private boolean        enabled       = false;
     private final FPCamera camera;
     private GameState      gs;
-    private Viewport       screen;
     private ISelectable    target;
     private double         playbackSpeed = 1;
 
@@ -40,23 +39,21 @@ public class TargetTrackerCamera {
         this.playbackSpeed = playbackSpeed;
     }
 
-    public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs, Viewport screen) {
+    public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs) {
         this.target = target;
         this.camera = camera;
         this.gs = gs;
-        this.screen = screen;
     }
 
-    public void update() {
+    public void update(Viewport screen) {
         if (!enabled || target.getPosition() == null)
             return;
-
         float scale = (float) (1 - (0.02f * playbackSpeed));
         Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
         // Percentage of screen near edges where the scale is increased when
         // target is within this threshold percentage of the screen's edge
-        float SCREEN_THRESH_PERC = 0.01f;
+        float SCREEN_THRESH_PERC = 0.05f;
 
         // Factor to increase scale by
         float SCALE_FACTOR = 2.0f;
@@ -68,7 +65,7 @@ public class TargetTrackerCamera {
                 || screenPos.x > screen.w * (1 - SCREEN_THRESH_PERC)
                 || screenPos.y < screen.h * SCREEN_THRESH_PERC
                 || screenPos.y > screen.h * (1 - SCREEN_THRESH_PERC)) {
-            // Outude of SCREEN_THRESH_PERC boundaries so increase scale by
+            // Outside of SCREEN_THRESH_PERC boundaries so increase scale by
             // SCALE_FACTOR
             scale = (float) (1 - (0.02f * playbackSpeed * SCALE_FACTOR));
         }
