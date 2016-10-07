@@ -17,6 +17,7 @@
 package rv.ui.view;
 
 import js.jogl.view.FPCamera;
+import js.jogl.view.Viewport;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
@@ -27,6 +28,7 @@ public class TargetTrackerCamera {
     private boolean        enabled       = false;
     private final FPCamera camera;
     private GameState      gs;
+    private Viewport       screen;
     private ISelectable    target;
     private double         playbackSpeed = 1;
 
@@ -38,10 +40,11 @@ public class TargetTrackerCamera {
         this.playbackSpeed = playbackSpeed;
     }
 
-    public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs) {
+    public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs, Viewport screen) {
         this.target = target;
         this.camera = camera;
         this.gs = gs;
+        this.screen = screen;
     }
 
     public void update() {
@@ -51,8 +54,29 @@ public class TargetTrackerCamera {
         float scale = (float) (1 - (0.02f * playbackSpeed));
         Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
+        // Percentage of screen near edges where the scale is increased when
+        // target is within this threshold percentage of the screen's edge
+        float SCREEN_THRESH_PERC = 0.01f;
+
+        // Factor to increase scale by
+        float SCALE_FACTOR = 2.0f;
+
+        // Get position of target relative to screen
+        Vec3f screenPos = camera.project(target.getPosition(), screen);
+
+        if (screenPos.x < screen.w * SCREEN_THRESH_PERC
+                || screenPos.x > screen.w * (1 - SCREEN_THRESH_PERC)
+                || screenPos.y < screen.h * SCREEN_THRESH_PERC
+                || screenPos.y > screen.h * (1 - SCREEN_THRESH_PERC)) {
+            // Outude of SCREEN_THRESH_PERC boundaries so increase scale by
+            // SCALE_FACTOR
+            scale = (float) (1 - (0.02f * playbackSpeed * SCALE_FACTOR));
+        }
+
         camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
+
         camera.setRotation(new Vec2f(-30, 180));
+
     }
 
     /**
