@@ -53,7 +53,7 @@ public class TargetTrackerCamera {
 
         // Percentage of screen near edges where the scale is increased when
         // target is within this threshold percentage of the screen's edge
-        float SCREEN_THRESH_PERC = 0.05f;
+        float SCREEN_THRESH_PERC = 0.1f;
 
         // Factor to increase scale by
         float SCALE_FACTOR = 2.0f;
