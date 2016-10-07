@@ -138,6 +138,10 @@ public class ServerComm implements DrawCommListener {
         return connected;
     }
 
+    public WorldModel getWorldModel() {
+        return world;
+    }
+
     private void writeToLogfile(String msg) {
         synchronized (this) {
             logfileOutput.write(drawCommands);
