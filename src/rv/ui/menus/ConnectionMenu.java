@@ -9,19 +9,19 @@ import javax.swing.JRadioButtonMenuItem;
 import rv.Configuration;
 import rv.Viewer;
 
-public class ServerMenu extends JMenu {
+public class ConnectionMenu extends JMenu {
     private final Viewer                   viewer;
 
     private final Configuration.Networking config;
 
     private final List<String>             serverHosts;
 
-    public ServerMenu(Viewer viewer) {
-        super("Server");
+    public ConnectionMenu(Viewer viewer) {
+        super("Connection");
         this.viewer = viewer;
         this.config = viewer.getConfig().networking;
 
-        setMnemonic('S');
+        setMnemonic('C');
         serverHosts = new ArrayList<>(config.serverHosts);
 
         String overriddenHost = config.overriddenServerHost;

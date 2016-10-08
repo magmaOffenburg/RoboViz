@@ -5,13 +5,13 @@ import rv.Viewer;
 
 public class MenuBar extends JMenuBar {
     private Menu viewMenu;
-    private Menu commandMenu;
+    private Menu serverMenu;
 
     public MenuBar(Viewer viewer) {
         if (viewer.getMode() == Viewer.Mode.LIVE) {
-            add(new ServerMenu(viewer));
-            commandMenu = new Menu("Command", 'C');
-            add(commandMenu);
+            add(new ConnectionMenu(viewer));
+            serverMenu = new Menu("Server", 'S');
+            add(serverMenu);
         }
 
         viewMenu = new Menu("View", 'V');
@@ -22,7 +22,7 @@ public class MenuBar extends JMenuBar {
         return viewMenu;
     }
 
-    public Menu getCommandMenu() {
-        return commandMenu;
+    public Menu getServerMenu() {
+        return serverMenu;
     }
 }

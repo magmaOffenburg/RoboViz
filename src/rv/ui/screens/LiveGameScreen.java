@@ -50,7 +50,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         overlays.add(playmodeOverlay);
         connectionOverlay = new InfoOverlay().setMessage(getConnectionMessage());
         overlays.add(connectionOverlay);
-        createCommandMenu(viewer.getFrame().getCommandMenu());
+        createServerMenu(viewer.getFrame().getServerMenu());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         });
     }
 
-    private void createCommandMenu(Menu menu) {
+    private void createServerMenu(Menu menu) {
         if (!viewer.getConfig().networking.autoConnect)
             menu.addItem("Connect", "C", new AbstractAction() {
                 @Override
@@ -244,7 +244,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             getServer().requestFullState();
             break;
         case KeyEvent.VK_B:
-
+            dropBall();
             break;
         case KeyEvent.VK_M:
             toggleShowServerSpeed();
