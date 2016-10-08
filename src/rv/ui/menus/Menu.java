@@ -13,6 +13,10 @@ public class Menu extends JMenu {
     }
 
     public void addItem(String text, String accelerator, final AbstractAction action) {
+        addItem(text, KeyStroke.getKeyStroke(accelerator), action);
+    }
+
+    public void addItem(String text, KeyStroke accelerator, final AbstractAction action) {
         JMenuItem item = new JMenuItem(new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -25,7 +29,7 @@ public class Menu extends JMenu {
                 getInputMap(WHEN_IN_FOCUSED_WINDOW).put(keyStroke, "none");
             }
         };
-        item.setAccelerator(KeyStroke.getKeyStroke(accelerator));
+        item.setAccelerator(accelerator);
         add(item);
     }
 }

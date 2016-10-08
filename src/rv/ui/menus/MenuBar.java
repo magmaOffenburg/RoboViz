@@ -4,8 +4,9 @@ import javax.swing.JMenuBar;
 import rv.Viewer;
 
 public class MenuBar extends JMenuBar {
-    private Menu viewMenu;
     private Menu serverMenu;
+    private Menu viewMenu;
+    private Menu cameraMenu;
 
     public MenuBar(Viewer viewer) {
         if (viewer.getMode() == Viewer.Mode.LIVE) {
@@ -16,13 +17,20 @@ public class MenuBar extends JMenuBar {
 
         viewMenu = new Menu("View", 'V');
         add(viewMenu);
+
+        cameraMenu = new Menu("Camera", 'm');
+        add(cameraMenu);
+    }
+
+    public Menu getServerMenu() {
+        return serverMenu;
     }
 
     public Menu getViewMenu() {
         return viewMenu;
     }
 
-    public Menu getServerMenu() {
-        return serverMenu;
+    public Menu getCameraMenu() {
+        return cameraMenu;
     }
 }

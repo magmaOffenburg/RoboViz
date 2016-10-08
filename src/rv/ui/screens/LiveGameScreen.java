@@ -50,7 +50,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         overlays.add(playmodeOverlay);
         connectionOverlay = new InfoOverlay().setMessage(getConnectionMessage());
         overlays.add(connectionOverlay);
-        createServerMenu(viewer.getFrame().getServerMenu());
+        createServerMenu(viewer.getFrame().getMenu().getServerMenu());
     }
 
     @Override

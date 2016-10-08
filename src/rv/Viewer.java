@@ -60,7 +60,6 @@ import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
-import rv.ui.menus.Menu;
 import rv.ui.menus.MenuBar;
 import rv.util.commandline.Argument;
 import rv.util.commandline.BooleanArgument;
@@ -500,12 +499,8 @@ public class Viewer extends GLProgram
             // hardcoded debugging hotkey Ctrl+Shift+F1
         }
 
-        public Menu getViewMenu() {
-            return menuBar.getViewMenu();
-        }
-
-        public Menu getServerMenu() {
-            return menuBar.getServerMenu();
+        public MenuBar getMenu() {
+            return menuBar;
         }
     }
 }

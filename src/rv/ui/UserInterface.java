@@ -74,7 +74,7 @@ public class UserInterface implements KeyListener {
 
         this.activeScreen = activeScreen;
         this.activeScreen.setEnabled(canvas, true);
-        this.activeScreen.createViewMenu(viewer.getFrame().getViewMenu());
+        this.activeScreen.createViewMenu(viewer.getFrame().getMenu().getViewMenu());
         canvas.addKeyListener(this);
     }
 

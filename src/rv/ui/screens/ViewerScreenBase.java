@@ -16,6 +16,8 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.swing.AbstractAction;
+import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
@@ -94,6 +96,7 @@ public abstract class ViewerScreenBase extends ScreenBase
         viewer.addWindowResizeListener(this);
 
         loadOverlayVisibilities(viewer.getConfig().overlayVisibility);
+        createCameraMenu(viewer.getFrame().getMenu().getCameraMenu());
     }
 
     @Override
@@ -140,12 +143,74 @@ public abstract class ViewerScreenBase extends ScreenBase
             }
         });
 
+        menu.addItem("Toggle Drawings", "T", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleDrawings();
+            }
+        });
+
         menu.addItem("Toggle Fouls", "Q", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleFouls();
             }
         });
+    }
+
+    private void createCameraMenu(Menu menu) {
+        menu.addItem("Track Ball", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0),
+                new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        toggleBallTracker();
+                    }
+                });
+
+        menu.addItem("First Person Vantage", "V", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setRobotVantage(RobotVantageType.FIRST_PERSON);
+            }
+        });
+        menu.addItem("Third Person Vantage", "E", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setRobotVantage(RobotVantageType.THIRD_PERSON);
+            }
+        });
+
+        menu.add(new JSeparator());
+
+        menu.addItem("Toggle Ball Selection", "0", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleBallSelection();
+            }
+        });
+
+        menu.addItem("Remove Selection", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        removeSelection();
+                    }
+                });
+
+        menu.addItem("Select Previous Player",
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK), new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        cyclePlayers(-1);
+                    }
+                });
+        menu.addItem("Select Next Player", KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0),
+                new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        cyclePlayers(1);
+                    }
+                });
     }
 
     protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
@@ -292,23 +357,21 @@ public abstract class ViewerScreenBase extends ScreenBase
 
         switch (keyCode) {
         case KeyEvent.VK_SPACE:
-            viewer.getUI().getBallTracker().toggleEnabled();
+            toggleBallTracker();
             break;
         case KeyEvent.VK_F11:
             if (!e.isControlDown())
                 viewer.toggleFullScreen();
             break;
         case KeyEvent.VK_F:
-            if (e.isControlDown()) {
+            if (e.isControlDown())
                 viewer.toggleFullScreen();
-            } else {
+            else
                 toggleFieldOverlay();
-            }
             break;
         case KeyEvent.VK_ENTER:
-            if (e.isAltDown()) {
+            if (e.isAltDown())
                 viewer.toggleFullScreen();
-            }
             break;
         case KeyEvent.VK_F1:
             if (!e.isControlDown())
@@ -316,10 +379,10 @@ public abstract class ViewerScreenBase extends ScreenBase
             break;
         case KeyEvent.VK_0:
         case KeyEvent.VK_NUMPAD0:
-            viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
+            toggleBallSelection();
             break;
         case KeyEvent.VK_ESCAPE:
-            viewer.getWorldModel().setSelectedObject(null);
+            removeSelection();
             break;
         case KeyEvent.VK_V:
             setRobotVantage(RobotVantageType.FIRST_PERSON);
@@ -345,9 +408,8 @@ public abstract class ViewerScreenBase extends ScreenBase
             cyclePlayers(e.isShiftDown() ? -1 : 1);
             break;
         case KeyEvent.VK_T:
-            if (!e.isShiftDown()) {
-                viewer.getDrawings().toggle();
-            }
+            if (!e.isShiftDown())
+                toggleDrawings();
             break;
         case KeyEvent.VK_Y:
             openDrawingsPanel();
@@ -356,6 +418,18 @@ public abstract class ViewerScreenBase extends ScreenBase
             toggleFouls();
             break;
         }
+    }
+
+    private void toggleBallTracker() {
+        viewer.getUI().getBallTracker().toggleEnabled();
+    }
+
+    private void toggleBallSelection() {
+        viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
+    }
+
+    private void removeSelection() {
+        viewer.getWorldModel().setSelectedObject(null);
     }
 
     private void openHelp() {
@@ -380,6 +454,10 @@ public abstract class ViewerScreenBase extends ScreenBase
 
     private void toggleFieldOverlay() {
         fieldOverlay.setVisible(!fieldOverlay.isVisible());
+    }
+
+    private void toggleDrawings() {
+        viewer.getDrawings().toggle();
     }
 
     private void toggleFouls() {
