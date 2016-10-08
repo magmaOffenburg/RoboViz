@@ -182,10 +182,10 @@ public abstract class ViewerScreenBase extends ScreenBase
 
         menu.add(new JSeparator());
 
-        menu.addItem("Toggle Ball Selection", "0", new AbstractAction() {
+        menu.addItem("Select Ball", "0", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toggleBallSelection();
+                selectBall();
             }
         });
 
@@ -379,7 +379,7 @@ public abstract class ViewerScreenBase extends ScreenBase
             break;
         case KeyEvent.VK_0:
         case KeyEvent.VK_NUMPAD0:
-            toggleBallSelection();
+            selectBall();
             break;
         case KeyEvent.VK_ESCAPE:
             removeSelection();
@@ -424,7 +424,7 @@ public abstract class ViewerScreenBase extends ScreenBase
         viewer.getUI().getBallTracker().toggleEnabled();
     }
 
-    private void toggleBallSelection() {
+    private void selectBall() {
         viewer.getWorldModel().setSelectedObject(viewer.getWorldModel().getBall());
     }
 
