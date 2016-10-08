@@ -1,28 +1,26 @@
-package rv.ui;
+package rv.ui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JRadioButtonMenuItem;
 import rv.Configuration;
 import rv.Viewer;
 
-public class MenuBar extends JMenuBar {
+public class ServerMenu extends JMenu {
     private final Viewer                   viewer;
-
-    private final JMenu                    server;
 
     private final Configuration.Networking config;
 
     private final List<String>             serverHosts;
 
-    public MenuBar(Viewer viewer) {
+    public ServerMenu(Viewer viewer) {
+        super("Server");
         this.viewer = viewer;
-        server = new JMenu("Server");
-        config = viewer.getConfig().networking;
+        this.config = viewer.getConfig().networking;
+
         serverHosts = new ArrayList<>(config.serverHosts);
 
         String overriddenHost = config.overriddenServerHost;
@@ -32,24 +30,21 @@ public class MenuBar extends JMenuBar {
         }
 
         for (String host : serverHosts) {
-            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(host,
-                    server.getItemCount() == 0);
+            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(host, getItemCount() == 0);
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     selectServer(item);
                 }
             });
-            server.add(item);
+            add(item);
         }
-
-        add(server);
     }
 
     private void selectServer(JRadioButtonMenuItem item) {
         int selectedIndex = -1;
-        for (int i = 0; i < server.getItemCount(); i++) {
-            JRadioButtonMenuItem currentItem = (JRadioButtonMenuItem) server.getItem(i);
+        for (int i = 0; i < getItemCount(); i++) {
+            JRadioButtonMenuItem currentItem = (JRadioButtonMenuItem) getItem(i);
             currentItem.setSelected(false);
             if (currentItem == item) {
                 selectedIndex = i;
