@@ -46,8 +46,12 @@ public class DrawComm {
             try {
                 socket = new DatagramSocket(port);
             } catch (BindException e) {
-                DebugInfo.println(getClass(), "Unable to bind to draw port " + port
-                        + " - another RoboViz instance is probably already listening on the same port");
+                DebugInfo
+                        .println(
+                                getClass(),
+                                "Unable to bind to draw port "
+                                        + port
+                                        + " - another RoboViz instance is probably already listening on the same port");
                 running = false;
             }
         }
@@ -98,6 +102,10 @@ public class DrawComm {
     public void handle(DatagramPacket packet) {
         byte[] pktData = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), pktData, 0, pktData.length);
+
+        for (DrawCommListener l : listeners)
+            l.drawCommandReceived(pktData);
+
         ByteBuffer buf = ByteBuffer.wrap(pktData);
 
         while (buf.hasRemaining()) {
@@ -120,8 +128,6 @@ public class DrawComm {
                 }
                 return;
             } else {
-                for (DrawCommListener l : listeners)
-                    l.drawCommandReceived(pktData);
                 cmd.execute();
             }
         }
