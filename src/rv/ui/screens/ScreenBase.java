@@ -2,6 +2,7 @@ package rv.ui.screens;
 
 import javax.media.opengl.awt.GLCanvas;
 import rv.Viewer;
+import rv.ui.menus.Menu;
 
 public abstract class ScreenBase implements Screen {
     protected boolean visible = true;
@@ -21,5 +22,9 @@ public abstract class ScreenBase implements Screen {
 
     @Override
     public void windowResized(Viewer.WindowResizeEvent event) {
+    }
+
+    @Override
+    public void createViewMenu(Menu menu) {
     }
 }

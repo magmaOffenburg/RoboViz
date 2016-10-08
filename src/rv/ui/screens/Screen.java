@@ -22,6 +22,7 @@ import javax.media.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import rv.Viewer;
+import rv.ui.menus.Menu;
 
 /**
  * A screen represents a visual 2D interface that is displayed on top of the 3D rendering of the
@@ -38,4 +39,6 @@ public interface Screen extends Viewer.WindowResizeListener {
     boolean isVisible();
 
     void setVisible(boolean visible);
+
+    void createViewMenu(Menu menu);
 }

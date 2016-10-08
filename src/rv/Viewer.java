@@ -60,6 +60,7 @@ import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
+import rv.ui.menus.Menu;
 import rv.ui.menus.MenuBar;
 import rv.util.commandline.Argument;
 import rv.util.commandline.BooleanArgument;
@@ -111,7 +112,7 @@ public class Viewer extends GLProgram
 
     private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
-    private JFrame                           frame;
+    private RVFrame                          frame;
     private boolean                          movedFrame;
     private GLCanvas                         canvas;
     private WorldModel                       world;
@@ -166,7 +167,7 @@ public class Viewer extends GLProgram
         return drawings;
     }
 
-    public JFrame getFrame() {
+    public RVFrame getFrame() {
         return frame;
     }
 
@@ -483,17 +484,24 @@ public class Viewer extends GLProgram
         return current + " - " + roboviz;
     }
 
-    private class RVFrame extends JFrame {
+    public class RVFrame extends JFrame {
+
+        private MenuBar menuBar;
 
         public RVFrame(String title) throws HeadlessException {
             super(title);
-            setJMenuBar(new MenuBar(Viewer.this));
+            menuBar = new MenuBar(Viewer.this);
+            setJMenuBar(menuBar);
         }
 
         @Override
         public void list(PrintStream out, int indent) {
             // hack to suppress the output of java.awt.Window's
             // hardcoded debugging hotkey Ctrl+Shift+F1
+        }
+
+        public Menu getViewMenu() {
+            return menuBar.getViewMenu();
         }
     }
 }

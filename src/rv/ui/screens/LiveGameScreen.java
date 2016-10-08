@@ -16,15 +16,18 @@
 
 package rv.ui.screens;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.media.opengl.awt.GLCanvas;
+import javax.swing.AbstractAction;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;
+import rv.ui.menus.Menu;
 import rv.world.ISelectable;
 import rv.world.Team;
 import rv.world.WorldModel;
@@ -53,6 +56,25 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
         super.loadOverlayVisibilities(config);
         gameStateOverlay.setShowServerSpeed(config.serverSpeed);
+    }
+
+    @Override
+    public void createViewMenu(Menu menu) {
+        super.createViewMenu(menu);
+
+        menu.addItem("Toggle Server Speed", "M", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleShowServerSpeed();
+            }
+        });
+
+        menu.addItem("Playmode Overlay", "O", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openPlaymodeOverlay();
+            }
+        });
     }
 
     private String getConnectionMessage() {
@@ -93,8 +115,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null
                     && viewer.getWorldModel().getGameState().getPlayModes() != null) {
-                setEnabled((GLCanvas) viewer.getCanvas(), false);
-                playmodeOverlay.setVisible(true);
+                openPlaymodeOverlay();
             }
             break;
         case KeyEvent.VK_C:
@@ -130,6 +151,11 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             toggleShowServerSpeed();
             break;
         }
+    }
+
+    private void openPlaymodeOverlay() {
+        setEnabled((GLCanvas) viewer.getCanvas(), false);
+        playmodeOverlay.setVisible(true);
     }
 
     private void resetTimeIfExpired() {

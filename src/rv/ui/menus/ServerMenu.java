@@ -21,6 +21,7 @@ public class ServerMenu extends JMenu {
         this.viewer = viewer;
         this.config = viewer.getConfig().networking;
 
+        setMnemonic('S');
         serverHosts = new ArrayList<>(config.serverHosts);
 
         String overriddenHost = config.overriddenServerHost;

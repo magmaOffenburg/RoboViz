@@ -2,6 +2,7 @@ package rv.ui.screens;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+import javax.swing.AbstractAction;
 import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Camera3D;
 import js.jogl.view.Viewport;
@@ -25,6 +27,7 @@ import rv.comm.drawing.BufferedSet;
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.rcssserver.GameState;
+import rv.ui.menus.Menu;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
 import rv.ui.view.RobotVantageThirdPerson;
@@ -91,6 +94,58 @@ public abstract class ViewerScreenBase extends ScreenBase
         viewer.addWindowResizeListener(this);
 
         loadOverlayVisibilities(viewer.getConfig().overlayVisibility);
+    }
+
+    @Override
+    public void createViewMenu(Menu menu) {
+        menu.addItem("Help", "F1", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openHelp();
+            }
+        });
+
+        menu.addItem("Drawings", "Y", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openDrawingsPanel();
+            }
+        });
+
+        menu.addItem("Toggle Full Screen", "F11", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewer.toggleFullScreen();
+            }
+        });
+
+        menu.addItem("Toggle Agent Overhead Type", "I", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleOverheadType();
+            }
+        });
+
+        menu.addItem("Toggle Player Numbers", "N", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePlayerNumbers();
+            }
+        });
+
+        menu.addItem("Toggle Field Overlay", "F", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleFieldOverlay();
+            }
+        });
+
+        menu.addItem("Toggle Fouls", "Q", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleFouls();
+            }
+        });
     }
 
     protected void loadOverlayVisibilities(Configuration.OverlayVisibility config) {
@@ -247,7 +302,7 @@ public abstract class ViewerScreenBase extends ScreenBase
             if (e.isControlDown()) {
                 viewer.toggleFullScreen();
             } else {
-                fieldOverlay.setVisible(!fieldOverlay.isVisible());
+                toggleFieldOverlay();
             }
             break;
         case KeyEvent.VK_ENTER:
@@ -257,7 +312,7 @@ public abstract class ViewerScreenBase extends ScreenBase
             break;
         case KeyEvent.VK_F1:
             if (!e.isControlDown())
-                viewer.getUI().getShortcutHelpPanel().showFrame(viewer.getFrame());
+                openHelp();
             break;
         case KeyEvent.VK_0:
         case KeyEvent.VK_NUMPAD0:
@@ -273,14 +328,10 @@ public abstract class ViewerScreenBase extends ScreenBase
             setRobotVantage(RobotVantageType.THIRD_PERSON);
             break;
         case KeyEvent.VK_I:
-            nextAgentOverheadType();
-            if (agentOverheadType == AgentOverheadType.ANNOTATIONS
-                    && !teamHasAnnotations(viewer.getWorldModel().getLeftTeam())
-                    && !teamHasAnnotations(viewer.getWorldModel().getRightTeam()))
-                nextAgentOverheadType();
+            toggleOverheadType();
             break;
         case KeyEvent.VK_N:
-            setShowNumPlayers(!showNumPlayers);
+            togglePlayerNumbers();
             break;
         case KeyEvent.VK_W:
         case KeyEvent.VK_UP:
@@ -299,12 +350,40 @@ public abstract class ViewerScreenBase extends ScreenBase
             }
             break;
         case KeyEvent.VK_Y:
-            viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());
+            openDrawingsPanel();
             break;
         case KeyEvent.VK_Q:
-            foulListOverlay.setVisible(!foulListOverlay.isVisible());
+            toggleFouls();
             break;
         }
+    }
+
+    private void openHelp() {
+        viewer.getUI().getShortcutHelpPanel().showFrame(viewer.getFrame());
+    }
+
+    private void openDrawingsPanel() {
+        viewer.getUI().getShapeSetPanel().showFrame(viewer.getFrame());
+    }
+
+    private void toggleOverheadType() {
+        nextAgentOverheadType();
+        if (agentOverheadType == AgentOverheadType.ANNOTATIONS
+                && !teamHasAnnotations(viewer.getWorldModel().getLeftTeam())
+                && !teamHasAnnotations(viewer.getWorldModel().getRightTeam()))
+            nextAgentOverheadType();
+    }
+
+    private void togglePlayerNumbers() {
+        setShowNumPlayers(!showNumPlayers);
+    }
+
+    private void toggleFieldOverlay() {
+        fieldOverlay.setVisible(!fieldOverlay.isVisible());
+    }
+
+    private void toggleFouls() {
+        foulListOverlay.setVisible(!foulListOverlay.isVisible());
     }
 
     private void setShowNumPlayers(boolean showNumPlayers) {
