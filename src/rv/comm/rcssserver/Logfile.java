@@ -238,14 +238,16 @@ public class Logfile implements ILogfileReader {
                 }
                 ByteBuffer buf = ByteBuffer.wrap(drawCmdBytes);
 
-                Command cmd = null;
-                try {
-                    cmd = Command.parse(buf, viewer);
-                    if (cmd != null) {
-                        cmd.execute();
+                while (buf.hasRemaining()) {
+                    Command cmd = null;
+                    try {
+                        cmd = Command.parse(buf, viewer);
+                        if (cmd != null) {
+                            cmd.execute();
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e);
                     }
-                } catch (Exception e) {
-                    System.out.println(e);
                 }
             }
             line = line.substring(endIndex + 1);
