@@ -503,5 +503,9 @@ public class Viewer extends GLProgram
         public Menu getViewMenu() {
             return menuBar.getViewMenu();
         }
+
+        public Menu getCommandMenu() {
+            return menuBar.getCommandMenu();
+        }
     }
 }

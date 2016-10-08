@@ -5,10 +5,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import rv.Viewer;
 
 public class Menu extends JMenu {
-    public Menu(String name, char mnemonic, final Viewer viewer) {
+    public Menu(String name, char mnemonic) {
         super(name);
         setMnemonic(mnemonic);
     }

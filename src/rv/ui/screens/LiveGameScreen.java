@@ -50,6 +50,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         overlays.add(playmodeOverlay);
         connectionOverlay = new InfoOverlay().setMessage(getConnectionMessage());
         overlays.add(connectionOverlay);
+        createCommandMenu(viewer.getFrame().getCommandMenu());
     }
 
     @Override
@@ -77,6 +78,112 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
         });
     }
 
+    private void createCommandMenu(Menu menu) {
+        if (!viewer.getConfig().networking.autoConnect)
+            menu.addItem("Connect", "C", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    connect();
+                }
+            });
+
+        menu.addItem("Kill Server", "shift X", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getServer().killServer();
+            }
+        });
+
+        menu.addItem("Kick Off Left", "K", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                kickOff(true);
+            }
+        });
+        menu.addItem("Kick Off Right", "J", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                kickOff(false);
+            }
+        });
+
+        menu.addItem("Free Kick Left", "L", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                freeKick(true);
+            }
+        });
+        menu.addItem("Free Kick Right", "R", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                freeKick(false);
+            }
+        });
+
+        menu.addItem("Direct Free Kick Left", "shift L", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                directFreeKick(true);
+            }
+        });
+        menu.addItem("Direct Free Kick Right", "shift R", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                directFreeKick(false);
+            }
+        });
+
+        menu.addItem("Reset Time", "shift T", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getServer().resetTime();
+            }
+        });
+
+        menu.addItem("Request Full State Update", "U", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getServer().requestFullState();
+            }
+        });
+
+        menu.addItem("Drop Ball", "B", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dropBall();
+            }
+        });
+    }
+
+    private ServerComm getServer() {
+        return viewer.getNetManager().getServer();
+    }
+
+    private void kickOff(boolean left) {
+        resetTimeIfExpired();
+        getServer().kickOff(left);
+    }
+
+    private void directFreeKick(boolean left) {
+        resetTimeIfExpired();
+        getServer().directFreeKick(left);
+    }
+
+    private void freeKick(boolean left) {
+        resetTimeIfExpired();
+        getServer().freeKick(left);
+    }
+
+    private void connect() {
+        if (!getServer().isConnected())
+            getServer().connect();
+    }
+
+    private void dropBall() {
+        resetTimeIfExpired();
+        getServer().dropBall();
+    }
+
     private String getConnectionMessage() {
         Configuration.Networking config = viewer.getConfig().networking;
         String server = config.getServerHost() + ":" + config.getServerPort();
@@ -97,20 +204,16 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
 
-        ServerComm server = viewer.getNetManager().getServer();
-
         switch (e.getKeyCode()) {
         case KeyEvent.VK_X:
             if (e.isShiftDown())
-                server.killServer();
+                getServer().killServer();
             break;
         case KeyEvent.VK_K:
-            resetTimeIfExpired();
-            server.kickOff(true);
+            kickOff(true);
             break;
         case KeyEvent.VK_J:
-            resetTimeIfExpired();
-            server.kickOff(false);
+            kickOff(false);
             break;
         case KeyEvent.VK_O:
             if (viewer.getWorldModel().getGameState() != null
@@ -119,33 +222,29 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
             }
             break;
         case KeyEvent.VK_C:
-            if (!server.isConnected())
-                server.connect();
+            connect();
             break;
         case KeyEvent.VK_L:
-            resetTimeIfExpired();
             if (e.isShiftDown())
-                server.directFreeKick(true);
+                directFreeKick(true);
             else
-                server.freeKick(true);
+                freeKick(true);
             break;
         case KeyEvent.VK_R:
-            resetTimeIfExpired();
             if (e.isShiftDown())
-                server.directFreeKick(false);
+                directFreeKick(false);
             else
-                server.freeKick(false);
+                freeKick(false);
             break;
         case KeyEvent.VK_T:
             if (e.isShiftDown())
-                server.resetTime();
+                getServer().resetTime();
             break;
         case KeyEvent.VK_U:
-            server.requestFullState();
+            getServer().requestFullState();
             break;
         case KeyEvent.VK_B:
-            resetTimeIfExpired();
-            server.dropBall();
+
             break;
         case KeyEvent.VK_M:
             toggleShowServerSpeed();
