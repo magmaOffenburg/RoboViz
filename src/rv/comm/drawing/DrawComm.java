@@ -46,12 +46,8 @@ public class DrawComm {
             try {
                 socket = new DatagramSocket(port);
             } catch (BindException e) {
-                DebugInfo
-                        .println(
-                                getClass(),
-                                "Unable to bind to draw port "
-                                        + port
-                                        + " - another RoboViz instance is probably already listening on the same port");
+                DebugInfo.println(getClass(), "Unable to bind to draw port " + port
+                        + " - another RoboViz instance is probably already listening on the same port");
                 running = false;
             }
         }
