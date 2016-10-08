@@ -5,6 +5,7 @@ import rv.Viewer;
 
 public class MenuBar extends JMenuBar {
     public MenuBar(Viewer viewer) {
-        add(new ServerMenu(viewer));
+        if (viewer.getMode() == Viewer.Mode.LIVE)
+            add(new ServerMenu(viewer));
     }
 }
