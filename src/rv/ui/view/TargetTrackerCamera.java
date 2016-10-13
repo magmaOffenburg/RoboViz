@@ -30,6 +30,7 @@ public class TargetTrackerCamera {
     private GameState      gs;
     private ISelectable    target;
     private double         playbackSpeed = 1;
+    private Vec3f          lastScreenPos;
 
     public void toggleEnabled() {
         enabled = !enabled;
@@ -43,6 +44,7 @@ public class TargetTrackerCamera {
         this.target = target;
         this.camera = camera;
         this.gs = gs;
+        lastScreenPos = null;
     }
 
     public void update(Viewport screen) {
@@ -67,8 +69,24 @@ public class TargetTrackerCamera {
                 || screenPos.y > screen.h * (1 - SCREEN_THRESH_PERC)) {
             // Outside of SCREEN_THRESH_PERC boundaries so increase scale by
             // SCALE_FACTOR
-            scale = (float) (1 - (0.02f * playbackSpeed * SCALE_FACTOR));
+            // scale = (float) (1 - (0.02f * playbackSpeed * SCALE_FACTOR));
         }
+
+        if (lastScreenPos == null) {
+            lastScreenPos = screenPos;
+        }
+
+        // Maximum factor that velocity can increase scale by
+        float VEL_SCALE_FACTOR_MAX = 3.0f;
+
+        // Amount that screen velocity is multiplied by when determing scale
+        float VEL_SCALE_FACTOR = 0.003f;
+
+        double screenVel = Math.sqrt(Math.pow((double) (lastScreenPos.x - screenPos.x), 2.0)
+                + Math.pow((double) (lastScreenPos.y - screenPos.y), 2.0));
+        scale = (float) Math.max(Math.min(1 - screenVel * VEL_SCALE_FACTOR, scale),
+                1 - (0.02f * playbackSpeed * VEL_SCALE_FACTOR_MAX));
+        lastScreenPos = screenPos;
 
         camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
 
