@@ -50,27 +50,19 @@ public class TargetTrackerCamera {
     public void update(Viewport screen) {
         if (!enabled || target.getPosition() == null)
             return;
+
         float scale = (float) (1 - (0.02f * playbackSpeed));
+        scale = scaleWithBallSpeed(screen, scale);
+
         Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
-        // Percentage of screen near edges where the scale is increased when
-        // target is within this threshold percentage of the screen's edge
-        float SCREEN_THRESH_PERC = 0.1f;
+        camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
+        camera.setRotation(new Vec2f(-30, 180));
+    }
 
-        // Factor to increase scale by
-        float SCALE_FACTOR = 2.0f;
-
+    private float scaleWithBallSpeed(Viewport screen, float scale) {
         // Get position of target relative to screen
         Vec3f screenPos = camera.project(target.getPosition(), screen);
-
-        if (screenPos.x < screen.w * SCREEN_THRESH_PERC
-                || screenPos.x > screen.w * (1 - SCREEN_THRESH_PERC)
-                || screenPos.y < screen.h * SCREEN_THRESH_PERC
-                || screenPos.y > screen.h * (1 - SCREEN_THRESH_PERC)) {
-            // Outside of SCREEN_THRESH_PERC boundaries so increase scale by
-            // SCALE_FACTOR
-            // scale = (float) (1 - (0.02f * playbackSpeed * SCALE_FACTOR));
-        }
 
         if (lastScreenPos == null) {
             lastScreenPos = screenPos;
@@ -79,7 +71,7 @@ public class TargetTrackerCamera {
         // Maximum factor that velocity can increase scale by
         float VEL_SCALE_FACTOR_MAX = 3.0f;
 
-        // Amount that screen velocity is multiplied by when determing scale
+        // Amount that screen velocity is multiplied by when determining scale
         float VEL_SCALE_FACTOR = 0.003f;
 
         double screenVel = Math.sqrt(Math.pow((double) (lastScreenPos.x - screenPos.x), 2.0)
@@ -88,10 +80,7 @@ public class TargetTrackerCamera {
                 1 - (0.02f * playbackSpeed * VEL_SCALE_FACTOR_MAX));
         lastScreenPos = screenPos;
 
-        camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
-
-        camera.setRotation(new Vec2f(-30, 180));
-
+        return scale;
     }
 
     /**
