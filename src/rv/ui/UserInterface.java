@@ -137,7 +137,7 @@ public class UserInterface implements KeyListener {
         cameraControl.update(elapsedMS);
         camera.update(elapsedMS);
 
-        ballTracker.update();
+        ballTracker.update(viewer.getScreen());
     }
 
     public void render(GL2 gl, GLU glu, GLUT glut) {

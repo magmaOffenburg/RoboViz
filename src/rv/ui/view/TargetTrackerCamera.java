@@ -17,6 +17,7 @@
 package rv.ui.view;
 
 import js.jogl.view.FPCamera;
+import js.jogl.view.Viewport;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
@@ -29,6 +30,7 @@ public class TargetTrackerCamera {
     private GameState      gs;
     private ISelectable    target;
     private double         playbackSpeed = 1;
+    private Vec3f          lastScreenPos;
 
     public void toggleEnabled() {
         enabled = !enabled;
@@ -42,17 +44,43 @@ public class TargetTrackerCamera {
         this.target = target;
         this.camera = camera;
         this.gs = gs;
+        lastScreenPos = null;
     }
 
-    public void update() {
+    public void update(Viewport screen) {
         if (!enabled || target.getPosition() == null)
             return;
 
         float scale = (float) (1 - (0.02f * playbackSpeed));
+        scale = scaleWithBallSpeed(screen, scale);
+
         Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
         camera.setPosition(Vec3f.lerp(cameraTarget, camera.getPosition(), scale));
         camera.setRotation(new Vec2f(-30, 180));
+    }
+
+    private float scaleWithBallSpeed(Viewport screen, float scale) {
+        // Get position of target relative to screen
+        Vec3f screenPos = camera.project(target.getPosition(), screen);
+
+        if (lastScreenPos == null) {
+            lastScreenPos = screenPos;
+        }
+
+        // Maximum factor that velocity can increase scale by
+        float VEL_SCALE_FACTOR_MAX = 3.0f;
+
+        // Amount that screen velocity is multiplied by when determining scale
+        float VEL_SCALE_FACTOR = 0.003f;
+
+        double screenVel = Math.sqrt(Math.pow((double) (lastScreenPos.x - screenPos.x), 2.0)
+                + Math.pow((double) (lastScreenPos.y - screenPos.y), 2.0));
+        scale = (float) Math.max(Math.min(1 - screenVel * VEL_SCALE_FACTOR, scale),
+                1 - (0.02f * playbackSpeed * VEL_SCALE_FACTOR_MAX));
+        lastScreenPos = screenPos;
+
+        return scale;
     }
 
     /**
