@@ -5,7 +5,7 @@ RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulatio
 
 Java 1.7 is required to run RoboViz. Pre-built binaries for Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using the appropriate `build-<platform>` script in [`scripts`](scripts).
 
-![Screenshot](https://cloud.githubusercontent.com/assets/2620907/8145056/b4d53310-11f8-11e5-8732-477bd7a3d185.png)
+![Screenshot](images/screenshot.png)
 
 Except for the available shortcuts, the information on the [original website](https://sites.google.com/site/umroboviz) is still largely accurate. A complete list of shortcuts is available via a help window opened with the `F1` hotkey. Alternatively, it's also available as a `.html` file in `resources/help/controls.html`.
 
