@@ -23,111 +23,117 @@ import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 
 /**
  * Estimates the speed of the server
- * 
+ *
  * @author Patrick MacAlpine
  */
-public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, ServerChangeListener {
-    private static final boolean USE_NANOS       = false;
-    private long                 msgTime;
-    private float                lastGameTime;
+public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, ServerChangeListener
+{
+	private static final boolean USE_NANOS = false;
+	private long msgTime;
+	private float lastGameTime;
 
-    private float                serverSpeed     = -1;
-    private TreeMap<Long, Float> serverMsgDeltas = new TreeMap<Long, Float>();
-    private float                accumulatedServerTime;
+	private float serverSpeed = -1;
+	private TreeMap<Long, Float> serverMsgDeltas = new TreeMap<Long, Float>();
+	private float accumulatedServerTime;
 
-    public String getServerSpeed() {
-        if (serverSpeed < 0) {
-            return "---";
-        }
+	public String getServerSpeed()
+	{
+		if (serverSpeed < 0) {
+			return "---";
+		}
 
-        return Integer.toString(Math.round(100 * serverSpeed)) + "%";
-    }
+		return Integer.toString(Math.round(100 * serverSpeed)) + "%";
+	}
 
-    private void updateServerSpeed(GameState gs) {
-        final long TIME_WINDOW;
-        if (USE_NANOS) {
-            TIME_WINDOW = 5000000000L;
-        } else {
-            TIME_WINDOW = 5000;
-        }
-        final float DEFAULT_MSG_TIME_DELTA = 0.04f;
+	private void updateServerSpeed(GameState gs)
+	{
+		final long TIME_WINDOW;
+		if (USE_NANOS) {
+			TIME_WINDOW = 5000000000L;
+		} else {
+			TIME_WINDOW = 5000;
+		}
+		final float DEFAULT_MSG_TIME_DELTA = 0.04f;
 
-        float time = gs.getTime();
+		float time = gs.getTime();
 
-        // Add message time info to map
-        if (serverMsgDeltas.isEmpty()) {
-            serverMsgDeltas.put(msgTime, -1.0f);
-            accumulatedServerTime = 0;
-        } else {
-            long lastMsgTime = serverMsgDeltas.lastKey();
+		// Add message time info to map
+		if (serverMsgDeltas.isEmpty()) {
+			serverMsgDeltas.put(msgTime, -1.0f);
+			accumulatedServerTime = 0;
+		} else {
+			long lastMsgTime = serverMsgDeltas.lastKey();
 
-            float serverTimeDelta;
-            if (time - lastGameTime > 0) {
-                // We have a game time change for the amount of time passed
-                serverTimeDelta = time - lastGameTime;
-            } else {
-                // The game is paused so use DEFAULT_MSG_TIME_DELTA for amount of time passed
-                serverTimeDelta = DEFAULT_MSG_TIME_DELTA;
-            }
+			float serverTimeDelta;
+			if (time - lastGameTime > 0) {
+				// We have a game time change for the amount of time passed
+				serverTimeDelta = time - lastGameTime;
+			} else {
+				// The game is paused so use DEFAULT_MSG_TIME_DELTA for amount of time passed
+				serverTimeDelta = DEFAULT_MSG_TIME_DELTA;
+			}
 
-            if (msgTime - lastMsgTime > 0) {
-                serverMsgDeltas.put(msgTime, serverTimeDelta + accumulatedServerTime);
-                accumulatedServerTime = 0;
-            } else {
-                // Messages are coming in so fast that they have the same time stamp so just save
-                // the time delta to add to the next entry with a new time stamp
-                accumulatedServerTime += serverTimeDelta;
-            }
-        }
+			if (msgTime - lastMsgTime > 0) {
+				serverMsgDeltas.put(msgTime, serverTimeDelta + accumulatedServerTime);
+				accumulatedServerTime = 0;
+			} else {
+				// Messages are coming in so fast that they have the same time stamp so just save
+				// the time delta to add to the next entry with a new time stamp
+				accumulatedServerTime += serverTimeDelta;
+			}
+		}
 
-        // Remove map entries outside of time window
-        SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW);
-        while (!oldEntries.isEmpty()) {
-            serverMsgDeltas.remove(oldEntries.firstKey());
-        }
+		// Remove map entries outside of time window
+		SortedMap<Long, Float> oldEntries = serverMsgDeltas.headMap(msgTime - TIME_WINDOW);
+		while (!oldEntries.isEmpty()) {
+			serverMsgDeltas.remove(oldEntries.firstKey());
+		}
 
-        float sumDeltas = 0;
+		float sumDeltas = 0;
 
-        Float[] deltas = serverMsgDeltas.values().toArray(new Float[serverMsgDeltas.size()]);
-        for (int i = 1; i < deltas.length; i++) {
-            float delta = deltas[i];
-            if (delta > 0) {
-                sumDeltas += delta;
-            }
-        }
+		Float[] deltas = serverMsgDeltas.values().toArray(new Float[serverMsgDeltas.size()]);
+		for (int i = 1; i < deltas.length; i++) {
+			float delta = deltas[i];
+			if (delta > 0) {
+				sumDeltas += delta;
+			}
+		}
 
-        long timePassed = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
+		long timePassed = serverMsgDeltas.lastKey() - serverMsgDeltas.firstKey();
 
-        if (timePassed > 0) {
-            if (USE_NANOS) {
-                serverSpeed = sumDeltas / (timePassed / 1000000000.0f);
-            } else {
-                serverSpeed = sumDeltas / (timePassed / 1000.0f);
-            }
-        } else {
-            serverSpeed = -1;
-        }
-    }
+		if (timePassed > 0) {
+			if (USE_NANOS) {
+				serverSpeed = sumDeltas / (timePassed / 1000000000.0f);
+			} else {
+				serverSpeed = sumDeltas / (timePassed / 1000.0f);
+			}
+		} else {
+			serverSpeed = -1;
+		}
+	}
 
-    @Override
-    public void gsServerMessageReceived(GameState gs) {
-        if (USE_NANOS) {
-            msgTime = System.nanoTime();
-        } else {
-            msgTime = System.currentTimeMillis();
-        }
-        lastGameTime = gs.getTime();
-    }
+	@Override
+	public void gsServerMessageReceived(GameState gs)
+	{
+		if (USE_NANOS) {
+			msgTime = System.nanoTime();
+		} else {
+			msgTime = System.currentTimeMillis();
+		}
+		lastGameTime = gs.getTime();
+	}
 
-    @Override
-    public void gsServerMessageProcessed(GameState gs) {
-        updateServerSpeed(gs);
-    }
+	@Override
+	public void gsServerMessageProcessed(GameState gs)
+	{
+		updateServerSpeed(gs);
+	}
 
-    @Override
-    public void connectionChanged(ServerComm server) {
-        if (server.isConnected()) {
-            serverMsgDeltas.clear();
-        }
-    }
+	@Override
+	public void connectionChanged(ServerComm server)
+	{
+		if (server.isConnected()) {
+			serverMsgDeltas.clear();
+		}
+	}
 }

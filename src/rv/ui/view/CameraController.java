@@ -24,15 +24,14 @@ import javax.media.opengl.awt.GLCanvas;
 
 /**
  * Interface that allows customized control over the camera
- * 
+ *
  * @author justin
- * 
+ *
  */
-public interface CameraController
-        extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
-    void attachToCanvas(GLCanvas canvas);
+public interface CameraController extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
+	void attachToCanvas(GLCanvas canvas);
 
-    void detachFromCanvas(GLCanvas canvas);
+	void detachFromCanvas(GLCanvas canvas);
 
-    void update(double elapsedMS);
+	void update(double elapsedMS);
 }

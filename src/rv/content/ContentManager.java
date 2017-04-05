@@ -48,262 +48,283 @@ import rv.util.jogl.MaterialUtil;
 
 /**
  * Loads shaders and meshes used in scene graph.
- * 
+ *
  * @author justin
  */
-public class ContentManager implements SceneGraphListener, GameState.GameStateChangeListener {
+public class ContentManager implements SceneGraphListener, GameState.GameStateChangeListener
+{
+	public static final String CONTENT_ROOT = "resources/";
+	public static final String MODEL_ROOT = CONTENT_ROOT + "models/";
+	public static final String TEXTURE_ROOT = CONTENT_ROOT + "textures/";
+	public static final String MATERIAL_ROOT = CONTENT_ROOT + "materials/";
 
-    public static final String CONTENT_ROOT  = "resources/";
-    public static final String MODEL_ROOT    = CONTENT_ROOT + "models/";
-    public static final String TEXTURE_ROOT  = CONTENT_ROOT + "textures/";
-    public static final String MATERIAL_ROOT = CONTENT_ROOT + "materials/";
+	private class ModelLoader extends Thread
+	{
+		private final Model model;
 
-    private class ModelLoader extends Thread {
+		public ModelLoader(Model model)
+		{
+			this.model = model;
+		}
 
-        private final Model model;
+		public void run()
+		{
+			model.readMeshData(ContentManager.this);
+			synchronized (ContentManager.this)
+			{
+				modelsToInitialize.add(model);
+			}
+		}
+	}
 
-        public ModelLoader(Model model) {
-            this.model = model;
-        }
+	private final Configuration.TeamColors config;
 
-        public void run() {
-            model.readMeshData(ContentManager.this);
-            synchronized (ContentManager.this) {
-                modelsToInitialize.add(model);
-            }
-        }
-    }
+	private Mesh.RenderMode meshRenderMode = Mesh.RenderMode.IMMEDIATE;
+	private Texture2D whiteTexture;
+	public static Texture2D selectionTexture;
+	private final List<Model> modelsToInitialize = new ArrayList<>();
+	private final List<Model> models = new ArrayList<>();
+	private ObjMaterialLibrary naoMaterialLib;
 
-    private final Configuration.TeamColors config;
+	public Texture2D getSelectionTexture()
+	{
+		return selectionTexture;
+	}
 
-    private Mesh.RenderMode                meshRenderMode     = Mesh.RenderMode.IMMEDIATE;
-    private Texture2D                      whiteTexture;
-    public static Texture2D                selectionTexture;
-    private final List<Model>              modelsToInitialize = new ArrayList<>();
-    private final List<Model>              models             = new ArrayList<>();
-    private ObjMaterialLibrary             naoMaterialLib;
+	public Texture2D getWhiteTexture()
+	{
+		return whiteTexture;
+	}
 
-    public Texture2D getSelectionTexture() {
-        return selectionTexture;
-    }
+	public Mesh.RenderMode getMeshRenderMode()
+	{
+		return meshRenderMode;
+	}
 
-    public Texture2D getWhiteTexture() {
-        return whiteTexture;
-    }
+	public ObjMaterial getMaterial(String name)
+	{
+		for (ObjMaterial mat : naoMaterialLib.getMaterials())
+			if (mat.getName().equals(name))
+				return mat;
+		return null;
+	}
 
-    public Mesh.RenderMode getMeshRenderMode() {
-        return meshRenderMode;
-    }
+	/**
+	 * Retrieves model from content manager. If model is not found in set of loaded models, it is
+	 * added to a queue and loaded.
+	 */
+	public synchronized Model getModel(String name)
+	{
+		for (Model model : models) {
+			if (model.getName().equals(name)) {
+				return model;
+			}
+		}
 
-    public ObjMaterial getMaterial(String name) {
-        for (ObjMaterial mat : naoMaterialLib.getMaterials())
-            if (mat.getName().equals(name))
-                return mat;
-        return null;
-    }
+		// The requested mesh was not found, so we create a new one and start
+		// loading it in a thread.
+		Model model = new Model(name);
+		models.add(model);
+		new ModelLoader(model).start();
 
-    /**
-     * Retrieves model from content manager. If model is not found in set of loaded models, it is
-     * added to a queue and loaded.
-     */
-    public synchronized Model getModel(String name) {
-        for (Model model : models) {
-            if (model.getName().equals(name)) {
-                return model;
-            }
-        }
+		return model;
+	}
 
-        // The requested mesh was not found, so we create a new one and start
-        // loading it in a thread.
-        Model model = new Model(name);
-        models.add(model);
-        new ModelLoader(model).start();
+	public ContentManager(Configuration.TeamColors config)
+	{
+		this.config = config;
+	}
 
-        return model;
-    }
+	public synchronized void update(GL2 gl)
+	{
+		// meshes need a current OpenGL context to finish initializing, so this
+		// update pass checks all models that are waiting to initialize and then
+		// clears the list
 
-    public ContentManager(Configuration.TeamColors config) {
-        this.config = config;
-    }
+		if (modelsToInitialize.size() == 0)
+			return;
 
-    public synchronized void update(GL2 gl) {
-        // meshes need a current OpenGL context to finish initializing, so this
-        // update pass checks all models that are waiting to initialize and then
-        // clears the list
+		for (Model m : modelsToInitialize)
+			m.init(gl, meshRenderMode);
 
-        if (modelsToInitialize.size() == 0)
-            return;
+		modelsToInitialize.clear();
+	}
 
-        for (Model m : modelsToInitialize)
-            m.init(gl, meshRenderMode);
+	public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color)
+	{
+		gl.glColor3fv(color, 0);
+		ContentManager.selectionTexture.bind(gl);
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glTexCoord2f(0, 0);
+		gl.glVertex3f(p.x - r, 0, p.z - r);
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex3f(p.x - r, 0, p.z + r);
+		gl.glTexCoord2f(1, 1);
+		gl.glVertex3f(p.x + r, 0, p.z + r);
+		gl.glTexCoord2f(0, 1);
+		gl.glVertex3f(p.x + r, 0, p.z - r);
+		gl.glEnd();
+		Texture2D.unbind(gl);
+	}
 
-        modelsToInitialize.clear();
-    }
+	public boolean init(GLAutoDrawable drawable, GLInfo glInfo)
+	{
+		// use VBOs if they are supported
+		if (glInfo.extSupported("GL_ARB_vertex_buffer_object")) {
+			meshRenderMode = Mesh.RenderMode.VBO;
+		} else {
+			// display lists would be preferred, but since the Nao model is
+			// shared and the materials change it would require recompilation
+			// every render pass
+			meshRenderMode = Mesh.RenderMode.VERTEX_ARRAYS;
+		}
 
-    public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color) {
-        gl.glColor3fv(color, 0);
-        ContentManager.selectionTexture.bind(gl);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glTexCoord2f(0, 0);
-        gl.glVertex3f(p.x - r, 0, p.z - r);
-        gl.glTexCoord2f(1, 0);
-        gl.glVertex3f(p.x - r, 0, p.z + r);
-        gl.glTexCoord2f(1, 1);
-        gl.glVertex3f(p.x + r, 0, p.z + r);
-        gl.glTexCoord2f(0, 1);
-        gl.glVertex3f(p.x + r, 0, p.z - r);
-        gl.glEnd();
-        Texture2D.unbind(gl);
-    }
+		whiteTexture = loadTexture(drawable.getGL(), "white.png");
+		if (whiteTexture == null)
+			return false;
+		selectionTexture = loadTexture(drawable.getGL(), "selection.png");
+		if (selectionTexture == null)
+			return false;
 
-    public boolean init(GLAutoDrawable drawable, GLInfo glInfo) {
+		// load nao materials
+		naoMaterialLib = new ObjMaterialLibrary();
+		ClassLoader cl = getClass().getClassLoader();
+		InputStream is = cl.getResourceAsStream("resources/materials/nao.mtl");
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		try {
+			naoMaterialLib.load(br, "resources/textures/", cl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        // use VBOs if they are supported
-        if (glInfo.extSupported("GL_ARB_vertex_buffer_object")) {
-            meshRenderMode = Mesh.RenderMode.VBO;
-        } else {
-            // display lists would be preferred, but since the Nao model is
-            // shared and the materials change it would require recompilation
-            // every render pass
-            meshRenderMode = Mesh.RenderMode.VERTEX_ARRAYS;
-        }
+		for (ObjMaterial m : naoMaterialLib.getMaterials())
+			m.init(drawable.getGL().getGL2());
 
-        whiteTexture = loadTexture(drawable.getGL(), "white.png");
-        if (whiteTexture == null)
-            return false;
-        selectionTexture = loadTexture(drawable.getGL(), "selection.png");
-        if (selectionTexture == null)
-            return false;
+		return true;
+	}
 
-        // load nao materials
-        naoMaterialLib = new ObjMaterialLibrary();
-        ClassLoader cl = getClass().getClassLoader();
-        InputStream is = cl.getResourceAsStream("resources/materials/nao.mtl");
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        try {
-            naoMaterialLib.load(br, "resources/textures/", cl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	public Texture2D loadTexture(GL gl, String name)
+	{
+		BufferedImage img;
+		try {
+			img = ImageIO.read(getClass().getClassLoader().getResourceAsStream("resources/textures/" + name));
+			return Texture2D.loadTex(gl, img);
+		} catch (IOException | IllegalArgumentException e) {
+			System.err.println("Error loading texture: " + name);
+		}
+		return null;
+	}
 
-        for (ObjMaterial m : naoMaterialLib.getMaterials())
-            m.init(drawable.getGL().getGL2());
+	public Mesh loadMesh(String name)
+	{
+		// System.out.println("Loading " + name);
+		String modelPath = "resources/models/";
+		String texturePath = "resources/textures/";
+		String materialPath = "resources/materials/";
+		ObjMeshImporter importer = new ObjMeshImporter(modelPath, materialPath, texturePath);
+		ClassLoader cl = this.getClass().getClassLoader();
 
-        return true;
-    }
+		importer.setClassLoader(cl);
+		InputStream is = cl.getResourceAsStream(modelPath + name);
+		Mesh mesh = null;
+		try {
+			mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 
-    public Texture2D loadTexture(GL gl, String name) {
-        BufferedImage img;
-        try {
-            img = ImageIO.read(
-                    getClass().getClassLoader().getResourceAsStream("resources/textures/" + name));
-            return Texture2D.loadTex(gl, img);
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("Error loading texture: " + name);
-        }
-        return null;
-    }
+		// this is necessary for the shader to blend meshes that have textures
+		// for some parts and materials for others
+		for (MeshPart p : mesh.getParts()) {
+			if (p.getMaterial() instanceof ObjMaterial) {
+				ObjMaterial mat = (ObjMaterial) p.getMaterial();
+				if (mat.getTexture() == null)
+					mat.setTexture(whiteTexture, false);
+			}
+		}
 
-    public Mesh loadMesh(String name) {
-        // System.out.println("Loading " + name);
-        String modelPath = "resources/models/";
-        String texturePath = "resources/textures/";
-        String materialPath = "resources/materials/";
-        ObjMeshImporter importer = new ObjMeshImporter(modelPath, materialPath, texturePath);
-        ClassLoader cl = this.getClass().getClassLoader();
+		return mesh;
+	}
 
-        importer.setClassLoader(cl);
-        InputStream is = cl.getResourceAsStream(modelPath + name);
-        Mesh mesh = null;
-        try {
-            mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+	public void dispose(GL gl)
+	{
+		if (whiteTexture != null)
+			whiteTexture.dispose(gl);
+		if (selectionTexture != null)
+			selectionTexture.dispose(gl);
+		for (Model model : models)
+			model.dispose(gl);
+	}
 
-        // this is necessary for the shader to blend meshes that have textures
-        // for some parts and materials for others
-        for (MeshPart p : mesh.getParts()) {
-            if (p.getMaterial() instanceof ObjMaterial) {
-                ObjMaterial mat = (ObjMaterial) p.getMaterial();
-                if (mat.getTexture() == null)
-                    mat.setTexture(whiteTexture, false);
-            }
-        }
+	public ShaderProgram loadShader(GL2 gl, String name)
+	{
+		String v = "shaders/" + name + ".vs";
+		String f = "shaders/" + name + ".fs";
+		ClassLoader cl = this.getClass().getClassLoader();
+		return ShaderProgram.create(gl, v, f, cl);
+	}
 
-        return mesh;
-    }
+	@Override
+	public void newSceneGraph(SceneGraph sg)
+	{
+		checkForMeshes(sg.getRoot());
+	}
 
-    public void dispose(GL gl) {
-        if (whiteTexture != null)
-            whiteTexture.dispose(gl);
-        if (selectionTexture != null)
-            selectionTexture.dispose(gl);
-        for (Model model : models)
-            model.dispose(gl);
-    }
+	private void checkForMeshes(Node node)
+	{
+		if (node instanceof StaticMeshNode) {
+			StaticMeshNode meshNode = (StaticMeshNode) node;
+			getModel(meshNode.getName());
+		}
 
-    public ShaderProgram loadShader(GL2 gl, String name) {
-        String v = "shaders/" + name + ".vs";
-        String f = "shaders/" + name + ".fs";
-        ClassLoader cl = this.getClass().getClassLoader();
-        return ShaderProgram.create(gl, v, f, cl);
-    }
+		if (node.getChildren() != null) {
+			for (int i = 0; i < node.getChildren().size(); i++)
+				checkForMeshes(node.getChildren().get(i));
+		}
+	}
 
-    @Override
-    public void newSceneGraph(SceneGraph sg) {
-        checkForMeshes(sg.getRoot());
-    }
+	@Override
+	public void updatedSceneGraph(SceneGraph sg)
+	{
+	}
 
-    private void checkForMeshes(Node node) {
-        if (node instanceof StaticMeshNode) {
-            StaticMeshNode meshNode = (StaticMeshNode) node;
-            getModel(meshNode.getName());
-        }
+	private String teamNameLeft;
+	private String teamNameRight;
 
-        if (node.getChildren() != null) {
-            for (int i = 0; i < node.getChildren().size(); i++)
-                checkForMeshes(node.getChildren().get(i));
-        }
-    }
+	@Override
+	public void gsPlayStateChanged(GameState gs)
+	{
+		// if team name changed, update the materials
+		String teamNameLeft = gs.getTeamLeft();
+		if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
+			updateTeamColor(teamNameLeft, "matLeft", config.defaultLeftColor);
+			this.teamNameLeft = teamNameLeft;
+		}
+		String teamNameRight = gs.getTeamRight();
+		if (!Objects.equals(teamNameRight, this.teamNameRight)) {
+			updateTeamColor(teamNameRight, "matRight", config.defaultRightColor);
+			this.teamNameRight = teamNameRight;
+		}
+	}
 
-    @Override
-    public void updatedSceneGraph(SceneGraph sg) {
-    }
+	private void updateTeamColor(String teamName, String materialName, Color defaultColor)
+	{
+		ObjMaterial mat = getMaterial(materialName);
+		Color color = config.colorByTeamName.get(teamName);
+		if (color == null) {
+			color = defaultColor;
+		}
+		MaterialUtil.setColor(mat, color);
+	}
 
-    private String teamNameLeft;
-    private String teamNameRight;
+	@Override
+	public void gsMeasuresAndRulesChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-        // if team name changed, update the materials
-        String teamNameLeft = gs.getTeamLeft();
-        if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
-            updateTeamColor(teamNameLeft, "matLeft", config.defaultLeftColor);
-            this.teamNameLeft = teamNameLeft;
-        }
-        String teamNameRight = gs.getTeamRight();
-        if (!Objects.equals(teamNameRight, this.teamNameRight)) {
-            updateTeamColor(teamNameRight, "matRight", config.defaultRightColor);
-            this.teamNameRight = teamNameRight;
-        }
-    }
-
-    private void updateTeamColor(String teamName, String materialName, Color defaultColor) {
-        ObjMaterial mat = getMaterial(materialName);
-        Color color = config.colorByTeamName.get(teamName);
-        if (color == null) {
-            color = defaultColor;
-        }
-        MaterialUtil.setColor(mat, color);
-    }
-
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
-    }
+	@Override
+	public void gsTimeChanged(GameState gs)
+	{
+	}
 }

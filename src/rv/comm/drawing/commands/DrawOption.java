@@ -23,32 +23,35 @@ import rv.comm.drawing.Drawings;
 
 /**
  * Various formatting options for drawing
- * 
+ *
  * @author Justin Stoecker
  */
-public class DrawOption extends Command {
-    public static final int SWAP_BUFFERS = 0;
+public class DrawOption extends Command
+{
+	public static final int SWAP_BUFFERS = 0;
 
-    private final String    setName;
-    private final Drawings  drawings;
+	private final String setName;
+	private final Drawings drawings;
 
-    public DrawOption(ByteBuffer buf, Viewer viewer) {
-        this.drawings = viewer.getDrawings();
+	public DrawOption(ByteBuffer buf, Viewer viewer)
+	{
+		this.drawings = viewer.getDrawings();
 
-        int type = ByteUtil.uValue(buf.get());
+		int type = ByteUtil.uValue(buf.get());
 
-        switch (type) {
-        case SWAP_BUFFERS:
-            setName = getString(buf);
-            break;
-        default:
-            System.err.println("Unknown draw option : " + type);
-            setName = null;
-        }
-    }
+		switch (type) {
+		case SWAP_BUFFERS:
+			setName = getString(buf);
+			break;
+		default:
+			System.err.println("Unknown draw option : " + type);
+			setName = null;
+		}
+	}
 
-    @Override
-    public void execute() {
-        drawings.swapBuffers(setName);
-    }
+	@Override
+	public void execute()
+	{
+		drawings.swapBuffers(setName);
+	}
 }

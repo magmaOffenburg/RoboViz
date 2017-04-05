@@ -23,86 +23,95 @@ import rv.world.WorldModel;
 
 /**
  * A 2D overlay that displays text on the screen
- * 
+ *
  * @author justin
  */
-public class TextOverlay implements GameState.GameStateChangeListener {
+public class TextOverlay implements GameState.GameStateChangeListener
+{
+	private static final int FADE_DURATION = 750;
 
-    private static final int FADE_DURATION   = 750;
+	private final String text;
+	private final WorldModel world;
+	private int duration;
+	private int x, y;
+	private float alpha = 1;
+	private int elapsedReal = 0;
+	private long lastTimeReal = 0;
+	private float startTimeServer = 0;
+	private float curTimeServer = 0;
+	private boolean expired = false;
+	private final float[] color;
 
-    private final String     text;
-    private final WorldModel world;
-    private int              duration;
-    private int              x, y;
-    private float            alpha           = 1;
-    private int              elapsedReal     = 0;
-    private long             lastTimeReal    = 0;
-    private float            startTimeServer = 0;
-    private float            curTimeServer   = 0;
-    private boolean          expired         = false;
-    private final float[]    color;
+	public void setDuration(int duration)
+	{
+		this.duration = duration;
+	}
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+	public boolean isExpired()
+	{
+		return expired;
+	}
 
-    public boolean isExpired() {
-        return expired;
-    }
+	public TextOverlay(String text, WorldModel world, int duration, float[] color)
+	{
+		this.world = world;
+		this.duration = duration;
+		this.startTimeServer = world.getGameState().getTime();
+		curTimeServer = startTimeServer;
+		this.text = text;
+		this.color = color;
+		world.getGameState().addListener(this);
+	}
 
-    public TextOverlay(String text, WorldModel world, int duration, float[] color) {
-        this.world = world;
-        this.duration = duration;
-        this.startTimeServer = world.getGameState().getTime();
-        curTimeServer = startTimeServer;
-        this.text = text;
-        this.color = color;
-        world.getGameState().addListener(this);
-    }
+	private void update()
+	{
+		long curTimeReal = System.currentTimeMillis();
+		if (lastTimeReal != 0)
+			elapsedReal += (curTimeReal - lastTimeReal);
+		lastTimeReal = curTimeReal;
 
-    private void update() {
-        long curTimeReal = System.currentTimeMillis();
-        if (lastTimeReal != 0)
-            elapsedReal += (curTimeReal - lastTimeReal);
-        lastTimeReal = curTimeReal;
+		int elapsedServer = Math.abs((int) ((curTimeServer - startTimeServer) * 1000));
 
-        int elapsedServer = Math.abs((int) ((curTimeServer - startTimeServer) * 1000));
+		int elapsed = Math.max(elapsedServer, elapsedReal);
+		if (elapsed > duration)
+			alpha = color[3] * Math.max(1 - (float) (elapsed - duration) / FADE_DURATION, 0);
 
-        int elapsed = Math.max(elapsedServer, elapsedReal);
-        if (elapsed > duration)
-            alpha = color[3] * Math.max(1 - (float) (elapsed - duration) / FADE_DURATION, 0);
+		if (alpha == 0) {
+			expired = true;
+			world.getGameState().removeListener(this);
+		}
+	}
 
-        if (alpha == 0) {
-            expired = true;
-            world.getGameState().removeListener(this);
-        }
-    }
+	private void calcXY(BorderTextRenderer tr, int w, int h)
+	{
+		Rectangle2D bounds = tr.getBounds(text);
+		x = (int) (w - bounds.getWidth()) / 2;
+		y = (int) (h - bounds.getHeight()) / 2;
+	}
 
-    private void calcXY(BorderTextRenderer tr, int w, int h) {
-        Rectangle2D bounds = tr.getBounds(text);
-        x = (int) (w - bounds.getWidth()) / 2;
-        y = (int) (h - bounds.getHeight()) / 2;
-    }
+	public void render(BorderTextRenderer tr, int w, int h)
+	{
+		if (duration > 0)
+			update();
+		calcXY(tr, w, h);
+		Color textColor = new Color(color[0], color[1], color[2], alpha);
+		Color shadowColor = new Color(0, 0, 0, alpha);
+		tr.drawWithShadow(text, x, y, textColor, shadowColor);
+	}
 
-    public void render(BorderTextRenderer tr, int w, int h) {
-        if (duration > 0)
-            update();
-        calcXY(tr, w, h);
-        Color textColor = new Color(color[0], color[1], color[2], alpha);
-        Color shadowColor = new Color(0, 0, 0, alpha);
-        tr.drawWithShadow(text, x, y, textColor, shadowColor);
-    }
+	@Override
+	public void gsMeasuresAndRulesChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-    }
+	@Override
+	public void gsPlayStateChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
-        curTimeServer = gs.getTime();
-    }
+	@Override
+	public void gsTimeChanged(GameState gs)
+	{
+		curTimeServer = gs.getTime();
+	}
 }

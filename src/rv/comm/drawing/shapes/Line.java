@@ -24,37 +24,40 @@ import rv.comm.drawing.commands.Command;
 /**
  * @author Justin Stoecker
  */
-public class Line extends Shape {
-    private final float[] start;
-    private final float[] end;
-    private final float   thickness;
+public class Line extends Shape
+{
+	private final float[] start;
+	private final float[] end;
+	private final float thickness;
 
-    public Line(String set, float[] start, float[] end, float[] color, float thickness) {
-        super(set, color);
-        this.start = start;
-        this.end = end;
-        this.color = color;
-        this.thickness = thickness;
-    }
+	public Line(String set, float[] start, float[] end, float[] color, float thickness)
+	{
+		super(set, color);
+		this.start = start;
+		this.end = end;
+		this.color = color;
+		this.thickness = thickness;
+	}
 
-    @Override
-    public void draw(GL2 gl) {
-        gl.glColor3fv(color, 0);
-        gl.glLineWidth(thickness);
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex3fv(start, 0);
-        gl.glVertex3fv(end, 0);
-        gl.glEnd();
-    }
+	@Override
+	public void draw(GL2 gl)
+	{
+		gl.glColor3fv(color, 0);
+		gl.glLineWidth(thickness);
+		gl.glBegin(GL.GL_LINES);
+		gl.glVertex3fv(start, 0);
+		gl.glVertex3fv(end, 0);
+		gl.glEnd();
+	}
 
-    public static Line parse(ByteBuffer buf) {
+	public static Line parse(ByteBuffer buf)
+	{
+		float[] start = Command.readCoords(buf, 3);
+		float[] end = Command.readCoords(buf, 3);
+		float thickness = Command.readFloat(buf);
+		float[] color = Command.readRGB(buf);
+		String set = Command.getString(buf);
 
-        float[] start = Command.readCoords(buf, 3);
-        float[] end = Command.readCoords(buf, 3);
-        float thickness = Command.readFloat(buf);
-        float[] color = Command.readRGB(buf);
-        String set = Command.getString(buf);
-
-        return new Line(set, start, end, color, thickness);
-    }
+		return new Line(set, start, end, color, thickness);
+	}
 }

@@ -23,51 +23,58 @@ import rv.comm.rcssserver.SExp;
  * contains full descriptions for every node and may have a different structure than a previous
  * scene graph. A "diff" scene graph has the same structure as the currently stored scene graph, but
  * only nodes that have changed will have non-empty descriptions.
- * 
+ *
  * @author Justin Stoecker
  */
-public class SceneGraphHeader {
-    public static final String FULL = "RSG";
-    public static final String DIFF = "RDS";
+public class SceneGraphHeader
+{
+	public static final String FULL = "RSG";
+	public static final String DIFF = "RDS";
 
-    private final String       type;
-    private final int          majorVersion;
-    private final int          minorVersion;
+	private final String type;
+	private final int majorVersion;
+	private final int minorVersion;
 
-    public String getType() {
-        return type;
-    }
+	public String getType()
+	{
+		return type;
+	}
 
-    public int getMajorVersion() {
-        return majorVersion;
-    }
+	public int getMajorVersion()
+	{
+		return majorVersion;
+	}
 
-    public int getMinorVersion() {
-        return minorVersion;
-    }
+	public int getMinorVersion()
+	{
+		return minorVersion;
+	}
 
-    private SceneGraphHeader(String type, int major, int minor) {
-        this.type = type;
-        this.majorVersion = major;
-        this.minorVersion = minor;
-    }
+	private SceneGraphHeader(String type, int major, int minor)
+	{
+		this.type = type;
+		this.majorVersion = major;
+		this.minorVersion = minor;
+	}
 
-    @Override
-    public String toString() {
-        return String.format("%s v%d.%d", type, majorVersion, minorVersion);
-    }
+	@Override
+	public String toString()
+	{
+		return String.format("%s v%d.%d", type, majorVersion, minorVersion);
+	}
 
-    /**
-     * Parses a scene graph header from an s-expression
-     */
-    public static SceneGraphHeader parse(SExp sexp) {
-        // s-expression: (<type> <major> <minor>)
-        // ex. (RDS 0 1)
-        String[] atoms = sexp.getAtoms();
-        String type = atoms[0];
-        int majorVersion = Integer.parseInt(atoms[1]);
-        int minorVersion = Integer.parseInt(atoms[2]);
+	/**
+	 * Parses a scene graph header from an s-expression
+	 */
+	public static SceneGraphHeader parse(SExp sexp)
+	{
+		// s-expression: (<type> <major> <minor>)
+		// ex. (RDS 0 1)
+		String[] atoms = sexp.getAtoms();
+		String type = atoms[0];
+		int majorVersion = Integer.parseInt(atoms[1]);
+		int minorVersion = Integer.parseInt(atoms[2]);
 
-        return new SceneGraphHeader(type, majorVersion, minorVersion);
-    }
+		return new SceneGraphHeader(type, majorVersion, minorVersion);
+	}
 }

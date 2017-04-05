@@ -31,90 +31,92 @@ import rv.world.rendering.ShadowMapRenderer.LightShadowVolume;
 
 /**
  * Applies post-processing effects to an input texture; merge this with RENDERER?
- * 
+ *
  * @author Justin Stoecker
  */
-public class EffectManager implements GLDisposable {
+public class EffectManager implements GLDisposable
+{
+	private boolean disposed = false;
+	private Bloom bloom;
+	private ShadowMapRenderer shadowRenderer;
 
-    private boolean           disposed = false;
-    private Bloom             bloom;
-    private ShadowMapRenderer shadowRenderer;
+	public Bloom getBloom()
+	{
+		return bloom;
+	}
 
-    public Bloom getBloom() {
-        return bloom;
-    }
+	public ShadowMapRenderer getShadowRenderer()
+	{
+		return shadowRenderer;
+	}
 
-    public ShadowMapRenderer getShadowRenderer() {
-        return shadowRenderer;
-    }
+	public void init(GL2 gl, Viewer viewer, Viewport screen, Configuration.Graphics config, ContentManager cm)
+	{
+		// configure sun
+		Vec3f lightPos = new Vec3f(-11, 10, 9);
+		Vec3f lightDir = lightPos.times(-1).normalize();
+		DirLight light = new DirLight(lightDir);
+		LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0), Vec3f.unitY(), 40, 40, 40);
 
-    public void init(GL2 gl, Viewer viewer, Viewport screen, Configuration.Graphics config,
-            ContentManager cm) {
+		if (config.useBloom) {
+			bloom = new Bloom();
+			boolean success = bloom.init(gl, screen, cm, config);
+			if (!success)
+				bloom = null;
+			else
+				viewer.addWindowResizeListener(bloom);
+		}
 
-        // configure sun
-        Vec3f lightPos = new Vec3f(-11, 10, 9);
-        Vec3f lightDir = lightPos.times(-1).normalize();
-        DirLight light = new DirLight(lightDir);
-        LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0),
-                Vec3f.unitY(), 40, 40, 40);
+		if (config.useShadows) {
+			shadowRenderer = new ShadowMapRenderer(sun);
+			if (!shadowRenderer.init(gl, config, cm))
+				shadowRenderer = null;
+		}
+	}
 
-        if (config.useBloom) {
-            bloom = new Bloom();
-            boolean success = bloom.init(gl, screen, cm, config);
-            if (!success)
-                bloom = null;
-            else
-                viewer.addWindowResizeListener(bloom);
-        }
+	/**
+	 * Renders a screen-aligned quad with identity viewing / projection matrices
+	 */
+	public static void renderScreenQuad(GL2 gl)
+	{
+		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
 
-        if (config.useShadows) {
-            shadowRenderer = new ShadowMapRenderer(sun);
-            if (!shadowRenderer.init(gl, config, cm))
-                shadowRenderer = null;
-        }
-    }
+		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
 
-    /**
-     * Renders a screen-aligned quad with identity viewing / projection matrices
-     */
-    public static void renderScreenQuad(GL2 gl) {
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glTexCoord2f(0, 0);
+		gl.glVertex2f(-1, -1);
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex2f(1, -1);
+		gl.glTexCoord2f(1, 1);
+		gl.glVertex2f(1, 1);
+		gl.glTexCoord2f(0, 1);
+		gl.glVertex2f(-1, 1);
+		gl.glEnd();
 
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glPushMatrix();
-        gl.glLoadIdentity();
+		gl.glPopMatrix();
+		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+		gl.glPopMatrix();
+	}
 
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        gl.glPushMatrix();
-        gl.glLoadIdentity();
+	@Override
+	public void dispose(GL gl)
+	{
+		if (bloom != null)
+			bloom.dispose(gl);
+		if (shadowRenderer != null)
+			shadowRenderer.dispose(gl);
 
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glTexCoord2f(0, 0);
-        gl.glVertex2f(-1, -1);
-        gl.glTexCoord2f(1, 0);
-        gl.glVertex2f(1, -1);
-        gl.glTexCoord2f(1, 1);
-        gl.glVertex2f(1, 1);
-        gl.glTexCoord2f(0, 1);
-        gl.glVertex2f(-1, 1);
-        gl.glEnd();
+		disposed = true;
+	}
 
-        gl.glPopMatrix();
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glPopMatrix();
-    }
-
-    @Override
-    public void dispose(GL gl) {
-        if (bloom != null)
-            bloom.dispose(gl);
-        if (shadowRenderer != null)
-            shadowRenderer.dispose(gl);
-
-        disposed = true;
-    }
-
-    @Override
-    public boolean isDisposed() {
-        return disposed;
-    }
+	@Override
+	public boolean isDisposed()
+	{
+		return disposed;
+	}
 }

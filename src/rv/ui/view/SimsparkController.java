@@ -32,294 +32,310 @@ import rv.ui.UserInterface;
 
 /**
  * SimSpark style camera controller
- * 
+ *
  * @author justin
  */
-public class SimsparkController
-        implements CameraController, GameStateChangeListener, FocusListener {
+public class SimsparkController implements CameraController, GameStateChangeListener, FocusListener
+{
+	private final UserInterface ui;
 
-    private final UserInterface ui;
+	protected boolean rotate;
+	protected boolean moveF; // camera is moving
+	protected boolean moveB; // camera is moving back
+	protected boolean moveL; // camera is moving left
+	protected boolean moveR; // camera is moving right
+	protected boolean moveU;
+	protected boolean moveD;
+	protected Vec2f lastMouse = new Vec2f(0);
 
-    protected boolean           rotate;
-    protected boolean           moveF;                     // camera is moving
-    protected boolean           moveB;                     // camera is moving back
-    protected boolean           moveL;                     // camera is moving left
-    protected boolean           moveR;                     // camera is moving right
-    protected boolean           moveU;
-    protected boolean           moveD;
-    protected Vec2f             lastMouse = new Vec2f(0);
+	float dL, dR, dF, dB, dU, dD = 0;
+	float dMax = 1;
+	float dChange = 0.08f;
 
-    float                       dL, dR, dF, dB, dU, dD = 0;
-    float                       dMax      = 1;
-    float                       dChange   = 0.08f;
+	private CameraSetting[] cameras;
 
-    private CameraSetting[]     cameras;
+	public SimsparkController(UserInterface ui)
+	{
+		this.ui = ui;
+		ui.getCamera().setTranslateSpeed(4);
+	}
 
-    public SimsparkController(UserInterface ui) {
-        this.ui = ui;
-        ui.getCamera().setTranslateSpeed(4);
-    }
+	public void update(double elapsedMS)
+	{
+		// local move is vector in camera's local coordinate system
+		Vec3f tLocal = new Vec3f(0);
 
-    public void update(double elapsedMS) {
+		// world move is vector in world space
+		Vec3f tWorld = new Vec3f(0);
 
-        // local move is vector in camera's local coordinate system
-        Vec3f tLocal = new Vec3f(0);
+		FPCamera cam = ui.getCamera();
 
-        // world move is vector in world space
-        Vec3f tWorld = new Vec3f(0);
+		dR = moveR ? dMax : Math.max(dR - dChange, 0);
+		dL = moveL ? dMax : Math.max(dL - dChange, 0);
+		dF = moveF ? dMax : Math.max(dF - dChange, 0);
+		dB = moveB ? dMax : Math.max(dB - dChange, 0);
+		dU = moveU ? dMax / 2 : Math.max(dU - dChange, 0);
+		dD = moveD ? dMax / 2 : Math.max(dD - dChange, 0);
 
-        FPCamera cam = ui.getCamera();
+		if (dR > 0)
+			tLocal.add(Vec3f.unitX().times(dR));
+		if (dL > 0)
+			tLocal.add(Vec3f.unitX().times(-dL));
+		if (dF > 0) {
+			Vec3f v = cam.getRotation().transform(Vec3f.unitZ().times(-1));
+			v.y = 0;
+			tWorld.add(v.normalize().times(dF));
+		}
+		if (dB > 0) {
+			Vec3f v = cam.getRotation().transform(Vec3f.unitZ());
+			v.y = 0;
+			tWorld.add(v.normalize().times(dB));
+		}
+		if (dU > 0)
+			tWorld.add(Vec3f.unitY().times(dU));
+		if (dD > 0)
+			tWorld.add(Vec3f.unitY().times(-dD));
 
-        dR = moveR ? dMax : Math.max(dR - dChange, 0);
-        dL = moveL ? dMax : Math.max(dL - dChange, 0);
-        dF = moveF ? dMax : Math.max(dF - dChange, 0);
-        dB = moveB ? dMax : Math.max(dB - dChange, 0);
-        dU = moveU ? dMax / 2 : Math.max(dU - dChange, 0);
-        dD = moveD ? dMax / 2 : Math.max(dD - dChange, 0);
+		float scale = (float) (elapsedMS / 1000.0f * ui.getCamera().getTranslatedSpeed());
 
-        if (dR > 0)
-            tLocal.add(Vec3f.unitX().times(dR));
-        if (dL > 0)
-            tLocal.add(Vec3f.unitX().times(-dL));
-        if (dF > 0) {
-            Vec3f v = cam.getRotation().transform(Vec3f.unitZ().times(-1));
-            v.y = 0;
-            tWorld.add(v.normalize().times(dF));
-        }
-        if (dB > 0) {
-            Vec3f v = cam.getRotation().transform(Vec3f.unitZ());
-            v.y = 0;
-            tWorld.add(v.normalize().times(dB));
-        }
-        if (dU > 0)
-            tWorld.add(Vec3f.unitY().times(dU));
-        if (dD > 0)
-            tWorld.add(Vec3f.unitY().times(-dD));
+		tLocal.mul(scale);
+		tWorld.mul(scale);
 
-        float scale = (float) (elapsedMS / 1000.0f * ui.getCamera().getTranslatedSpeed());
+		if (tLocal.lengthSquared() > 0)
+			cam.moveLocal(tLocal);
+		if (tWorld.lengthSquared() > 0)
+			cam.moveWorld(tWorld);
+	}
 
-        tLocal.mul(scale);
-        tWorld.mul(scale);
+	private void setCamera(int i)
+	{
+		if (i >= cameras.length || i < 0)
+			return;
 
-        if (tLocal.lengthSquared() > 0)
-            cam.moveLocal(tLocal);
-        if (tWorld.lengthSquared() > 0)
-            cam.moveWorld(tWorld);
-    }
+		FPCamera camera = ui.getCamera();
+		camera.setPosition(cameras[i].getPosition().clone());
+		camera.setRotation(cameras[i].getRotation().clone());
+	}
 
-    private void setCamera(int i) {
-        if (i >= cameras.length || i < 0)
-            return;
+	/** Initialize saved camera positions */
+	private void initCameras(GameState gs)
+	{
+		float fl = gs.getFieldLength();
+		float fw = gs.getFieldWidth();
 
-        FPCamera camera = ui.getCamera();
-        camera.setPosition(cameras[i].getPosition().clone());
-        camera.setRotation(cameras[i].getRotation().clone());
-    }
+		double fov = Math.toRadians(ui.getCamera().getFOVY());
+		float aerialHeight = (float) (0.5 * fw / Math.tan(fov * 0.5) * 1.1);
 
-    /** Initialize saved camera positions */
-    private void initCameras(GameState gs) {
-        float fl = gs.getFieldLength();
-        float fw = gs.getFieldWidth();
+		cameras = new CameraSetting[] {new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 90)),
+				new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 - 50)),
+				new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 + 35.8f)),
+				new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f), new Vec2f(-45, 180)),
+				new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 - 35.8f)),
+				new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 + 50)),
+				new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 180 + 90)),
+				new CameraSetting(new Vec3f(0, aerialHeight, 0), new Vec2f(-90, 180))};
+	}
 
-        double fov = Math.toRadians(ui.getCamera().getFOVY());
-        float aerialHeight = (float) (0.5 * fw / Math.tan(fov * 0.5) * 1.1);
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+	}
 
-        cameras = new CameraSetting[] {
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 90)),
-                new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 - 50)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 + 35.8f)),
-                new CameraSetting(new Vec3f(0, fl * 0.6f, -fw * 1.1f), new Vec2f(-45, 180)),
-                new CameraSetting(new Vec3f(0, fl * 0.4f, -fw), new Vec2f(-40, 180 - 35.8f)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, -fw), new Vec2f(-30, 180 + 50)),
-                new CameraSetting(new Vec3f(-fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 180 + 90)),
-                new CameraSetting(new Vec3f(0, aerialHeight, 0), new Vec2f(-90, 180)) };
-    }
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1:
+			rotate = true;
+			break;
+		case MouseEvent.BUTTON3:
+			if (e.isShiftDown())
+				moveD = true;
+			else
+				moveU = true;
+			break;
+		}
+	}
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1:
+			rotate = false;
+			break;
+		case MouseEvent.BUTTON3:
+			moveD = false;
+			moveU = false;
+			break;
+		}
+	}
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        switch (e.getButton()) {
-        case MouseEvent.BUTTON1:
-            rotate = true;
-            break;
-        case MouseEvent.BUTTON3:
-            if (e.isShiftDown())
-                moveD = true;
-            else
-                moveU = true;
-            break;
-        }
-    }
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        switch (e.getButton()) {
-        case MouseEvent.BUTTON1:
-            rotate = false;
-            break;
-        case MouseEvent.BUTTON3:
-            moveD = false;
-            moveU = false;
-            break;
-        }
-    }
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+	}
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
+	@Override
+	public void mouseDragged(MouseEvent e)
+	{
+		if (rotate) {
+			Vec2f mouseMove = new Vec2f(e.getX(), e.getY()).minus(lastMouse);
+			ui.getCamera().rotate(mouseMove.times(ui.getCamera().getRotateSpeed()));
+		}
+		lastMouse = new Vec2f(e.getX(), e.getY());
+	}
 
-    }
+	@Override
+	public void mouseMoved(MouseEvent e)
+	{
+		lastMouse = new Vec2f(e.getX(), e.getY());
+	}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+	}
 
-    }
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		int key = e.getKeyCode();
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        if (rotate) {
-            Vec2f mouseMove = new Vec2f(e.getX(), e.getY()).minus(lastMouse);
-            ui.getCamera().rotate(mouseMove.times(ui.getCamera().getRotateSpeed()));
-        }
-        lastMouse = new Vec2f(e.getX(), e.getY());
-    }
+		// key is a number 1 through 9
+		int keyChar = e.getKeyChar();
+		if (keyChar > 48 && keyChar < 58 && cameras != null)
+			setCamera(keyChar - 49);
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        lastMouse = new Vec2f(e.getX(), e.getY());
-    }
+		switch (key) {
+		case KeyEvent.VK_W:
+		case KeyEvent.VK_UP:
+			moveF = true;
+			break;
+		case KeyEvent.VK_A:
+		case KeyEvent.VK_LEFT:
+			moveL = true;
+			break;
+		case KeyEvent.VK_S:
+		case KeyEvent.VK_DOWN:
+			moveB = true;
+			break;
+		case KeyEvent.VK_D:
+		case KeyEvent.VK_RIGHT:
+			moveR = true;
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			moveD = true;
+			break;
+		case KeyEvent.VK_PAGE_UP:
+			moveU = true;
+			break;
+		case KeyEvent.VK_SHIFT:
+			dChange = 1;
+			dMax = 0.5f;
+			break;
+		}
+	}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		int key = e.getKeyCode();
 
-    }
+		switch (key) {
+		case KeyEvent.VK_W:
+		case KeyEvent.VK_UP:
+			moveF = false;
+			break;
+		case KeyEvent.VK_A:
+		case KeyEvent.VK_LEFT:
+			moveL = false;
+			break;
+		case KeyEvent.VK_S:
+		case KeyEvent.VK_DOWN:
+			moveB = false;
+			break;
+		case KeyEvent.VK_D:
+		case KeyEvent.VK_RIGHT:
+			moveR = false;
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			moveD = false;
+			break;
+		case KeyEvent.VK_PAGE_UP:
+			moveU = false;
+			break;
+		case KeyEvent.VK_SHIFT:
+			dChange = 0.08f;
+			dMax = 1;
+			break;
+		}
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
+	@Override
+	public void attachToCanvas(GLCanvas canvas)
+	{
+		canvas.addKeyListener(this);
+		canvas.addMouseMotionListener(this);
+		canvas.addMouseListener(this);
+		canvas.addMouseWheelListener(this);
+		canvas.addFocusListener(this);
+	}
 
-        // key is a number 1 through 9
-        int keyChar = e.getKeyChar();
-        if (keyChar > 48 && keyChar < 58 && cameras != null)
-            setCamera(keyChar - 49);
+	@Override
+	public void detachFromCanvas(GLCanvas canvas)
+	{
+		canvas.removeKeyListener(this);
+		canvas.removeMouseMotionListener(this);
+		canvas.removeMouseListener(this);
+		canvas.removeMouseWheelListener(this);
+		canvas.removeFocusListener(this);
+	}
 
-        switch (key) {
-        case KeyEvent.VK_W:
-        case KeyEvent.VK_UP:
-            moveF = true;
-            break;
-        case KeyEvent.VK_A:
-        case KeyEvent.VK_LEFT:
-            moveL = true;
-            break;
-        case KeyEvent.VK_S:
-        case KeyEvent.VK_DOWN:
-            moveB = true;
-            break;
-        case KeyEvent.VK_D:
-        case KeyEvent.VK_RIGHT:
-            moveR = true;
-            break;
-        case KeyEvent.VK_PAGE_DOWN:
-            moveD = true;
-            break;
-        case KeyEvent.VK_PAGE_UP:
-            moveU = true;
-            break;
-        case KeyEvent.VK_SHIFT:
-            dChange = 1;
-            dMax = 0.5f;
-            break;
-        }
-    }
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+		if (e.getWheelRotation() < 0) {
+			ui.getCamera().moveLocal(Vec3f.unitZ().times(-1));
+		} else {
+			ui.getCamera().moveLocal(Vec3f.unitZ());
+		}
+	}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
+	public void gsMeasuresAndRulesChanged(GameState gs)
+	{
+		initCameras(gs);
+	}
 
-        switch (key) {
-        case KeyEvent.VK_W:
-        case KeyEvent.VK_UP:
-            moveF = false;
-            break;
-        case KeyEvent.VK_A:
-        case KeyEvent.VK_LEFT:
-            moveL = false;
-            break;
-        case KeyEvent.VK_S:
-        case KeyEvent.VK_DOWN:
-            moveB = false;
-            break;
-        case KeyEvent.VK_D:
-        case KeyEvent.VK_RIGHT:
-            moveR = false;
-            break;
-        case KeyEvent.VK_PAGE_DOWN:
-            moveD = false;
-            break;
-        case KeyEvent.VK_PAGE_UP:
-            moveU = false;
-            break;
-        case KeyEvent.VK_SHIFT:
-            dChange = 0.08f;
-            dMax = 1;
-            break;
-        }
-    }
+	public void gsPlayStateChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void attachToCanvas(GLCanvas canvas) {
-        canvas.addKeyListener(this);
-        canvas.addMouseMotionListener(this);
-        canvas.addMouseListener(this);
-        canvas.addMouseWheelListener(this);
-        canvas.addFocusListener(this);
-    }
+	public void gsTimeChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void detachFromCanvas(GLCanvas canvas) {
-        canvas.removeKeyListener(this);
-        canvas.removeMouseMotionListener(this);
-        canvas.removeMouseListener(this);
-        canvas.removeMouseWheelListener(this);
-        canvas.removeFocusListener(this);
-    }
+	@Override
+	public void focusGained(FocusEvent e)
+	{
+	}
 
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        if (e.getWheelRotation() < 0) {
-            ui.getCamera().moveLocal(Vec3f.unitZ().times(-1));
-        } else {
-            ui.getCamera().moveLocal(Vec3f.unitZ());
-        }
-    }
-
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-        initCameras(gs);
-    }
-
-    public void gsPlayStateChanged(GameState gs) {
-    }
-
-    public void gsTimeChanged(GameState gs) {
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        rotate = false;
-        moveF = false;
-        moveB = false;
-        moveL = false;
-        moveR = false;
-        moveU = false;
-        moveD = false;
-        dChange = 0.08f;
-        dMax = 1;
-    }
+	@Override
+	public void focusLost(FocusEvent e)
+	{
+		rotate = false;
+		moveF = false;
+		moveB = false;
+		moveL = false;
+		moveR = false;
+		moveU = false;
+		moveD = false;
+		dChange = 0.08f;
+		dMax = 1;
+	}
 }

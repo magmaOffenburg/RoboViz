@@ -33,121 +33,126 @@ import rv.world.WorldModel;
 
 /**
  * Renders world model scene using variance shadow mapping with Phong shading
- * 
+ *
  * @author justin
  */
-public class VSMPhongWorldRenderer implements SceneRenderer {
+public class VSMPhongWorldRenderer implements SceneRenderer
+{
+	private ContentManager content;
+	private final EffectManager effects;
+	private VSMPhongShader shader;
+	private final List<String> suppressedMeshes = new ArrayList<>();
 
-    private ContentManager      content;
-    private final EffectManager effects;
-    private VSMPhongShader      shader;
-    private final List<String>  suppressedMeshes = new ArrayList<>();
+	public VSMPhongShader getShader()
+	{
+		return shader;
+	}
 
-    public VSMPhongShader getShader() {
-        return shader;
-    }
+	public VSMPhongWorldRenderer(EffectManager effects)
+	{
+		this.effects = effects;
+	}
 
-    public VSMPhongWorldRenderer(EffectManager effects) {
-        this.effects = effects;
-    }
+	@Override
+	public boolean init(GL2 gl, Graphics graphics, ContentManager cm)
+	{
+		this.content = cm;
 
-    @Override
-    public boolean init(GL2 gl, Graphics graphics, ContentManager cm) {
-        this.content = cm;
+		shader = VSMPhongShader.create(gl);
+		if (shader == null) {
+			graphics.useShadows = false;
+			return false;
+		}
 
-        shader = VSMPhongShader.create(gl);
-        if (shader == null) {
-            graphics.useShadows = false;
-            return false;
-        }
+		shader.enable(gl);
+		shader.setLightViewProjection(gl, effects.getShadowRenderer().getLight().getViewProjection());
+		shader.disable(gl);
 
-        shader.enable(gl);
-        shader.setLightViewProjection(gl,
-                effects.getShadowRenderer().getLight().getViewProjection());
-        shader.disable(gl);
+		suppressedMeshes.add("field.obj");
+		suppressedMeshes.add("skybox.obj");
 
-        suppressedMeshes.add("field.obj");
-        suppressedMeshes.add("skybox.obj");
+		return true;
+	}
 
-        return true;
-    }
+	private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content)
+	{
+		Model model = content.getModel(node.getName());
+		if (model.isLoaded()) {
+			// NOTE: this is a hack to avoid rendering certain meshes that are
+			// replaced by
+			// RoboViz; in particular, the field and skybox are treated
+			// differently
+			for (String s : suppressedMeshes)
+				if (node.getName().endsWith(s))
+					return;
 
-    private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content) {
-        Model model = content.getModel(node.getName());
-        if (model.isLoaded()) {
+			BasicSceneRenderer.applyAgentMats(model, node, content);
 
-            // NOTE: this is a hack to avoid rendering certain meshes that are
-            // replaced by
-            // RoboViz; in particular, the field and skybox are treated
-            // differently
-            for (String s : suppressedMeshes)
-                if (node.getName().endsWith(s))
-                    return;
+			Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
+			shader.setModelMatrix(gl, modelMat);
 
-            BasicSceneRenderer.applyAgentMats(model, node, content);
+			model.getMesh().render(gl, modelMat);
+		}
+	}
 
-            Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
-            shader.setModelMatrix(gl, modelMat);
+	public void render(GL2 gl, WorldModel world, Drawings drawings)
+	{
+		if (world.getSceneGraph() == null)
+			return;
 
-            model.getMesh().render(gl, modelMat);
-        }
-    }
+		gl.glDisable(GL2.GL_LIGHTING);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor3f(1, 1, 1);
+		world.getSkyBox().render(gl);
 
-    public void render(GL2 gl, WorldModel world, Drawings drawings) {
-        if (world.getSceneGraph() == null)
-            return;
+		gl.glEnable(GL.GL_DEPTH_TEST);
 
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glColor3f(1, 1, 1);
-        world.getSkyBox().render(gl);
+		world.getLighting().apply(gl);
 
-        gl.glEnable(GL.GL_DEPTH_TEST);
+		shader.enable(gl);
+		shader.setShadowMap(gl, effects.getShadowRenderer().getShadowMap());
 
-        world.getLighting().apply(gl);
+		shader.setModelMatrix(gl, world.getField().getModelMatrix());
+		gl.glDepthMask(false);
+		world.getField().render(gl);
+		gl.glDepthMask(true);
 
-        shader.enable(gl);
-        shader.setShadowMap(gl, effects.getShadowRenderer().getShadowMap());
+		List<StaticMeshNode> transparentNodes = new ArrayList<>();
+		List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
+		for (StaticMeshNode node : nodes) {
+			if (node.isTransparent())
+				transparentNodes.add(node);
+			else
+				renderSceneGraphNode(gl, node, content);
+		}
 
-        shader.setModelMatrix(gl, world.getField().getModelMatrix());
-        gl.glDepthMask(false);
-        world.getField().render(gl);
-        gl.glDepthMask(true);
+		// drawings
+		gl.glEnable(GL.GL_BLEND);
+		shader.disable(gl);
+		if (world.getSelectedObject() != null)
+			world.getSelectedObject().renderSelected(gl);
+		if (drawings.isVisible())
+			drawings.render(gl, Renderer.glut);
+		shader.enable(gl);
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<>();
-        List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (StaticMeshNode node : nodes) {
-            if (node.isTransparent())
-                transparentNodes.add(node);
-            else
-                renderSceneGraphNode(gl, node, content);
-        }
+		// transparent stuff
 
-        // drawings
-        gl.glEnable(GL.GL_BLEND);
-        shader.disable(gl);
-        if (world.getSelectedObject() != null)
-            world.getSelectedObject().renderSelected(gl);
-        if (drawings.isVisible())
-            drawings.render(gl, Renderer.glut);
-        shader.enable(gl);
+		for (StaticMeshNode transparentNode : transparentNodes)
+			renderSceneGraphNode(gl, transparentNode, content);
+		gl.glDisable(GL.GL_BLEND);
 
-        // transparent stuff
+		shader.disable(gl);
+	}
 
-        for (StaticMeshNode transparentNode : transparentNodes)
-            renderSceneGraphNode(gl, transparentNode, content);
-        gl.glDisable(GL.GL_BLEND);
+	@Override
+	public void dispose(GL gl)
+	{
+		shader.dispose(gl);
+	}
 
-        shader.disable(gl);
-    }
-
-    @Override
-    public void dispose(GL gl) {
-        shader.dispose(gl);
-    }
-
-    @Override
-    public String toString() {
-        return "VSM Phong Renderer";
-    }
+	@Override
+	public String toString()
+	{
+		return "VSM Phong Renderer";
+	}
 }

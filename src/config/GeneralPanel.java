@@ -16,71 +16,74 @@ import rv.Configuration;
 import rv.util.swing.FileChooser;
 import rv.util.swing.SwingUtil;
 
-public class GeneralPanel extends JPanel implements SaveListener {
+public class GeneralPanel extends JPanel implements SaveListener
+{
+	final RVConfigure configProg;
+	final Configuration.General config;
 
-    final RVConfigure           configProg;
-    final Configuration.General config;
+	JCheckBox recordLogsCB;
+	JTextField logDirectoryTF;
+	JButton openDirectoryButton;
 
-    JCheckBox                   recordLogsCB;
-    JTextField                  logDirectoryTF;
-    JButton                     openDirectoryButton;
+	public GeneralPanel(RVConfigure configProg)
+	{
+		super();
+		this.configProg = configProg;
+		this.config = configProg.config.general;
+		configProg.listeners.add(this);
+		initGUI();
+	}
 
-    public GeneralPanel(RVConfigure configProg) {
-        super();
-        this.configProg = configProg;
-        this.config = configProg.config.general;
-        configProg.listeners.add(this);
-        initGUI();
-    }
+	void initGUI()
+	{
+		setLayout(new GridBagLayout());
 
-    void initGUI() {
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
 
-        setLayout(new GridBagLayout());
+		add(initLogfilesPanel(), c);
+	}
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
+	JPanel initLogfilesPanel()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Logfiles"));
 
-        add(initLogfilesPanel(), c);
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
 
-    JPanel initLogfilesPanel() {
+		recordLogsCB = new JCheckBox("Record Logfiles", config.recordLogs);
+		logDirectoryTF = new JTextField(config.logfileDirectory);
+		SwingUtil.setPreferredWidth(logDirectoryTF, 150);
+		openDirectoryButton = new JButton("...");
+		openDirectoryButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JFileChooser fileChooser = new FileChooser(logDirectoryTF.getText());
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fileChooser.setAcceptAllFileFilterUsed(false);
+				if (fileChooser.showOpenDialog(configProg) != JFileChooser.CANCEL_OPTION)
+					logDirectoryTF.setText(fileChooser.getSelectedFile().getAbsolutePath());
+			}
+		});
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Logfiles"));
+		panel.add(recordLogsCB, c);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 10;
+		c.gridy = 1;
+		panel.add(new JLabel("Logfiles Directory: "), c);
+		panel.add(logDirectoryTF, c);
+		panel.add(openDirectoryButton, c);
 
-        recordLogsCB = new JCheckBox("Record Logfiles", config.recordLogs);
-        logDirectoryTF = new JTextField(config.logfileDirectory);
-        SwingUtil.setPreferredWidth(logDirectoryTF, 150);
-        openDirectoryButton = new JButton("...");
-        openDirectoryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new FileChooser(logDirectoryTF.getText());
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                fileChooser.setAcceptAllFileFilterUsed(false);
-                if (fileChooser.showOpenDialog(configProg) != JFileChooser.CANCEL_OPTION)
-                    logDirectoryTF.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            }
-        });
+		return panel;
+	}
 
-        panel.add(recordLogsCB, c);
-
-        c.gridy = 1;
-        panel.add(new JLabel("Logfiles Directory: "), c);
-        panel.add(logDirectoryTF, c);
-        panel.add(openDirectoryButton, c);
-
-        return panel;
-    }
-
-    @Override
-    public void configSaved(RVConfigure configProg) {
-        config.recordLogs = recordLogsCB.isSelected();
-        config.logfileDirectory = logDirectoryTF.getText();
-    }
+	@Override
+	public void configSaved(RVConfigure configProg)
+	{
+		config.recordLogs = recordLogsCB.isSelected();
+		config.logfileDirectory = logDirectoryTF.getText();
+	}
 }

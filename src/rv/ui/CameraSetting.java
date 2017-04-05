@@ -19,21 +19,24 @@ package rv.ui;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 
-public class CameraSetting {
+public class CameraSetting
+{
+	private final Vec3f position;
+	private final Vec2f rotation;
 
-    private final Vec3f position;
-    private final Vec2f rotation;
+	public Vec3f getPosition()
+	{
+		return position;
+	}
 
-    public Vec3f getPosition() {
-        return position;
-    }
+	public Vec2f getRotation()
+	{
+		return rotation;
+	}
 
-    public Vec2f getRotation() {
-        return rotation;
-    }
-
-    public CameraSetting(Vec3f position, Vec2f rotation) {
-        this.position = position;
-        this.rotation = rotation;
-    }
+	public CameraSetting(Vec3f position, Vec2f rotation)
+	{
+		this.position = position;
+		this.rotation = rotation;
+	}
 }

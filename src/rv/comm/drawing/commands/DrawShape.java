@@ -30,53 +30,57 @@ import rv.comm.drawing.shapes.Sphere;
 /**
  * Parses a draw shape packet and, when executing, adds the shape to the intended agent's list of
  * shapes
- * 
+ *
  * @author Justin Stoecker
  */
-public class DrawShape extends Command {
-    public static final int CIRCLE  = 0;
-    public static final int LINE    = 1;
-    public static final int POINT   = 2;
-    public static final int SPHERE  = 3;
-    public static final int POLYGON = 4;
+public class DrawShape extends Command
+{
+	public static final int CIRCLE = 0;
+	public static final int LINE = 1;
+	public static final int POINT = 2;
+	public static final int SPHERE = 3;
+	public static final int POLYGON = 4;
 
-    private final Shape     shape;
-    private final Drawings  drawings;
+	private final Shape shape;
+	private final Drawings drawings;
 
-    public DrawShape(ByteBuffer buf, Viewer viewer) {
-        this.drawings = viewer.getDrawings();
+	public DrawShape(ByteBuffer buf, Viewer viewer)
+	{
+		this.drawings = viewer.getDrawings();
 
-        int type = ByteUtil.uValue(buf.get());
+		int type = ByteUtil.uValue(buf.get());
 
-        switch (type) {
-        case CIRCLE:
-            shape = Circle.parse(buf);
-            break;
-        case LINE:
-            shape = Line.parse(buf);
-            break;
-        case POINT:
-            shape = Point.parse(buf);
-            break;
-        case SPHERE:
-            shape = Sphere.parse(buf);
-            break;
-        case POLYGON:
-            shape = Polygon.parse(buf);
-            break;
-        default:
-            System.err.println("Unknown shape : " + type);
-            shape = null;
-        }
-    }
+		switch (type) {
+		case CIRCLE:
+			shape = Circle.parse(buf);
+			break;
+		case LINE:
+			shape = Line.parse(buf);
+			break;
+		case POINT:
+			shape = Point.parse(buf);
+			break;
+		case SPHERE:
+			shape = Sphere.parse(buf);
+			break;
+		case POLYGON:
+			shape = Polygon.parse(buf);
+			break;
+		default:
+			System.err.println("Unknown shape : " + type);
+			shape = null;
+		}
+	}
 
-    @Override
-    public void execute() {
-        drawings.addShape(shape);
-    }
+	@Override
+	public void execute()
+	{
+		drawings.addShape(shape);
+	}
 
-    @Override
-    public String toString() {
-        return String.format("DrawShape: %s", shape);
-    }
+	@Override
+	public String toString()
+	{
+		return String.format("DrawShape: %s", shape);
+	}
 }

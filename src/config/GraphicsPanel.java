@@ -36,259 +36,272 @@ import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.SwingUtil;
 
-public class GraphicsPanel extends JPanel implements SaveListener {
+public class GraphicsPanel extends JPanel implements SaveListener
+{
+	final Configuration.Graphics config;
 
-    final Configuration.Graphics config;
+	JCheckBox bloomCB;
+	JCheckBox phongCB;
+	JCheckBox shadowCB;
+	JCheckBox softShadowCB;
+	JCheckBox fsaaCB;
+	JCheckBox stereoCB;
+	JCheckBox vsyncCB;
+	JCheckBox maximizedCB;
+	JCheckBox centerCB;
+	JCheckBox saveStateCB;
+	JTextField samplesTF;
+	JTextField shadowResTB;
+	JSpinner fpsSpinner;
+	JSpinner fpFovSpinner;
+	JSpinner tpFovSpinner;
+	JSpinner fxSpinner;
+	JSpinner fySpinner;
+	JSpinner fwSpinner;
+	JSpinner fhSpinner;
+	final JLabel shadowResLabel = new JLabel("Shadow Resolution: ", SwingConstants.RIGHT);
+	final JLabel samplesLabel = new JLabel("Samples: ", SwingConstants.RIGHT);
 
-    JCheckBox                    bloomCB;
-    JCheckBox                    phongCB;
-    JCheckBox                    shadowCB;
-    JCheckBox                    softShadowCB;
-    JCheckBox                    fsaaCB;
-    JCheckBox                    stereoCB;
-    JCheckBox                    vsyncCB;
-    JCheckBox                    maximizedCB;
-    JCheckBox                    centerCB;
-    JCheckBox                    saveStateCB;
-    JTextField                   samplesTF;
-    JTextField                   shadowResTB;
-    JSpinner                     fpsSpinner;
-    JSpinner                     fpFovSpinner;
-    JSpinner                     tpFovSpinner;
-    JSpinner                     fxSpinner;
-    JSpinner                     fySpinner;
-    JSpinner                     fwSpinner;
-    JSpinner                     fhSpinner;
-    final JLabel                 shadowResLabel = new JLabel("Shadow Resolution: ",
-            SwingConstants.RIGHT);
-    final JLabel                 samplesLabel   = new JLabel("Samples: ", SwingConstants.RIGHT);
+	public GraphicsPanel(RVConfigure configProg)
+	{
+		config = configProg.config.graphics;
+		initGUI();
+		configProg.listeners.add(this);
+	}
 
-    public GraphicsPanel(RVConfigure configProg) {
-        config = configProg.config.graphics;
-        initGUI();
-        configProg.listeners.add(this);
-    }
+	void initGUI()
+	{
+		setLayout(new GridBagLayout());
 
-    void initGUI() {
+		GridBagConstraints c = new GridBagConstraints();
 
-        setLayout(new GridBagLayout());
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
 
-        GridBagConstraints c = new GridBagConstraints();
+		addConstrained(initLightingPanel(), this, c, 0, 0);
+		addConstrained(initAAPanel(), this, c, 0, 1);
+		addConstrained(initGeneral(), this, c, 0, 2);
+		addConstrained(initFramePanel(), this, c, 0, 3);
+	}
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
+	private void addConstrained(JComponent comp, JComponent container, GridBagConstraints c, int x, int y)
+	{
+		c.gridx = x;
+		c.gridy = y;
+		container.add(comp, c);
+	}
 
-        addConstrained(initLightingPanel(), this, c, 0, 0);
-        addConstrained(initAAPanel(), this, c, 0, 1);
-        addConstrained(initGeneral(), this, c, 0, 2);
-        addConstrained(initFramePanel(), this, c, 0, 3);
-    }
+	void addLabel(String name, JComponent component, GridBagConstraints c, int x, int y)
+	{
+		c.gridx = x;
+		c.gridy = y;
+		JLabel l = new JLabel(name, SwingConstants.RIGHT);
+		l.setPreferredSize(new Dimension(60, 28));
+		component.add(l, c);
+	}
 
-    private void addConstrained(JComponent comp, JComponent container, GridBagConstraints c, int x,
-            int y) {
-        c.gridx = x;
-        c.gridy = y;
-        container.add(comp, c);
-    }
+	JPanel initAAPanel()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Anti-Aliasing"));
 
-    void addLabel(String name, JComponent component, GridBagConstraints c, int x, int y) {
-        c.gridx = x;
-        c.gridy = y;
-        JLabel l = new JLabel(name, SwingConstants.RIGHT);
-        l.setPreferredSize(new Dimension(60, 28));
-        component.add(l, c);
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
 
-    JPanel initAAPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Anti-Aliasing"));
+		fsaaCB = new JCheckBox("Enabled", config.useFsaa);
+		fsaaCB.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e)
+			{
+				updateAAEnabled();
+			}
+		});
+		samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
+		updateAAEnabled();
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 10;
+		addConstrained(fsaaCB, panel, c, 0, 0);
+		addConstrained(samplesLabel, panel, c, 1, 0);
+		addConstrained(samplesTF, panel, c, 2, 0);
 
-        fsaaCB = new JCheckBox("Enabled", config.useFsaa);
-        fsaaCB.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                updateAAEnabled();
-            }
-        });
-        samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
-        updateAAEnabled();
+		return panel;
+	}
 
-        addConstrained(fsaaCB, panel, c, 0, 0);
-        addConstrained(samplesLabel, panel, c, 1, 0);
-        addConstrained(samplesTF, panel, c, 2, 0);
+	void updateAAEnabled()
+	{
+		samplesTF.setEnabled(fsaaCB.isSelected());
+		samplesLabel.setEnabled(fsaaCB.isSelected());
+	}
 
-        return panel;
-    }
+	JPanel initGeneral()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("General Graphics"));
 
-    void updateAAEnabled() {
-        samplesTF.setEnabled(fsaaCB.isSelected());
-        samplesLabel.setEnabled(fsaaCB.isSelected());
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
 
-    JPanel initGeneral() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("General Graphics"));
+		stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
+		vsyncCB = new JCheckBox("V-Sync", config.useVsync);
+		fpsSpinner = createSpinner(config.targetFPS, 1, 60);
+		fpFovSpinner = createSpinner(config.firstPersonFOV, 1, 300);
+		tpFovSpinner = createSpinner(config.thirdPersonFOV, 1, 300);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 10;
+		int y = 0;
+		addConstrained(stereoCB, panel, c, 0, y);
 
-        stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
-        vsyncCB = new JCheckBox("V-Sync", config.useVsync);
-        fpsSpinner = createSpinner(config.targetFPS, 1, 60);
-        fpFovSpinner = createSpinner(config.firstPersonFOV, 1, 300);
-        tpFovSpinner = createSpinner(config.thirdPersonFOV, 1, 300);
+		addConstrained(vsyncCB, panel, c, 1, y);
 
-        int y = 0;
-        addConstrained(stereoCB, panel, c, 0, y);
+		addLabel("FPS: ", panel, c, 2, y);
+		addConstrained(fpsSpinner, panel, c, 3, y);
 
-        addConstrained(vsyncCB, panel, c, 1, y);
+		y++;
+		JLabel label = new JLabel("First Person FOV: ");
+		SwingUtil.setPreferredWidth(label, 95);
+		addConstrained(label, panel, c, 2, y);
+		addConstrained(fpFovSpinner, panel, c, 3, y);
 
-        addLabel("FPS: ", panel, c, 2, y);
-        addConstrained(fpsSpinner, panel, c, 3, y);
+		y++;
+		label = new JLabel("Third Person FOV: ");
+		SwingUtil.setPreferredWidth(label, 95);
+		addConstrained(label, panel, c, 2, y);
+		addConstrained(tpFovSpinner, panel, c, 3, y);
 
-        y++;
-        JLabel label = new JLabel("First Person FOV: ");
-        SwingUtil.setPreferredWidth(label, 95);
-        addConstrained(label, panel, c, 2, y);
-        addConstrained(fpFovSpinner, panel, c, 3, y);
+		return panel;
+	}
 
-        y++;
-        label = new JLabel("Third Person FOV: ");
-        SwingUtil.setPreferredWidth(label, 95);
-        addConstrained(label, panel, c, 2, y);
-        addConstrained(tpFovSpinner, panel, c, 3, y);
+	JPanel initFramePanel()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Frame"));
 
-        return panel;
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
 
-    JPanel initFramePanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Frame"));
+		fxSpinner = createSpinner(config.frameX, -100, 10000);
+		fySpinner = createSpinner(config.frameY, -100, 10000);
+		fwSpinner = createSpinner(config.frameWidth, 1, 10000);
+		fhSpinner = createSpinner(config.frameHeight, 1, 10000);
+		maximizedCB = new JCheckBox("Maximized", config.isMaximized);
+		centerCB = new JCheckBox("Center Position", config.centerFrame);
+		centerCB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				updateFramePositionEnabled();
+			}
+		});
+		updateFramePositionEnabled();
+		saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 10;
+		int y = 0;
+		addLabel("X: ", panel, c, 0, y);
+		addConstrained(fxSpinner, panel, c, 1, y);
 
-        fxSpinner = createSpinner(config.frameX, -100, 10000);
-        fySpinner = createSpinner(config.frameY, -100, 10000);
-        fwSpinner = createSpinner(config.frameWidth, 1, 10000);
-        fhSpinner = createSpinner(config.frameHeight, 1, 10000);
-        maximizedCB = new JCheckBox("Maximized", config.isMaximized);
-        centerCB = new JCheckBox("Center Position", config.centerFrame);
-        centerCB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateFramePositionEnabled();
-            }
-        });
-        updateFramePositionEnabled();
-        saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
+		addLabel("Width: ", panel, c, 2, y);
+		addConstrained(fwSpinner, panel, c, 3, y);
 
-        int y = 0;
-        addLabel("X: ", panel, c, 0, y);
-        addConstrained(fxSpinner, panel, c, 1, y);
+		y++;
+		addLabel("Y: ", panel, c, 0, y);
+		addConstrained(fySpinner, panel, c, 1, y);
 
-        addLabel("Width: ", panel, c, 2, y);
-        addConstrained(fwSpinner, panel, c, 3, y);
+		addLabel("Height: ", panel, c, 2, y);
+		addConstrained(fhSpinner, panel, c, 3, y);
 
-        y++;
-        addLabel("Y: ", panel, c, 0, y);
-        addConstrained(fySpinner, panel, c, 1, y);
+		y++;
+		addConstrained(centerCB, panel, c, 1, y);
+		addConstrained(maximizedCB, panel, c, 2, y);
+		addConstrained(saveStateCB, panel, c, 3, y);
 
-        addLabel("Height: ", panel, c, 2, y);
-        addConstrained(fhSpinner, panel, c, 3, y);
+		return panel;
+	}
 
-        y++;
-        addConstrained(centerCB, panel, c, 1, y);
-        addConstrained(maximizedCB, panel, c, 2, y);
-        addConstrained(saveStateCB, panel, c, 3, y);
+	void updateFramePositionEnabled()
+	{
+		boolean enabled = !centerCB.isSelected();
+		fxSpinner.setEnabled(enabled);
+		fySpinner.setEnabled(enabled);
+	}
 
-        return panel;
-    }
+	JSpinner createSpinner(int value, int min, int max)
+	{
+		return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
+	}
 
-    void updateFramePositionEnabled() {
-        boolean enabled = !centerCB.isSelected();
-        fxSpinner.setEnabled(enabled);
-        fySpinner.setEnabled(enabled);
-    }
+	JPanel initLightingPanel()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Lighting"));
 
-    JSpinner createSpinner(int value, int min, int max) {
-        return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
 
-    JPanel initLightingPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Lighting"));
+		bloomCB = new JCheckBox("Bloom", config.useBloom);
+		phongCB = new JCheckBox("Phong", config.usePhong);
+		shadowCB = new JCheckBox("Shadows", config.useShadows);
+		shadowCB.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0)
+			{
+				updateShadowsEnabled();
+			}
+		});
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 10;
+		softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
+		shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);
+		updateShadowsEnabled();
 
-        bloomCB = new JCheckBox("Bloom", config.useBloom);
-        phongCB = new JCheckBox("Phong", config.usePhong);
-        shadowCB = new JCheckBox("Shadows", config.useShadows);
-        shadowCB.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent arg0) {
-                updateShadowsEnabled();
-            }
-        });
+		addConstrained(phongCB, panel, c, 0, 0);
+		addConstrained(bloomCB, panel, c, 1, 0);
+		addConstrained(shadowCB, panel, c, 2, 0);
 
-        softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
-        shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);
-        updateShadowsEnabled();
+		addConstrained(softShadowCB, panel, c, 0, 2);
+		addConstrained(shadowResLabel, panel, c, 1, 2);
+		addConstrained(shadowResTB, panel, c, 2, 2);
 
-        addConstrained(phongCB, panel, c, 0, 0);
-        addConstrained(bloomCB, panel, c, 1, 0);
-        addConstrained(shadowCB, panel, c, 2, 0);
+		return panel;
+	}
 
-        addConstrained(softShadowCB, panel, c, 0, 2);
-        addConstrained(shadowResLabel, panel, c, 1, 2);
-        addConstrained(shadowResTB, panel, c, 2, 2);
+	void updateShadowsEnabled()
+	{
+		softShadowCB.setEnabled(shadowCB.isSelected());
+		shadowResTB.setEnabled(shadowCB.isSelected());
+		shadowResLabel.setEnabled(shadowCB.isSelected());
+	}
 
-        return panel;
-    }
+	@Override
+	public void configSaved(RVConfigure configProg)
+	{
+		config.useBloom = bloomCB.isSelected();
+		config.usePhong = phongCB.isSelected();
+		config.useShadows = shadowCB.isSelected();
+		config.useSoftShadows = softShadowCB.isSelected();
+		config.useFsaa = fsaaCB.isSelected();
+		config.useStereo = stereoCB.isSelected();
+		config.useVsync = vsyncCB.isSelected();
 
-    void updateShadowsEnabled() {
-        softShadowCB.setEnabled(shadowCB.isSelected());
-        shadowResTB.setEnabled(shadowCB.isSelected());
-        shadowResLabel.setEnabled(shadowCB.isSelected());
-    }
+		try {
+			config.fsaaSamples = Integer.parseInt(samplesTF.getText());
+		} catch (Exception e) {
+			samplesTF.setText(config.fsaaSamples + "");
+		}
 
-    @Override
-    public void configSaved(RVConfigure configProg) {
-        config.useBloom = bloomCB.isSelected();
-        config.usePhong = phongCB.isSelected();
-        config.useShadows = shadowCB.isSelected();
-        config.useSoftShadows = softShadowCB.isSelected();
-        config.useFsaa = fsaaCB.isSelected();
-        config.useStereo = stereoCB.isSelected();
-        config.useVsync = vsyncCB.isSelected();
+		try {
+			config.shadowResolution = Integer.parseInt(shadowResTB.getText());
+		} catch (Exception e) {
+			shadowResTB.setText(config.shadowResolution + "");
+		}
 
-        try {
-            config.fsaaSamples = Integer.parseInt(samplesTF.getText());
-        } catch (Exception e) {
-            samplesTF.setText(config.fsaaSamples + "");
-        }
-
-        try {
-            config.shadowResolution = Integer.parseInt(shadowResTB.getText());
-        } catch (Exception e) {
-            shadowResTB.setText(config.shadowResolution + "");
-        }
-
-        config.targetFPS = (Integer) fpsSpinner.getValue();
-        config.firstPersonFOV = (Integer) fpFovSpinner.getValue();
-        config.thirdPersonFOV = (Integer) tpFovSpinner.getValue();
-        config.frameX = (Integer) fxSpinner.getValue();
-        config.frameY = (Integer) fySpinner.getValue();
-        config.frameWidth = (Integer) fwSpinner.getValue();
-        config.frameHeight = (Integer) fhSpinner.getValue();
-        config.centerFrame = centerCB.isSelected();
-        config.isMaximized = maximizedCB.isSelected();
-        config.saveFrameState = saveStateCB.isSelected();
-    }
+		config.targetFPS = (Integer) fpsSpinner.getValue();
+		config.firstPersonFOV = (Integer) fpFovSpinner.getValue();
+		config.thirdPersonFOV = (Integer) tpFovSpinner.getValue();
+		config.frameX = (Integer) fxSpinner.getValue();
+		config.frameY = (Integer) fySpinner.getValue();
+		config.frameWidth = (Integer) fwSpinner.getValue();
+		config.frameHeight = (Integer) fhSpinner.getValue();
+		config.centerFrame = centerCB.isSelected();
+		config.isMaximized = maximizedCB.isSelected();
+		config.saveFrameState = saveStateCB.isSelected();
+	}
 }

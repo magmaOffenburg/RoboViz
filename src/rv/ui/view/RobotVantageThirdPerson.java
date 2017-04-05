@@ -20,72 +20,74 @@ import js.math.vector.Matrix;
 import js.math.vector.Vec3f;
 import rv.world.objects.Agent;
 
-public class RobotVantageThirdPerson extends RobotVantageBase {
+public class RobotVantageThirdPerson extends RobotVantageBase
+{
+	private static final int CAMERA_AVERAGE = 20;
+	private Vec3f avgPos[], avgForward[];
+	private int ct = 0;
+	private Vec3f lastAvgF = new Vec3f(0);
 
-    private static final int CAMERA_AVERAGE = 20;
-    private Vec3f            avgPos[], avgForward[];
-    private int              ct             = 0;
-    private Vec3f            lastAvgF       = new Vec3f(0);
+	public RobotVantageThirdPerson(Agent agent, int fovDegrees)
+	{
+		super(agent, fovDegrees);
+		avgPos = new Vec3f[CAMERA_AVERAGE];
+		avgForward = new Vec3f[CAMERA_AVERAGE];
+		updateView();
+	}
 
-    public RobotVantageThirdPerson(Agent agent, int fovDegrees) {
-        super(agent, fovDegrees);
-        avgPos = new Vec3f[CAMERA_AVERAGE];
-        avgForward = new Vec3f[CAMERA_AVERAGE];
-        updateView();
-    }
+	public void detach()
+	{
+		agent.removeChangeListener(this);
+	}
 
-    public void detach() {
-        agent.removeChangeListener(this);
-    }
+	@Override
+	protected void updateView()
+	{
+		Matrix m = agent.getHeadTransform();
+		Vec3f torsoDirection = agent.getTorsoDirection();
+		if (m == null || torsoDirection == null) {
+			return;
+		}
+		forward = agent.getTorsoDirection().normalize();
 
-    @Override
-    protected void updateView() {
-        Matrix m = agent.getHeadTransform();
-        Vec3f torsoDirection = agent.getTorsoDirection();
-        if (m == null || torsoDirection == null) {
-            return;
-        }
-        forward = agent.getTorsoDirection().normalize();
+		// for side view
+		// forward = new Vec3f(-forward.z, -forward.y, -forward.x);
 
-        // for side view
-        // forward = new Vec3f(-forward.z, -forward.y, -forward.x);
+		Vec3f head = agent.getHeadCenter();
 
-        Vec3f head = agent.getHeadCenter();
+		// Only update if robot is not fallen. Height might need to be tuned
+		// for shorter robot stances.
+		boolean updateForward = head.y > .45 || ct <= avgPos.length;
+		head.y = 1;
 
-        // Only update if robot is not fallen. Height might need to be tuned
-        // for shorter robot stances.
-        boolean updateForward = head.y > .45 || ct <= avgPos.length;
-        head.y = 1;
+		avgPos[ct % avgPos.length] = head;
+		if (updateForward) {
+			avgForward[ct % avgPos.length] = forward;
+		}
+		Vec3f avg = new Vec3f(0);
+		Vec3f avgF = lastAvgF;
+		if (updateForward) {
+			avgF = new Vec3f(0);
+		}
+		for (int i = 0; i < Math.min(ct + 1, avgPos.length); ++i) {
+			avg = avg.plus(avgPos[i]);
+			if (updateForward) {
+				avgF = avgF.plus(avgForward[i]);
+			}
+		}
+		avg = avg.times(1.0f / Math.min(ct + 1, avgPos.length));
+		if (updateForward) {
+			avgF = avgF.times(1.0f / Math.min(ct + 1, avgPos.length));
+			lastAvgF = avgF;
+		}
+		++ct;
 
-        avgPos[ct % avgPos.length] = head;
-        if (updateForward) {
-            avgForward[ct % avgPos.length] = forward;
-        }
-        Vec3f avg = new Vec3f(0);
-        Vec3f avgF = lastAvgF;
-        if (updateForward) {
-            avgF = new Vec3f(0);
-        }
-        for (int i = 0; i < Math.min(ct + 1, avgPos.length); ++i) {
-            avg = avg.plus(avgPos[i]);
-            if (updateForward) {
-                avgF = avgF.plus(avgForward[i]);
-            }
-        }
-        avg = avg.times(1.0f / Math.min(ct + 1, avgPos.length));
-        if (updateForward) {
-            avgF = avgF.times(1.0f / Math.min(ct + 1, avgPos.length));
-            lastAvgF = avgF;
-        }
-        ++ct;
+		up = m.transform(new Vec3f(0, 1, 0));
+		right = forward.cross(up).normalize();
 
-        up = m.transform(new Vec3f(0, 1, 0));
-        right = forward.cross(up).normalize();
+		Vec3f camPos = avg.minus(avgF.times(2));
+		camPos.y = 2;
 
-        Vec3f camPos = avg.minus(avgF.times(2));
-        camPos.y = 2;
-
-        viewMatrix = Matrix.createLookAt(camPos.x, camPos.y, camPos.z, avg.x, avg.y, avg.z, 0, 1,
-                0);
-    }
+		viewMatrix = Matrix.createLookAt(camPos.x, camPos.y, camPos.z, avg.x, avg.y, avg.z, 0, 1, 0);
+	}
 }

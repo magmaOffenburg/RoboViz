@@ -21,35 +21,37 @@ import javax.media.opengl.GL2;
 import js.io.ByteUtil;
 import rv.comm.drawing.commands.Command;
 
-public class Polygon extends Shape {
+public class Polygon extends Shape
+{
+	private final float[][] v;
 
-    private final float[][] v;
+	public Polygon(String set, float[] color, float[][] verts)
+	{
+		super(set, color);
+		this.v = verts;
+	}
 
-    public Polygon(String set, float[] color, float[][] verts) {
-        super(set, color);
-        this.v = verts;
-    }
+	@Override
+	public void draw(GL2 gl)
+	{
+		gl.glColor4fv(color, 0);
+		gl.glBegin(GL2.GL_POLYGON);
+		for (float[] aV : v)
+			gl.glVertex3fv(aV, 0);
+		gl.glEnd();
+	}
 
-    @Override
-    public void draw(GL2 gl) {
-        gl.glColor4fv(color, 0);
-        gl.glBegin(GL2.GL_POLYGON);
-        for (float[] aV : v)
-            gl.glVertex3fv(aV, 0);
-        gl.glEnd();
-    }
+	public static Polygon parse(ByteBuffer buf)
+	{
+		int numVerts = ByteUtil.uValue(buf.get());
+		float[][] v = new float[numVerts][];
 
-    public static Polygon parse(ByteBuffer buf) {
+		float[] color = Command.readRGBA(buf);
+		for (int i = 0; i < numVerts; i++)
+			v[i] = Command.readCoords(buf, 3);
 
-        int numVerts = ByteUtil.uValue(buf.get());
-        float[][] v = new float[numVerts][];
+		String set = Command.getString(buf);
 
-        float[] color = Command.readRGBA(buf);
-        for (int i = 0; i < numVerts; i++)
-            v[i] = Command.readCoords(buf, 3);
-
-        String set = Command.getString(buf);
-
-        return new Polygon(set, color, v);
-    }
+		return new Polygon(set, color, v);
+	}
 }

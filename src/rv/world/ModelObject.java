@@ -25,77 +25,84 @@ import rv.content.Model;
 /**
  * An abstract class that represents an object that contains a mesh loaded by the content manager
  * that may be transformed by its model matrix.
- * 
+ *
  * @author Justin Stoecker
  */
-public class ModelObject {
+public class ModelObject
+{
+	protected final Model model;
+	protected Matrix modelMatrix = Matrix.createIdentity();
+	protected BoundingBox bounds;
 
-    protected final Model model;
-    protected Matrix      modelMatrix = Matrix.createIdentity();
-    protected BoundingBox bounds;
+	public ModelObject(Model model)
+	{
+		this.model = model;
+	}
 
-    public ModelObject(Model model) {
-        this.model = model;
-    }
+	/**
+	 * Gets a an axis-aligned box that surrounds all mesh vertices. The box returned is in world
+	 * space.
+	 */
+	public BoundingBox getBoundingBox()
+	{
+		return bounds;
+	}
 
-    /**
-     * Gets a an axis-aligned box that surrounds all mesh vertices. The box returned is in world
-     * space.
-     */
-    public BoundingBox getBoundingBox() {
-        return bounds;
-    }
+	public Model getModel()
+	{
+		return model;
+	}
 
-    public Model getModel() {
-        return model;
-    }
+	public Matrix getModelMatrix()
+	{
+		return modelMatrix;
+	}
 
-    public Matrix getModelMatrix() {
-        return modelMatrix;
-    }
+	/**
+	 * Sets the transformation matrix for the mesh. Also updates the bounding box for the object.
+	 */
+	public void setModelMatrix(Matrix m)
+	{
+		this.modelMatrix = m;
+		calcBounds();
+	}
 
-    /**
-     * Sets the transformation matrix for the mesh. Also updates the bounding box for the object.
-     */
-    public void setModelMatrix(Matrix m) {
-        this.modelMatrix = m;
-        calcBounds();
-    }
+	/**
+	 * Calculate bounding box of object in world space.
+	 */
+	private void calcBounds()
+	{
+		if (model.getMesh() == null)
+			return;
 
-    /**
-     * Calculate bounding box of object in world space.
-     */
-    private void calcBounds() {
-        if (model.getMesh() == null)
-            return;
+		Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
+		Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
-        Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
-        Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
+		// instead of checking every vertex in the mesh, the 8 corners of the
+		// mesh's bounding box (in object space) are transformed by the object's
+		// model matrix
+		Vec3f[] corners = model.getMesh().getBounds().getCorners();
+		for (int i = 0; i < 8; i++) {
+			Vec3f v = modelMatrix.transform(corners[i]);
+			if (v.x < min.x)
+				min.x = v.x;
+			if (v.y < min.y)
+				min.y = v.y;
+			if (v.z < min.z)
+				min.z = v.z;
+			if (v.x > max.x)
+				max.x = v.x;
+			if (v.y > max.y)
+				max.y = v.y;
+			if (v.z > max.z)
+				max.z = v.z;
+		}
+		bounds = new BoundingBox(min, max);
+	}
 
-        // instead of checking every vertex in the mesh, the 8 corners of the
-        // mesh's bounding box (in object space) are transformed by the object's
-        // model matrix
-        Vec3f[] corners = model.getMesh().getBounds().getCorners();
-        for (int i = 0; i < 8; i++) {
-            Vec3f v = modelMatrix.transform(corners[i]);
-            if (v.x < min.x)
-                min.x = v.x;
-            if (v.y < min.y)
-                min.y = v.y;
-            if (v.z < min.z)
-                min.z = v.z;
-            if (v.x > max.x)
-                max.x = v.x;
-            if (v.y > max.y)
-                max.y = v.y;
-            if (v.z > max.z)
-                max.z = v.z;
-        }
-        bounds = new BoundingBox(min, max);
-    }
-
-    public void render(GL2 gl) {
-        if (model.isLoaded())
-            model.getMesh().render(gl, modelMatrix);
-    }
+	public void render(GL2 gl)
+	{
+		if (model.isLoaded())
+			model.getMesh().render(gl, modelMatrix);
+	}
 }

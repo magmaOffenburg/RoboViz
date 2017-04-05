@@ -5,20 +5,23 @@ import java.awt.HeadlessException;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
-public class FileChooser extends JFileChooser {
+public class FileChooser extends JFileChooser
+{
+	public FileChooser()
+	{
+		super();
+	}
 
-    public FileChooser() {
-        super();
-    }
+	public FileChooser(String currentDirectoryPath)
+	{
+		super(currentDirectoryPath);
+	}
 
-    public FileChooser(String currentDirectoryPath) {
-        super(currentDirectoryPath);
-    }
-
-    @Override
-    protected JDialog createDialog(Component parent) throws HeadlessException {
-        JDialog dialog = super.createDialog(parent);
-        SwingUtil.setLocationRelativeTo(dialog, parent);
-        return dialog;
-    }
+	@Override
+	protected JDialog createDialog(Component parent) throws HeadlessException
+	{
+		JDialog dialog = super.createDialog(parent);
+		SwingUtil.setLocationRelativeTo(dialog, parent);
+		return dialog;
+	}
 }

@@ -25,35 +25,38 @@ import rv.world.WorldModel;
 /**
  * Reads a message from server, converts it into s-expressions, determines the type of message from
  * the structure of the expressions, then parses the expressions to update the world state
- * 
+ *
  * @author Justin Stoecker
  */
-public class MessageParser {
+public class MessageParser
+{
+	private WorldModel world;
 
-    private WorldModel world;
+	public MessageParser(WorldModel world)
+	{
+		this.world = world;
+	}
 
-    public MessageParser(WorldModel world) {
-        this.world = world;
-    }
+	public void setWorldModel(WorldModel world)
+	{
+		this.world = world;
+	}
 
-    public void setWorldModel(WorldModel world) {
-        this.world = world;
-    }
+	public void parse(String message) throws ParseException
+	{
+		ArrayList<SExp> expressions = SExp.parse(message);
 
-    public void parse(String message) throws ParseException {
-        ArrayList<SExp> expressions = SExp.parse(message);
-
-        world.getGameState().parse(expressions.get(0), world);
-        SceneGraphHeader header = SceneGraphHeader.parse(expressions.get(1));
-        if (header.getType().equals(SceneGraphHeader.FULL)) {
-            // scene graph structure has changed, so replace the old one and
-            // tell
-            // any objects that rely on the scene graph to update their
-            // references
-            SceneGraph sg = new SceneGraph(expressions.get(2));
-            world.setSceneGraph(sg);
-        } else {
-            world.getSceneGraph().update(expressions.get(2));
-        }
-    }
+		world.getGameState().parse(expressions.get(0), world);
+		SceneGraphHeader header = SceneGraphHeader.parse(expressions.get(1));
+		if (header.getType().equals(SceneGraphHeader.FULL)) {
+			// scene graph structure has changed, so replace the old one and
+			// tell
+			// any objects that rely on the scene graph to update their
+			// references
+			SceneGraph sg = new SceneGraph(expressions.get(2));
+			world.setSceneGraph(sg);
+		} else {
+			world.getSceneGraph().update(expressions.get(2));
+		}
+	}
 }

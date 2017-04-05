@@ -28,72 +28,78 @@ import rv.world.WorldModel;
 
 /**
  * For picking selectable objects with a ray
- * 
+ *
  * @author justin
- * 
+ *
  */
-public class SceneObjectPicker {
+public class SceneObjectPicker
+{
+	private final WorldModel world;
+	private final Camera3D camera;
+	private Ray pickRay;
 
-    private final WorldModel world;
-    private final Camera3D   camera;
-    private Ray              pickRay;
+	public SceneObjectPicker(WorldModel world, Camera3D camera)
+	{
+		this.world = world;
+		this.camera = camera;
+	}
 
-    public SceneObjectPicker(WorldModel world, Camera3D camera) {
-        this.world = world;
-        this.camera = camera;
-    }
+	/** Updates ray used for picking from screen coordinates */
+	public void updatePickRay(Viewport vp, int x, int y)
+	{
+		pickRay = camera.unproject(vp, x, y);
+	}
 
-    /** Updates ray used for picking from screen coordinates */
-    public void updatePickRay(Viewport vp, int x, int y) {
-        pickRay = camera.unproject(vp, x, y);
-    }
+	/** Picks position on field (plane Y=0) that picking ray intersects */
+	public Vec3f pickField()
+	{
+		Plane p = new Plane(new Vec3f(0), Vec3f.unitY());
+		return p.intersect(pickRay);
+	}
 
-    /** Picks position on field (plane Y=0) that picking ray intersects */
-    public Vec3f pickField() {
-        Plane p = new Plane(new Vec3f(0), Vec3f.unitY());
-        return p.intersect(pickRay);
-    }
+	/**
+	 * Selects object nearest to the camera whose bounding box intersects picking ray
+	 */
+	public ISelectable pickObject()
+	{
+		if (pickRay == null)
+			return null;
 
-    /**
-     * Selects object nearest to the camera whose bounding box intersects picking ray
-     */
-    public ISelectable pickObject() {
-        if (pickRay == null)
-            return null;
+		List<ISelectable> selectables = new ArrayList<>();
+		for (ISelectable s : world.getLeftTeam().getAgents())
+			selectables.add(s);
+		for (ISelectable s : world.getRightTeam().getAgents())
+			selectables.add(s);
+		selectables.add(world.getBall());
 
-        List<ISelectable> selectables = new ArrayList<>();
-        for (ISelectable s : world.getLeftTeam().getAgents())
-            selectables.add(s);
-        for (ISelectable s : world.getRightTeam().getAgents())
-            selectables.add(s);
-        selectables.add(world.getBall());
+		return pickClosest(selectables);
+	}
 
-        return pickClosest(selectables);
-    }
+	private ISelectable pickClosest(List<ISelectable> objects)
+	{
+		ISelectable closest = null;
+		float minDepth = Float.POSITIVE_INFINITY;
+		float d;
+		for (ISelectable o : objects) {
+			if (o.getBoundingBox() == null)
+				continue;
+			Vec3f[] x = o.getBoundingBox().intersect(pickRay);
+			if (x != null && (d = getMinDepth(x, pickRay.getPosition())) < minDepth) {
+				closest = o;
+				minDepth = d;
+			}
+		}
+		return closest;
+	}
 
-    private ISelectable pickClosest(List<ISelectable> objects) {
-        ISelectable closest = null;
-        float minDepth = Float.POSITIVE_INFINITY;
-        float d;
-        for (ISelectable o : objects) {
-            if (o.getBoundingBox() == null)
-                continue;
-            Vec3f[] x = o.getBoundingBox().intersect(pickRay);
-            if (x != null && (d = getMinDepth(x, pickRay.getPosition())) < minDepth) {
-                closest = o;
-                minDepth = d;
-            }
-        }
-        return closest;
-    }
+	private static float getMinDepth(Vec3f[] x, Vec3f origin)
+	{
+		float minDepth = Float.POSITIVE_INFINITY;
+		for (Vec3f aX : x) {
+			float d = aX.minus(origin).lengthSquared();
+			minDepth = d < minDepth ? d : minDepth;
+		}
 
-    private static float getMinDepth(Vec3f[] x, Vec3f origin) {
-        float minDepth = Float.POSITIVE_INFINITY;
-        for (Vec3f aX : x) {
-            float d = aX.minus(origin).lengthSquared();
-            minDepth = d < minDepth ? d : minDepth;
-        }
-
-        return minDepth;
-    }
+		return minDepth;
+	}
 }

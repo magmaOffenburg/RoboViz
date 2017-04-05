@@ -28,116 +28,126 @@ import rv.world.WorldModel;
 
 /**
  * Displays player positions from a 2D top-down view of field
- * 
+ *
  * @author justin
  */
-public class Field2DOverlay extends ScreenBase implements GameStateChangeListener {
+public class Field2DOverlay extends ScreenBase implements GameStateChangeListener
+{
+	private final WorldModel world;
 
-    private final WorldModel world;
+	private float fieldWidth = 180;
+	private float fieldLength = 120;
+	private int screenWidth = 1;
+	private int screenHeight = 1;
+	private int yPos = 10;
 
-    private float            fieldWidth   = 180;
-    private float            fieldLength  = 120;
-    private int              screenWidth  = 1;
-    private int              screenHeight = 1;
-    private int              yPos         = 10;
+	public void setyPos(int yPos)
+	{
+		this.yPos = yPos;
+	}
 
-    public void setyPos(int yPos) {
-        this.yPos = yPos;
-    }
+	public Field2DOverlay(WorldModel world)
+	{
+		this.world = world;
+		world.getGameState().addListener(this);
+	}
 
-    public Field2DOverlay(WorldModel world) {
-        this.world = world;
-        world.getGameState().addListener(this);
-    }
+	private void setView(GL2 gl, GLU glu)
+	{
+		float hfw = fieldWidth / 2;
+		float hfl = fieldLength / 2;
 
-    private void setView(GL2 gl, GLU glu) {
-        float hfw = fieldWidth / 2;
-        float hfl = fieldLength / 2;
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		gl.glOrtho(-hfl, hfl, -hfw, hfw, 1, 5);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		glu.gluLookAt(0, 4, 0, 0, 0, 0, 0, 0, 1);
 
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glPushMatrix();
-        gl.glLoadIdentity();
-        gl.glOrtho(-hfl, hfl, -hfw, hfw, 1, 5);
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glPushMatrix();
-        gl.glLoadIdentity();
-        glu.gluLookAt(0, 4, 0, 0, 0, 0, 0, 0, 1);
+		int displayWidth = (int) (screenWidth * 0.3f);
+		int displayHeight = (int) (displayWidth * fieldWidth / fieldLength);
+		gl.glViewport(10, yPos, displayWidth, displayHeight);
+	}
 
-        int displayWidth = (int) (screenWidth * 0.3f);
-        int displayHeight = (int) (displayWidth * fieldWidth / fieldLength);
-        gl.glViewport(10, yPos, displayWidth, displayHeight);
-    }
+	private void unsetView(GL2 gl, Viewport vp)
+	{
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glPopMatrix();
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glPopMatrix();
+		vp.apply(gl);
+	}
 
-    private void unsetView(GL2 gl, Viewport vp) {
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glPopMatrix();
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glPopMatrix();
-        vp.apply(gl);
-    }
+	private void drawPoints(GL2 gl, int pSize, boolean manualColor)
+	{
+		gl.glPointSize(pSize);
+		gl.glBegin(GL2.GL_POINTS);
+		drawTeam(gl, manualColor, world.getRightTeam());
+		drawTeam(gl, manualColor, world.getLeftTeam());
+		gl.glEnd();
 
-    private void drawPoints(GL2 gl, int pSize, boolean manualColor) {
-        gl.glPointSize(pSize);
-        gl.glBegin(GL2.GL_POINTS);
-        drawTeam(gl, manualColor, world.getRightTeam());
-        drawTeam(gl, manualColor, world.getLeftTeam());
-        gl.glEnd();
+		gl.glPointSize(pSize * 0.5f);
+		gl.glBegin(GL2.GL_POINTS);
+		Vec3f p = world.getBall().getPosition();
+		if (p != null) {
+			if (!manualColor)
+				gl.glColor3f(1, 1, 1);
+			gl.glVertex3f(p.x, p.y, p.z);
+		}
+		gl.glEnd();
+	}
 
-        gl.glPointSize(pSize * 0.5f);
-        gl.glBegin(GL2.GL_POINTS);
-        Vec3f p = world.getBall().getPosition();
-        if (p != null) {
-            if (!manualColor)
-                gl.glColor3f(1, 1, 1);
-            gl.glVertex3f(p.x, p.y, p.z);
-        }
-        gl.glEnd();
-    }
+	private void drawTeam(GL2 gl, boolean manualColor, Team team)
+	{
+		if (!manualColor)
+			gl.glColor3fv(team.getTeamMaterial().getDiffuse(), 0);
+		for (int i = 0; i < team.getAgents().size(); i++) {
+			Vec3f p = team.getAgents().get(i).getPosition();
+			if (p != null) {
+				gl.glVertex3f(p.x, p.y, p.z);
+			}
+		}
+	}
 
-    private void drawTeam(GL2 gl, boolean manualColor, Team team) {
-        if (!manualColor)
-            gl.glColor3fv(team.getTeamMaterial().getDiffuse(), 0);
-        for (int i = 0; i < team.getAgents().size(); i++) {
-            Vec3f p = team.getAgents().get(i).getPosition();
-            if (p != null) {
-                gl.glVertex3f(p.x, p.y, p.z);
-            }
-        }
-    }
+	@Override
+	public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp)
+	{
+		if (world.getField().getModel().isLoaded() && visible) {
+			screenWidth = vp.w;
+			screenHeight = vp.h;
 
-    @Override
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        if (world.getField().getModel().isLoaded() && visible) {
-            screenWidth = vp.w;
-            screenHeight = vp.h;
+			gl.glColor4f(1, 1, 1, 0.1f);
+			setView(gl, glu);
+			world.getField().render(gl);
 
-            gl.glColor4f(1, 1, 1, 0.1f);
-            setView(gl, glu);
-            world.getField().render(gl);
+			int pSize = (int) (screenWidth * 0.01125);
 
-            int pSize = (int) (screenWidth * 0.01125);
+			gl.glEnable(GL2.GL_POINT_SMOOTH);
+			gl.glColor4f(0, 0, 0, 0.5f);
+			drawPoints(gl, pSize, true);
+			drawPoints(gl, pSize - 2, false);
+			gl.glDisable(GL2.GL_POINT_SMOOTH);
 
-            gl.glEnable(GL2.GL_POINT_SMOOTH);
-            gl.glColor4f(0, 0, 0, 0.5f);
-            drawPoints(gl, pSize, true);
-            drawPoints(gl, pSize - 2, false);
-            gl.glDisable(GL2.GL_POINT_SMOOTH);
+			unsetView(gl, vp);
+		}
+	}
 
-            unsetView(gl, vp);
-        }
-    }
+	@Override
+	public void gsMeasuresAndRulesChanged(GameState gs)
+	{
+		fieldWidth = gs.getFieldWidth();
+		fieldLength = gs.getFieldLength();
+	}
 
-    @Override
-    public void gsMeasuresAndRulesChanged(GameState gs) {
-        fieldWidth = gs.getFieldWidth();
-        fieldLength = gs.getFieldLength();
-    }
+	@Override
+	public void gsPlayStateChanged(GameState gs)
+	{
+	}
 
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-    }
-
-    @Override
-    public void gsTimeChanged(GameState gs) {
-    }
+	@Override
+	public void gsTimeChanged(GameState gs)
+	{
+	}
 }

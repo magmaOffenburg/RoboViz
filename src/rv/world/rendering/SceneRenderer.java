@@ -25,26 +25,25 @@ import rv.world.WorldModel;
 
 /**
  * Renders world model scene using a specific shader, lighting effect, etc.
- * 
+ *
  * @author justin
  */
 public interface SceneRenderer {
+	/**
+	 * Initializes renderer to be prepared for rendering; must be called once before render method.
+	 *
+	 * @return true if initialization successful
+	 */
+	boolean init(GL2 gl, Configuration.Graphics conf, ContentManager cm);
 
-    /**
-     * Initializes renderer to be prepared for rendering; must be called once before render method.
-     * 
-     * @return true if initialization successful
-     */
-    boolean init(GL2 gl, Configuration.Graphics conf, ContentManager cm);
+	/**
+	 * Renders world model scene to currently bound frame buffer according to this renderer's
+	 * implementation
+	 */
+	void render(GL2 gl, WorldModel world, Drawings drawings);
 
-    /**
-     * Renders world model scene to currently bound frame buffer according to this renderer's
-     * implementation
-     */
-    void render(GL2 gl, WorldModel world, Drawings drawings);
-
-    /**
-     * Release any resources used by renderer
-     */
-    void dispose(GL gl);
+	/**
+	 * Release any resources used by renderer
+	 */
+	void dispose(GL gl);
 }

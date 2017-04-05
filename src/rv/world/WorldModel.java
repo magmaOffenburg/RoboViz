@@ -39,202 +39,222 @@ import rv.world.objects.SkyBox;
 
 /**
  * Contains, updates, and renders world state data
- * 
+ *
  * @author Justin Stoecker
  */
-public class WorldModel {
+public class WorldModel
+{
+	public interface SelectionChangeListener {
+		void selectionChanged(ISelectable newSelection);
+	}
 
-    public interface SelectionChangeListener {
-        void selectionChanged(ISelectable newSelection);
-    }
+	/** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
+	public static final Matrix COORD_TFN = new Matrix(new double[] {-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1});
 
-    /** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
-    public static final Matrix                       COORD_TFN    = new Matrix(
-            new double[] { -1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 });
+	private final GameState gameState = new GameState();
+	private SceneGraph sceneGraph = null;
+	private ContentManager cm;
+	private Configuration config;
 
-    private final GameState                          gameState    = new GameState();
-    private SceneGraph                               sceneGraph   = null;
-    private ContentManager                           cm;
-    private Configuration                            config;
+	private final ArrayList<ISceneGraphItem> sgItems = new ArrayList<>();
 
-    private final ArrayList<ISceneGraphItem>         sgItems      = new ArrayList<>();
+	private Field field;
+	private Ball ball;
+	private Team leftTeam;
+	private Team rightTeam;
+	private LightModel lighting;
+	private SkyBox skyBox;
 
-    private Field                                    field;
-    private Ball                                     ball;
-    private Team                                     leftTeam;
-    private Team                                     rightTeam;
-    private LightModel                               lighting;
-    private SkyBox                                   skyBox;
+	private ISelectable selectedObject;
 
-    private ISelectable                              selectedObject;
+	private final ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
+	private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
 
-    private final ArrayList<SceneGraphListener>      sgListeners  = new ArrayList<>();
-    private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
+	public void addSceneGraphListener(SceneGraphListener sgl)
+	{
+		sgListeners.add(sgl);
+	}
 
-    public void addSceneGraphListener(SceneGraphListener sgl) {
-        sgListeners.add(sgl);
-    }
+	public void removeSceneGraphListener(SceneGraphListener sgl)
+	{
+		sgListeners.remove(sgl);
+	}
 
-    public void removeSceneGraphListener(SceneGraphListener sgl) {
-        sgListeners.remove(sgl);
-    }
+	public void addSelectionChangeListener(SelectionChangeListener sl)
+	{
+		selListeners.add(sl);
+	}
 
-    public void addSelectionChangeListener(SelectionChangeListener sl) {
-        selListeners.add(sl);
-    }
+	public void removeSelectionChangeListener(SelectionChangeListener sl)
+	{
+		selListeners.remove(sl);
+	}
 
-    public void removeSelectionChangeListener(SelectionChangeListener sl) {
-        selListeners.remove(sl);
-    }
+	public ISelectable getSelectedObject()
+	{
+		return selectedObject;
+	}
 
-    public ISelectable getSelectedObject() {
-        return selectedObject;
-    }
+	public Ball getBall()
+	{
+		return ball;
+	}
 
-    public Ball getBall() {
-        return ball;
-    }
+	public void setSelectedObject(ISelectable newSelection)
+	{
+		if (newSelection == selectedObject)
+			return;
 
-    public void setSelectedObject(ISelectable newSelection) {
-        if (newSelection == selectedObject)
-            return;
+		if (selectedObject != null)
+			selectedObject.setSelected(false);
 
-        if (selectedObject != null)
-            selectedObject.setSelected(false);
+		selectedObject = newSelection;
 
-        selectedObject = newSelection;
+		if (selectedObject != null)
+			selectedObject.setSelected(true);
 
-        if (selectedObject != null)
-            selectedObject.setSelected(true);
+		for (SelectionChangeListener listener : selListeners)
+			listener.selectionChanged(selectedObject);
+	}
 
-        for (SelectionChangeListener listener : selListeners)
-            listener.selectionChanged(selectedObject);
-    }
+	public GameState getGameState()
+	{
+		return gameState;
+	}
 
-    public GameState getGameState() {
-        return gameState;
-    }
+	public SceneGraph getSceneGraph()
+	{
+		return sceneGraph;
+	}
 
-    public SceneGraph getSceneGraph() {
-        return sceneGraph;
-    }
+	public void setSceneGraph(SceneGraph sceneGraph)
+	{
+		this.sceneGraph = sceneGraph;
 
-    public void setSceneGraph(SceneGraph sceneGraph) {
-        this.sceneGraph = sceneGraph;
+		if (sceneGraph != null) {
+			for (SceneGraphListener sgl : sgListeners)
+				sgl.newSceneGraph(sceneGraph);
 
-        if (sceneGraph != null) {
-            for (SceneGraphListener sgl : sgListeners)
-                sgl.newSceneGraph(sceneGraph);
+			for (ISceneGraphItem sgi : sgItems)
+				sgi.sceneGraphChanged(sceneGraph);
+		}
 
-            for (ISceneGraphItem sgi : sgItems)
-                sgi.sceneGraphChanged(sceneGraph);
-        }
+		if (selectedObject instanceof Agent) {
+			Agent agent = (Agent) selectedObject;
+			Agent newSelection;
+			if (agent.getTeam().getID() == Team.LEFT) {
+				newSelection = getLeftTeam().getAgentByID(agent.getID());
+			} else {
+				newSelection = getRightTeam().getAgentByID(agent.getID());
+			}
+			setSelectedObject(newSelection);
+		}
+	}
 
-        if (selectedObject instanceof Agent) {
-            Agent agent = (Agent) selectedObject;
-            Agent newSelection;
-            if (agent.getTeam().getID() == Team.LEFT) {
-                newSelection = getLeftTeam().getAgentByID(agent.getID());
-            } else {
-                newSelection = getRightTeam().getAgentByID(agent.getID());
-            }
-            setSelectedObject(newSelection);
-        }
-    }
+	public LightModel getLighting()
+	{
+		return lighting;
+	}
 
-    public LightModel getLighting() {
-        return lighting;
-    }
+	public SkyBox getSkyBox()
+	{
+		return skyBox;
+	}
 
-    public SkyBox getSkyBox() {
-        return skyBox;
-    }
+	public Field getField()
+	{
+		return field;
+	}
 
-    public Field getField() {
-        return field;
-    }
+	public ArrayList<ISceneGraphItem> getSceneGraphItems()
+	{
+		return sgItems;
+	}
 
-    public ArrayList<ISceneGraphItem> getSceneGraphItems() {
-        return sgItems;
-    }
+	public Team getLeftTeam()
+	{
+		return leftTeam;
+	}
 
-    public Team getLeftTeam() {
-        return leftTeam;
-    }
+	public Team getRightTeam()
+	{
+		return rightTeam;
+	}
 
-    public Team getRightTeam() {
-        return rightTeam;
-    }
+	public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode)
+	{
+		this.cm = cm;
+		this.config = config;
+		GL2 gl = glObj.getGL2();
 
-    public void init(GL glObj, ContentManager cm, Configuration config, Viewer.Mode mode) {
-        this.cm = cm;
-        this.config = config;
-        GL2 gl = glObj.getGL2();
+		field = new Field(cm.getModel("models/newfield.obj"), cm);
+		gameState.addListener(field);
+		gameState.addListener(cm);
 
-        field = new Field(cm.getModel("models/newfield.obj"), cm);
-        gameState.addListener(field);
-        gameState.addListener(cm);
+		initTeams();
 
-        initTeams();
+		ball = new Ball(cm);
+		sgItems.add(ball);
 
-        ball = new Ball(cm);
-        sgItems.add(ball);
+		skyBox = new SkyBox(cm.getModel("models/skybox.obj"));
 
-        skyBox = new SkyBox(cm.getModel("models/skybox.obj"));
+		gl.glEnable(GL.GL_DEPTH_TEST);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.getGL2().glShadeModel(GLLightingFunc.GL_SMOOTH);
+		lighting = new LightModel();
+		lighting.setGlobalAmbient(0.25f, 0.25f, 0.25f, 1);
+		DirLight d1 = new DirLight(new Vec3f(-8, 7, -6).normalize());
+		d1.setDiffuse(1, 1, 1, 1);
+		lighting.addLight(d1);
+	}
 
-        gl.getGL2().glShadeModel(GLLightingFunc.GL_SMOOTH);
-        lighting = new LightModel();
-        lighting.setGlobalAmbient(0.25f, 0.25f, 0.25f, 1);
-        DirLight d1 = new DirLight(new Vec3f(-8, 7, -6).normalize());
-        d1.setDiffuse(1, 1, 1, 1);
-        lighting.addLight(d1);
-    }
+	private void initTeams()
+	{
+		if (leftTeam != null) {
+			gameState.removeListener(leftTeam);
+			sgItems.remove(leftTeam);
+		}
+		if (rightTeam != null) {
+			gameState.removeListener(rightTeam);
+			sgItems.remove(rightTeam);
+		}
 
-    private void initTeams() {
-        if (leftTeam != null) {
-            gameState.removeListener(leftTeam);
-            sgItems.remove(leftTeam);
-        }
-        if (rightTeam != null) {
-            gameState.removeListener(rightTeam);
-            sgItems.remove(rightTeam);
-        }
+		Configuration.TeamColors teamColors = config.teamColors;
+		leftTeam = new Team(teamColors.defaultLeftColor, Team.LEFT, cm, teamColors);
+		gameState.addListener(leftTeam);
+		rightTeam = new Team(teamColors.defaultRightColor, Team.RIGHT, cm, teamColors);
+		gameState.addListener(rightTeam);
 
-        Configuration.TeamColors teamColors = config.teamColors;
-        leftTeam = new Team(teamColors.defaultLeftColor, Team.LEFT, cm, teamColors);
-        gameState.addListener(leftTeam);
-        rightTeam = new Team(teamColors.defaultRightColor, Team.RIGHT, cm, teamColors);
-        gameState.addListener(rightTeam);
+		sgItems.add(leftTeam);
+		sgItems.add(rightTeam);
+	}
 
-        sgItems.add(leftTeam);
-        sgItems.add(rightTeam);
-    }
+	public void update(GL gl, double elapsedMS, UserInterface ui)
+	{
+		// Allow scene graph items to update their states prior to rendering.
+		// This is done in the update loop rather than the scene graph update
+		// method because the scene graph might update much more frequently than
+		// rendering occurs.
+		if (sceneGraph != null) {
+			for (ISceneGraphItem sgi : sgItems)
+				sgi.update(sceneGraph);
+		}
 
-    public void update(GL gl, double elapsedMS, UserInterface ui) {
-        // Allow scene graph items to update their states prior to rendering.
-        // This is done in the update loop rather than the scene graph update
-        // method because the scene graph might update much more frequently than
-        // rendering occurs.
-        if (sceneGraph != null) {
-            for (ISceneGraphItem sgi : sgItems)
-                sgi.update(sceneGraph);
-        }
+		skyBox.setPosition(ui.getCamera().getPosition());
+	}
 
-        skyBox.setPosition(ui.getCamera().getPosition());
-    }
+	public void dispose(GL gl)
+	{
+		if (field != null)
+			field.dispose(gl);
+	}
 
-    public void dispose(GL gl) {
-        if (field != null)
-            field.dispose(gl);
-    }
-
-    public void reset() {
-        gameState.reset();
-        if (cm != null && config != null)
-            initTeams();
-        setSceneGraph(null);
-    }
+	public void reset()
+	{
+		gameState.reset();
+		if (cm != null && config != null)
+			initTeams();
+		setSceneGraph(null);
+	}
 }

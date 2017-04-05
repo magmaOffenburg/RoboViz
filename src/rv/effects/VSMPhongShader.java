@@ -26,71 +26,80 @@ import js.math.vector.Matrix;
 /**
  * Variance shadow mapping w/ Phong illumination shader. Wraps underlying ShaderProgram and gives
  * access to its uniform variables.
- * 
+ *
  * @author justin
  */
-public class VSMPhongShader {
+public class VSMPhongShader
+{
+	// Used to transform normalized device coordinates in [-1,1] to [0,1]
+	private static final Matrix BIAS_MATRIX = new Matrix(new double[] {
+			0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0,
+	});
 
-    // Used to transform normalized device coordinates in [-1,1] to [0,1]
-    private static final Matrix BIAS_MATRIX = new Matrix(new double[] { 0.5, 0.0, 0.0, 0.0, 0.0,
-            0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0, });
+	private final ShaderProgram prog;
+	private Uniform.Mat4 modelMatrix;
+	private Uniform.Mat4 lvpbMatrix;
 
-    private final ShaderProgram prog;
-    private Uniform.Mat4        modelMatrix;
-    private Uniform.Mat4        lvpbMatrix;
+	/** Uploads modelMatrix of geometry to be rendered */
+	public void setModelMatrix(GL2 gl, Matrix m)
+	{
+		modelMatrix.setValue(gl, m);
+	}
 
-    /** Uploads modelMatrix of geometry to be rendered */
-    public void setModelMatrix(GL2 gl, Matrix m) {
-        modelMatrix.setValue(gl, m);
-    }
+	/** Uploads viewProjection matrix used by light */
+	public void setLightViewProjection(GL2 gl, Matrix m)
+	{
+		lvpbMatrix.setValue(gl, BIAS_MATRIX.times(m));
+	}
 
-    /** Uploads viewProjection matrix used by light */
-    public void setLightViewProjection(GL2 gl, Matrix m) {
-        lvpbMatrix.setValue(gl, BIAS_MATRIX.times(m));
-    }
+	/** Uploads shadow map texture (assumes shader is enabled!) */
+	public void setShadowMap(GL2 gl, Texture2D shadowMap)
+	{
+		if (shadowMap == null)
+			return;
+		gl.glActiveTexture(GL.GL_TEXTURE1);
+		shadowMap.bind(gl);
+		gl.glActiveTexture(GL.GL_TEXTURE0);
+	}
 
-    /** Uploads shadow map texture (assumes shader is enabled!) */
-    public void setShadowMap(GL2 gl, Texture2D shadowMap) {
-        if (shadowMap == null)
-            return;
-        gl.glActiveTexture(GL.GL_TEXTURE1);
-        shadowMap.bind(gl);
-        gl.glActiveTexture(GL.GL_TEXTURE0);
-    }
+	private VSMPhongShader(ShaderProgram prog)
+	{
+		this.prog = prog;
+	}
 
-    private VSMPhongShader(ShaderProgram prog) {
-        this.prog = prog;
-    }
+	public static VSMPhongShader create(GL2 gl)
+	{
+		ShaderProgram prog = ShaderProgram.create(
+				gl, "shaders/vsm_phong.vert", "shaders/vsm_phong.frag", VSMPhongShader.class.getClassLoader());
 
-    public static VSMPhongShader create(GL2 gl) {
-        ShaderProgram prog = ShaderProgram.create(gl, "shaders/vsm_phong.vert",
-                "shaders/vsm_phong.frag", VSMPhongShader.class.getClassLoader());
+		if (prog == null)
+			return null;
 
-        if (prog == null)
-            return null;
+		VSMPhongShader shader = new VSMPhongShader(prog);
 
-        VSMPhongShader shader = new VSMPhongShader(prog);
+		Matrix i = Matrix.createIdentity();
+		prog.enable(gl);
+		shader.modelMatrix = new Uniform.Mat4(gl, prog, "modelMatrix", i);
+		shader.lvpbMatrix = new Uniform.Mat4(gl, prog, "lightViewProjectionBias", i);
+		gl.glUniform1i(prog.getUniform(gl, "diffuseTexture"), 0);
+		gl.glUniform1i(prog.getUniform(gl, "shadowTexture"), 1);
+		prog.disable(gl);
 
-        Matrix i = Matrix.createIdentity();
-        prog.enable(gl);
-        shader.modelMatrix = new Uniform.Mat4(gl, prog, "modelMatrix", i);
-        shader.lvpbMatrix = new Uniform.Mat4(gl, prog, "lightViewProjectionBias", i);
-        gl.glUniform1i(prog.getUniform(gl, "diffuseTexture"), 0);
-        gl.glUniform1i(prog.getUniform(gl, "shadowTexture"), 1);
-        prog.disable(gl);
+		return shader;
+	}
 
-        return shader;
-    }
+	public void enable(GL2 gl)
+	{
+		prog.enable(gl);
+	}
 
-    public void enable(GL2 gl) {
-        prog.enable(gl);
-    }
+	public void disable(GL2 gl)
+	{
+		prog.disable(gl);
+	}
 
-    public void disable(GL2 gl) {
-        prog.disable(gl);
-    }
-
-    public void dispose(GL gl) {
-        prog.dispose(gl);
-    }
+	public void dispose(GL gl)
+	{
+		prog.dispose(gl);
+	}
 }

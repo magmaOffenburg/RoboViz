@@ -32,83 +32,86 @@ import rv.Globals;
 import rv.Viewer;
 import rv.util.swing.SwingUtil;
 
-public class RVConfigure extends JFrame {
+public class RVConfigure extends JFrame
+{
+	interface SaveListener {
+		void configSaved(RVConfigure configProg);
+	}
 
-    interface SaveListener {
-        void configSaved(RVConfigure configProg);
-    }
+	Configuration config;
+	final JButton saveButton;
+	final ArrayList<SaveListener> listeners = new ArrayList<>();
 
-    Configuration                 config;
-    final JButton                 saveButton;
-    final ArrayList<SaveListener> listeners = new ArrayList<>();
+	public RVConfigure()
+	{
+		try {
+			config = Configuration.loadFromFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+			config = new Configuration();
+		}
 
-    public RVConfigure() {
+		Globals.setLookFeel();
+		setTitle("RoboViz Configuration");
+		setIconImage(Globals.getIcon());
+		setLayout(new GridBagLayout());
 
-        try {
-            config = Configuration.loadFromFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-            config = new Configuration();
-        }
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTH;
 
-        Globals.setLookFeel();
-        setTitle("RoboViz Configuration");
-        setIconImage(Globals.getIcon());
-        setLayout(new GridBagLayout());
+		c.gridx = 0;
+		c.gridy = 0;
+		add(new GraphicsPanel(this), c);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTH;
+		JPanel networkPanel = new NetworkPanel(this);
+		c.gridx = 0;
+		c.gridy = 2;
+		networkPanel.add(new GeneralPanel(this), c);
+		c.gridy = 3;
+		networkPanel.add(new TeamColorsPanel(this), c);
+		c.gridy = 4;
+		JPanel southPanel = new JPanel(new GridLayout(1, 2));
+		networkPanel.add(southPanel, c);
 
-        c.gridx = 0;
-        c.gridy = 0;
-        add(new GraphicsPanel(this), c);
+		c.gridx = 1;
+		c.gridy = 0;
+		add(networkPanel);
 
-        JPanel networkPanel = new NetworkPanel(this);
-        c.gridx = 0;
-        c.gridy = 2;
-        networkPanel.add(new GeneralPanel(this), c);
-        c.gridy = 3;
-        networkPanel.add(new TeamColorsPanel(this), c);
-        c.gridy = 4;
-        JPanel southPanel = new JPanel(new GridLayout(1, 2));
-        networkPanel.add(southPanel, c);
+		saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				for (SaveListener l : listeners)
+					l.configSaved(RVConfigure.this);
+				config.write();
+			}
+		});
+		southPanel.add(saveButton);
 
-        c.gridx = 1;
-        c.gridy = 0;
-        add(networkPanel);
+		JButton startButton = new JButton("Start RoboViz");
+		startButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0)
+			{
+				RVConfigure.this.setVisible(false);
+				Viewer.main(new String[] {});
+			}
+		});
+		southPanel.add(startButton);
 
-        saveButton = new JButton("Save");
-        saveButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                for (SaveListener l : listeners)
-                    l.configSaved(RVConfigure.this);
-                config.write();
-            }
-        });
-        southPanel.add(saveButton);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setResizable(false);
+		getContentPane().setBackground(networkPanel.getBackground());
+		getRootPane().setDefaultButton(startButton);
+		pack();
+		Point desiredLocation = new Point(config.graphics.frameX, config.graphics.frameY);
+		if (config.graphics.centerFrame)
+			desiredLocation.setLocation(0, 0);
+		SwingUtil.centerOnScreenAtLocation(this, desiredLocation);
+	}
 
-        JButton startButton = new JButton("Start RoboViz");
-        startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                RVConfigure.this.setVisible(false);
-                Viewer.main(new String[] {});
-            }
-        });
-        southPanel.add(startButton);
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
-        getContentPane().setBackground(networkPanel.getBackground());
-        getRootPane().setDefaultButton(startButton);
-        pack();
-        Point desiredLocation = new Point(config.graphics.frameX, config.graphics.frameY);
-        if (config.graphics.centerFrame)
-            desiredLocation.setLocation(0, 0);
-        SwingUtil.centerOnScreenAtLocation(this, desiredLocation);
-    }
-
-    public static void main(String[] args) {
-        new RVConfigure().setVisible(true);
-    }
+	public static void main(String[] args)
+	{
+		new RVConfigure().setVisible(true);
+	}
 }

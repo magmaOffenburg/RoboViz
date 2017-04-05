@@ -26,51 +26,55 @@ import js.jogl.view.Viewport;
 import rv.Viewer;
 import rv.effects.EffectManager;
 
-public class InfoOverlay extends ScreenBase {
+public class InfoOverlay extends ScreenBase
+{
+	private TextRenderer tr;
+	private Rectangle2D b;
+	private String message;
+	private boolean updateTextRenderer = true;
 
-    private TextRenderer tr;
-    private Rectangle2D  b;
-    private String       message;
-    private boolean      updateTextRenderer = true;
+	public InfoOverlay()
+	{
+	}
 
-    public InfoOverlay() {
-    }
+	public InfoOverlay setMessage(String message)
+	{
+		this.message = message;
+		updateTextRenderer = true;
+		return this;
+	}
 
-    public InfoOverlay setMessage(String message) {
-        this.message = message;
-        updateTextRenderer = true;
-        return this;
-    }
+	@Override
+	public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp)
+	{
+		gl.glColor4f(0, 0, 0, 0.7f);
+		EffectManager.renderScreenQuad(gl);
+		gl.glColor4f(1, 1, 1, 1);
 
-    @Override
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
-        gl.glColor4f(0, 0, 0, 0.7f);
-        EffectManager.renderScreenQuad(gl);
-        gl.glColor4f(1, 1, 1, 1);
+		if (updateTextRenderer) {
+			int size = (int) (vp.w / message.length() * 1.2);
+			tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, size), true, true);
+			b = tr.getBounds(this.message);
+			updateTextRenderer = false;
+		}
 
-        if (updateTextRenderer) {
-            int size = (int) (vp.w / message.length() * 1.2);
-            tr = new TextRenderer(new Font("Tahoma", Font.PLAIN, size), true, true);
-            b = tr.getBounds(this.message);
-            updateTextRenderer = false;
-        }
+		if (b == null) {
+			return;
+		}
 
-        if (b == null) {
-            return;
-        }
+		int x = (int) ((vp.w - b.getWidth()) / 2);
+		int y = vp.h - (int) ((vp.h - b.getHeight()) / 2);
+		tr.beginRendering(vp.w, vp.h);
+		tr.setColor(0, 0, 0, 0);
+		tr.draw(message, x - 1, y - 1);
+		tr.setColor(1, 1, 1, 1);
+		tr.draw(message, x, y);
+		tr.endRendering();
+	}
 
-        int x = (int) ((vp.w - b.getWidth()) / 2);
-        int y = vp.h - (int) ((vp.h - b.getHeight()) / 2);
-        tr.beginRendering(vp.w, vp.h);
-        tr.setColor(0, 0, 0, 0);
-        tr.draw(message, x - 1, y - 1);
-        tr.setColor(1, 1, 1, 1);
-        tr.draw(message, x, y);
-        tr.endRendering();
-    }
-
-    @Override
-    public void windowResized(Viewer.WindowResizeEvent event) {
-        updateTextRenderer = true;
-    }
+	@Override
+	public void windowResized(Viewer.WindowResizeEvent event)
+	{
+		updateTextRenderer = true;
+	}
 }

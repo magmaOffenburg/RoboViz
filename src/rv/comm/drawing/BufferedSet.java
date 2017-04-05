@@ -21,66 +21,73 @@ import java.util.ArrayList;
 /**
  * Contains two buffers of the same data type that can be used for asynchronous reading and writing
  * of data
- * 
+ *
  * @author justin
  */
-public class BufferedSet<T> implements VisibleNamedObject {
+public class BufferedSet<T> implements VisibleNamedObject
+{
+	private boolean visible = true;
+	private final String name;
+	private int frontBuf = 0;
+	private int backBuf = 1;
 
-    private boolean              visible  = true;
-    private final String         name;
-    private int                  frontBuf = 0;
-    private int                  backBuf  = 1;
+	@SuppressWarnings("unchecked")
+	private final ArrayList<T>[] buffers = new ArrayList[2];
 
-    @SuppressWarnings("unchecked")
-    private final ArrayList<T>[] buffers  = new ArrayList[2];
+	public boolean isVisible()
+	{
+		return visible;
+	}
 
-    public boolean isVisible() {
-        return visible;
-    }
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
+	}
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public BufferedSet(String name)
+	{
+		this.name = name;
+		buffers[0] = new ArrayList<>();
+		buffers[1] = new ArrayList<>();
+	}
 
-    public BufferedSet(String name) {
-        this.name = name;
-        buffers[0] = new ArrayList<>();
-        buffers[1] = new ArrayList<>();
-    }
+	/**
+	 * Gets a copy of the set of data stored in the front buffer
+	 */
+	public synchronized ArrayList<T> getFrontSet()
+	{
+		// a copy is made because we don't want to return a reference to the
+		// current front buffer; this buffer may be swapped while the thread
+		// is still using the shapes in it (such as rendering).
+		ArrayList<T> set = buffers[frontBuf];
+		ArrayList<T> setCopy = new ArrayList<>(set.size());
+		setCopy.addAll(set);
 
-    /**
-     * Gets a copy of the set of data stored in the front buffer
-     */
-    public synchronized ArrayList<T> getFrontSet() {
-        // a copy is made because we don't want to return a reference to the
-        // current front buffer; this buffer may be swapped while the thread
-        // is still using the shapes in it (such as rendering).
-        ArrayList<T> set = buffers[frontBuf];
-        ArrayList<T> setCopy = new ArrayList<>(set.size());
-        setCopy.addAll(set);
+		return setCopy;
+	}
 
-        return setCopy;
-    }
+	/**
+	 * Adds data to the back buffer set. This method is not synchronized as the only thread that
+	 * should be using it is the one that is also responsible for swapping the buffers.
+	 */
+	public void put(T data)
+	{
+		buffers[backBuf].add(data);
+	}
 
-    /**
-     * Adds data to the back buffer set. This method is not synchronized as the only thread that
-     * should be using it is the one that is also responsible for swapping the buffers.
-     */
-    public void put(T data) {
-        buffers[backBuf].add(data);
-    }
-
-    /**
-     * Swaps the front and back buffers and clears the new back buffer.
-     */
-    public synchronized void swapBuffers() {
-        int temp = backBuf;
-        backBuf = frontBuf;
-        frontBuf = temp;
-        buffers[backBuf].clear();
-    }
+	/**
+	 * Swaps the front and back buffers and clears the new back buffer.
+	 */
+	public synchronized void swapBuffers()
+	{
+		int temp = backBuf;
+		backBuf = frontBuf;
+		frontBuf = temp;
+		buffers[backBuf].clear();
+	}
 }

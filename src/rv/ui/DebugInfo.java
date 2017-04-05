@@ -16,13 +16,15 @@
 
 package rv.ui;
 
-public class DebugInfo {
+public class DebugInfo
+{
+	public static void println(Class src, String msg)
+	{
+		System.out.println(String.format("(%s): %s", src.getName(), msg));
+	}
 
-    public static void println(Class src, String msg) {
-        System.out.println(String.format("(%s): %s", src.getName(), msg));
-    }
-
-    public static void printErr(Class src, String msg) {
-        System.err.println(String.format("(%s): %s", src.getName(), msg));
-    }
+	public static void printErr(Class src, String msg)
+	{
+		System.err.println(String.format("(%s): %s", src.getName(), msg));
+	}
 }

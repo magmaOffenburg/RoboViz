@@ -32,180 +32,188 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 
-public class PlaymodeOverlay extends ScreenBase implements KeyListener {
+public class PlaymodeOverlay extends ScreenBase implements KeyListener
+{
+	private static final String DEFAULT_FILTER_TEXT = "Type anything to filter...";
+	private static final int MAX_FILTER_LENGTH = 30;
+	private static final String CARET = "|";
+	private static final int CARET_INTERVAL = 30;
 
-    private static final String  DEFAULT_FILTER_TEXT = "Type anything to filter...";
-    private static final int     MAX_FILTER_LENGTH   = 30;
-    private static final String  CARET               = "|";
-    private static final int     CARET_INTERVAL      = 30;
+	final Viewer viewer;
+	int index = 0;
+	String[] modes = new String[] {};
+	List<String> filteredModes = new ArrayList<>();
+	String filterText = DEFAULT_FILTER_TEXT;
+	String caret = CARET;
+	int caretTimer = 0;
+	boolean justCreated = true;
+	final TextRenderer tr;
+	private final LiveGameScreen masterScreen;
 
-    final Viewer                 viewer;
-    int                          index               = 0;
-    String[]                     modes               = new String[] {};
-    List<String>                 filteredModes       = new ArrayList<>();
-    String                       filterText          = DEFAULT_FILTER_TEXT;
-    String                       caret               = CARET;
-    int                          caretTimer          = 0;
-    boolean                      justCreated         = true;
-    final TextRenderer           tr;
-    private final LiveGameScreen masterScreen;
+	public PlaymodeOverlay(Viewer viewer, LiveGameScreen masterScreen)
+	{
+		this.viewer = viewer;
+		this.masterScreen = masterScreen;
+		tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
+		visible = false;
+	}
 
-    public PlaymodeOverlay(Viewer viewer, LiveGameScreen masterScreen) {
-        this.viewer = viewer;
-        this.masterScreen = masterScreen;
-        tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
-        visible = false;
-    }
+	@Override
+	public void setVisible(boolean visible)
+	{
+		if (visible == this.visible)
+			return;
 
-    @Override
-    public void setVisible(boolean visible) {
-        if (visible == this.visible)
-            return;
+		super.setVisible(visible);
+		if (visible) {
+			if (viewer.getWorldModel().getGameState() != null)
+				this.modes = viewer.getWorldModel().getGameState().getPlayModes();
+			((GLCanvas) viewer.getCanvas()).addKeyListener(this);
+			filterText = DEFAULT_FILTER_TEXT;
+			resetFilter(null);
+			justCreated = true;
+		} else {
+			((GLCanvas) viewer.getCanvas()).removeKeyListener(this);
+			masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
+		}
+	}
 
-        super.setVisible(visible);
-        if (visible) {
-            if (viewer.getWorldModel().getGameState() != null)
-                this.modes = viewer.getWorldModel().getGameState().getPlayModes();
-            ((GLCanvas) viewer.getCanvas()).addKeyListener(this);
-            filterText = DEFAULT_FILTER_TEXT;
-            resetFilter(null);
-            justCreated = true;
-        } else {
-            ((GLCanvas) viewer.getCanvas()).removeKeyListener(this);
-            masterScreen.setEnabled((GLCanvas) viewer.getCanvas(), true);
-        }
-    }
+	@Override
+	public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp)
+	{
+		if (modes.length <= 0) {
+			return;
+		}
 
-    @Override
-    public void render(GL2 gl, GLU glu, GLUT glut, Viewport vp) {
+		int h = (int) (tr.getBounds(modes[0]).getHeight()) + 3;
+		int y = (vp.h - (modes.length + 2) * h) / 2;
 
-        if (modes.length <= 0) {
-            return;
-        }
+		gl.glColor4f(0, 0, 0, 0.5f);
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glVertex2f(0, y);
+		gl.glVertex2f(vp.w, y);
+		gl.glVertex2f(vp.w, y + h * (modes.length + 3));
+		gl.glVertex2f(0, y + h * (modes.length + 3));
+		gl.glEnd();
+		gl.glColor4f(1, 1, 1, 1);
 
-        int h = (int) (tr.getBounds(modes[0]).getHeight()) + 3;
-        int y = (vp.h - (modes.length + 2) * h) / 2;
+		tr.beginRendering(vp.w, vp.h);
 
-        gl.glColor4f(0, 0, 0, 0.5f);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(0, y);
-        gl.glVertex2f(vp.w, y);
-        gl.glVertex2f(vp.w, y + h * (modes.length + 3));
-        gl.glVertex2f(0, y + h * (modes.length + 3));
-        gl.glEnd();
-        gl.glColor4f(1, 1, 1, 1);
+		tr.setColor(0.6f, 0.6f, 0.6f, 1.0f);
+		drawText(filterText + getCaret(), tr.getBounds(filterText), vp, 0, h, y);
 
-        tr.beginRendering(vp.w, vp.h);
+		for (int i = 0; i < filteredModes.size(); i++) {
+			if (i == index)
+				tr.setColor(Color.white);
+			else
+				tr.setColor(0.6f, 0.6f, 0.6f, 1.0f);
 
-        tr.setColor(0.6f, 0.6f, 0.6f, 1.0f);
-        drawText(filterText + getCaret(), tr.getBounds(filterText), vp, 0, h, y);
+			String mode = filteredModes.get(i);
+			drawText(mode, tr.getBounds(mode), vp, i + 2, h, y);
+		}
+		tr.endRendering();
+	}
 
-        for (int i = 0; i < filteredModes.size(); i++) {
+	private void drawText(String text, Rectangle2D bounds, Viewport vp, int index, int h, int y)
+	{
+		int x = (int) ((vp.w - bounds.getWidth()) / 2);
+		tr.draw(text, x, vp.h - (y + index * h));
+	}
 
-            if (i == index)
-                tr.setColor(Color.white);
-            else
-                tr.setColor(0.6f, 0.6f, 0.6f, 1.0f);
+	private String getCaret()
+	{
+		if (filterText.equals(DEFAULT_FILTER_TEXT))
+			return "";
 
-            String mode = filteredModes.get(i);
-            drawText(mode, tr.getBounds(mode), vp, i + 2, h, y);
-        }
-        tr.endRendering();
-    }
+		caretTimer++;
+		if (caretTimer >= CARET_INTERVAL) {
+			caretTimer = 0;
+			if (caret.equals(CARET))
+				caret = "";
+			else
+				caret = CARET;
+		}
+		return caret;
+	}
 
-    private void drawText(String text, Rectangle2D bounds, Viewport vp, int index, int h, int y) {
-        int x = (int) ((vp.w - bounds.getWidth()) / 2);
-        tr.draw(text, x, vp.h - (y + index * h));
-    }
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_DOWN:
+			index = wrap(index + 1, 0, filteredModes.size() - 1);
+			break;
+		case KeyEvent.VK_UP:
+			index = wrap(index - 1, 0, filteredModes.size() - 1);
+			break;
+		case KeyEvent.VK_ENTER:
+			if (filteredModes.size() <= 0)
+				return;
+			// changing the play mode doesn't have any effect if the game has ended
+			float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
+			if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
+				viewer.getNetManager().getServer().resetTime();
+			viewer.getNetManager().getServer().setPlayMode(filteredModes.get(index));
+			setVisible(false);
+			break;
+		case KeyEvent.VK_ESCAPE:
+			setVisible(false);
+			break;
+		case KeyEvent.VK_BACK_SPACE:
+			filterTextChanged();
+			int endIndex = Math.max(0, filterText.length() - 1);
+			filterText = filterText.substring(0, endIndex);
+			resetFilter(filterText);
+			break;
+		}
+	}
 
-    private String getCaret() {
-        if (filterText.equals(DEFAULT_FILTER_TEXT))
-            return "";
+	private int wrap(int value, int min, int max)
+	{
+		if (value < min)
+			return max;
+		else if (value > max)
+			return min;
+		return value;
+	}
 
-        caretTimer++;
-        if (caretTimer >= CARET_INTERVAL) {
-            caretTimer = 0;
-            if (caret.equals(CARET))
-                caret = "";
-            else
-                caret = CARET;
-        }
-        return caret;
-    }
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_DOWN:
-            index = wrap(index + 1, 0, filteredModes.size() - 1);
-            break;
-        case KeyEvent.VK_UP:
-            index = wrap(index - 1, 0, filteredModes.size() - 1);
-            break;
-        case KeyEvent.VK_ENTER:
-            if (filteredModes.size() <= 0)
-                return;
-            // changing the play mode doesn't have any effect if the game has ended
-            float gameTime = viewer.getWorldModel().getGameState().getHalfTime() * 2;
-            if (viewer.getWorldModel().getGameState().getTime() >= gameTime)
-                viewer.getNetManager().getServer().resetTime();
-            viewer.getNetManager().getServer().setPlayMode(filteredModes.get(index));
-            setVisible(false);
-            break;
-        case KeyEvent.VK_ESCAPE:
-            setVisible(false);
-            break;
-        case KeyEvent.VK_BACK_SPACE:
-            filterTextChanged();
-            int endIndex = Math.max(0, filterText.length() - 1);
-            filterText = filterText.substring(0, endIndex);
-            resetFilter(filterText);
-            break;
-        }
-    }
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+		// prevent overlay hotkey from showing up
+		if (justCreated) {
+			justCreated = false;
+			return;
+		}
 
-    private int wrap(int value, int min, int max) {
-        if (value < min)
-            return max;
-        else if (value > max)
-            return min;
-        return value;
-    }
+		filterTextChanged();
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
+		char c = e.getKeyChar();
+		if (Pattern.matches("[A-Za-z_]", Character.toString(c)) && filterText.length() < MAX_FILTER_LENGTH) {
+			filterText += c;
+			resetFilter(filterText);
+		}
+	}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // prevent overlay hotkey from showing up
-        if (justCreated) {
-            justCreated = false;
-            return;
-        }
+	private void filterTextChanged()
+	{
+		if (filterText.equals(DEFAULT_FILTER_TEXT))
+			filterText = "";
+	}
 
-        filterTextChanged();
-
-        char c = e.getKeyChar();
-        if (Pattern.matches("[A-Za-z_]", Character.toString(c))
-                && filterText.length() < MAX_FILTER_LENGTH) {
-            filterText += c;
-            resetFilter(filterText);
-        }
-    }
-
-    private void filterTextChanged() {
-        if (filterText.equals(DEFAULT_FILTER_TEXT))
-            filterText = "";
-    }
-
-    private void resetFilter(String filter) {
-        filteredModes.clear();
-        for (String mode : modes) {
-            if (filter == null || mode.toLowerCase().contains(filter.toLowerCase())) {
-                filteredModes.add(mode);
-            }
-        }
-        index = 0;
-    }
+	private void resetFilter(String filter)
+	{
+		filteredModes.clear();
+		for (String mode : modes) {
+			if (filter == null || mode.toLowerCase().contains(filter.toLowerCase())) {
+				filteredModes.add(mode);
+			}
+		}
+		index = 0;
+	}
 }

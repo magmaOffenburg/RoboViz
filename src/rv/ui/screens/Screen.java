@@ -27,18 +27,17 @@ import rv.ui.menus.Menu;
 /**
  * A screen represents a visual 2D interface that is displayed on top of the 3D rendering of the
  * scene. A screen typically acts as a keyboard and mouse listener as well.
- * 
+ *
  * @author justin
  */
 public interface Screen extends Viewer.WindowResizeListener {
+	void setEnabled(GLCanvas canvas, boolean enabled);
 
-    void setEnabled(GLCanvas canvas, boolean enabled);
+	void render(GL2 gl, GLU glu, GLUT glut, Viewport vp);
 
-    void render(GL2 gl, GLU glu, GLUT glut, Viewport vp);
+	boolean isVisible();
 
-    boolean isVisible();
+	void setVisible(boolean visible);
 
-    void setVisible(boolean visible);
-
-    void createViewMenu(Menu menu);
+	void createViewMenu(Menu menu);
 }

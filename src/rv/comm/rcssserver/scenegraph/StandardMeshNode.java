@@ -20,26 +20,29 @@ import rv.comm.rcssserver.SExp;
 
 /**
  * Predefined mesh type using standard shapes
- * 
+ *
  * @author Justin Stoecker
  */
-public class StandardMeshNode extends GeometryNode {
-    /** Abbreviation declaring this node type in an s-expression */
-    public static final String EXP_ABRV = "SMN";
+public class StandardMeshNode extends GeometryNode
+{
+	/** Abbreviation declaring this node type in an s-expression */
+	public static final String EXP_ABRV = "SMN";
 
-    public StandardMeshNode(Node parent, SExp exp) {
-        super(parent, exp);
+	public StandardMeshNode(Node parent, SExp exp)
+	{
+		super(parent, exp);
 
-        // TODO: currently this type of mesh isn't used
+		// TODO: currently this type of mesh isn't used
 
-        // (nd SMN (load StdUnitBox) (sSc 1 31 1) (sMat matGrey))
-        // (nd SMN (load StdUnitCylinder 0.015 0.08) (sSc 1 1 1) (sMat
-        // matDarkGrey))
-    }
+		// (nd SMN (load StdUnitBox) (sSc 1 31 1) (sMat matGrey))
+		// (nd SMN (load StdUnitCylinder 0.015 0.08) (sSc 1 1 1) (sMat
+		// matDarkGrey))
+	}
 
-    @Override
-    protected void load(SExp exp) {
-        // TODO Auto-generated method stub
-        name = exp.getAtoms()[1];
-    }
+	@Override
+	protected void load(SExp exp)
+	{
+		// TODO Auto-generated method stub
+		name = exp.getAtoms()[1];
+	}
 }

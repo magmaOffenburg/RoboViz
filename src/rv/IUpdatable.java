@@ -22,20 +22,19 @@ import rv.world.WorldModel;
 
 /**
  * Interface for classes that should be updated in the main update loop
- * 
+ *
  * @author Justin Stoecker
  */
 public interface IUpdatable {
-
-    /**
-     * Allows a module to update its state.
-     *
-     * @param world
-     *            - world model state
-     * @param ui
-     *            - user interface
-     * @param elapsedMS
-     *            - milliseconds since previous update
-     */
-    void update(GL2 gl, WorldModel world, UserInterface ui, double elapsedMS);
+	/**
+	 * Allows a module to update its state.
+	 *
+	 * @param world
+	 *            - world model state
+	 * @param ui
+	 *            - user interface
+	 * @param elapsedMS
+	 *            - milliseconds since previous update
+	 */
+	void update(GL2 gl, WorldModel world, UserInterface ui, double elapsedMS);
 }

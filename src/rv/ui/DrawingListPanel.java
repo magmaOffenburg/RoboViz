@@ -46,166 +46,181 @@ import rv.comm.drawing.shapes.Shape;
 
 /**
  * TODO: lots of work on this class; should use a JTree instead of JList
- * 
+ *
  * @author justin
- * 
+ *
  */
-public class DrawingListPanel extends FramePanelBase implements ShapeListListener {
+public class DrawingListPanel extends FramePanelBase implements ShapeListListener
+{
+	static class CheckListRenderer extends JCheckBox implements ListCellRenderer<CheckListItem>
+	{
+		@Override
+		public Component getListCellRendererComponent(JList<? extends CheckListItem> list, CheckListItem value,
+				int index, boolean isSelected, boolean cellHasFocus)
+		{
+			setEnabled(list.isEnabled());
+			setSelected(value.isSelected());
+			setFont(list.getFont());
+			setBackground(list.getBackground());
+			setForeground(list.getForeground());
+			setText(value.toString());
+			return this;
+		}
+	}
 
-    static class CheckListRenderer extends JCheckBox implements ListCellRenderer<CheckListItem> {
-        @Override
-        public Component getListCellRendererComponent(JList<? extends CheckListItem> list,
-                CheckListItem value, int index, boolean isSelected, boolean cellHasFocus) {
-            setEnabled(list.isEnabled());
-            setSelected(value.isSelected());
-            setFont(list.getFont());
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-            setText(value.toString());
-            return this;
-        }
-    }
+	static class CheckListItem
+	{
+		private final VisibleNamedObject item;
+		private final String label;
+		private boolean isSelected = false;
 
-    static class CheckListItem {
-        private final VisibleNamedObject item;
-        private final String             label;
-        private boolean                  isSelected = false;
+		public CheckListItem(VisibleNamedObject item)
+		{
+			this.item = item;
+			this.label = item.getName();
+		}
 
-        public CheckListItem(VisibleNamedObject item) {
-            this.item = item;
-            this.label = item.getName();
-        }
+		public boolean isSelected()
+		{
+			return isSelected;
+		}
 
-        public boolean isSelected() {
-            return isSelected;
-        }
+		public void setSelected(boolean isSelected)
+		{
+			this.isSelected = isSelected;
+			item.setVisible(isSelected);
+		}
 
-        public void setSelected(boolean isSelected) {
-            this.isSelected = isSelected;
-            item.setVisible(isSelected);
-        }
+		@Override
+		public String toString()
+		{
+			return label;
+		}
+	}
 
-        @Override
-        public String toString() {
-            return label;
-        }
-    }
+	private Drawings drawings;
+	private final JTextField regexField;
+	private final JList<CheckListItem> list;
+	final DefaultListModel<CheckListItem> model = new DefaultListModel<>();
 
-    private Drawings                      drawings;
-    private final JTextField              regexField;
-    private final JList<CheckListItem>    list;
-    final DefaultListModel<CheckListItem> model = new DefaultListModel<>();
+	public DrawingListPanel(Drawings drawings, String drawingFilter)
+	{
+		super("Drawings");
+		addCloseHotkey();
+		frame.setAlwaysOnTop(true);
+		list = new JList<>(model);
+		frame.setSize(300, 600);
+		frame.setMinimumSize(new Dimension(300, 200));
 
-    public DrawingListPanel(Drawings drawings, String drawingFilter) {
+		list.setCellRenderer(new CheckListRenderer());
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        super("Drawings");
-        addCloseHotkey();
-        frame.setAlwaysOnTop(true);
-        list = new JList<>(model);
-        frame.setSize(300, 600);
-        frame.setMinimumSize(new Dimension(300, 200));
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event)
+			{
+				// TODO: try/catch really needed?
+				try {
+					JList list = (JList) event.getSource();
+					int index = list.locationToIndex(event.getPoint());
+					CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
+					item.setSelected(!item.isSelected());
+					list.repaint(list.getCellBounds(index, index));
+				} catch (Exception e) {
+				}
+			}
+		});
 
-        list.setCellRenderer(new CheckListRenderer());
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		frame.setLayout(new BorderLayout());
 
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                // TODO: try/catch really needed?
-                try {
-                    JList list = (JList) event.getSource();
-                    int index = list.locationToIndex(event.getPoint());
-                    CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
-                    item.setSelected(!item.isSelected());
-                    list.repaint(list.getCellBounds(index, index));
-                } catch (Exception e) {
-                }
-            }
-        });
+		frame.add(new JScrollPane(list), BorderLayout.CENTER);
+		JPanel p = new JPanel();
+		p.setLayout(new GridLayout(1, 3));
+		regexField = new JTextField(drawingFilter);
 
-        frame.setLayout(new BorderLayout());
+		p.add(regexField);
+		JButton regexSearch = new JButton("Regex");
+		regexSearch.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				regexList(regexField.getText());
+			}
+		});
+		p.add(regexSearch);
+		regexField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+			}
 
-        frame.add(new JScrollPane(list), BorderLayout.CENTER);
-        JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 3));
-        regexField = new JTextField(drawingFilter);
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+			}
 
-        p.add(regexField);
-        JButton regexSearch = new JButton("Regex");
-        regexSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                regexList(regexField.getText());
-            }
-        });
-        p.add(regexSearch);
-        regexField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+					regexList(regexField.getText());
+			}
+		});
+		frame.add(p, BorderLayout.SOUTH);
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
+		JButton clearButton = new JButton("Clear");
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0)
+			{
+				DrawingListPanel.this.drawings.clearAllShapeSets();
+			}
+		});
+		p.add(clearButton);
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                    regexList(regexField.getText());
-            }
-        });
-        frame.add(p, BorderLayout.SOUTH);
+		this.drawings = drawings;
+		drawings.addShapeSetListener(this);
 
-        JButton clearButton = new JButton("Clear");
-        clearButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                DrawingListPanel.this.drawings.clearAllShapeSets();
-            }
-        });
-        p.add(clearButton);
+		frame.pack();
+		frame.setSize(300, 600);
+		// TODO: shouldn't do this, just grab pools on init
+		drawings.clearAllShapeSets();
+	}
 
-        this.drawings = drawings;
-        drawings.addShapeSetListener(this);
+	private void regexList(String s)
+	{
+		for (int i = 0; i < model.getSize(); i++) {
+			CheckListItem cli = (model.getElementAt(i));
+			cli.setSelected(cli.item.getName().matches(s));
+		}
+		list.repaint();
+	}
 
-        frame.pack();
-        frame.setSize(300, 600);
-        // TODO: shouldn't do this, just grab pools on init
-        drawings.clearAllShapeSets();
-    }
+	@Override
+	public void setListChanged(SetListChangeEvent evt)
+	{
+		String regex = regexField.getText();
 
-    private void regexList(String s) {
-        for (int i = 0; i < model.getSize(); i++) {
-            CheckListItem cli = (model.getElementAt(i));
-            cli.setSelected(cli.item.getName().matches(s));
-        }
-        list.repaint();
-    }
+		model.clear();
+		List<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
+		for (BufferedSet<Shape> shapeSet : shapeSets) {
+			if (shapeSet != null) {
+				CheckListItem item = new CheckListItem(shapeSet);
+				boolean visible = shapeSet.isVisible();
+				boolean matchRegex = regex == null || shapeSet.getName().matches(regex);
+				item.setSelected(visible && matchRegex);
+				model.addElement(item);
+			}
+		}
 
-    @Override
-    public void setListChanged(SetListChangeEvent evt) {
-        String regex = regexField.getText();
-
-        model.clear();
-        List<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
-        for (BufferedSet<Shape> shapeSet : shapeSets) {
-            if (shapeSet != null) {
-                CheckListItem item = new CheckListItem(shapeSet);
-                boolean visible = shapeSet.isVisible();
-                boolean matchRegex = regex == null || shapeSet.getName().matches(regex);
-                item.setSelected(visible && matchRegex);
-                model.addElement(item);
-            }
-        }
-
-        List<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
-        for (BufferedSet<Annotation> annotationSet : annotationSets) {
-            if (annotationSet != null) {
-                CheckListItem item = new CheckListItem(annotationSet);
-                boolean visible = annotationSet.isVisible();
-                boolean matchRegex = regex == null || annotationSet.getName().matches(regex);
-                item.setSelected(visible && matchRegex);
-                model.addElement(item);
-            }
-        }
-    }
+		List<BufferedSet<Annotation>> annotationSets = evt.getAnnotationSets();
+		for (BufferedSet<Annotation> annotationSet : annotationSets) {
+			if (annotationSet != null) {
+				CheckListItem item = new CheckListItem(annotationSet);
+				boolean visible = annotationSet.isVisible();
+				boolean matchRegex = regex == null || annotationSet.getName().matches(regex);
+				item.setSelected(visible && matchRegex);
+				model.addElement(item);
+			}
+		}
+	}
 }

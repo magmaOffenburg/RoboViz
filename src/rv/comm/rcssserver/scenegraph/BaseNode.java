@@ -18,20 +18,23 @@ package rv.comm.rcssserver.scenegraph;
 
 /**
  * Generic node that doesn't fit into other node categories.
- * 
+ *
  * @author Justin Stoecker
  */
-public class BaseNode extends Node {
-    /** Abbreviation declaring this node type in an s-expression */
-    private static final String EXP_ABRV = "BN";
+public class BaseNode extends Node
+{
+	/** Abbreviation declaring this node type in an s-expression */
+	private static final String EXP_ABRV = "BN";
 
-    public BaseNode() {
-        super(null);
-        // (nd BN <contents>)
-    }
+	public BaseNode()
+	{
+		super(null);
+		// (nd BN <contents>)
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getName();
-    }
+	@Override
+	public String toString()
+	{
+		return getClass().getName();
+	}
 }

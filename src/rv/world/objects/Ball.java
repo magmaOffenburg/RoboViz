@@ -28,80 +28,88 @@ import rv.content.Model;
 import rv.world.ISelectable;
 import rv.world.WorldModel;
 
-public class Ball implements ISelectable, ISceneGraphItem {
+public class Ball implements ISelectable, ISceneGraphItem
+{
+	private BoundingBox bounds;
+	private boolean selected = false;
+	private StaticMeshNode node;
+	private final ContentManager content;
 
-    private BoundingBox          bounds;
-    private boolean              selected = false;
-    private StaticMeshNode       node;
-    private final ContentManager content;
+	public Ball(ContentManager content)
+	{
+		this.content = content;
+	}
 
-    public Ball(ContentManager content) {
-        this.content = content;
-    }
+	@Override
+	public void sceneGraphChanged(SceneGraph sg)
+	{
+		node = sg.findStaticMeshNode("soccerball.obj");
+	}
 
-    @Override
-    public void sceneGraphChanged(SceneGraph sg) {
-        node = sg.findStaticMeshNode("soccerball.obj");
-    }
+	@Override
+	public void update(SceneGraph sg)
+	{
+		if (node == null)
+			return;
 
-    @Override
-    public void update(SceneGraph sg) {
-        if (node == null)
-            return;
+		Model model = content.getModel(node.getName());
+		if (!model.isLoaded()) {
+			return;
+		}
 
-        Model model = content.getModel(node.getName());
-        if (!model.isLoaded()) {
-            return;
-        }
+		Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
+		Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
-        Vec3f min = new Vec3f(Float.POSITIVE_INFINITY);
-        Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
+		Vec3f[] corners = model.getMesh().getBounds().getCorners();
+		Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
+		for (int j = 0; j < 8; j++) {
+			Vec3f v = modelMat.transform(corners[j]);
+			if (v.x < min.x)
+				min.x = v.x;
+			if (v.y < min.y)
+				min.y = v.y;
+			if (v.z < min.z)
+				min.z = v.z;
+			if (v.x > max.x)
+				max.x = v.x;
+			if (v.y > max.y)
+				max.y = v.y;
+			if (v.z > max.z)
+				max.z = v.z;
+		}
 
-        Vec3f[] corners = model.getMesh().getBounds().getCorners();
-        Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
-        for (int j = 0; j < 8; j++) {
-            Vec3f v = modelMat.transform(corners[j]);
-            if (v.x < min.x)
-                min.x = v.x;
-            if (v.y < min.y)
-                min.y = v.y;
-            if (v.z < min.z)
-                min.z = v.z;
-            if (v.x > max.x)
-                max.x = v.x;
-            if (v.y > max.y)
-                max.y = v.y;
-            if (v.z > max.z)
-                max.z = v.z;
-        }
+		bounds = new BoundingBox(min, max);
+	}
 
-        bounds = new BoundingBox(min, max);
-    }
+	@Override
+	public Vec3f getPosition()
+	{
+		return bounds == null ? null : bounds.getCenter();
+	}
 
-    @Override
-    public Vec3f getPosition() {
-        return bounds == null ? null : bounds.getCenter();
-    }
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bounds;
+	}
 
-    @Override
-    public BoundingBox getBoundingBox() {
-        return bounds;
-    }
+	@Override
+	public void setSelected(boolean selected)
+	{
+		this.selected = selected;
+	}
 
-    @Override
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
+	@Override
+	public boolean isSelected()
+	{
+		return selected;
+	}
 
-    @Override
-    public boolean isSelected() {
-        return selected;
-    }
-
-    @Override
-    public void renderSelected(GL2 gl) {
-        if (getPosition() != null) {
-            ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] { 1, 1, 1 });
-        }
-    }
+	@Override
+	public void renderSelected(GL2 gl)
+	{
+		if (getPosition() != null) {
+			ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] {1, 1, 1});
+		}
+	}
 }

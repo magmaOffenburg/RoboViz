@@ -38,304 +38,315 @@ import rv.world.WorldModel;
 
 /**
  * Variance shadow mapping
- * 
+ *
  * @author justin
  */
-public class ShadowMapRenderer implements SceneRenderer {
+public class ShadowMapRenderer implements SceneRenderer
+{
+	/**
+	 * Encapsulates a directional light that casts shadow within an orthographic frustum
+	 */
+	public static class LightShadowVolume
+	{
+		private final DirLight light;
+		private final Matrix view;
+		private final Matrix projection;
+		private final Matrix viewProjection;
 
-    /**
-     * Encapsulates a directional light that casts shadow within an orthographic frustum
-     */
-    public static class LightShadowVolume {
+		public Matrix getView()
+		{
+			return view;
+		}
 
-        private final DirLight light;
-        private final Matrix   view;
-        private final Matrix   projection;
-        private final Matrix   viewProjection;
+		public Matrix getProjection()
+		{
+			return projection;
+		}
 
-        public Matrix getView() {
-            return view;
-        }
+		public Matrix getViewProjection()
+		{
+			return viewProjection;
+		}
 
-        public Matrix getProjection() {
-            return projection;
-        }
+		public DirLight getLight()
+		{
+			return light;
+		}
 
-        public Matrix getViewProjection() {
-            return viewProjection;
-        }
+		public LightShadowVolume(
+				DirLight light, Vec3f eye, Vec3f target, Vec3f up, float width, float height, float depth)
+		{
+			this.light = light;
 
-        public DirLight getLight() {
-            return light;
-        }
+			double hw = width / 2;
+			double hh = height / 2;
+			projection = Matrix.createOrtho(-hw, hw, -hh, hh, 0.0, depth);
+			view = Matrix.createLookAt(eye.x, eye.y, eye.z, target.x, target.y, target.z, up.x, up.y, up.z);
+			viewProjection = projection.times(view);
+		}
+	}
 
-        public LightShadowVolume(DirLight light, Vec3f eye, Vec3f target, Vec3f up, float width,
-                float height, float depth) {
-            this.light = light;
+	private final static int TEX_FORMAT = GL2.GL_RG32F;
 
-            double hw = width / 2;
-            double hh = height / 2;
-            projection = Matrix.createOrtho(-hw, hw, -hh, hh, 0.0, depth);
-            view = Matrix.createLookAt(eye.x, eye.y, eye.z, target.x, target.y, target.z, up.x,
-                    up.y, up.z);
-            viewProjection = projection.times(view);
-        }
-    }
+	private ContentManager content;
+	private final static float BLURRINESS = 1.0f;
+	private final static int SAMPLES = 5;
+	private int texWidth;
+	private int texHeight;
+	private Texture2D shadowMapTexture;
 
-    private final static int        TEX_FORMAT = GL2.GL_RG32F;
+	private FrameBufferObject shadowFBO;
+	private FrameBufferObject blurFBO;
 
-    private ContentManager          content;
-    private final static float      BLURRINESS = 1.0f;
-    private final static int        SAMPLES    = 5;
-    private int                     texWidth;
-    private int                     texHeight;
-    private Texture2D               shadowMapTexture;
+	private ShaderProgram depthShader;
+	private ShaderProgram blurShader;
 
-    private FrameBufferObject       shadowFBO;
-    private FrameBufferObject       blurFBO;
+	private Gaussian.BlurParams[] blurParams;
+	private int ulocBlurWeights;
+	private int ulocBlurOffsets;
 
-    private ShaderProgram           depthShader;
-    private ShaderProgram           blurShader;
+	private boolean useBlur = true;
+	private final LightShadowVolume light;
 
-    private Gaussian.BlurParams[]   blurParams;
-    private int                     ulocBlurWeights;
-    private int                     ulocBlurOffsets;
+	public LightShadowVolume getLight()
+	{
+		return light;
+	}
 
-    private boolean                 useBlur    = true;
-    private final LightShadowVolume light;
+	public Texture2D getShadowMap()
+	{
+		return shadowMapTexture;
+	}
 
-    public LightShadowVolume getLight() {
-        return light;
-    }
+	public ShadowMapRenderer(LightShadowVolume light)
+	{
+		this.light = light;
+	}
 
-    public Texture2D getShadowMap() {
-        return shadowMapTexture;
-    }
+	private Texture2D createTexture(GL2 gl)
+	{
+		Texture2D tex = Texture2D.generate(gl);
+		tex.bind(gl);
+		Texture2D.setParameter(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
+		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
+		tex.texImage(gl, 0, TEX_FORMAT, texWidth, texHeight, 0, GL2.GL_RGBA, GL2.GL_FLOAT, null);
+		Texture2D.unbind(gl);
 
-    public ShadowMapRenderer(LightShadowVolume light) {
-        this.light = light;
-    }
+		return tex;
+	}
 
-    private Texture2D createTexture(GL2 gl) {
-        Texture2D tex = Texture2D.generate(gl);
-        tex.bind(gl);
-        Texture2D.setParameter(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-        Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-        Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
-        Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
-        tex.texImage(gl, 0, TEX_FORMAT, texWidth, texHeight, 0, GL2.GL_RGBA, GL2.GL_FLOAT, null);
-        Texture2D.unbind(gl);
+	private FrameBufferObject createShadowFBO(GL2 gl)
+	{
+		FrameBufferObject fbo = FrameBufferObject.generate(gl);
+		fbo.bind(gl);
+		Texture2D colorTexture = createTexture(gl);
+		fbo.attachColorTarget(gl, colorTexture, 0, 0, true);
+		RenderBuffer depthRBO = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
 
-        return tex;
-    }
+		fbo.attachDepthTarget(gl, depthRBO, true);
+		int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
+		fbo.unbind(gl);
 
-    private FrameBufferObject createShadowFBO(GL2 gl) {
+		if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
+			System.out.println("ERROR creating shadow FBO - disabling shadows");
+			fbo.dispose(gl);
+			fbo = null;
+		}
 
-        FrameBufferObject fbo = FrameBufferObject.generate(gl);
-        fbo.bind(gl);
-        Texture2D colorTexture = createTexture(gl);
-        fbo.attachColorTarget(gl, colorTexture, 0, 0, true);
-        RenderBuffer depthRBO = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
+		return fbo;
+	}
 
-        fbo.attachDepthTarget(gl, depthRBO, true);
-        int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
-        fbo.unbind(gl);
+	private FrameBufferObject createBlurFBO(GL2 gl)
+	{
+		// can change w/h of textures for downsampling maybe
 
-        if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
-            System.out.println("ERROR creating shadow FBO - disabling shadows");
-            fbo.dispose(gl);
-            fbo = null;
-        }
+		Texture2D hBlurTexture = createTexture(gl);
+		Texture2D vBlurTexture = createTexture(gl);
 
-        return fbo;
-    }
+		FrameBufferObject fbo = FrameBufferObject.generate(gl);
+		fbo.bind(gl);
+		fbo.attachColorTarget(gl, hBlurTexture, 0, 0, true);
+		fbo.attachColorTarget(gl, vBlurTexture, 0, 1, true);
 
-    private FrameBufferObject createBlurFBO(GL2 gl) {
-        // can change w/h of textures for downsampling maybe
+		RenderBuffer rbo = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
+		fbo.attachDepthTarget(gl, rbo, true);
+		int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
+		fbo.unbind(gl);
 
-        Texture2D hBlurTexture = createTexture(gl);
-        Texture2D vBlurTexture = createTexture(gl);
+		if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
+			System.out.println("ERROR creating blur FBO - disabling shadows");
+			fbo.dispose(gl);
+			fbo = null;
+		}
 
-        FrameBufferObject fbo = FrameBufferObject.generate(gl);
-        fbo.bind(gl);
-        fbo.attachColorTarget(gl, hBlurTexture, 0, 0, true);
-        fbo.attachColorTarget(gl, vBlurTexture, 0, 1, true);
+		return fbo;
+	}
 
-        RenderBuffer rbo = RenderBuffer.createDepthBuffer(gl, texWidth, texHeight);
-        fbo.attachDepthTarget(gl, rbo, true);
-        int fboStatus = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
-        fbo.unbind(gl);
+	private boolean abortInit(GL2 gl, String error, Configuration.Graphics config)
+	{
+		System.err.println("Shadow Map: " + error);
+		dispose(gl);
+		config.useShadows = false;
+		return false;
+	}
 
-        if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
-            System.out.println("ERROR creating blur FBO - disabling shadows");
-            fbo.dispose(gl);
-            fbo = null;
-        }
+	public void render(GL2 gl, WorldModel wm, Drawings drawings)
+	{
+		if (wm.getSceneGraph() == null)
+			return;
 
-        return fbo;
-    }
+		shadowMapTexture = renderShadowMap(gl, wm, drawings);
+		if (useBlur)
+			shadowMapTexture = blurShadowMap(gl);
+	}
 
-    private boolean abortInit(GL2 gl, String error, Configuration.Graphics config) {
-        System.err.println("Shadow Map: " + error);
-        dispose(gl);
-        config.useShadows = false;
-        return false;
-    }
+	private Texture2D renderShadowMap(GL2 gl, WorldModel world, Drawings drawings)
+	{
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadMatrixd(light.getProjection().wrap());
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glLoadMatrixd(light.getView().wrap());
+		gl.glEnable(GL.GL_DEPTH_TEST);
 
-    public void render(GL2 gl, WorldModel wm, Drawings drawings) {
-        if (wm.getSceneGraph() == null)
-            return;
+		shadowFBO.bind(gl);
+		shadowFBO.setViewport(gl);
+		shadowFBO.clear(gl);
+		depthShader.enable(gl);
 
-        shadowMapTexture = renderShadowMap(gl, wm, drawings);
-        if (useBlur)
-            shadowMapTexture = blurShadowMap(gl);
-    }
+		world.getField().render(gl);
 
-    private Texture2D renderShadowMap(GL2 gl, WorldModel world, Drawings drawings) {
+		List<StaticMeshNode> transparentNodes = new ArrayList<>();
+		List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
+		for (StaticMeshNode node : nodes) {
+			if (node.isTransparent())
+				transparentNodes.add(node);
+			else {
+				Model model = content.getModel(node.getName());
+				if (model.isLoaded()) {
+					Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
+					model.getMesh().render(gl, modelMat);
+				}
+			}
+		}
 
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadMatrixd(light.getProjection().wrap());
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadMatrixd(light.getView().wrap());
-        gl.glEnable(GL.GL_DEPTH_TEST);
+		gl.glEnable(GL.GL_BLEND);
+		for (StaticMeshNode node : transparentNodes) {
+			Model model = content.getModel(node.getName());
+			if (model.isLoaded()) {
+				Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
+				model.getMesh().render(gl, modelMat);
+			}
+		}
+		gl.glDisable(GL.GL_BLEND);
 
-        shadowFBO.bind(gl);
-        shadowFBO.setViewport(gl);
-        shadowFBO.clear(gl);
-        depthShader.enable(gl);
+		depthShader.disable(gl);
+		shadowFBO.unbind(gl);
 
-        world.getField().render(gl);
+		return shadowFBO.getColorTexture(0);
+	}
 
-        List<StaticMeshNode> transparentNodes = new ArrayList<>();
-        List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
-        for (StaticMeshNode node : nodes) {
-            if (node.isTransparent())
-                transparentNodes.add(node);
-            else {
-                Model model = content.getModel(node.getName());
-                if (model.isLoaded()) {
-                    Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
-                    model.getMesh().render(gl, modelMat);
-                }
-            }
-        }
+	private Texture2D blurShadowMap(GL2 gl)
+	{
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glLoadIdentity();
 
-        gl.glEnable(GL.GL_BLEND);
-        for (StaticMeshNode node : transparentNodes) {
-            Model model = content.getModel(node.getName());
-            if (model.isLoaded()) {
-                Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
-                model.getMesh().render(gl, modelMat);
-            }
-        }
-        gl.glDisable(GL.GL_BLEND);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		shadowMapTexture.bind(gl);
+		gl.glDisable(GL.GL_DEPTH_TEST);
+		gl.glDisable(GL2.GL_LIGHTING);
 
-        depthShader.disable(gl);
-        shadowFBO.unbind(gl);
+		blurFBO.bind(gl);
+		blurFBO.setViewport(gl);
+		blurFBO.clear(gl);
+		blurShader.enable(gl);
 
-        return shadowFBO.getColorTexture(0);
-    }
+		// horizontal pass
+		gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets, 0);
+		gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
+		gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT1);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		renderQuad(gl);
+		blurFBO.getColorTexture(1).bind(gl);
 
-    private Texture2D blurShadowMap(GL2 gl) {
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
+		// vertical pass
+		gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2, blurParams[1].offsets, 0);
+		gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length, blurParams[1].weights, 0);
+		gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT0);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		renderQuad(gl);
 
-        gl.glEnable(GL.GL_TEXTURE_2D);
-        shadowMapTexture.bind(gl);
-        gl.glDisable(GL.GL_DEPTH_TEST);
-        gl.glDisable(GL2.GL_LIGHTING);
+		blurShader.disable(gl);
+		blurFBO.unbind(gl);
+		gl.glEnable(GL.GL_DEPTH_TEST);
+		Texture2D.unbind(gl);
 
-        blurFBO.bind(gl);
-        blurFBO.setViewport(gl);
-        blurFBO.clear(gl);
-        blurShader.enable(gl);
+		return blurFBO.getColorTexture(0);
+	}
 
-        // horizontal pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[0].offsets.length / 2, blurParams[0].offsets,
-                0);
-        gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
-        gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT1);
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        renderQuad(gl);
-        blurFBO.getColorTexture(1).bind(gl);
+	private void renderQuad(GL2 gl)
+	{
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glTexCoord2f(0, 0);
+		gl.glVertex2f(-1, -1);
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex2f(1, -1);
+		gl.glTexCoord2f(1, 1);
+		gl.glVertex2f(1, 1);
+		gl.glTexCoord2f(0, 1);
+		gl.glVertex2f(-1, 1);
+		gl.glEnd();
+	}
 
-        // vertical pass
-        gl.glUniform2fv(ulocBlurOffsets, blurParams[1].offsets.length / 2, blurParams[1].offsets,
-                0);
-        gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length, blurParams[1].weights, 0);
-        gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT0);
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        renderQuad(gl);
+	@Override
+	public void dispose(GL gl)
+	{
+		if (shadowFBO != null)
+			shadowFBO.dispose(gl);
+		if (blurFBO != null)
+			blurFBO.dispose(gl);
+		if (depthShader != null)
+			depthShader.dispose(gl);
+		if (blurShader != null)
+			blurShader.dispose(gl);
+	}
 
-        blurShader.disable(gl);
-        blurFBO.unbind(gl);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        Texture2D.unbind(gl);
+	@Override
+	public boolean init(GL2 gl, Graphics conf, ContentManager cm)
+	{
+		this.content = cm;
+		this.useBlur = conf.useSoftShadows;
 
-        return blurFBO.getColorTexture(0);
-    }
+		texWidth = texHeight = conf.shadowResolution;
 
-    private void renderQuad(GL2 gl) {
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glTexCoord2f(0, 0);
-        gl.glVertex2f(-1, -1);
-        gl.glTexCoord2f(1, 0);
-        gl.glVertex2f(1, -1);
-        gl.glTexCoord2f(1, 1);
-        gl.glVertex2f(1, 1);
-        gl.glTexCoord2f(0, 1);
-        gl.glVertex2f(-1, 1);
-        gl.glEnd();
-    }
+		// generate FBOs
+		shadowFBO = createShadowFBO(gl);
+		if (shadowFBO == null)
+			return abortInit(gl, "could not create shadow FBO", conf);
+		blurFBO = createBlurFBO(gl);
 
-    @Override
-    public void dispose(GL gl) {
-        if (shadowFBO != null)
-            shadowFBO.dispose(gl);
-        if (blurFBO != null)
-            blurFBO.dispose(gl);
-        if (depthShader != null)
-            depthShader.dispose(gl);
-        if (blurShader != null)
-            blurShader.dispose(gl);
-    }
+		ClassLoader cl = getClass().getClassLoader();
+		depthShader = ShaderProgram.create(gl, "shaders/vsm_depth.vert", "shaders/vsm_depth.frag", cl);
+		if (depthShader == null)
+			return abortInit(gl, "could not load depth pass shader", conf);
 
-    @Override
-    public boolean init(GL2 gl, Graphics conf, ContentManager cm) {
-        this.content = cm;
-        this.useBlur = conf.useSoftShadows;
+		if (useBlur) {
+			if (blurFBO == null)
+				return abortInit(gl, "could not create shadow FBO", conf);
+			blurShader = ShaderProgram.create(gl, "shaders/vsm_blur.vert", "shaders/vsm_blur.frag", cl);
+			if (blurShader == null)
+				return abortInit(gl, "could not load blur pass shader", conf);
 
-        texWidth = texHeight = conf.shadowResolution;
-
-        // generate FBOs
-        shadowFBO = createShadowFBO(gl);
-        if (shadowFBO == null)
-            return abortInit(gl, "could not create shadow FBO", conf);
-        blurFBO = createBlurFBO(gl);
-
-        ClassLoader cl = getClass().getClassLoader();
-        depthShader = ShaderProgram.create(gl, "shaders/vsm_depth.vert", "shaders/vsm_depth.frag",
-                cl);
-        if (depthShader == null)
-            return abortInit(gl, "could not load depth pass shader", conf);
-
-        if (useBlur) {
-            if (blurFBO == null)
-                return abortInit(gl, "could not create shadow FBO", conf);
-            blurShader = ShaderProgram.create(gl, "shaders/vsm_blur.vert", "shaders/vsm_blur.frag",
-                    cl);
-            if (blurShader == null)
-                return abortInit(gl, "could not load blur pass shader", conf);
-
-            // configure blur shader
-            blurParams = Gaussian.calcBlurParams(BLURRINESS, SAMPLES, texWidth, texHeight);
-            blurShader.enable(gl);
-            ulocBlurWeights = blurShader.getUniform(gl, "weights");
-            ulocBlurOffsets = blurShader.getUniform(gl, "offsets");
-            blurShader.disable(gl);
-        }
-        return true;
-    }
+			// configure blur shader
+			blurParams = Gaussian.calcBlurParams(BLURRINESS, SAMPLES, texWidth, texHeight);
+			blurShader.enable(gl);
+			ulocBlurWeights = blurShader.getUniform(gl, "weights");
+			ulocBlurOffsets = blurShader.getUniform(gl, "offsets");
+			blurShader.disable(gl);
+		}
+		return true;
+	}
 }

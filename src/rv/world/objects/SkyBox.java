@@ -23,34 +23,37 @@ import rv.world.ModelObject;
 
 /**
  * Box that is centered on camera and provides background scenery
- * 
+ *
  * @author Justin Stoecker
  */
-public class SkyBox extends ModelObject {
+public class SkyBox extends ModelObject
+{
+	private Vec3f position = new Vec3f(0);
 
-    private Vec3f position = new Vec3f(0);
+	public void setPosition(Vec3f position)
+	{
+		this.position = position;
+	}
 
-    public void setPosition(Vec3f position) {
-        this.position = position;
-    }
+	public SkyBox(Model model)
+	{
+		super(model);
+	}
 
-    public SkyBox(Model model) {
-        super(model);
-    }
+	@Override
+	public void render(GL2 gl)
+	{
+		if (!model.isLoaded())
+			return;
+		// no need to write to depth buffer since everything should be drawn
+		// over the skybox pixels
+		gl.glDepthMask(false);
 
-    @Override
-    public void render(GL2 gl) {
-        if (!model.isLoaded())
-            return;
-        // no need to write to depth buffer since everything should be drawn
-        // over the skybox pixels
-        gl.glDepthMask(false);
-
-        // center the skybox on the camera
-        gl.glPushMatrix();
-        gl.glTranslatef(position.x, position.y, position.z);
-        model.getMesh().render(gl, modelMatrix);
-        gl.glPopMatrix();
-        gl.glDepthMask(true);
-    }
+		// center the skybox on the camera
+		gl.glPushMatrix();
+		gl.glTranslatef(position.x, position.y, position.z);
+		model.getMesh().render(gl, modelMatrix);
+		gl.glPopMatrix();
+		gl.glDepthMask(true);
+	}
 }

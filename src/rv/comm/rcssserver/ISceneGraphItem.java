@@ -25,24 +25,23 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
  * this interface and add themselves to the WorldModel's scene graph items. There is no need for
  * items to constantly update their state; they only need to be up-to-date just before rendering
  * occurs.
- * 
+ *
  * @author Justin Stoecker
  */
 public interface ISceneGraphItem {
+	/**
+	 * The scene graph's structure typically remains consistent throughout the life of the
+	 * simulation, but sometimes it is entirely new. This occurs, for example, when the monitor
+	 * first connects or an agent joins the simulation. The object implementing this interface is
+	 * given a chance to locate its respective node in the scene graph and store a reference to it
+	 * for future scene graph updates.
+	 */
+	void sceneGraphChanged(SceneGraph sg);
 
-    /**
-     * The scene graph's structure typically remains consistent throughout the life of the
-     * simulation, but sometimes it is entirely new. This occurs, for example, when the monitor
-     * first connects or an agent joins the simulation. The object implementing this interface is
-     * given a chance to locate its respective node in the scene graph and store a reference to it
-     * for future scene graph updates.
-     */
-    void sceneGraphChanged(SceneGraph sg);
-
-    /**
-     * When called, the object implementing this interface can pull data from the scene graph and
-     * store it in its internal state. It is expected that the implementing object will keep a
-     * reference to its node in the scene graph through the findNode method.
-     */
-    void update(SceneGraph sg);
+	/**
+	 * When called, the object implementing this interface can pull data from the scene graph and
+	 * store it in its internal state. It is expected that the implementing object will keep a
+	 * reference to its node in the scene graph through the findNode method.
+	 */
+	void update(SceneGraph sg);
 }

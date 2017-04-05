@@ -27,44 +27,46 @@ import rv.world.objects.Agent;
 
 /**
  * Text annotation drawing
- * 
+ *
  * @author justin
  */
-public class DrawAnnotation extends Command {
+public class DrawAnnotation extends Command
+{
+	public static final int STANDARD = 0;
+	public static final int AGENT_ADD = 1;
+	public static final int AGENT_CLEAR = 2;
 
-    public static final int STANDARD    = 0;
-    public static final int AGENT_ADD   = 1;
-    public static final int AGENT_CLEAR = 2;
+	private final Drawings drawings;
+	private Annotation annotation;
 
-    private final Drawings  drawings;
-    private Annotation      annotation;
+	public DrawAnnotation(ByteBuffer buf, Viewer viewer)
+	{
+		this.drawings = viewer.getDrawings();
 
-    public DrawAnnotation(ByteBuffer buf, Viewer viewer) {
-        this.drawings = viewer.getDrawings();
+		int type = ByteUtil.uValue(buf.get());
 
-        int type = ByteUtil.uValue(buf.get());
+		switch (type) {
+		case STANDARD:
+			annotation = StandardAnnotation.parse(buf);
+			break;
+		case AGENT_ADD:
+			annotation = AgentAnnotation.parse(buf, viewer.getWorldModel());
+			break;
+		case AGENT_CLEAR:
+			Agent agent = Command.readAgent(buf, viewer.getWorldModel());
+			if (agent != null)
+				agent.setAnnotation(null);
+			break;
+		default:
+			System.err.println("Unknown annotation : " + type);
+			annotation = null;
+		}
+	}
 
-        switch (type) {
-        case STANDARD:
-            annotation = StandardAnnotation.parse(buf);
-            break;
-        case AGENT_ADD:
-            annotation = AgentAnnotation.parse(buf, viewer.getWorldModel());
-            break;
-        case AGENT_CLEAR:
-            Agent agent = Command.readAgent(buf, viewer.getWorldModel());
-            if (agent != null)
-                agent.setAnnotation(null);
-            break;
-        default:
-            System.err.println("Unknown annotation : " + type);
-            annotation = null;
-        }
-    }
-
-    @Override
-    public void execute() {
-        if (annotation != null)
-            drawings.addAnnotation(annotation);
-    }
+	@Override
+	public void execute()
+	{
+		if (annotation != null)
+			drawings.addAnnotation(annotation);
+	}
 }

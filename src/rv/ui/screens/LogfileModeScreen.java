@@ -23,90 +23,96 @@ import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
 import rv.comm.rcssserver.LogPlayer;
 
-public class LogfileModeScreen extends ViewerScreenBase {
+public class LogfileModeScreen extends ViewerScreenBase
+{
+	private final LogPlayer player;
+	private final PlayerControls playDialog;
+	private final InfoOverlay openFileOverlay;
 
-    private final LogPlayer      player;
-    private final PlayerControls playDialog;
-    private final InfoOverlay    openFileOverlay;
+	public LogfileModeScreen(final Viewer viewer)
+	{
+		super(viewer);
+		this.player = viewer.getLogPlayer();
+		playDialog = PlayerControls.getInstance(player);
+		openFileOverlay = new InfoOverlay().setMessage("Please open a logfile.");
+		overlays.add(openFileOverlay);
+		player.addListener(new LogPlayer.StateChangeListener() {
+			@Override
+			public void playerStateChanged(boolean playing)
+			{
+				openFileOverlay.setVisible(!player.isValid());
+			}
 
-    public LogfileModeScreen(final Viewer viewer) {
-        super(viewer);
-        this.player = viewer.getLogPlayer();
-        playDialog = PlayerControls.getInstance(player);
-        openFileOverlay = new InfoOverlay().setMessage("Please open a logfile.");
-        overlays.add(openFileOverlay);
-        player.addListener(new LogPlayer.StateChangeListener() {
-            @Override
-            public void playerStateChanged(boolean playing) {
-                openFileOverlay.setVisible(!player.isValid());
-            }
+			@Override
+			public void logfileChanged()
+			{
+				prevScoreL = -1;
+				prevScoreR = -1;
+				viewer.getWorldModel().reset();
+			}
+		});
+	}
 
-            @Override
-            public void logfileChanged() {
-                prevScoreL = -1;
-                prevScoreR = -1;
-                viewer.getWorldModel().reset();
-            }
-        });
-    }
+	@Override
+	public void setEnabled(GLCanvas canvas, boolean enabled)
+	{
+		super.setEnabled(canvas, enabled);
+		if (enabled) {
+			playDialog.showFrame(viewer.getFrame());
+		} else {
+			playDialog.hideFrame(viewer.getFrame());
+		}
+	}
 
-    @Override
-    public void setEnabled(GLCanvas canvas, boolean enabled) {
-        super.setEnabled(canvas, enabled);
-        if (enabled) {
-            playDialog.showFrame(viewer.getFrame());
-        } else {
-            playDialog.hideFrame(viewer.getFrame());
-        }
-    }
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		super.keyPressed(e);
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_P:
+			if (player.isPlaying())
+				player.pause();
+			else
+				player.resume();
+			break;
+		case KeyEvent.VK_R:
+			player.rewind();
+			break;
+		case KeyEvent.VK_X:
+			player.decreasePlayBackSpeed();
+			break;
+		case KeyEvent.VK_C:
+			player.increasePlayBackSpeed();
+			break;
+		case KeyEvent.VK_COMMA:
+			if (!player.isPlaying())
+				player.stepBackward();
+			break;
+		case KeyEvent.VK_PERIOD:
+			if (!player.isPlaying())
+				player.stepForward();
+			break;
+		case KeyEvent.VK_G:
+			player.stepBackwardGoal();
+			break;
+		case KeyEvent.VK_H:
+			player.stepForwardGoal();
+			break;
+		}
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        super.keyPressed(e);
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_P:
-            if (player.isPlaying())
-                player.pause();
-            else
-                player.resume();
-            break;
-        case KeyEvent.VK_R:
-            player.rewind();
-            break;
-        case KeyEvent.VK_X:
-            player.decreasePlayBackSpeed();
-            break;
-        case KeyEvent.VK_C:
-            player.increasePlayBackSpeed();
-            break;
-        case KeyEvent.VK_COMMA:
-            if (!player.isPlaying())
-                player.stepBackward();
-            break;
-        case KeyEvent.VK_PERIOD:
-            if (!player.isPlaying())
-                player.stepForward();
-            break;
-        case KeyEvent.VK_G:
-            player.stepBackwardGoal();
-            break;
-        case KeyEvent.VK_H:
-            player.stepForwardGoal();
-            break;
-        }
-    }
-
-    @Override
-    public void gsPlayStateChanged(GameState gs) {
-        int frame = player.getFrame();
-        if (player.getAnalyzedFrames() > frame) {
-            for (Goal goal : player.getGoals()) {
-                if (goal.frame == frame) {
-                    addTeamScoredOverlay(gs, goal.scoringTeam);
-                }
-            }
-        } else {
-            super.gsPlayStateChanged(gs);
-        }
-    }
+	@Override
+	public void gsPlayStateChanged(GameState gs)
+	{
+		int frame = player.getFrame();
+		if (player.getAnalyzedFrames() > frame) {
+			for (Goal goal : player.getGoals()) {
+				if (goal.frame == frame) {
+					addTeamScoredOverlay(gs, goal.scoringTeam);
+				}
+			}
+		} else {
+			super.gsPlayStateChanged(gs);
+		}
+	}
 }

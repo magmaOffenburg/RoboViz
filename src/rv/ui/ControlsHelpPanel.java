@@ -9,36 +9,36 @@ import java.util.List;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 
-public class ControlsHelpPanel extends FramePanelBase {
+public class ControlsHelpPanel extends FramePanelBase
+{
+	public ControlsHelpPanel()
+	{
+		super("Help");
+		addCloseHotkey();
+		frame.setSize(600, 800);
+		frame.setMinimumSize(new Dimension(400, 500));
 
-    public ControlsHelpPanel() {
-        super("Help");
-        addCloseHotkey();
-        frame.setSize(600, 800);
-        frame.setMinimumSize(new Dimension(400, 500));
+		String file = "Could not load help page.";
+		List<String> lines = null;
+		try {
+			lines = Files.readAllLines(Paths.get("resources/help/controls.html"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        String file = "Could not load help page.";
-        List<String> lines = null;
-        try {
-            lines = Files.readAllLines(Paths.get("resources/help/controls.html"),
-                    StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		if (lines != null) {
+			StringBuilder builder = new StringBuilder();
+			for (String line : lines) {
+				builder.append(line);
+			}
+			file = builder.toString();
+		}
 
-        if (lines != null) {
-            StringBuilder builder = new StringBuilder();
-            for (String line : lines) {
-                builder.append(line);
-            }
-            file = builder.toString();
-        }
-
-        JEditorPane textArea = new JEditorPane();
-        textArea.setContentType("text/html");
-        textArea.setEditable(false);
-        textArea.setFocusable(false);
-        textArea.setText(file);
-        frame.add(new JScrollPane(textArea));
-    }
+		JEditorPane textArea = new JEditorPane();
+		textArea.setContentType("text/html");
+		textArea.setEditable(false);
+		textArea.setFocusable(false);
+		textArea.setText(file);
+		frame.add(new JScrollPane(textArea));
+	}
 }

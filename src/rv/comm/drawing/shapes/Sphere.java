@@ -22,38 +22,42 @@ import js.jogl.light.Material;
 import js.math.geom.GeodesicSphere;
 import rv.comm.drawing.commands.Command;
 
-public class Sphere extends Shape {
-    /** Size of a parsed draw circle command packet */
-    public static final int      CMD_SIZE = 31;
+public class Sphere extends Shape
+{
+	/** Size of a parsed draw circle command packet */
+	public static final int CMD_SIZE = 31;
 
-    private final float[]        position;
-    private final GeodesicSphere model;
+	private final float[] position;
+	private final GeodesicSphere model;
 
-    public Sphere(String set, float[] position, float[] color, float radius) {
-        super(set, color);
-        this.position = position;
-        Material mat = new Material();
-        this.color = color;
-        mat.setDiffAmbient(color[0], color[1], color[2], 1);
-        model = new GeodesicSphere(radius, 1);
-    }
+	public Sphere(String set, float[] position, float[] color, float radius)
+	{
+		super(set, color);
+		this.position = position;
+		Material mat = new Material();
+		this.color = color;
+		mat.setDiffAmbient(color[0], color[1], color[2], 1);
+		model = new GeodesicSphere(radius, 1);
+	}
 
-    @Override
-    public void draw(GL2 gl) {
-        gl.glPushMatrix();
-        gl.glColor3fv(color, 0);
-        material.apply(gl, GL2.GL_FRONT_AND_BACK);
-        gl.glTranslatef(position[0], position[1], position[2]);
-        model.render(gl);
-        gl.glPopMatrix();
-    }
+	@Override
+	public void draw(GL2 gl)
+	{
+		gl.glPushMatrix();
+		gl.glColor3fv(color, 0);
+		material.apply(gl, GL2.GL_FRONT_AND_BACK);
+		gl.glTranslatef(position[0], position[1], position[2]);
+		model.render(gl);
+		gl.glPopMatrix();
+	}
 
-    public static Sphere parse(ByteBuffer buf) {
-        float[] pos = Command.readCoords(buf, 3);
-        float radius = Command.readFloat(buf);
-        float[] color = Command.readRGB(buf);
-        String set = Command.getString(buf);
+	public static Sphere parse(ByteBuffer buf)
+	{
+		float[] pos = Command.readCoords(buf, 3);
+		float radius = Command.readFloat(buf);
+		float[] color = Command.readRGB(buf);
+		String set = Command.getString(buf);
 
-        return new Sphere(set, pos, color, radius);
-    }
+		return new Sphere(set, pos, color, radius);
+	}
 }

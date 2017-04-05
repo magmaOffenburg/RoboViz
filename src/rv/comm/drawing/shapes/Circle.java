@@ -23,44 +23,48 @@ import rv.comm.drawing.commands.Command;
 
 /**
  * Circle that lies on the surface of the field
- * 
+ *
  * @author Justin Stoecker
  */
-public class Circle extends Shape {
-    private final double[][] pts = new double[20][];
-    private final float      thickness;
+public class Circle extends Shape
+{
+	private final double[][] pts = new double[20][];
+	private final float thickness;
 
-    public Circle(String set, float[] pos, float[] color, float radius, float thickness) {
-        super(set, color);
-        double angleInc = Math.PI * 2.0 / pts.length;
+	public Circle(String set, float[] pos, float[] color, float radius, float thickness)
+	{
+		super(set, color);
+		double angleInc = Math.PI * 2.0 / pts.length;
 
-        // these are all 3D coordinates, not SimSpark coordinates
-        for (int i = 0; i < pts.length; i++) {
-            pts[i] = new double[3];
-            pts[i][0] = Math.cos(angleInc * i) * radius + pos[0];
-            pts[i][1] = pts[i][1];
-            pts[i][2] = Math.sin(angleInc * i) * radius + pos[2];
-        }
-        this.thickness = thickness;
-    }
+		// these are all 3D coordinates, not SimSpark coordinates
+		for (int i = 0; i < pts.length; i++) {
+			pts[i] = new double[3];
+			pts[i][0] = Math.cos(angleInc * i) * radius + pos[0];
+			pts[i][1] = pts[i][1];
+			pts[i][2] = Math.sin(angleInc * i) * radius + pos[2];
+		}
+		this.thickness = thickness;
+	}
 
-    @Override
-    public void draw(GL2 gl) {
-        gl.glColor3fv(color, 0);
-        gl.glLineWidth(thickness);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        for (double[] pt : pts)
-            gl.glVertex3d(pt[0], pt[1], pt[2]);
-        gl.glEnd();
-    }
+	@Override
+	public void draw(GL2 gl)
+	{
+		gl.glColor3fv(color, 0);
+		gl.glLineWidth(thickness);
+		gl.glBegin(GL.GL_LINE_LOOP);
+		for (double[] pt : pts)
+			gl.glVertex3d(pt[0], pt[1], pt[2]);
+		gl.glEnd();
+	}
 
-    public static Circle parse(ByteBuffer buf) {
-        float[] posXY = Command.readCoords(buf, 2);
-        float radius = Command.readFloat(buf);
-        float thickness = Command.readFloat(buf);
-        float[] color = Command.readRGB(buf);
-        String set = Command.getString(buf);
+	public static Circle parse(ByteBuffer buf)
+	{
+		float[] posXY = Command.readCoords(buf, 2);
+		float radius = Command.readFloat(buf);
+		float thickness = Command.readFloat(buf);
+		float[] color = Command.readRGB(buf);
+		String set = Command.getString(buf);
 
-        return new Circle(set, posXY, color, radius, thickness);
-    }
+		return new Circle(set, posXY, color, radius, thickness);
+	}
 }

@@ -20,40 +20,46 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  * Text overlay
- * 
+ *
  * @author justin
  */
-public abstract class Annotation {
+public abstract class Annotation
+{
+	protected final float[] pos;
+	protected final float[] color;
+	protected final String text;
+	protected final String set;
 
-    protected final float[] pos;
-    protected final float[] color;
-    protected final String  text;
-    protected final String  set;
+	public float[] getPos()
+	{
+		return pos;
+	}
 
-    public float[] getPos() {
-        return pos;
-    }
+	public float[] getColor()
+	{
+		return color;
+	}
 
-    public float[] getColor() {
-        return color;
-    }
+	public String getText()
+	{
+		return text;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public String getSet()
+	{
+		return set;
+	}
 
-    public String getSet() {
-        return set;
-    }
+	public Annotation(String text, float[] pos, float[] color, String set)
+	{
+		this.text = text;
+		this.pos = pos;
+		this.color = color;
+		this.set = set;
+	}
 
-    public Annotation(String text, float[] pos, float[] color, String set) {
-        this.text = text;
-        this.pos = pos;
-        this.color = color;
-        this.set = set;
-    }
-
-    public void render(TextRenderer tr) {
-        tr.draw3D(text, pos[0], pos[1], pos[2], 1);
-    }
+	public void render(TextRenderer tr)
+	{
+		tr.draw3D(text, pos[0], pos[1], pos[2], 1);
+	}
 }

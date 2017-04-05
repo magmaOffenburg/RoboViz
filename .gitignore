@@ -5,3 +5,6 @@
 screenshots/
 logfiles/
 roboviz.bat
+.clang-format
+*.TMP
+*.java-*

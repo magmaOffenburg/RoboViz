@@ -20,29 +20,33 @@ import rv.comm.rcssserver.SExp;
 
 /**
  * Mesh loaded from an .obj file
- * 
+ *
  * @author Justin Stoecker
  */
-public class StaticMeshNode extends GeometryNode {
-    /** Abbreviation declaring this node type in an s-expression */
-    public static final String EXP_ABRV = "StaticMesh";
+public class StaticMeshNode extends GeometryNode
+{
+	/** Abbreviation declaring this node type in an s-expression */
+	public static final String EXP_ABRV = "StaticMesh";
 
-    final String               s;
+	final String s;
 
-    public StaticMeshNode(Node parent, SExp exp) {
-        super(parent, exp);
-        s = exp.toString();
-        // (nd StaticMesh (load <model>) (sSc <x> <y> <z>) (setVisible 1)
-        // (setTransparent) (resetMaterials <material-list>))
-    }
+	public StaticMeshNode(Node parent, SExp exp)
+	{
+		super(parent, exp);
+		s = exp.toString();
+		// (nd StaticMesh (load <model>) (sSc <x> <y> <z>) (setVisible 1)
+		// (setTransparent) (resetMaterials <material-list>))
+	}
 
-    @Override
-    protected void load(SExp exp) {
-        name = exp.getAtoms()[1];
-    }
+	@Override
+	protected void load(SExp exp)
+	{
+		name = exp.getAtoms()[1];
+	}
 
-    @Override
-    public String toString() {
-        return StaticMeshNode.class.getName() + ": " + s;
-    }
+	@Override
+	public String toString()
+	{
+		return StaticMeshNode.class.getName() + ": " + s;
+	}
 }

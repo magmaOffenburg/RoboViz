@@ -24,39 +24,43 @@ import rv.comm.rcssserver.ServerComm;
 
 /**
  * Central hub for handling network communication
- * 
+ *
  * @author Justin Stoecker
  */
-public class NetworkManager {
+public class NetworkManager
+{
+	private DrawComm agentComm = null;
+	private ServerComm serverComm;
 
-    private DrawComm   agentComm = null;
-    private ServerComm serverComm;
+	public DrawComm getAgentComm()
+	{
+		return agentComm;
+	}
 
-    public DrawComm getAgentComm() {
-        return agentComm;
-    }
+	public ServerComm getServer()
+	{
+		return serverComm;
+	}
 
-    public ServerComm getServer() {
-        return serverComm;
-    }
+	public void init(Viewer viewer, Configuration config)
+	{
+		try {
+			agentComm = new DrawComm(viewer, config.networking.listenPort);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		serverComm = new ServerComm(viewer.getWorldModel(), config, viewer.getMode());
+		if (agentComm != null) {
+			agentComm.addListener(serverComm);
+		}
+	}
 
-    public void init(Viewer viewer, Configuration config) {
-        try {
-            agentComm = new DrawComm(viewer, config.networking.listenPort);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        serverComm = new ServerComm(viewer.getWorldModel(), config, viewer.getMode());
-        if (agentComm != null) {
-            agentComm.addListener(serverComm);
-        }
-    }
-
-    public void shutdown() {
-        if (agentComm != null) {
-            agentComm.shutdown();
-            agentComm.removeListener(serverComm);
-        }
-        serverComm.disconnect();
-    }
+	public void shutdown()
+	{
+		if (agentComm != null) {
+			agentComm.shutdown();
+			agentComm.removeListener(serverComm);
+		}
+		serverComm.disconnect();
+	}
 }

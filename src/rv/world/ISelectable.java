@@ -22,17 +22,17 @@ import js.math.vector.Vec3f;
 
 /**
  * Allows an object to be selected
- * 
+ *
  * @author Justin Stoecker
  */
 public interface ISelectable {
-    Vec3f getPosition();
+	Vec3f getPosition();
 
-    BoundingBox getBoundingBox();
+	BoundingBox getBoundingBox();
 
-    void setSelected(boolean selected);
+	void setSelected(boolean selected);
 
-    boolean isSelected();
+	boolean isSelected();
 
-    void renderSelected(GL2 gl);
+	void renderSelected(GL2 gl);
 }

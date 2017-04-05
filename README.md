@@ -1,6 +1,8 @@
 ![Logo](resources/images/icon.png) RoboViz
 ==================
 
+[![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
+
 RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulation League](http://wiki.robocup.org/wiki/Soccer_Simulation_League). This is a fork of the original version by Justin Stoecker [hosted on SourceForge](http://sourceforge.net/projects/rcroboviz/). It has a number of improvements, bugfixes and new features listed in the [changelog](CHANGELOG.md).
 
 Java 1.7 is required to run RoboViz. Pre-built binaries for Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using the appropriate `build-<platform>` script in [`scripts`](scripts).
@@ -25,6 +27,4 @@ Contributions of any form are welcome. That includes:
 - Bug reports and feature suggestions by [opening an issue](https://github.com/magmaOffenburg/RoboViz/issues/new).
 - Code contributions by creating a [pull request](https://github.com/magmaOffenburg/RoboViz/pulls?q=is%3Aopen+is%3Apr).
 
-Some basic contribution guidelines can be found [here](CONTRIBUTING.md).
-
-[![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
+Some basic contribution guidelines can be found [here](CONTRIBUTING.md). For code formatting, `clang-format` is used (instructions [here](https://github.com/hsoautonomy/formatting)).

@@ -25,32 +25,34 @@ import rv.world.objects.Agent;
 /**
  * This is a special annotation type that is attached to an agent.
  */
-public class AgentAnnotation extends Annotation {
+public class AgentAnnotation extends Annotation
+{
+	private static final Vec3f OFFSET = new Vec3f(0, 0.7f, 0);
+	private final Agent agent;
 
-    private static final Vec3f OFFSET = new Vec3f(0, 0.7f, 0);
-    private final Agent        agent;
+	@Override
+	public float[] getPos()
+	{
+		if (agent.getPosition() == null)
+			return new float[] {0, 0, 0};
+		return agent.getPosition().plus(OFFSET).getVals();
+	}
 
-    @Override
-    public float[] getPos() {
-        if (agent.getPosition() == null)
-            return new float[] { 0, 0, 0 };
-        return agent.getPosition().plus(OFFSET).getVals();
-    }
+	public AgentAnnotation(String text, Agent agent, float[] color)
+	{
+		super(text, agent.getHeadCenter().getVals(), color, agent.getShortName() + ".Annotation");
+		this.agent = agent;
+		agent.setAnnotation(this);
+	}
 
-    public AgentAnnotation(String text, Agent agent, float[] color) {
-        super(text, agent.getHeadCenter().getVals(), color, agent.getShortName() + ".Annotation");
-        this.agent = agent;
-        agent.setAnnotation(this);
-    }
+	public static AgentAnnotation parse(ByteBuffer buf, WorldModel world)
+	{
+		Agent agent = Command.readAgent(buf, world);
+		float[] color = Command.readRGB(buf);
+		String text = Command.getString(buf);
 
-    public static AgentAnnotation parse(ByteBuffer buf, WorldModel world) {
-
-        Agent agent = Command.readAgent(buf, world);
-        float[] color = Command.readRGB(buf);
-        String text = Command.getString(buf);
-
-        if (agent == null || agent.getHeadCenter() == null)
-            return null;
-        return new AgentAnnotation(text, agent, color);
-    }
+		if (agent == null || agent.getHeadCenter() == null)
+			return null;
+		return new AgentAnnotation(text, agent, color);
+	}
 }

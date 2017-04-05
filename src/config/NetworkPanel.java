@@ -32,138 +32,145 @@ import config.RVConfigure.SaveListener;
 import rv.Configuration;
 
 /**
- * 
+ *
  * @author justin
- * 
+ *
  */
-public class NetworkPanel extends JPanel implements SaveListener {
+public class NetworkPanel extends JPanel implements SaveListener
+{
+	final Configuration.Networking config;
+	JCheckBox autoConnectCB;
+	JTextField serverHostTF;
+	JTextField serverPortTF;
+	JTextField drawingPortTF;
+	JTextField autoConnectDelayTF;
 
-    final Configuration.Networking config;
-    JCheckBox                      autoConnectCB;
-    JTextField                     serverHostTF;
-    JTextField                     serverPortTF;
-    JTextField                     drawingPortTF;
-    JTextField                     autoConnectDelayTF;
+	public NetworkPanel(RVConfigure configProg)
+	{
+		this.config = configProg.config.networking;
+		configProg.listeners.add(this);
+		initGUI();
+	}
 
-    public NetworkPanel(RVConfigure configProg) {
-        this.config = configProg.config.networking;
-        configProg.listeners.add(this);
-        initGUI();
-    }
+	void initGUI()
+	{
+		setLayout(new GridBagLayout());
 
-    void initGUI() {
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
 
-        setLayout(new GridBagLayout());
+		c.gridy = 0;
+		add(initServerControls(), c);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
+		c.gridy = 1;
+		add(initDrawingControls(), c);
+	}
 
-        c.gridy = 0;
-        add(initServerControls(), c);
+	void addLabel(String name, JComponent component, GridBagConstraints c, int x, int y)
+	{
+		c.gridx = x;
+		c.gridy = y;
+		JLabel l = new JLabel(name, SwingConstants.RIGHT);
+		l.setPreferredSize(new Dimension(60, 28));
+		component.add(l, c);
+	}
 
-        c.gridy = 1;
-        add(initDrawingControls(), c);
-    }
+	JPanel initServerControls()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Server"));
 
-    void addLabel(String name, JComponent component, GridBagConstraints c, int x, int y) {
-        c.gridx = x;
-        c.gridy = y;
-        JLabel l = new JLabel(name, SwingConstants.RIGHT);
-        l.setPreferredSize(new Dimension(60, 28));
-        component.add(l, c);
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.ipadx = 10;
+		c.fill = GridBagConstraints.HORIZONTAL;
 
-    JPanel initServerControls() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Server"));
+		addLabel("Host: ", panel, c, 0, 0);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.ipadx = 10;
-        c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 0;
+		serverHostTF = new JTextField(config.serverHost);
+		serverHostTF.setPreferredSize(new Dimension(150, 28));
+		panel.add(serverHostTF, c);
 
-        addLabel("Host: ", panel, c, 0, 0);
+		addLabel("Port: ", panel, c, 0, 1);
 
-        c.gridx = 1;
-        c.gridy = 0;
-        serverHostTF = new JTextField(config.serverHost);
-        serverHostTF.setPreferredSize(new Dimension(150, 28));
-        panel.add(serverHostTF, c);
+		c.gridx = 1;
+		c.gridy = 1;
+		serverPortTF = new PortTextField(config.serverPort);
+		panel.add(serverPortTF, c);
 
-        addLabel("Port: ", panel, c, 0, 1);
+		addLabel("Delay: ", panel, c, 0, 2);
 
-        c.gridx = 1;
-        c.gridy = 1;
-        serverPortTF = new PortTextField(config.serverPort);
-        panel.add(serverPortTF, c);
+		c.gridx = 1;
+		c.gridy = 2;
+		autoConnectDelayTF = new IntegerTextField(config.autoConnectDelay, 1, Integer.MAX_VALUE);
+		panel.add(autoConnectDelayTF, c);
 
-        addLabel("Delay: ", panel, c, 0, 2);
+		c.gridx = 1;
+		c.gridy = 3;
+		autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
+		autoConnectCB.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e)
+			{
+				updateAutoConnectEnabled();
+			}
+		});
+		updateAutoConnectEnabled();
 
-        c.gridx = 1;
-        c.gridy = 2;
-        autoConnectDelayTF = new IntegerTextField(config.autoConnectDelay, 1, Integer.MAX_VALUE);
-        panel.add(autoConnectDelayTF, c);
+		panel.add(autoConnectCB, c);
 
-        c.gridx = 1;
-        c.gridy = 3;
-        autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
-        autoConnectCB.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                updateAutoConnectEnabled();
-            }
-        });
-        updateAutoConnectEnabled();
+		return panel;
+	}
 
-        panel.add(autoConnectCB, c);
+	void updateAutoConnectEnabled()
+	{
+		autoConnectDelayTF.setEnabled(autoConnectCB.isSelected());
+	}
 
-        return panel;
-    }
+	JPanel initDrawingControls()
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Drawings"));
 
-    void updateAutoConnectEnabled() {
-        autoConnectDelayTF.setEnabled(autoConnectCB.isSelected());
-    }
+		GridBagConstraints c = new GridBagConstraints();
+		c.ipadx = 10;
+		c.fill = GridBagConstraints.HORIZONTAL;
 
-    JPanel initDrawingControls() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Drawings"));
+		addLabel("Port: ", panel, c, 0, 0);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.ipadx = 10;
-        c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 0;
+		drawingPortTF = new PortTextField(config.listenPort);
+		drawingPortTF.setPreferredSize(new Dimension(150, 28));
+		panel.add(drawingPortTF, c);
 
-        addLabel("Port: ", panel, c, 0, 0);
+		return panel;
+	}
 
-        c.gridx = 1;
-        c.gridy = 0;
-        drawingPortTF = new PortTextField(config.listenPort);
-        drawingPortTF.setPreferredSize(new Dimension(150, 28));
-        panel.add(drawingPortTF, c);
+	@Override
+	public void configSaved(RVConfigure configProg)
+	{
+		config.serverHost = serverHostTF.getText();
 
-        return panel;
-    }
+		try {
+			config.serverPort = Integer.parseInt(serverPortTF.getText());
+		} catch (Exception e) {
+			serverPortTF.setText("" + config.serverPort);
+		}
 
-    @Override
-    public void configSaved(RVConfigure configProg) {
-        config.serverHost = serverHostTF.getText();
+		config.autoConnect = autoConnectCB.isSelected();
 
-        try {
-            config.serverPort = Integer.parseInt(serverPortTF.getText());
-        } catch (Exception e) {
-            serverPortTF.setText("" + config.serverPort);
-        }
+		try {
+			config.autoConnectDelay = Integer.parseInt(autoConnectDelayTF.getText());
+		} catch (Exception e) {
+			autoConnectDelayTF.setText("" + config.autoConnectDelay);
+		}
 
-        config.autoConnect = autoConnectCB.isSelected();
-
-        try {
-            config.autoConnectDelay = Integer.parseInt(autoConnectDelayTF.getText());
-        } catch (Exception e) {
-            autoConnectDelayTF.setText("" + config.autoConnectDelay);
-        }
-
-        try {
-            config.listenPort = Integer.parseInt(drawingPortTF.getText());
-        } catch (Exception e) {
-            drawingPortTF.setText("" + config.listenPort);
-        }
-    }
+		try {
+			config.listenPort = Integer.parseInt(drawingPortTF.getText());
+		} catch (Exception e) {
+			drawingPortTF.setText("" + config.listenPort);
+		}
+	}
 }

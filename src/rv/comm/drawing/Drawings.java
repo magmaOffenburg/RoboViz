@@ -31,178 +31,196 @@ import rv.comm.drawing.shapes.Shape;
 
 /**
  * Contains and manages shape sets
- * 
+ *
  * @author Justin Stoecker
  */
-public class Drawings {
+public class Drawings
+{
+	/** Event object launched when the list of sets is modified */
+	public class SetListChangeEvent extends EventObject
+	{
+		private final CopyOnWriteArrayList<BufferedSet<Shape>> shapeSets;
+		private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets;
 
-    /** Event object launched when the list of sets is modified */
-    public class SetListChangeEvent extends EventObject {
+		public CopyOnWriteArrayList<BufferedSet<Shape>> getShapeSets()
+		{
+			return shapeSets;
+		}
 
-        private final CopyOnWriteArrayList<BufferedSet<Shape>>      shapeSets;
-        private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets;
+		public CopyOnWriteArrayList<BufferedSet<Annotation>> getAnnotationSets()
+		{
+			return annotationSets;
+		}
 
-        public CopyOnWriteArrayList<BufferedSet<Shape>> getShapeSets() {
-            return shapeSets;
-        }
+		public SetListChangeEvent(Drawings source)
+		{
+			super(source);
+			this.shapeSets = source.shapeSets;
+			this.annotationSets = source.annotationSets;
+		}
+	}
 
-        public CopyOnWriteArrayList<BufferedSet<Annotation>> getAnnotationSets() {
-            return annotationSets;
-        }
+	/** Interface for listeners of set list change events */
+	public interface ShapeListListener extends EventListener {
+		void setListChanged(SetListChangeEvent evt);
+	}
 
-        public SetListChangeEvent(Drawings source) {
-            super(source);
-            this.shapeSets = source.shapeSets;
-            this.annotationSets = source.annotationSets;
-        }
-    }
+	private final ArrayList<ShapeListListener> listeners = new ArrayList<>();
+	private final HashMap<String, BufferedSet<Shape>> shapeSetListing = new HashMap<>();
+	private final HashMap<String, BufferedSet<Annotation>> annotationSetListing = new HashMap<>();
+	private final CopyOnWriteArrayList<BufferedSet<Shape>> shapeSets = new CopyOnWriteArrayList<>();
+	private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets = new CopyOnWriteArrayList<>();
+	private boolean changed = false;
+	private boolean visible = true;
 
-    /** Interface for listeners of set list change events */
-    public interface ShapeListListener extends EventListener {
-        void setListChanged(SetListChangeEvent evt);
-    }
+	public boolean isVisible()
+	{
+		return visible;
+	}
 
-    private final ArrayList<ShapeListListener>                  listeners            = new ArrayList<>();
-    private final HashMap<String, BufferedSet<Shape>>           shapeSetListing      = new HashMap<>();
-    private final HashMap<String, BufferedSet<Annotation>>      annotationSetListing = new HashMap<>();
-    private final CopyOnWriteArrayList<BufferedSet<Shape>>      shapeSets            = new CopyOnWriteArrayList<>();
-    private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets       = new CopyOnWriteArrayList<>();
-    private boolean                                             changed              = false;
-    private boolean                                             visible              = true;
+	public void toggle()
+	{
+		visible = !visible;
+	}
 
-    public boolean isVisible() {
-        return visible;
-    }
+	public List<BufferedSet<Annotation>> getAnnotationSets()
+	{
+		return annotationSets;
+	}
 
-    public void toggle() {
-        visible = !visible;
-    }
+	public void addShapeSetListener(ShapeListListener listener)
+	{
+		listeners.add(listener);
+	}
 
-    public List<BufferedSet<Annotation>> getAnnotationSets() {
-        return annotationSets;
-    }
+	public void removeShapeSetListener(ShapeListListener listener)
+	{
+		listeners.remove(listener);
+	}
 
-    public void addShapeSetListener(ShapeListListener listener) {
-        listeners.add(listener);
-    }
+	private void fireShapeChangeListener()
+	{
+		SetListChangeEvent evt = new SetListChangeEvent(this);
+		for (ShapeListListener listener : listeners)
+			listener.setListChanged(evt);
+	}
 
-    public void removeShapeSetListener(ShapeListListener listener) {
-        listeners.remove(listener);
-    }
+	public void addAnnotation(Annotation annotation)
+	{
+		String setName = annotation.getSet();
 
-    private void fireShapeChangeListener() {
-        SetListChangeEvent evt = new SetListChangeEvent(this);
-        for (ShapeListListener listener : listeners)
-            listener.setListChanged(evt);
-    }
+		if (annotation instanceof AgentAnnotation) {
+			// agent annotations are not added to bufferedsets, so they must
+			// be treated specially
+			return;
+		}
 
-    public void addAnnotation(Annotation annotation) {
-        String setName = annotation.getSet();
+		BufferedSet<Annotation> set = annotationSetListing.get(setName);
 
-        if (annotation instanceof AgentAnnotation) {
-            // agent annotations are not added to bufferedsets, so they must
-            // be treated specially
-            return;
-        }
+		if (set == null) {
+			// shape has a set name that hasn't been seen, so create a new set
+			BufferedSet<Annotation> newSet = new BufferedSet<>(setName);
+			newSet.put(annotation);
+			synchronized (this)
+			{
+				annotationSets.add(newSet);
+			}
+			annotationSetListing.put(setName, newSet);
+			changed = true;
+		} else {
+			set.put(annotation);
+		}
+	}
 
-        BufferedSet<Annotation> set = annotationSetListing.get(setName);
+	public void addShape(Shape shape)
+	{
+		String setName = shape.getSetName();
+		BufferedSet<Shape> set = shapeSetListing.get(setName);
 
-        if (set == null) {
-            // shape has a set name that hasn't been seen, so create a new set
-            BufferedSet<Annotation> newSet = new BufferedSet<>(setName);
-            newSet.put(annotation);
-            synchronized (this) {
-                annotationSets.add(newSet);
-            }
-            annotationSetListing.put(setName, newSet);
-            changed = true;
-        } else {
-            set.put(annotation);
-        }
-    }
+		if (set == null) {
+			// shape has a set name that hasn't been seen, so create a new set
+			BufferedSet<Shape> newSet = new BufferedSet<>(setName);
+			newSet.put(shape);
+			synchronized (this)
+			{
+				shapeSets.add(newSet);
+			}
+			shapeSetListing.put(setName, newSet);
+			changed = true;
+		} else {
+			set.put(shape);
+		}
+	}
 
-    public void addShape(Shape shape) {
-        String setName = shape.getSetName();
-        BufferedSet<Shape> set = shapeSetListing.get(setName);
+	/** Removes all known shape sets */
+	public synchronized void clearAllShapeSets()
+	{
+		shapeSetListing.clear();
+		shapeSets.clear();
+		annotationSetListing.clear();
+		annotationSets.clear();
+		fireShapeChangeListener();
+	}
 
-        if (set == null) {
-            // shape has a set name that hasn't been seen, so create a new set
-            BufferedSet<Shape> newSet = new BufferedSet<>(setName);
-            newSet.put(shape);
-            synchronized (this) {
-                shapeSets.add(newSet);
-            }
-            shapeSetListing.put(setName, newSet);
-            changed = true;
-        } else {
-            set.put(shape);
-        }
-    }
+	/** Retrieves a shape set by name */
+	public BufferedSet<Shape> getShapeSet(String name)
+	{
+		return shapeSetListing.get(name);
+	}
 
-    /** Removes all known shape sets */
-    public synchronized void clearAllShapeSets() {
-        shapeSetListing.clear();
-        shapeSets.clear();
-        annotationSetListing.clear();
-        annotationSets.clear();
-        fireShapeChangeListener();
-    }
+	public BufferedSet<Annotation> getAnnotationSet(String name)
+	{
+		return annotationSetListing.get(name);
+	}
 
-    /** Retrieves a shape set by name */
-    public BufferedSet<Shape> getShapeSet(String name) {
-        return shapeSetListing.get(name);
-    }
+	/**
+	 * Swaps buffers on set with specified name; if name is empty, all buffers are swapped.
+	 */
+	public void swapBuffers(String name)
+	{
+		if (name.isEmpty()) {
+			for (BufferedSet<Shape> set : shapeSets)
+				set.swapBuffers();
+			for (BufferedSet<Annotation> set : annotationSets)
+				set.swapBuffers();
+		} else {
+			for (BufferedSet<Shape> p : shapeSets)
+				if (p.getName().startsWith(name))
+					p.swapBuffers();
+			for (BufferedSet<Annotation> p : annotationSets)
+				if (p.getName().startsWith(name))
+					p.swapBuffers();
+		}
+	}
 
-    public BufferedSet<Annotation> getAnnotationSet(String name) {
-        return annotationSetListing.get(name);
-    }
+	public synchronized void render(GL2 gl, GLUT glut)
+	{
+		gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glEnable(GL.GL_DEPTH_TEST);
+		gl.glDisable(GL2.GL_LIGHTING);
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glDisable(GL2.GL_LIGHTING);
 
-    /**
-     * Swaps buffers on set with specified name; if name is empty, all buffers are swapped.
-     */
-    public void swapBuffers(String name) {
-        if (name.isEmpty()) {
-            for (BufferedSet<Shape> set : shapeSets)
-                set.swapBuffers();
-            for (BufferedSet<Annotation> set : annotationSets)
-                set.swapBuffers();
-        } else {
-            for (BufferedSet<Shape> p : shapeSets)
-                if (p.getName().startsWith(name))
-                    p.swapBuffers();
-            for (BufferedSet<Annotation> p : annotationSets)
-                if (p.getName().startsWith(name))
-                    p.swapBuffers();
-        }
-    }
+		for (BufferedSet<Shape> setBuffer : shapeSets) {
+			if (setBuffer.isVisible()) {
+				ArrayList<Shape> shapes = setBuffer.getFrontSet();
+				for (Shape s : shapes) {
+					if (s != null) {
+						s.draw(gl);
+					}
+				}
+			}
+		}
 
-    public synchronized void render(GL2 gl, GLUT glut) {
-        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-        gl.glEnable(GL.GL_BLEND);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glDisable(GL.GL_TEXTURE_2D);
-        gl.glDisable(GL2.GL_LIGHTING);
+		gl.glPopAttrib();
+	}
 
-        for (BufferedSet<Shape> setBuffer : shapeSets) {
-            if (setBuffer.isVisible()) {
-                ArrayList<Shape> shapes = setBuffer.getFrontSet();
-                for (Shape s : shapes) {
-                    if (s != null) {
-                        s.draw(gl);
-                    }
-                }
-            }
-        }
-
-        gl.glPopAttrib();
-
-    }
-
-    public synchronized void update() {
-        if (changed) {
-            fireShapeChangeListener();
-            changed = false;
-        }
-    }
+	public synchronized void update()
+	{
+		if (changed) {
+			fireShapeChangeListener();
+			changed = false;
+		}
+	}
 }

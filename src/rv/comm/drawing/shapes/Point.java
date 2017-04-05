@@ -21,34 +21,38 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import rv.comm.drawing.commands.Command;
 
-public class Point extends Shape {
-    /** Size of a parsed draw circle command packet */
-    public static final int CMD_SIZE = 31;
+public class Point extends Shape
+{
+	/** Size of a parsed draw circle command packet */
+	public static final int CMD_SIZE = 31;
 
-    private final float[]   position;
-    private final float     size;
+	private final float[] position;
+	private final float size;
 
-    public Point(String set, float[] position, float[] color, float size) {
-        super(set, color);
-        this.position = position;
-        this.size = size;
-    }
+	public Point(String set, float[] position, float[] color, float size)
+	{
+		super(set, color);
+		this.position = position;
+		this.size = size;
+	}
 
-    @Override
-    public void draw(GL2 gl) {
-        gl.glPointSize(size);
-        gl.glColor3fv(color, 0);
-        gl.glBegin(GL.GL_POINTS);
-        gl.glVertex3fv(position, 0);
-        gl.glEnd();
-    }
+	@Override
+	public void draw(GL2 gl)
+	{
+		gl.glPointSize(size);
+		gl.glColor3fv(color, 0);
+		gl.glBegin(GL.GL_POINTS);
+		gl.glVertex3fv(position, 0);
+		gl.glEnd();
+	}
 
-    public static Point parse(ByteBuffer buf) {
-        float[] pos = Command.readCoords(buf, 3);
-        float size = Command.readFloat(buf);
-        float[] color = Command.readRGB(buf);
-        String set = Command.getString(buf);
+	public static Point parse(ByteBuffer buf)
+	{
+		float[] pos = Command.readCoords(buf, 3);
+		float size = Command.readFloat(buf);
+		float[] color = Command.readRGB(buf);
+		String set = Command.getString(buf);
 
-        return new Point(set, pos, color, size);
-    }
+		return new Point(set, pos, color, size);
+	}
 }

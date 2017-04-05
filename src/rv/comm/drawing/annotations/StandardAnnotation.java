@@ -19,19 +19,20 @@ package rv.comm.drawing.annotations;
 import java.nio.ByteBuffer;
 import rv.comm.drawing.commands.Command;
 
-public class StandardAnnotation extends Annotation {
+public class StandardAnnotation extends Annotation
+{
+	public StandardAnnotation(String text, float[] pos, float[] color, String set)
+	{
+		super(text, pos, color, set);
+	}
 
-    public StandardAnnotation(String text, float[] pos, float[] color, String set) {
-        super(text, pos, color, set);
-    }
+	public static StandardAnnotation parse(ByteBuffer buf)
+	{
+		float[] pos = Command.readCoords(buf, 3);
+		float[] color = Command.readRGB(buf);
+		String text = Command.getString(buf);
+		String set = Command.getString(buf);
 
-    public static StandardAnnotation parse(ByteBuffer buf) {
-
-        float[] pos = Command.readCoords(buf, 3);
-        float[] color = Command.readRGB(buf);
-        String text = Command.getString(buf);
-        String set = Command.getString(buf);
-
-        return new StandardAnnotation(text, pos, color, set);
-    }
+		return new StandardAnnotation(text, pos, color, set);
+	}
 }

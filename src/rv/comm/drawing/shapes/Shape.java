@@ -19,22 +19,25 @@ package rv.comm.drawing.shapes;
 import javax.media.opengl.GL2;
 import js.jogl.light.Material;
 
-public abstract class Shape {
-    protected final Material material;
-    protected float[]        color;
-    protected final String   set;
+public abstract class Shape
+{
+	protected final Material material;
+	protected float[] color;
+	protected final String set;
 
-    public String getSetName() {
-        return set;
-    }
+	public String getSetName()
+	{
+		return set;
+	}
 
-    public Shape(String set, float[] color) {
-        this.set = set;
-        this.color = color;
+	public Shape(String set, float[] color)
+	{
+		this.set = set;
+		this.color = color;
 
-        material = new Material();
-        material.setDiffAmbient(color[0], color[1], color[2], 1);
-    }
+		material = new Material();
+		material.setDiffAmbient(color[0], color[1], color[2], 1);
+	}
 
-    public abstract void draw(GL2 gl);
+	public abstract void draw(GL2 gl);
 }
