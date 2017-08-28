@@ -27,4 +27,4 @@ Contributions of any form are welcome. That includes:
 - Bug reports and feature suggestions by [opening an issue](https://github.com/magmaOffenburg/RoboViz/issues/new).
 - Code contributions by creating a [pull request](https://github.com/magmaOffenburg/RoboViz/pulls?q=is%3Aopen+is%3Apr).
 
-Some basic contribution guidelines can be found [here](CONTRIBUTING.md). For code formatting, `clang-format` is used (instructions [here](https://github.com/hsoautonomy/formatting)).
+Some basic contribution guidelines can be found [here](CONTRIBUTING.md).
