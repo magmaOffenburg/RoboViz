@@ -220,16 +220,16 @@ public class Viewer
 
 	private void parseArgs(String[] args)
 	{
-		StringArgument LOG_FILE = new StringArgument("logFile", null);
-		BooleanArgument LOG_MODE = new BooleanArgument("logMode");
-		StringArgument SERVER_HOST = new StringArgument("serverHost", null);
-		IntegerArgument SERVER_PORT = new IntegerArgument("serverPort", null, 1, 65535);
-		StringArgument DRAWING_FILTER = new StringArgument("drawingFilter", ".*");
+		StringArgument logFileArgument = new StringArgument("logFile", null);
+		BooleanArgument logModeArgument = new BooleanArgument("logMode");
+		StringArgument serverHostArgument = new StringArgument("serverHost", null);
+		IntegerArgument serverPortArgument = new IntegerArgument("serverPort", null, 1, 65535);
+		StringArgument drawingFilterArgument = new StringArgument("drawingFilter", ".*");
 
-		handleLogModeArgs(LOG_FILE.parse(args), LOG_MODE.parse(args));
-		config.networking.overrideServerHost(SERVER_HOST.parse(args));
-		config.networking.overrideServerPort(SERVER_PORT.parse(args));
-		drawingFilter = DRAWING_FILTER.parse(args);
+		handleLogModeArgs(logFileArgument.parse(args), logModeArgument.parse(args));
+		config.networking.overrideServerHost(serverHostArgument.parse(args));
+		config.networking.overrideServerPort(serverPortArgument.parse(args));
+		drawingFilter = drawingFilterArgument.parse(args);
 		Argument.endParse(args);
 	}
 
