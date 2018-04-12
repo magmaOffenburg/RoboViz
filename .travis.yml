@@ -16,7 +16,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: En83qH7a/C0CwVucHZA6YO+7Pok2uWGVIdhjt3jQb7ymWuCfo9F6Cx+5fDgPoLmKpqXQpT896WySWbdx+mNSjomDsXd8ilSAkYFFeglfaBsIELrDRdMmYdQ9/4xyu0vSRCuQ5ji2b1nVJ9I7gQbkz1cmQcFTshyHLVCvPkjbDWk=
+    secure: Q9VNV+QOi336zVEVNFnwGs7F2BoKJQaZb14JX0VV9V1/UPbQD/ZXMGBNf3RIpmJeiVD9gQ4Ej71qy05T5MgXoqpe3eL5aD4ywZmsInhEDrR6LW/YOvR5nddfb3C9N3YMU7qnGZ3FKlRd9P+RqmtsS8e+D7HmGq18F/nnmYvbsuM=
   file:
     - linux32.tar.gz
     - linux64.tar.gz
