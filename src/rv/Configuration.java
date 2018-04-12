@@ -319,7 +319,7 @@ public class Configuration
 	private static String[] getNextStringList(BufferedReader in) throws IOException
 	{
 		String str = getVal(getNextLine(in));
-		return str.split(", ");
+		return str.split(", ?");
 	}
 
 	private static void writeSection(Writer out, String name) throws IOException
