@@ -1,3 +1,11 @@
+1.4.0
+------------------------------
+* added a menu bar with Connection / Server / View / Camera menus
+* allowed specifying multiple servers in `config.txt` (comma-separated)
+* allowed switching between different servers without restarting RoboViz
+* fixed handling of packets with multiple drawings in logs (#98)
+* changed the ball tracker camera's speed to scale with ball speed (#95)
+ 
 1.3.0
 ------------------------------
 * server speed and foul overlay are now visible by default
@@ -15,7 +23,7 @@
 ------------------------------
 * fixed the log player getting stuck with draw commands occasionally (#78)
 * fixed `--logFile` paths starting with `~` in `roboviz.sh` (#80)
-* fixed the server host displayed in the window title when overriden with `--serverHost` (#83)
+* fixed the server host displayed in the window title when overridden with `--serverHost` (#83)
 * changed the connection overlay text from `Trying to connect to <ip>...` to `Waiting for second half...` if time is at 300
 * changed the connection overlay text to dynamically resize with the window
 * changed the the "reset time" shortcut (`Shift+R`) to `Shift+T` (#85)
@@ -52,13 +60,13 @@
 * Unified Log Mode and Live Mode - Log Mode now has the same features and shortcuts as Live Mode, except for a few necessary restrictions (server commands and drawings)
 * **Log Player:**
 	* fixed another Logplayer window being created when dragging RoboViz to a different monitor on Linux
-	* added a separate thread for log playback to prevent the UI from freezing when jumping a lot of frames (especially noticable with the slider)
+	* added a separate thread for log playback to prevent the UI from freezing when jumping a lot of frames (especially noticeable with the slider)
 	* added a "Jump to previous / next" goal feature (a separate thread analyzes the logfile in the background to find goals, so the functionality is not available right away)
 	* playback speed is now determined by a factor instead of FPS
 	* negative playback speeds are now allowed
 	* replace the decrease / increase playback speed buttons with a spinner
 	* fixed playback being slightly too fast (150ms per frame instead of 200ms)
-	* the "ms per frame"-value is now extracted from the logfile, making it so that the playback speed is independant of the `$monitorLoggerStep` value of the server config while recording it
+	* the "ms per frame"-value is now extracted from the logfile, making it so that the playback speed is independent of the `$monitorLoggerStep` value of the server config while recording it
 	* removed the progress slider from the RoboViz main window
 	* fixed score / team colors / names etc. not being reset properly when switching logfiles
 * **Shortcuts:**
