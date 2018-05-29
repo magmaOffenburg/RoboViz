@@ -133,7 +133,12 @@ public class Agent implements ISelectable
 		Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
 		for (StaticMeshNode node : meshNodes) {
-			Model model = content.getModel(node.getName());
+			// Check for switching body model to goalie jersey 
+			if (node.getName().matches(".*body[0-9]*[.]obj$") && id == 1) {
+				node.setName("models/naobodyG.obj");
+			}
+
+		    Model model = content.getModel(node.getName());
 			if (model.isLoaded()) {
 				Vec3f[] corners = model.getMesh().getBounds().getCorners();
 				Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
