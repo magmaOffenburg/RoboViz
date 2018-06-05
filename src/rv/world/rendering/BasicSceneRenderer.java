@@ -62,9 +62,11 @@ public class BasicSceneRenderer implements SceneRenderer
 		boolean isAgent = false;
 		if (node.containsMaterial("matLeft")) {
 			model.replaceMaterial("matTeam", content.getMaterial("matLeft"));
+			model.replaceMaterial("matTeamGoalie", content.getMaterial("matLeftGoalie"));
 			isAgent = true;
 		} else if (node.containsMaterial("matRight")) {
 			model.replaceMaterial("matTeam", content.getMaterial("matRight"));
+			model.replaceMaterial("matTeamGoalie", content.getMaterial("matRightGoalie"));
 			isAgent = true;
 		}
 		if (isAgent) {
