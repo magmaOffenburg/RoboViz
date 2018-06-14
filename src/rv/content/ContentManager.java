@@ -344,6 +344,9 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		//System.out.println(colorGoalie);
 		
 		MaterialUtil.setColor(matGoalie, colorGoalie);
+
+		ObjMaterial matNumGoalie = getMaterial(materialName+"NumGoalie");
+		MaterialUtil.setColor(matNumGoalie, colorGoalie);
 	}
 
 	@Override

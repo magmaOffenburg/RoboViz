@@ -63,10 +63,12 @@ public class BasicSceneRenderer implements SceneRenderer
 		if (node.containsMaterial("matLeft")) {
 			model.replaceMaterial("matTeam", content.getMaterial("matLeft"));
 			model.replaceMaterial("matTeamGoalie", content.getMaterial("matLeftGoalie"));
+			model.replaceMaterial("matTeamNumGoalie", content.getMaterial("matLeftNumGoalie"));
 			isAgent = true;
 		} else if (node.containsMaterial("matRight")) {
 			model.replaceMaterial("matTeam", content.getMaterial("matRight"));
 			model.replaceMaterial("matTeamGoalie", content.getMaterial("matRightGoalie"));
+			model.replaceMaterial("matTeamNumGoalie", content.getMaterial("matRightNumGoalie"));
 			isAgent = true;
 		}
 		if (isAgent) {
