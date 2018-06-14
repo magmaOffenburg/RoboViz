@@ -122,6 +122,16 @@ public class Agent implements ISelectable
 		this.content = cm;
 
 		meshNodes = sg.getAllMeshNodes(rootNode);
+
+		for (StaticMeshNode node : meshNodes) {
+		    // Check for switching models to goalie jersey
+		    if ((node.getName().matches(".*naobody.*[.]obj$")
+			 		|| node.getName().matches(".*lupperarm.*[.]obj$") 
+			 		|| node.getName().matches(".*rupperarm.*[.]obj$"))
+				&& !node.getName().endsWith("G.obj") && id == 1) {
+				node.setName(node.getName().substring(0,node.getName().length()-4)+"G.obj");
+		    }
+		}
 	}
 
 	/**
@@ -133,14 +143,6 @@ public class Agent implements ISelectable
 		Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
 		for (StaticMeshNode node : meshNodes) {
-			// Check for switching models to goalie jersey
-            if ((node.getName().matches(".*naobody.*[.]obj$")
-                    || node.getName().matches(".*lupperarm.*[.]obj$") || node.getName().matches(
-                    ".*rupperarm.*[.]obj$"))
-                    && !node.getName().endsWith("G.obj") && id == 1) {
-				node.setName(node.getName().substring(0,node.getName().length()-4)+"G.obj");
-			}
-
 			Model model = content.getModel(node.getName());
 			if (model.isLoaded()) {
 				Vec3f[] corners = model.getMesh().getBounds().getCorners();
