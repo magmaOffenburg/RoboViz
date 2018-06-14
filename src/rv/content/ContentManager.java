@@ -316,6 +316,37 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 			color = defaultColor;
 		}
 		MaterialUtil.setColor(mat, color);
+
+		// For goalie
+		ObjMaterial matGoalie = getMaterial(materialName+"Goalie");
+		float r = color.getRed()/255f;
+		float g = color.getGreen()/255f;
+		float b = color.getBlue()/255f;
+		float factor = 0.45f;
+
+		// Brighten color for goalie
+		//Color colorGoalie = color.brighter();
+		Color colorGoalie = new Color(r+(1-r)*factor, g+(1-g)*factor, b+(1-b)*factor);
+		
+		float tooBrightThresh = 0.7f;
+		float tooWhiteThresh = 0.55f;
+		float tooWhiteDiffThresh = 0.2f;
+
+		float gr = colorGoalie.getRed()/255f;
+		float gg = colorGoalie.getGreen()/255f;
+		float gb = colorGoalie.getBlue()/255f;
+		if ((gr > tooBrightThresh && gg > tooBrightThresh && gb > tooBrightThresh) || (gr > tooWhiteThresh && gg > tooWhiteThresh && gb > tooWhiteThresh && Math.max(gr,Math.max(gg,gb))-Math.min(gr,Math.min(gg,gb)) < tooWhiteDiffThresh)) {
+		    // Darken color for goalie
+		    //colorGoalie = color.darker();
+		    colorGoalie = new Color(r+r*-factor, g+g*-factor, b+b*-factor);
+		}
+		//System.out.println(color);
+		//System.out.println(colorGoalie);
+		
+		MaterialUtil.setColor(matGoalie, colorGoalie);
+
+		ObjMaterial matNumGoalie = getMaterial(materialName+"NumGoalie");
+		MaterialUtil.setColor(matNumGoalie, colorGoalie);
 	}
 
 	@Override

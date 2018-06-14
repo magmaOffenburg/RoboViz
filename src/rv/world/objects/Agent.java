@@ -122,6 +122,16 @@ public class Agent implements ISelectable
 		this.content = cm;
 
 		meshNodes = sg.getAllMeshNodes(rootNode);
+
+		for (StaticMeshNode node : meshNodes) {
+		    // Check for switching models to goalie jersey
+		    if ((node.getName().matches(".*naobody.*[.]obj$")
+			 		|| node.getName().matches(".*lupperarm.*[.]obj$") 
+			 		|| node.getName().matches(".*rupperarm.*[.]obj$"))
+				&& !node.getName().endsWith("G.obj") && id == 1) {
+				node.setName(node.getName().substring(0,node.getName().length()-4)+"G.obj");
+		    }
+		}
 	}
 
 	/**
@@ -143,7 +153,7 @@ public class Agent implements ISelectable
 					headTransform = modelMat;
 					headCenter = headTransform.transform(new Vec3f(0));
 					headDirection = headTransform.transform(new Vec3f(0, 0, 1)).minus(headCenter).normalize();
-				} else if (node.getName().matches(".*body[0-9]*[.]obj$")) {
+				} else if (node.getName().matches(".*body.*[.]obj$")) {
 					// Store body direction for third person view
 					Matrix bodyRot = modelMat;
 					Vec3f bodyCenter = bodyRot.transform(new Vec3f(0));
