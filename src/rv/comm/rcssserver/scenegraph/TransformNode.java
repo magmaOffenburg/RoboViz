@@ -46,8 +46,14 @@ public class TransformNode extends Node
 	{
 		if (atoms[0].equals("SLT")) {
 			double[] a = new double[16];
-			for (int i = 0; i < 16; i++)
-				a[i] = Double.parseDouble(atoms[i + 1]);
+			for (int i = 0; i < 16; i++) {
+				try {
+ 					a[i] = Double.parseDouble(atoms[i + 1]);
+ 				} catch (NumberFormatException nfe) {
+					a[i] = 0.0;
+				}
+			}
+
 			localTransform = new Matrix(a);
 		}
 	}
