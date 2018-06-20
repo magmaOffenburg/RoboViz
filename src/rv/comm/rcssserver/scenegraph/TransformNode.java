@@ -46,8 +46,14 @@ public class TransformNode extends Node
 	{
 		if (atoms[0].equals("SLT")) {
 			double[] a = new double[16];
-			for (int i = 0; i < 16; i++)
-				a[i] = Double.parseDouble(atoms[i + 1]);
+			for (int i = 0; i < 16; i++) {
+				try {
+					a[i] = Double.parseDouble(atoms[i + 1]);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+					// ignore nan values from a server bug (see https://gitlab.com/robocup-sim/SimSpark/issues/5)
+				}
+			}
 			localTransform = new Matrix(a);
 		}
 	}
