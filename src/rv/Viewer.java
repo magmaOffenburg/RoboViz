@@ -508,8 +508,8 @@ public class Viewer
 	@Override
 	public void playerStateChanged(boolean playing)
 	{
-		if (getUI().getBallTracker() != null)
-			getUI().getBallTracker().setPlaybackSpeed(logPlayer.getPlayBackSpeed());
+		if (getUI().getTrackerCamera() != null)
+			getUI().getTrackerCamera().setPlaybackSpeed(logPlayer.getPlayBackSpeed());
 	}
 
 	@Override

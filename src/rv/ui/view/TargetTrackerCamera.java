@@ -22,19 +22,37 @@ import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.world.ISelectable;
+import rv.world.objects.Agent;
+import rv.world.objects.Ball;
 
 public class TargetTrackerCamera
 {
 	private boolean enabled = false;
 	private final FPCamera camera;
 	private GameState gs;
+
 	private ISelectable target;
 	private double playbackSpeed = 1;
 	private Vec3f lastScreenPos;
 
-	public void toggleEnabled()
+	public boolean isEnabled()
 	{
-		enabled = !enabled;
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+
+	public ISelectable getTarget()
+	{
+		return target;
+	}
+
+	public void setTarget(ISelectable target)
+	{
+		this.target = target;
 	}
 
 	public void setPlaybackSpeed(double playbackSpeed)
@@ -42,9 +60,8 @@ public class TargetTrackerCamera
 		this.playbackSpeed = playbackSpeed;
 	}
 
-	public TargetTrackerCamera(ISelectable target, FPCamera camera, GameState gs)
+	public TargetTrackerCamera(FPCamera camera, GameState gs)
 	{
-		this.target = target;
 		this.camera = camera;
 		this.gs = gs;
 		lastScreenPos = null;
@@ -52,11 +69,15 @@ public class TargetTrackerCamera
 
 	public void update(Viewport screen)
 	{
-		if (!enabled || target.getPosition() == null)
+		if (!enabled || target == null || target.getPosition() == null)
 			return;
 
 		float scale = (float) (1 - (0.02f * playbackSpeed));
-		scale = scaleWithBallSpeed(screen, scale);
+		if (target instanceof Agent) {
+			scale = 0.95f;
+		} else {
+			scale = scaleWithBallSpeed(screen, scale);
+		}
 
 		Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
 
@@ -97,12 +118,15 @@ public class TargetTrackerCamera
 		float halfLength = gs.getFieldLength() / 2;
 		float halfWidth = gs.getFieldWidth() / 2;
 
+		float zoom = target instanceof Ball ? 1 : 4;
+
 		float xOffset = 4 * fuzzyValue(targetPos.x, -halfLength, halfLength);
-		float zOffset = -8 + 3 * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
+		float baseZOffset = -8 / zoom;
+		float zOffset = baseZOffset + 3 * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
 
 		Vec3f offsetPos = targetPos.clone();
 		offsetPos.add(Vec3f.unitX().times(xOffset));
-		offsetPos.add(Vec3f.unitY().times(4));
+		offsetPos.add(Vec3f.unitY().times(4 / zoom));
 		offsetPos.add(Vec3f.unitZ().times(zOffset));
 		return offsetPos;
 	}

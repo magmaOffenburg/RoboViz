@@ -33,6 +33,7 @@ import rv.ui.menus.Menu;
 import rv.ui.view.RobotVantageBase;
 import rv.ui.view.RobotVantageFirstPerson;
 import rv.ui.view.RobotVantageThirdPerson;
+import rv.ui.view.TargetTrackerCamera;
 import rv.util.swing.SwingUtil;
 import rv.world.ISelectable;
 import rv.world.Team;
@@ -57,6 +58,13 @@ public abstract class ViewerScreenBase
 		THIRD_PERSON
 	}
 
+	enum TrackerCameraType
+	{
+		NONE,
+		BALL,
+		PLAYER
+	}
+
 	protected final Viewer viewer;
 
 	protected final GameStateOverlay gameStateOverlay;
@@ -74,6 +82,8 @@ public abstract class ViewerScreenBase
 
 	private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
 	protected final BorderTextRenderer tr;
+
+	private TrackerCameraType trackerCameraType = TrackerCameraType.NONE;
 
 	protected int prevScoreL = -1;
 	protected int prevScoreR = -1;
@@ -182,6 +192,15 @@ public abstract class ViewerScreenBase
 				toggleBallTracker();
 			}
 		});
+
+		menu.addItem(
+				"Track Player", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.SHIFT_MASK), new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						togglePlayerTracker();
+					}
+				});
 
 		menu.addItem("First Person Vantage", "V", new AbstractAction() {
 			@Override
@@ -385,7 +404,10 @@ public abstract class ViewerScreenBase
 
 		switch (keyCode) {
 		case KeyEvent.VK_SPACE:
-			toggleBallTracker();
+			if (e.isShiftDown())
+				togglePlayerTracker();
+			else
+				toggleBallTracker();
 			break;
 		case KeyEvent.VK_F11:
 			if (!e.isControlDown())
@@ -448,9 +470,54 @@ public abstract class ViewerScreenBase
 		}
 	}
 
+	private Agent getTrackedPlayer()
+	{
+		Agent result = null;
+
+		List<Agent> leftTeam = viewer.getWorldModel().getLeftTeam().getAgents();
+		if (leftTeam.size() > 0)
+			result = leftTeam.get(0);
+		List<Agent> rightTeam = viewer.getWorldModel().getRightTeam().getAgents();
+		if (rightTeam.size() > 0)
+			result = rightTeam.get(0);
+
+		ISelectable selection = viewer.getWorldModel().getSelectedObject();
+		if (selection instanceof Agent)
+			result = (Agent) selection;
+
+		// players usually beam right after they connect, avoid camera jumps
+		if (result != null && result.getAge() < 50) {
+			return null;
+		}
+		return result;
+	}
+
+	private void togglePlayerTracker()
+	{
+		switchTrackerCamera(getTrackedPlayer(), TrackerCameraType.PLAYER);
+	}
+
 	private void toggleBallTracker()
 	{
-		viewer.getUI().getBallTracker().toggleEnabled();
+		switchTrackerCamera(viewer.getWorldModel().getBall(), TrackerCameraType.BALL);
+	}
+
+	private void switchTrackerCamera(ISelectable target, TrackerCameraType type)
+	{
+		TargetTrackerCamera camera = viewer.getUI().getTrackerCamera();
+		if (camera.isEnabled() && trackerCameraType == type) {
+			type = TrackerCameraType.NONE;
+		}
+
+		if (type == TrackerCameraType.NONE) {
+			camera.setEnabled(false);
+			camera.setTarget(null);
+			trackerCameraType = TrackerCameraType.NONE;
+		} else {
+			camera.setEnabled(true);
+			camera.setTarget(target);
+			trackerCameraType = type;
+		}
 	}
 
 	private void selectBall()
@@ -658,6 +725,16 @@ public abstract class ViewerScreenBase
 	@Override
 	public void gsTimeChanged(GameState gs)
 	{
+		TargetTrackerCamera camera = viewer.getUI().getTrackerCamera();
+		if (trackerCameraType == TrackerCameraType.PLAYER) {
+			ISelectable target = camera.getTarget();
+			boolean agentExists = viewer.getWorldModel().getLeftTeam().getAgents().contains(target) ||
+								  viewer.getWorldModel().getRightTeam().getAgents().contains(target);
+			if (target == null || !agentExists) {
+				target = getTrackedPlayer();
+			}
+			camera.setTarget(target);
+		}
 	}
 
 	@Override
@@ -738,6 +815,10 @@ public abstract class ViewerScreenBase
 			} else {
 				setRobotVantage(RobotVantageType.NONE);
 			}
+		}
+
+		if (trackerCameraType == TrackerCameraType.PLAYER && newSelection instanceof Agent) {
+			viewer.getUI().getTrackerCamera().setTarget(newSelection);
 		}
 	}
 

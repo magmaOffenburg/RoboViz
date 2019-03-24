@@ -1,3 +1,9 @@
+(to be released)
+------------------------------
+* added differently colored goalie jerseys (#102)
+* added a player tracking camera
+* more gracefully handle `NaN` values sent by the server
+
 1.4.0
 ------------------------------
 * added a menu bar with Connection / Server / View / Camera menus

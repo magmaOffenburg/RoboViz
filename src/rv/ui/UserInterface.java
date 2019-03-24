@@ -54,11 +54,11 @@ public class UserInterface implements KeyListener
 	private Screen overlay;
 	private KeyListener[] tempListeners;
 	private Screen activeScreen;
-	private TargetTrackerCamera ballTracker;
+	private TargetTrackerCamera trackerCamera;
 
-	public TargetTrackerCamera getBallTracker()
+	public TargetTrackerCamera getTrackerCamera()
 	{
-		return ballTracker;
+		return trackerCamera;
 	}
 
 	public CameraController getCameraControl()
@@ -118,8 +118,7 @@ public class UserInterface implements KeyListener
 		else
 			setActiveScreen(new LogfileModeScreen(viewer));
 
-		ballTracker = new TargetTrackerCamera(
-				viewer.getWorldModel().getBall(), camera, viewer.getWorldModel().getGameState());
+		trackerCamera = new TargetTrackerCamera(camera, viewer.getWorldModel().getGameState());
 	}
 
 	private FPCamera initCamera(GLCapabilitiesImmutable glcaps)
@@ -149,7 +148,7 @@ public class UserInterface implements KeyListener
 		cameraControl.update(elapsedMS);
 		camera.update(elapsedMS);
 
-		ballTracker.update(viewer.getScreen());
+		trackerCamera.update(viewer.getScreen());
 	}
 
 	public void render(GL2 gl, GLU glu, GLUT glut)

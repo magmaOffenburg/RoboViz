@@ -59,6 +59,8 @@ public class Agent implements ISelectable
 	private AgentAnnotation annotation = null;
 	private Vec3f torsoDirection = null;
 
+	private int age;
+
 	public void setAnnotation(AgentAnnotation annotation)
 	{
 		this.annotation = annotation;
@@ -124,13 +126,12 @@ public class Agent implements ISelectable
 		meshNodes = sg.getAllMeshNodes(rootNode);
 
 		for (StaticMeshNode node : meshNodes) {
-		    // Check for switching models to goalie jersey
-		    if ((node.getName().matches(".*naobody.*[.]obj$")
-			 		|| node.getName().matches(".*lupperarm.*[.]obj$") 
-			 		|| node.getName().matches(".*rupperarm.*[.]obj$"))
-				&& !node.getName().endsWith("G.obj") && id == 1) {
-				node.setName(node.getName().substring(0,node.getName().length()-4)+"G.obj");
-		    }
+			// Check for switching models to goalie jersey
+			if ((node.getName().matches(".*naobody.*[.]obj$") || node.getName().matches(".*lupperarm.*[.]obj$") ||
+						node.getName().matches(".*rupperarm.*[.]obj$")) &&
+					!node.getName().endsWith("G.obj") && id == 1) {
+				node.setName(node.getName().substring(0, node.getName().length() - 4) + "G.obj");
+			}
 		}
 	}
 
@@ -181,12 +182,19 @@ public class Agent implements ISelectable
 		bounds = new BoundingBox(min, max);
 		for (ChangeListener l : listeners)
 			l.transformChanged(headTransform);
+
+		age++;
 	}
 
 	@Override
 	public Vec3f getPosition()
 	{
 		return bounds == null ? null : bounds.getCenter();
+	}
+
+	public int getAge()
+	{
+		return age;
 	}
 
 	@Override
