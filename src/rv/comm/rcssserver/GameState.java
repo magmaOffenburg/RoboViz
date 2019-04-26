@@ -57,7 +57,8 @@ public class GameState implements ServerChangeListener
 		ILLEGAL_ATTACK(3, "illegal attack"),
 		INCAPABLE(4, "incapable"),
 		KICKOFF(5, "illegal kickoff"),
-		CHARGING(6, "charging");
+		CHARGING(6, "charging"),
+		SELF_COLLISION(7, "self collision");
 
 		private int index;
 		private String name;

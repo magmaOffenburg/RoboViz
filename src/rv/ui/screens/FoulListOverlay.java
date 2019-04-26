@@ -98,7 +98,7 @@ public class FoulListOverlay extends ScreenBase
 	{
 		float[] cardFillColor;
 
-		String foulText = "#" + Integer.toString(foul.agentID) + ": " + foul.type + "!";
+		String foulText = "#" + foul.agentID + ": " + foul.type + "!";
 
 		switch (foul.type) {
 		case CROWDING:
@@ -111,6 +111,7 @@ public class FoulListOverlay extends ScreenBase
 			cardFillColor = new float[] {0.8f, 0.6f, 0.0f, 1.0f};
 			break;
 		case CHARGING:
+		case SELF_COLLISION:
 		default:
 			// Red
 			cardFillColor = new float[] {0.8f, 0.0f, 0.0f, 1.0f};
