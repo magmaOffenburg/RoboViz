@@ -85,6 +85,18 @@ public class GameState implements ServerChangeListener
 		public long receivedTime;
 	}
 
+	public class HistoryItem
+	{
+		public final float time;
+		public final String playMode;
+
+		public HistoryItem(float time, String playMode)
+		{
+			this.time = time;
+			this.playMode = playMode;
+		}
+	}
+
 	// Measurements and Rules
 	public static final String FIELD_LENGTH = "FieldLength";
 	public static final String FIELD_WIDTH = "FieldWidth";
@@ -137,6 +149,7 @@ public class GameState implements ServerChangeListener
 	private int scoreLeft;
 	private int scoreRight;
 	private String playMode = "<Play Mode>";
+	private List<HistoryItem> playModeHistory = new CopyOnWriteArrayList<>();
 	private float time;
 	private int half;
 	private List<Foul> fouls = new CopyOnWriteArrayList<>();
@@ -250,6 +263,11 @@ public class GameState implements ServerChangeListener
 		return playMode;
 	}
 
+	public List<HistoryItem> getPlayModeHistory()
+	{
+		return playModeHistory;
+	}
+
 	public float getTime()
 	{
 		return time;
@@ -293,9 +311,10 @@ public class GameState implements ServerChangeListener
 		scoreLeft = 0;
 		scoreRight = 0;
 		playMode = null;
+		playModeHistory = new ArrayList<>();
 		time = 0;
 		half = 0;
-		fouls = new CopyOnWriteArrayList<Foul>();
+		fouls = new CopyOnWriteArrayList<>();
 	}
 
 	private boolean isTimeStopped()
@@ -356,6 +375,7 @@ public class GameState implements ServerChangeListener
 		int measureOrRuleChanges = 0;
 		int timeChanges = 0;
 		int playStateChanges = 0;
+		String previousPlayMode = playMode;
 
 		removeExpiredFouls();
 
@@ -468,6 +488,10 @@ public class GameState implements ServerChangeListener
 					break;
 				}
 			}
+		}
+
+		if (previousPlayMode != null && !previousPlayMode.equals(playMode)) {
+			playModeHistory.add(new HistoryItem(time, playMode));
 		}
 
 		initialized = true;

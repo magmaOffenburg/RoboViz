@@ -105,11 +105,13 @@ public class GameStateOverlay extends ScreenBase
 			drawBox(gl, x + NAME_WIDTH + SCORE_BOX_WIDTH, y, NAME_WIDTH, BAR_HEIGHT);
 			gl.glEnd();
 
+			int timeX = x + 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_PAD;
+
 			tr1.beginRendering(screenW, screenH);
 			tr1.draw(teamL, (int) (x + lxpad), y + Y_PAD);
 			tr1.draw(scoreText, (int) (x + NAME_WIDTH + sxpad), y + Y_PAD);
 			tr1.draw(teamR, (int) (x + NAME_WIDTH + SCORE_BOX_WIDTH + rxpad), y + Y_PAD);
-			tr1.draw(timeText, x + 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_PAD, y + Y_PAD);
+			tr1.draw(timeText, timeX, y + Y_PAD);
 			tr1.endRendering();
 
 			tr2.setColor(0.9f, 0.9f, 0.9f, 1);
@@ -117,6 +119,26 @@ public class GameStateOverlay extends ScreenBase
 			tr2.draw("Playmode: " + gs.getPlayMode(), x, y - 20);
 			if (showServerSpeed && ssb != null) {
 				tr2.draw("Server Speed: " + ssb.getServerSpeed(), x + NAME_WIDTH + SCORE_BOX_WIDTH, y - 20);
+			}
+			Float timeOfLastPassEnd = null;
+			for (int i = gs.getPlayModeHistory().size() - 1; i >= 0; i--) {
+				GameState.HistoryItem item = gs.getPlayModeHistory().get(i);
+				if (item.playMode.equals("pass_left") || item.playMode.equals("pass_right")) {
+					if (gs.getPlayModeHistory().size() > i + 1) {
+						timeOfLastPassEnd = gs.getPlayModeHistory().get(i + 1).time;
+					}
+					break;
+				}
+			}
+			if (timeOfLastPassEnd != null) {
+				float timePassed = gs.getTime() - timeOfLastPassEnd;
+				if (timePassed > 0) {
+					final float COOLDOWN = 10;
+					float cooldownLeft = COOLDOWN - timePassed;
+					if (cooldownLeft > 0) {
+						tr2.draw(String.format(Locale.US, "%.1f", cooldownLeft), timeX, y - 20);
+					}
+				}
 			}
 			tr2.endRendering();
 		}

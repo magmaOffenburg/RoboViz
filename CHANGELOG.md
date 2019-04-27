@@ -4,6 +4,7 @@
 * added a player tracking camera
 * added support for the new self collision foul
 * added a circle around the ball for pass / free kick / corner kick / kick in
+* added a timer for the scoring cooldown after pass mode 
 * changed the time formatting to `mm:ss`
 * more gracefully handle `NaN` values sent by the server
 
