@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 import rv.Configuration;
 import rv.Viewer;
 
@@ -38,7 +39,13 @@ public class ConnectionMenu extends JMenu
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					selectServer(item);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run()
+						{
+							selectServer(item);
+						}
+					});
 				}
 			});
 			add(item);

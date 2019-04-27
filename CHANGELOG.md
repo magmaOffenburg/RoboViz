@@ -7,6 +7,7 @@
 * added a timer for the scoring cooldown after pass mode 
 * changed the time formatting to `mm:ss`
 * more gracefully handle `NaN` values sent by the server
+* fixed hangs when switching between servers in Connection UI (#100)
 
 1.4.0
 ------------------------------
