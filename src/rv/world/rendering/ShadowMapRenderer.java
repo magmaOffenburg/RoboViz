@@ -269,7 +269,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		gl.glUniform1fv(ulocBlurWeights, blurParams[0].weights.length, blurParams[0].weights, 0);
 		gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-		renderQuad(gl);
+		GLHelper.renderQuad(gl);
 		blurFBO.getColorTexture(1).bind(gl);
 
 		// vertical pass
@@ -277,7 +277,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		gl.glUniform1fv(ulocBlurWeights, blurParams[1].weights.length, blurParams[1].weights, 0);
 		gl.glDrawBuffer(GL2.GL_COLOR_ATTACHMENT0);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-		renderQuad(gl);
+		GLHelper.renderQuad(gl);
 
 		blurShader.disable(gl);
 		blurFBO.unbind(gl);
@@ -285,20 +285,6 @@ public class ShadowMapRenderer implements SceneRenderer
 		Texture2D.unbind(gl);
 
 		return blurFBO.getColorTexture(0);
-	}
-
-	private void renderQuad(GL2 gl)
-	{
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glTexCoord2f(0, 0);
-		gl.glVertex2f(-1, -1);
-		gl.glTexCoord2f(1, 0);
-		gl.glVertex2f(1, -1);
-		gl.glTexCoord2f(1, 1);
-		gl.glVertex2f(1, 1);
-		gl.glTexCoord2f(0, 1);
-		gl.glVertex2f(-1, 1);
-		gl.glEnd();
 	}
 
 	@Override

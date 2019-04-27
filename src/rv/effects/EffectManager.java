@@ -26,6 +26,7 @@ import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.content.ContentManager;
+import rv.world.rendering.GLHelper;
 import rv.world.rendering.ShadowMapRenderer;
 import rv.world.rendering.ShadowMapRenderer.LightShadowVolume;
 
@@ -87,16 +88,7 @@ public class EffectManager implements GLDisposable
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
 
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glTexCoord2f(0, 0);
-		gl.glVertex2f(-1, -1);
-		gl.glTexCoord2f(1, 0);
-		gl.glVertex2f(1, -1);
-		gl.glTexCoord2f(1, 1);
-		gl.glVertex2f(1, 1);
-		gl.glTexCoord2f(0, 1);
-		gl.glVertex2f(-1, 1);
-		gl.glEnd();
+		GLHelper.renderQuad(gl);
 
 		gl.glPopMatrix();
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
