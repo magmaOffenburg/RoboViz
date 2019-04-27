@@ -109,7 +109,7 @@ public class Ball implements ISelectable, ISceneGraphItem
 	public void renderSelected(GL2 gl)
 	{
 		if (getPosition() != null) {
-			ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] {1, 1, 1});
+			ContentManager.renderSelection(gl, getPosition(), 0.15f, new float[] {1, 1, 1}, false);
 		}
 	}
 }

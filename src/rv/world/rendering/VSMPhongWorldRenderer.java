@@ -131,6 +131,7 @@ public class VSMPhongWorldRenderer implements SceneRenderer
 		shader.disable(gl);
 		if (world.getSelectedObject() != null)
 			world.getSelectedObject().renderSelected(gl);
+		world.renderBallCircle(gl);
 		if (drawings.isVisible())
 			drawings.render(gl, Renderer.glut);
 		shader.enable(gl);

@@ -102,7 +102,7 @@ public class Field2DOverlay extends ScreenBase implements GameStateChangeListene
 	private void drawTeam(GL2 gl, boolean manualColor, Team team)
 	{
 		if (!manualColor)
-			gl.glColor3fv(team.getTeamMaterial().getDiffuse(), 0);
+			gl.glColor3fv(team.getColorMaterial().getDiffuse(), 0);
 		for (int i = 0; i < team.getAgents().size(); i++) {
 			Vec3f p = team.getAgents().get(i).getPosition();
 			if (p != null) {

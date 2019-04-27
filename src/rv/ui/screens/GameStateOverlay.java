@@ -91,13 +91,13 @@ public class GameStateOverlay extends ScreenBase
 			gl.glColor4f(0, 0, 0, 0.5f);
 			drawBox(gl, x - 3, y - 3, 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6, BAR_HEIGHT + 6);
 			drawBox(gl, x - 3, y - 3, 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6, BAR_HEIGHT * 0.6f);
-			float[] lc = viewer.getWorldModel().getLeftTeam().getTeamMaterial().getDiffuse();
+			float[] lc = viewer.getWorldModel().getLeftTeam().getColorMaterial().getDiffuse();
 			gl.glColor4f(lc[0] * 0.8f, lc[1] * 0.8f, lc[2] * 0.8f, 0.65f);
 			drawBox(gl, x, y, NAME_WIDTH, BAR_HEIGHT);
 			gl.glColor4f(0.2f, 0.2f, 0.2f, 0.65f);
 			drawBox(gl, x + NAME_WIDTH, y, SCORE_BOX_WIDTH, BAR_HEIGHT);
 			gl.glColor4f(1, .3f, .3f, 0.65f);
-			float[] rc = viewer.getWorldModel().getRightTeam().getTeamMaterial().getDiffuse();
+			float[] rc = viewer.getWorldModel().getRightTeam().getColorMaterial().getDiffuse();
 			gl.glColor4f(rc[0] * 0.8f, rc[1] * 0.8f, rc[2] * 0.8f, 0.65f);
 			drawBox(gl, x + NAME_WIDTH + SCORE_BOX_WIDTH, y, NAME_WIDTH, BAR_HEIGHT);
 			gl.glEnd();

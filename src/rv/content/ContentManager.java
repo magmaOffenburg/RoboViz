@@ -82,14 +82,10 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 	private Mesh.RenderMode meshRenderMode = Mesh.RenderMode.IMMEDIATE;
 	private Texture2D whiteTexture;
 	public static Texture2D selectionTexture;
+	public static Texture2D selectionTextureThin;
 	private final List<Model> modelsToInitialize = new ArrayList<>();
 	private final List<Model> models = new ArrayList<>();
 	private ObjMaterialLibrary naoMaterialLib;
-
-	public Texture2D getSelectionTexture()
-	{
-		return selectionTexture;
-	}
 
 	public Texture2D getWhiteTexture()
 	{
@@ -150,10 +146,13 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		modelsToInitialize.clear();
 	}
 
-	public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color)
+	public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color, boolean thin)
 	{
 		gl.glColor3fv(color, 0);
-		ContentManager.selectionTexture.bind(gl);
+		if (thin)
+			ContentManager.selectionTextureThin.bind(gl);
+		else
+			ContentManager.selectionTexture.bind(gl);
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glTexCoord2f(0, 0);
 		gl.glVertex3f(p.x - r, 0, p.z - r);
@@ -184,6 +183,9 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 			return false;
 		selectionTexture = loadTexture(drawable.getGL(), "selection.png");
 		if (selectionTexture == null)
+			return false;
+		selectionTextureThin = loadTexture(drawable.getGL(), "selection_thin.png");
+		if (selectionTextureThin == null)
 			return false;
 
 		// load nao materials
@@ -318,34 +320,36 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		MaterialUtil.setColor(mat, color);
 
 		// For goalie
-		ObjMaterial matGoalie = getMaterial(materialName+"Goalie");
-		float r = color.getRed()/255f;
-		float g = color.getGreen()/255f;
-		float b = color.getBlue()/255f;
+		ObjMaterial matGoalie = getMaterial(materialName + "Goalie");
+		float r = color.getRed() / 255f;
+		float g = color.getGreen() / 255f;
+		float b = color.getBlue() / 255f;
 		float factor = 0.45f;
 
 		// Brighten color for goalie
-		//Color colorGoalie = color.brighter();
-		Color colorGoalie = new Color(r+(1-r)*factor, g+(1-g)*factor, b+(1-b)*factor);
-		
+		// Color colorGoalie = color.brighter();
+		Color colorGoalie = new Color(r + (1 - r) * factor, g + (1 - g) * factor, b + (1 - b) * factor);
+
 		float tooBrightThresh = 0.7f;
 		float tooWhiteThresh = 0.55f;
 		float tooWhiteDiffThresh = 0.2f;
 
-		float gr = colorGoalie.getRed()/255f;
-		float gg = colorGoalie.getGreen()/255f;
-		float gb = colorGoalie.getBlue()/255f;
-		if ((gr > tooBrightThresh && gg > tooBrightThresh && gb > tooBrightThresh) || (gr > tooWhiteThresh && gg > tooWhiteThresh && gb > tooWhiteThresh && Math.max(gr,Math.max(gg,gb))-Math.min(gr,Math.min(gg,gb)) < tooWhiteDiffThresh)) {
-		    // Darken color for goalie
-		    //colorGoalie = color.darker();
-		    colorGoalie = new Color(r+r*-factor, g+g*-factor, b+b*-factor);
+		float gr = colorGoalie.getRed() / 255f;
+		float gg = colorGoalie.getGreen() / 255f;
+		float gb = colorGoalie.getBlue() / 255f;
+		if ((gr > tooBrightThresh && gg > tooBrightThresh && gb > tooBrightThresh) ||
+				(gr > tooWhiteThresh && gg > tooWhiteThresh && gb > tooWhiteThresh &&
+						Math.max(gr, Math.max(gg, gb)) - Math.min(gr, Math.min(gg, gb)) < tooWhiteDiffThresh)) {
+			// Darken color for goalie
+			// colorGoalie = color.darker();
+			colorGoalie = new Color(r + r * -factor, g + g * -factor, b + b * -factor);
 		}
-		//System.out.println(color);
-		//System.out.println(colorGoalie);
-		
+		// System.out.println(color);
+		// System.out.println(colorGoalie);
+
 		MaterialUtil.setColor(matGoalie, colorGoalie);
 
-		ObjMaterial matNumGoalie = getMaterial(materialName+"NumGoalie");
+		ObjMaterial matNumGoalie = getMaterial(materialName + "NumGoalie");
 		MaterialUtil.setColor(matNumGoalie, colorGoalie);
 	}
 

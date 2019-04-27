@@ -50,12 +50,24 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 	private final int id;
 	private String name;
 	private final List<Agent> agents;
-	private final ObjMaterial teamColor;
+	private final ObjMaterial colorMaterial;
+	private Color color;
 	private int score;
 
-	public ObjMaterial getTeamMaterial()
+	public ObjMaterial getColorMaterial()
 	{
-		return teamColor;
+		return colorMaterial;
+	}
+
+	public Color getColor()
+	{
+		return color;
+	}
+
+	private void setColor(Color color)
+	{
+		this.color = color;
+		MaterialUtil.setColor(colorMaterial, color);
 	}
 
 	public int getScore()
@@ -92,7 +104,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 		if (color == null) {
 			color = defaultColor;
 		}
-		MaterialUtil.setColor(teamColor, color);
+		setColor(color);
 	}
 
 	public void setScore(int score)
@@ -110,10 +122,10 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 
 		name = (id == LEFT) ? "<Left>" : "<Right>";
 
-		teamColor = new ObjMaterial(name);
-		MaterialUtil.setColor(teamColor, defaultColor);
-		teamColor.setShininess(96);
-		teamColor.setSpecular(1, 1, 1, 1);
+		colorMaterial = new ObjMaterial(name);
+		setColor(defaultColor);
+		colorMaterial.setShininess(96);
+		colorMaterial.setSpecular(1, 1, 1, 1);
 	}
 
 	@Override

@@ -66,8 +66,8 @@ public class FoulListOverlay extends ScreenBase
 		tr.draw("Fouls:", x + 3, y - FOUL_HEIGHT + 4);
 		tr.endRendering();
 
-		float[] lc = viewer.getWorldModel().getLeftTeam().getTeamMaterial().getDiffuse();
-		float[] rc = viewer.getWorldModel().getRightTeam().getTeamMaterial().getDiffuse();
+		float[] lc = viewer.getWorldModel().getLeftTeam().getColorMaterial().getDiffuse();
+		float[] rc = viewer.getWorldModel().getRightTeam().getColorMaterial().getDiffuse();
 
 		List<GameState.Foul> fouls = gs.getFouls();
 		float n = 1.0f;

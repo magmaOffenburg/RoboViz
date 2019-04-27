@@ -131,6 +131,7 @@ public class BasicSceneRenderer implements SceneRenderer
 		gl.glEnable(GL.GL_BLEND);
 		if (world.getSelectedObject() != null)
 			world.getSelectedObject().renderSelected(gl);
+		world.renderBallCircle(gl);
 		if (drawings.isVisible())
 			drawings.render(gl, Renderer.glut);
 

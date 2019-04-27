@@ -340,7 +340,7 @@ public abstract class ViewerScreenBase
 				if (selected != null && selected == a) {
 					color = new float[] {1, 1, 1, 1};
 				} else
-					color = team.getTeamMaterial().getDiffuse();
+					color = team.getColorMaterial().getDiffuse();
 				renderBillboardText(text, p, color);
 			}
 		}

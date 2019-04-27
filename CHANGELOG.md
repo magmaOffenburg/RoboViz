@@ -3,6 +3,7 @@
 * added differently colored goalie jerseys (#102)
 * added a player tracking camera
 * added support for the new self collision foul
+* added a circle around the ball for pass / free kick / corner kick / kick in
 * more gracefully handle `NaN` values sent by the server
 
 1.4.0

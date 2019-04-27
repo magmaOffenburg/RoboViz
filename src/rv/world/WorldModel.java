@@ -16,6 +16,7 @@
 
 package rv.world;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -242,6 +243,48 @@ public class WorldModel
 		}
 
 		skyBox.setPosition(ui.getCamera().getPosition());
+	}
+
+	public void renderBallCircle(GL2 gl)
+	{
+		Color color = null;
+		switch (gameState.getPlayMode()) {
+		case "pass_left":
+		case "KickIn_Left":
+		case "corner_kick_left":
+		case "free_kick_left":
+			color = leftTeam.getColor();
+			break;
+		case "pass_right":
+		case "KickIn_Right":
+		case "corner_kick_right":
+		case "free_kick_right":
+			color = rightTeam.getColor();
+			break;
+		}
+
+		float radius = 0;
+		switch (gameState.getPlayMode()) {
+		case "pass_left":
+		case "pass_right":
+			radius = 1;
+			break;
+		case "KickIn_Left":
+		case "KickIn_Right":
+		case "corner_kick_left":
+		case "corner_kick_right":
+		case "free_kick_left":
+		case "free_kick_right":
+			radius = 2.2f;
+			break;
+		}
+
+		Vec3f ballPos = ball.getPosition();
+		if (ballPos != null && color != null) {
+			float[] colorComponents = new float[3];
+			color.getRGBColorComponents(colorComponents);
+			ContentManager.renderSelection(gl, ballPos, radius, colorComponents, true);
+		}
 	}
 
 	public void dispose(GL gl)
