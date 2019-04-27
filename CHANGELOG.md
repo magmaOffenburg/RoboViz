@@ -6,7 +6,7 @@
 * added a circle around the ball for pass / free kick / corner kick / kick in
 * added a timer for the scoring cooldown after pass mode 
 * changed the time formatting to `mm:ss`
-* more gracefully handle `NaN` values sent by the server
+* more gracefully handle `NaN` values sent by the server (#99)
 * fixed hangs when switching between servers in Connection UI (#100)
 * fixed `config.txt` changes made while RoboViz is running being lost on save
 
