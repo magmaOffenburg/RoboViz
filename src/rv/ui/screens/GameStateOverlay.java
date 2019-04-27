@@ -123,7 +123,7 @@ public class GameStateOverlay extends ScreenBase
 			Float timeOfLastPassEnd = null;
 			for (int i = gs.getPlayModeHistory().size() - 1; i >= 0; i--) {
 				GameState.HistoryItem item = gs.getPlayModeHistory().get(i);
-				if (item.playMode.equals("pass_left") || item.playMode.equals("pass_right")) {
+				if (item.playMode.equals(GameState.PASS_LEFT) || item.playMode.equals(GameState.PASS_RIGHT)) {
 					if (gs.getPlayModeHistory().size() > i + 1) {
 						timeOfLastPassEnd = gs.getPlayModeHistory().get(i + 1).time;
 					}

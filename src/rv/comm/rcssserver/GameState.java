@@ -29,6 +29,7 @@ import rv.world.WorldModel;
  *
  * @author Justin Stoecker
  */
+@SuppressWarnings("unused")
 public class GameState implements ServerChangeListener
 {
 	public interface GameStateChangeListener {
@@ -120,6 +121,29 @@ public class GameState implements ServerChangeListener
 	public static final String SCORE_LEFT = "score_left";
 	public static final String SCORE_RIGHT = "score_right";
 	public static final String PLAY_MODE = "play_mode";
+
+	// Play Modes
+	public static final String BEFORE_KICK_OFF = "BeforeKickOff";
+	public static final String KICK_OFF_LEFT = "KickOff_Left";
+	public static final String KICK_OFF_RIGHT = "KickOff_Right";
+	public static final String PLAY_ON = "PlayOn";
+	public static final String KICK_IN_LEFT = "KickIn_Left";
+	public static final String KICK_IN_RIGHT = "KickIn_Right";
+	public static final String CORNER_KICK_LEFT = "corner_kick_left";
+	public static final String CORNER_KICK_RIGHT = "corner_kick_right";
+	public static final String GOAL_KICK_LEFT = "goal_kick_left";
+	public static final String GOAL_KICK_RIGHT = "goal_kick_right";
+	public static final String OFFSIDE_LEFT = "offside_left";
+	public static final String OFFSIDE_RIGHT = "offside_right";
+	public static final String GAME_OVER = "GameOver";
+	public static final String GOAL_LEFT = "Goal_Left";
+	public static final String GOAL_RIGHT = "Goal_Right";
+	public static final String FREE_KICK_LEFT = "free_kick_left";
+	public static final String FREE_KICK_RIGHT = "free_kick_right";
+	public static final String DIRECT_FREE_KICK_LEFT = "direct_free_kick_left";
+	public static final String DIRECT_FREE_KICK_RIGHT = "direct_free_kick_right";
+	public static final String PASS_LEFT = "pass_left";
+	public static final String PASS_RIGHT = "pass_right";
 
 	// Time
 	public static final String TIME = "time";

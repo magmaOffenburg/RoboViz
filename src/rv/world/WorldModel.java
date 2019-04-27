@@ -249,32 +249,32 @@ public class WorldModel
 	{
 		Color color = null;
 		switch (gameState.getPlayMode()) {
-		case "pass_left":
-		case "KickIn_Left":
-		case "corner_kick_left":
-		case "free_kick_left":
+		case GameState.PASS_LEFT:
+		case GameState.KICK_IN_LEFT:
+		case GameState.CORNER_KICK_LEFT:
+		case GameState.FREE_KICK_LEFT:
 			color = leftTeam.getColor();
 			break;
-		case "pass_right":
-		case "KickIn_Right":
-		case "corner_kick_right":
-		case "free_kick_right":
+		case GameState.PASS_RIGHT:
+		case GameState.KICK_IN_RIGHT:
+		case GameState.CORNER_KICK_RIGHT:
+		case GameState.FREE_KICK_RIGHT:
 			color = rightTeam.getColor();
 			break;
 		}
 
 		float radius = 0;
 		switch (gameState.getPlayMode()) {
-		case "pass_left":
-		case "pass_right":
+		case GameState.PASS_LEFT:
+		case GameState.PASS_RIGHT:
 			radius = 1;
 			break;
-		case "KickIn_Left":
-		case "KickIn_Right":
-		case "corner_kick_left":
-		case "corner_kick_right":
-		case "free_kick_left":
-		case "free_kick_right":
+		case GameState.KICK_IN_LEFT:
+		case GameState.KICK_IN_RIGHT:
+		case GameState.CORNER_KICK_LEFT:
+		case GameState.CORNER_KICK_RIGHT:
+		case GameState.FREE_KICK_LEFT:
+		case GameState.FREE_KICK_RIGHT:
 			radius = 2.2f;
 			break;
 		}
