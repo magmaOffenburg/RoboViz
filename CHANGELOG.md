@@ -8,6 +8,7 @@
 * changed the time formatting to `mm:ss`
 * more gracefully handle `NaN` values sent by the server
 * fixed hangs when switching between servers in Connection UI (#100)
+* fixed `config.txt` changes made while RoboViz is running being lost on save
 
 1.4.0
 ------------------------------

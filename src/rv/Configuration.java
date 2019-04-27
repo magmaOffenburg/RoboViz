@@ -178,7 +178,7 @@ public class Configuration
 			getNextLine(in);
 			autoConnect = getNextBool(in);
 			autoConnectDelay = getNextInt(in);
-			serverHosts = new LinkedList<String>(Arrays.asList(getNextStringList(in)));
+			serverHosts = new LinkedList<>(Arrays.asList(getNextStringList(in)));
 			serverHost = serverHosts.get(0);
 			serverPort = getNextInt(in);
 			listenPort = getNextInt(in);

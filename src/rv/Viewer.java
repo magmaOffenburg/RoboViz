@@ -290,8 +290,8 @@ public class Viewer
 	private void restoreConfig()
 	{
 		Configuration.Graphics graphics = config.graphics;
-		Integer frameX = graphics.frameX;
-		Integer frameY = graphics.frameY;
+		int frameX = graphics.frameX;
+		int frameY = graphics.frameY;
 		boolean maximized = graphics.isMaximized;
 
 		frame.setSize(graphics.frameWidth, graphics.frameHeight);
@@ -306,6 +306,8 @@ public class Viewer
 
 	private void storeConfig()
 	{
+		Configuration config = Configuration.loadFromFile();
+
 		Configuration.Graphics graphics = config.graphics;
 		Point location = frame.getLocation();
 		Dimension size = frame.getSize();
