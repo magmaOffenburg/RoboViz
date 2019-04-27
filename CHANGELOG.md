@@ -1,4 +1,4 @@
-(to be released)
+1.5.0
 ------------------------------
 * added differently colored goalie jerseys (#102)
 * added a player tracking camera
