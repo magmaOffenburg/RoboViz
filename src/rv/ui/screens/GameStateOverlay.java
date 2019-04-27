@@ -72,7 +72,10 @@ public class GameStateOverlay extends ScreenBase
 			String teamR = gs.getTeamRight() == null ? "<Right>" : gs.getTeamRight();
 
 			String scoreText = gs.getScoreLeft() + ":" + gs.getScoreRight();
-			String timeText = String.format(Locale.US, "%.1f", gs.getTime());
+
+			int minutes = (int) Math.floor(gs.getTime() / 60.0);
+			int seconds = (int) (gs.getTime() - minutes * 60);
+			String timeText = String.format(Locale.US, "%02d:%02d", minutes, seconds);
 
 			// truncate team names that are too long to fit within bounds
 			while (tr1.getBounds(teamL).getWidth() > NAME_WIDTH - 4)
