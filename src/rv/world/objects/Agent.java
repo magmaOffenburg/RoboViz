@@ -219,7 +219,7 @@ public class Agent implements ISelectable
 	public void renderSelected(GL2 gl)
 	{
 		if (getPosition() != null) {
-			ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getColorMaterial().getDiffuse(), false);
+			ContentManager.renderSelection(gl, getPosition(), 0.25f, team.getColorMaterial().getDiffuse(), 1, false);
 		}
 	}
 

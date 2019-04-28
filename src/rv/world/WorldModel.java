@@ -18,6 +18,7 @@ package rv.world;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
@@ -67,6 +68,8 @@ public class WorldModel
 	private SkyBox skyBox;
 
 	private ISelectable selectedObject;
+	private float ballCircleTimeLeft;
+	private float ballCircleTime;
 
 	private final ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
 	private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
@@ -243,10 +246,34 @@ public class WorldModel
 		}
 
 		skyBox.setPosition(ui.getCamera().getPosition());
+
+		ballCircleTimeLeft -= elapsedMS / 1000.0;
 	}
 
 	public void renderBallCircle(GL2 gl)
 	{
+		List<GameState.HistoryItem> history = gameState.getPlayModeHistory();
+		if (!history.isEmpty()) {
+			GameState.HistoryItem mostRecent = history.get(history.size() - 1);
+			if (mostRecent.time == gameState.getTime()) {
+				// just switched
+				switch (gameState.getPlayMode()) {
+				case GameState.PASS_LEFT:
+				case GameState.PASS_RIGHT:
+					ballCircleTime = ballCircleTimeLeft = 3;
+					break;
+				case GameState.KICK_IN_LEFT:
+				case GameState.KICK_IN_RIGHT:
+				case GameState.CORNER_KICK_LEFT:
+				case GameState.CORNER_KICK_RIGHT:
+				case GameState.FREE_KICK_LEFT:
+				case GameState.FREE_KICK_RIGHT:
+					ballCircleTime = ballCircleTimeLeft = 15;
+					break;
+				}
+			}
+		}
+
 		Color color = null;
 		switch (gameState.getPlayMode()) {
 		case GameState.PASS_LEFT:
@@ -283,7 +310,8 @@ public class WorldModel
 		if (ballPos != null && color != null) {
 			float[] colorComponents = new float[3];
 			color.getRGBColorComponents(colorComponents);
-			ContentManager.renderSelection(gl, ballPos, radius, colorComponents, true);
+			float alpha = Math.max(0.1f, ballCircleTimeLeft / ballCircleTime);
+			ContentManager.renderSelection(gl, ballPos, radius, colorComponents, alpha, true);
 		}
 	}
 

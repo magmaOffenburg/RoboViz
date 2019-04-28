@@ -146,9 +146,10 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		modelsToInitialize.clear();
 	}
 
-	public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color, boolean thin)
+	public static void renderSelection(GL2 gl, Vec3f p, float r, float[] color, float alpha, boolean thin)
 	{
-		gl.glColor3fv(color, 0);
+		float[] colorWithAlpha = {color[0], color[1], color[2], alpha};
+		gl.glColor4fv(colorWithAlpha, 0);
 		if (thin)
 			ContentManager.selectionTextureThin.bind(gl);
 		else

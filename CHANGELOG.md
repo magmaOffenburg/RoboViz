@@ -1,3 +1,7 @@
+(to be released)
+------------------------------
+* added a fade-out effect to the ball circle in pass mode etc.
+
 1.5.0
 ------------------------------
 * added differently colored goalie jerseys (#102)
