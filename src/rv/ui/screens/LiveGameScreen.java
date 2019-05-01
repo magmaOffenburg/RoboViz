@@ -18,6 +18,7 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.media.opengl.awt.GLCanvas;
 import js.math.vector.Vec3f;
 import rv.Configuration;
@@ -293,6 +294,20 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 			playmodeOverlay.setVisible(false);
 			prevScoreL = -1;
 			prevScoreR = -1;
+		}
+	}
+
+	@Override
+	public void gsPlayStateChanged(GameState gs)
+	{
+		super.gsPlayStateChanged(gs);
+		if (gs.hasPlayModeJustChanged()) {
+			switch (gs.getPlayMode()) {
+			case GameState.KICK_OFF_LEFT:
+			case GameState.KICK_OFF_RIGHT:
+				getServer().requestFullState();
+				break;
+			}
 		}
 	}
 }
