@@ -96,15 +96,15 @@ public class FoulListOverlay extends ScreenBase
 		case ILLEGAL_ATTACK:
 		case INCAPABLE:
 		case KICKOFF:
-			// Yellow
-			cardFillColor = new float[] {0.8f, 0.6f, 0.0f, 1.0f};
-			break;
 		case CHARGING:
 		case SELF_COLLISION:
 		default:
-			// Red
-			cardFillColor = new float[] {0.8f, 0.0f, 0.0f, 1.0f};
+			// Yellow
+			cardFillColor = new float[] {0.8f, 0.6f, 0.0f, 1.0f};
 			break;
+			// Red
+			// cardFillColor = new float[] {0.8f, 0.0f, 0.0f, 1.0f};
+			// break;
 		}
 
 		cardFillColor[3] = opacity;
