@@ -14,18 +14,18 @@ public class Menu extends JMenu
 		setMnemonic(mnemonic);
 	}
 
-	public void addItem(String text, String accelerator, final AbstractAction action)
+	public void addItem(String text, String accelerator, final Runnable runnable)
 	{
-		addItem(text, KeyStroke.getKeyStroke(accelerator), action);
+		addItem(text, KeyStroke.getKeyStroke(accelerator), runnable);
 	}
 
-	public void addItem(String text, KeyStroke accelerator, final AbstractAction action)
+	public void addItem(String text, KeyStroke accelerator, final Runnable runnable)
 	{
 		JMenuItem item = new JMenuItem(new AbstractAction(text) {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				action.actionPerformed(null);
+				runnable.run();
 			}
 		}) {
 			@Override

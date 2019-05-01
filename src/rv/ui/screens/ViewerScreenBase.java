@@ -118,138 +118,33 @@ public abstract class ViewerScreenBase
 	@Override
 	public void createViewMenu(Menu menu)
 	{
-		menu.addItem("Help", "F1", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				openHelp();
-			}
-		});
-
-		menu.addItem("Drawings", "Y", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				openDrawingsPanel();
-			}
-		});
-
-		menu.addItem("Toggle Full Screen", "F11", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				viewer.toggleFullScreen();
-			}
-		});
-
-		menu.addItem("Toggle Agent Overhead Type", "I", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleOverheadType();
-			}
-		});
-
-		menu.addItem("Toggle Player Numbers", "N", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				togglePlayerNumbers();
-			}
-		});
-
-		menu.addItem("Toggle Field Overlay", "F", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleFieldOverlay();
-			}
-		});
-
-		menu.addItem("Toggle Drawings", "T", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleDrawings();
-			}
-		});
-
-		menu.addItem("Toggle Fouls", "Q", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleFouls();
-			}
-		});
+		menu.addItem("Help", "F1", this ::openHelp);
+		menu.addItem("Drawings", "Y", this ::openDrawingsPanel);
+		menu.addItem("Toggle Full Screen", "F11", viewer::toggleFullScreen);
+		menu.addItem("Toggle Agent Overhead Type", "I", this ::toggleOverheadType);
+		menu.addItem("Toggle Player Numbers", "N", this ::togglePlayerNumbers);
+		menu.addItem("Toggle Field Overlay", "F", this ::toggleFieldOverlay);
+		menu.addItem("Toggle Drawings", "T", this ::toggleDrawings);
+		menu.addItem("Toggle Fouls", "Q", this ::toggleFouls);
 	}
 
 	private void createCameraMenu(Menu menu)
 	{
-		menu.addItem("Track Ball", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleBallTracker();
-			}
-		});
+		menu.addItem("Track Ball", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), this ::toggleBallTracker);
+		menu.addItem("Track Player", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.SHIFT_MASK),
+				this ::togglePlayerTracker);
 
-		menu.addItem(
-				"Track Player", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.SHIFT_MASK), new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						togglePlayerTracker();
-					}
-				});
-
-		menu.addItem("First Person Vantage", "V", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				setRobotVantage(RobotVantageType.FIRST_PERSON);
-			}
-		});
-		menu.addItem("Third Person Vantage", "E", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				setRobotVantage(RobotVantageType.THIRD_PERSON);
-			}
-		});
+		menu.addItem("First Person Vantage", "V", () -> setRobotVantage(RobotVantageType.FIRST_PERSON));
+		menu.addItem("Third Person Vantage", "E", () -> setRobotVantage(RobotVantageType.THIRD_PERSON));
 
 		menu.add(new JSeparator());
 
-		menu.addItem("Select Ball", "0", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				selectBall();
-			}
-		});
-
-		menu.addItem("Remove Selection", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				removeSelection();
-			}
-		});
+		menu.addItem("Select Ball", "0", this ::selectBall);
+		menu.addItem("Remove Selection", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), this ::removeSelection);
 
 		menu.addItem("Select Previous Player", KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK),
-				new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						cyclePlayers(-1);
-					}
-				});
-		menu.addItem("Select Next Player", KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				cyclePlayers(1);
-			}
-		});
+				() -> cyclePlayers(-1));
+		menu.addItem("Select Next Player", KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), () -> cyclePlayers(1));
 	}
 
 	protected void loadOverlayVisibilities(Configuration.OverlayVisibility config)

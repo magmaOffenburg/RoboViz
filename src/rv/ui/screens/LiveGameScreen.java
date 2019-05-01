@@ -16,11 +16,9 @@
 
 package rv.ui.screens;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.media.opengl.awt.GLCanvas;
-import javax.swing.AbstractAction;
 import js.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
@@ -65,111 +63,31 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	public void createViewMenu(Menu menu)
 	{
 		super.createViewMenu(menu);
-
-		menu.addItem("Toggle Server Speed", "M", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				toggleShowServerSpeed();
-			}
-		});
-
-		menu.addItem("Playmode Overlay", "O", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				openPlaymodeOverlay();
-			}
-		});
+		menu.addItem("Toggle Server Speed", "M", this ::toggleShowServerSpeed);
+		menu.addItem("Playmode Overlay", "O", this ::openPlaymodeOverlay);
 	}
 
 	private void createServerMenu(Menu menu)
 	{
 		if (!viewer.getConfig().networking.autoConnect)
-			menu.addItem("Connect", "C", new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					connect();
-				}
-			});
+			menu.addItem("Connect", "C", this ::connect);
 
-		menu.addItem("Kill Server", "shift X", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				getServer().killServer();
-			}
-		});
+		menu.addItem("Kill Server", "shift X", () -> getServer().killServer());
 
-		menu.addItem("Kick Off Left", "K", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				kickOff(true);
-			}
-		});
-		menu.addItem("Kick Off Right", "J", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				kickOff(false);
-			}
-		});
+		menu.addItem("Kick Off Left", "K", () -> kickOff(true));
+		menu.addItem("Kick Off Right", "J", () -> kickOff(false));
 
-		menu.addItem("Free Kick Left", "L", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				freeKick(true);
-			}
-		});
-		menu.addItem("Free Kick Right", "R", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				freeKick(false);
-			}
-		});
+		menu.addItem("Free Kick Left", "L", () -> freeKick(true));
+		menu.addItem("Free Kick Right", "R", () -> freeKick(false));
 
-		menu.addItem("Direct Free Kick Left", "shift L", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				directFreeKick(true);
-			}
-		});
-		menu.addItem("Direct Free Kick Right", "shift R", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				directFreeKick(false);
-			}
-		});
+		menu.addItem("Direct Free Kick Left", "shift L", () -> directFreeKick(true));
+		menu.addItem("Direct Free Kick Right", "shift R", () -> directFreeKick(false));
 
-		menu.addItem("Reset Time", "shift T", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				getServer().resetTime();
-			}
-		});
+		menu.addItem("Reset Time", "shift T", () -> getServer().resetTime());
 
-		menu.addItem("Request Full State Update", "U", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				getServer().requestFullState();
-			}
-		});
+		menu.addItem("Request Full State Update", "U", () -> getServer().requestFullState());
 
-		menu.addItem("Drop Ball", "B", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				dropBall();
-			}
-		});
+		menu.addItem("Drop Ball", "B", this ::dropBall);
 	}
 
 	private ServerComm getServer()
