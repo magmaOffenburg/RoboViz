@@ -135,12 +135,4 @@ public class FoulListOverlay extends ScreenBase
 		float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
 		return dt < FOUL_SHOW_TIME + FOUL_FADE_TIME;
 	}
-
-	static void drawBox(GL2 gl, float x, float y, float w, float h)
-	{
-		gl.glVertex2f(x, y);
-		gl.glVertex2f(x + w, y);
-		gl.glVertex2f(x + w, y + h);
-		gl.glVertex2f(x, y + h);
-	}
 }
