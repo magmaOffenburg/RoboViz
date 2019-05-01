@@ -4,7 +4,7 @@
 * added a fade-out effect to the ball circle in pass mode etc.
 * added a workaround for goals sometimes being missed (#104)
 
-1.5.0
+1.5.0 (April 27, 2019)
 ------------------------------
 * added differently colored goalie jerseys (#102)
 * added a player tracking camera
@@ -16,7 +16,7 @@
 * fixed hangs when switching between servers in Connection UI (#100)
 * fixed `config.txt` changes made while RoboViz is running being lost on save
 
-1.4.0
+1.4.0 (April 12, 2018)
 ------------------------------
 * added a menu bar with Connection / Server / View / Camera menus
 * allowed specifying multiple servers in `config.txt` (comma-separated)
@@ -24,7 +24,7 @@
 * fixed handling of packets with multiple drawings in logs (#98)
 * changed the ball tracker camera's speed to scale with ball speed (#95)
  
-1.3.0
+1.3.0 (July 29, 2016)
 ------------------------------
 * server speed and foul overlay are now visible by default
 * the ball is now selected by default when connecting
@@ -37,7 +37,7 @@
 * changed the color format in `config.txt` to 0xRRGGBB
 * the default colors of the left and right team are now configurable
 
-1.2.0
+1.2.0 (May 27, 2016)
 ------------------------------
 * fixed the log player getting stuck with draw commands occasionally (#78)
 * fixed `--logFile` paths starting with `~` in `roboviz.sh` (#80)
@@ -50,14 +50,14 @@
 * added support for using `~/.roboviz/config.txt` instead of the local `config.txt` if present
 * added the RoboViz version to the window title
 
-1.1.2
+1.1.2 (March 20, 2016)
 ------------------------------
 * fixed drawing of annotations in different robot vantages
 * fixed incorrect shadow rendering near field corners
 * adjusted .sh start scripts so they can run from any directory
 * added current server IP / logfile path to window title
 
-1.1.1
+1.1.1 (June 17, 2015)
 ------------------------------
 
 * fixed third person robot vantage not working with new robot models
@@ -70,7 +70,7 @@
 * fixed draw commands including agent IDs to use to use the agent's uniform number instead of the index in the current team array
 * fixed agent annotations being discarded after scene graph changes
 
-1.1.0
+1.1.0 (June 13, 2015)
 ------------------------------
 
 *Note: Java 7 is required to compile RoboViz now, whereas the version on the SourceForge repository works with Java 6.*
