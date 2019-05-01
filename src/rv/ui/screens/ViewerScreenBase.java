@@ -595,7 +595,7 @@ public abstract class ViewerScreenBase
 		if (agent.getTeam().getAgents().size() <= 1)
 			return;
 
-		Agent nextAgent = null;
+		Agent nextAgent;
 		int nextID = agent.getID();
 		do {
 			nextID += direction;

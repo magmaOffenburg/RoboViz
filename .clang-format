@@ -1,0 +1,23 @@
+IndentWidth: 4
+ContinuationIndentWidth: 8
+TabWidth: 4
+UseTab: Always
+ColumnLimit: 120
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterEnum: true
+  AfterObjCDeclaration: true
+  AfterControlStatement: false
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: false
+  BeforeElse: false
+SpaceAfterCStyleCast: true
+SpacesInContainerLiterals: false
+BreakAfterJavaFieldAnnotations: true
+AllowShortFunctionsOnASingleLine: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+AlignAfterOpenBracket: DontAlign
