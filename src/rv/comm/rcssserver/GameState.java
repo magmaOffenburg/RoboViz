@@ -521,7 +521,7 @@ public class GameState implements ServerChangeListener
 			}
 		}
 
-		playModeJustChanged = !previousPlayMode.equals(playMode);
+		playModeJustChanged = previousPlayMode == null || !previousPlayMode.equals(playMode);
 		if (playModeJustChanged) {
 			playModeHistory.add(new HistoryItem(time, playMode));
 		}

@@ -18,7 +18,6 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.List;
 import javax.media.opengl.awt.GLCanvas;
 import js.math.vector.Vec3f;
 import rv.Configuration;
