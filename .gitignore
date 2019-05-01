@@ -1,9 +1,15 @@
 /bin
-*.iml
-.idea/
 .settings/
 screenshots/
 logfiles/
 roboviz.bat
 *.TMP
 *.java-*
+
+#Intelij
+
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/watcherTasks.xml
+.idea/dictionaries
+/buildDefault
