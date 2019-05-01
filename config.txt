@@ -22,9 +22,9 @@ Save Frame State     : true
 Overlay Default Visibility:
 Server Speed         : true
 Foul Overlay         : true
-Field Overlay        : false
-Number of Players    : false
-Player IDs           : false
+Field Overlay        : true
+Number of Players    : true
+Player IDs           : true
 
 Networking Settings:
 Auto-Connect         : true

@@ -3,6 +3,7 @@
 * updated the required Java version to 1.8
 * added a fade-out effect to the ball circle in pass mode etc.
 * added a workaround for goals sometimes being missed (#104)
+* changed the default config to enable all overlays as in competitions
 * removed red cards from the foul overlay to avoid confusion
 * removed the "Fouls:" headline from the foul overlay
 
