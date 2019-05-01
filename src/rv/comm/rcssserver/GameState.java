@@ -406,7 +406,7 @@ public class GameState implements ServerChangeListener
 		int measureOrRuleChanges = 0;
 		int timeChanges = 0;
 		int playStateChanges = 0;
-		playModeJustChanged = false;
+		String previousPlayMode = playMode;
 
 		removeExpiredFouls();
 
@@ -490,7 +490,6 @@ public class GameState implements ServerChangeListener
 					int mode = Integer.parseInt(atoms[1]);
 					playMode = playModes[mode];
 					playStateChanges++;
-					playModeJustChanged = true;
 					break;
 				case TEAM_LEFT:
 					teamLeft = atoms[1];
@@ -522,6 +521,7 @@ public class GameState implements ServerChangeListener
 			}
 		}
 
+		playModeJustChanged = !previousPlayMode.equals(playMode);
 		if (playModeJustChanged) {
 			playModeHistory.add(new HistoryItem(time, playMode));
 		}
