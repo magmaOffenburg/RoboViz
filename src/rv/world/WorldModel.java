@@ -18,7 +18,6 @@ package rv.world;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
@@ -252,25 +251,21 @@ public class WorldModel
 
 	public void renderBallCircle(GL2 gl)
 	{
-		List<GameState.HistoryItem> history = gameState.getPlayModeHistory();
-		if (!history.isEmpty()) {
-			GameState.HistoryItem mostRecent = history.get(history.size() - 1);
-			if (mostRecent.time == gameState.getTime()) {
-				// just switched
-				switch (gameState.getPlayMode()) {
-				case GameState.PASS_LEFT:
-				case GameState.PASS_RIGHT:
-					ballCircleTime = ballCircleTimeLeft = 3;
-					break;
-				case GameState.KICK_IN_LEFT:
-				case GameState.KICK_IN_RIGHT:
-				case GameState.CORNER_KICK_LEFT:
-				case GameState.CORNER_KICK_RIGHT:
-				case GameState.FREE_KICK_LEFT:
-				case GameState.FREE_KICK_RIGHT:
-					ballCircleTime = ballCircleTimeLeft = 15;
-					break;
-				}
+		if (gameState.hasPlayModeJustChanged()) {
+			// just switched
+			switch (gameState.getPlayMode()) {
+			case GameState.PASS_LEFT:
+			case GameState.PASS_RIGHT:
+				ballCircleTime = ballCircleTimeLeft = 3;
+				break;
+			case GameState.KICK_IN_LEFT:
+			case GameState.KICK_IN_RIGHT:
+			case GameState.CORNER_KICK_LEFT:
+			case GameState.CORNER_KICK_RIGHT:
+			case GameState.FREE_KICK_LEFT:
+			case GameState.FREE_KICK_RIGHT:
+				ballCircleTime = ballCircleTimeLeft = 15;
+				break;
 			}
 		}
 

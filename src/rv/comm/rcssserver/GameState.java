@@ -173,6 +173,7 @@ public class GameState implements ServerChangeListener
 	private int scoreLeft;
 	private int scoreRight;
 	private String playMode = "<Play Mode>";
+	private boolean playModeJustChanged;
 	private List<HistoryItem> playModeHistory = new CopyOnWriteArrayList<>();
 	private float time;
 	private int half;
@@ -287,6 +288,11 @@ public class GameState implements ServerChangeListener
 		return playMode;
 	}
 
+	public boolean hasPlayModeJustChanged()
+	{
+		return playModeJustChanged;
+	}
+
 	public List<HistoryItem> getPlayModeHistory()
 	{
 		return playModeHistory;
@@ -335,6 +341,7 @@ public class GameState implements ServerChangeListener
 		scoreLeft = 0;
 		scoreRight = 0;
 		playMode = null;
+		playModeJustChanged = false;
 		playModeHistory = new ArrayList<>();
 		time = 0;
 		half = 0;
@@ -399,7 +406,7 @@ public class GameState implements ServerChangeListener
 		int measureOrRuleChanges = 0;
 		int timeChanges = 0;
 		int playStateChanges = 0;
-		String previousPlayMode = playMode;
+		playModeJustChanged = false;
 
 		removeExpiredFouls();
 
@@ -483,6 +490,7 @@ public class GameState implements ServerChangeListener
 					int mode = Integer.parseInt(atoms[1]);
 					playMode = playModes[mode];
 					playStateChanges++;
+					playModeJustChanged = true;
 					break;
 				case TEAM_LEFT:
 					teamLeft = atoms[1];
@@ -514,7 +522,7 @@ public class GameState implements ServerChangeListener
 			}
 		}
 
-		if (previousPlayMode != null && !previousPlayMode.equals(playMode)) {
+		if (playModeJustChanged) {
 			playModeHistory.add(new HistoryItem(time, playMode));
 		}
 
