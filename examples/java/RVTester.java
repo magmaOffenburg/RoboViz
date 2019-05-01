@@ -50,14 +50,11 @@ public class RVTester
 		socket = new DatagramSocket();
 		address = InetAddress.getLocalHost();
 
-		animationTimer = new Timer(16, new ActionListener() {
-			public void actionPerformed(ActionEvent arg0)
-			{
-				try {
-					renderAnimatedShapes();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		animationTimer = new Timer(16, arg0 -> {
+			try {
+				renderAnimatedShapes();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		});
 		animationTimer.setRepeats(true);

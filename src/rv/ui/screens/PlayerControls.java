@@ -103,99 +103,53 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 5, 0, 0);
 
-		createButton(c, "file_open", "Open logfile...", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				player.openFileDialog(frame);
+		createButton(c, "file_open", "Open logfile...", e -> player.openFileDialog(frame));
+
+		rewindButton = createButton(c, "rewind", "Rewind", e -> player.rewind());
+
+		previousFrameButton = createButton(c, "previous_frame", "Step back", e -> {
+			if (!player.isPlaying())
+				player.stepBackward();
+		});
+
+		playPauseButton = createButton(c, "pause", "Pause", e -> {
+			if (player.isPlaying()) {
+				player.pause();
+				playPauseButton.setIcon("play");
+				playPauseButton.setToolTipText("Play");
+			} else {
+				player.resume();
+				playPauseButton.setIcon("pause");
+				playPauseButton.setToolTipText("Pause");
 			}
 		});
 
-		rewindButton = createButton(c, "rewind", "Rewind", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				player.rewind();
-			}
+		nextFrameButton = createButton(c, "next_frame", "Step forward", e -> {
+			if (!player.isPlaying())
+				player.stepForward();
 		});
 
-		previousFrameButton = createButton(c, "previous_frame", "Step back", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (!player.isPlaying())
-					player.stepBackward();
-			}
-		});
+		previousGoalButton = createButton(c, "previous_goal", null, e -> player.stepBackwardGoal());
 
-		playPauseButton = createButton(c, "pause", "Pause", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (player.isPlaying()) {
-					player.pause();
-					playPauseButton.setIcon("play");
-					playPauseButton.setToolTipText("Play");
-				} else {
-					player.resume();
-					playPauseButton.setIcon("pause");
-					playPauseButton.setToolTipText("Pause");
-				}
-			}
-		});
-
-		nextFrameButton = createButton(c, "next_frame", "Step forward", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (!player.isPlaying())
-					player.stepForward();
-			}
-		});
-
-		previousGoalButton = createButton(c, "previous_goal", null, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				player.stepBackwardGoal();
-			}
-		});
-
-		nextGoalButton = createButton(c, "next_goal", null, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				player.stepForwardGoal();
-			}
-		});
+		nextGoalButton = createButton(c, "next_goal", null, e -> player.stepForwardGoal());
 
 		c.gridx++;
 		c.insets = new Insets(0, 25, 0, 0);
 		playbackSpeedSpinner = new JSpinner(new SpinnerNumberModel(1, -10, 10, 0.25));
 		playbackSpeedSpinner.setToolTipText("Playback speed factor");
 		playbackSpeedSpinner.setPreferredSize(new Dimension(60, 30));
-		playbackSpeedSpinner.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				player.setPlayBackSpeed((double) playbackSpeedSpinner.getValue());
-			}
-		});
+		playbackSpeedSpinner.addChangeListener(e -> player.setPlayBackSpeed((double) playbackSpeedSpinner.getValue()));
 		container.add(playbackSpeedSpinner, c);
 
 		slider = new JSlider(0, player.getNumFrames(), player.getDesiredFrame());
-		slider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				if (slider.isEnabled() && !sliderUpdate) {
-					int frame = slider.getValue();
-					player.setDesiredFrame(frame);
+		slider.addChangeListener(e -> {
+			if (slider.isEnabled() && !sliderUpdate) {
+				int frame = slider.getValue();
+				player.setDesiredFrame(frame);
 
-					boolean atBeginning = frame == 0;
-					boolean atEnd = !(frame < player.getNumFrames());
-					updateButtons(player.isPlaying(), atBeginning, atEnd);
-				}
+				boolean atBeginning = frame == 0;
+				boolean atEnd = !(frame < player.getNumFrames());
+				updateButtons(player.isPlaying(), atBeginning, atEnd);
 			}
 		});
 		slider.setToolTipText("Select Frame");
@@ -260,13 +214,10 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		} else {
 			// Swing is not thread safe and running draw commands with the call to set the value of
 			// slider can lock things up if we don't protect against this
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run()
-				{
-					slider.setValue(player.getDesiredFrame());
-					slider.setEnabled(player.isValid());
-					sliderUpdate = false;
-				}
+			SwingUtilities.invokeLater(() -> {
+				slider.setValue(player.getDesiredFrame());
+				slider.setEnabled(player.isValid());
+				sliderUpdate = false;
 			});
 		}
 	}

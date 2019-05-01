@@ -35,19 +35,7 @@ public class ConnectionMenu extends JMenu
 
 		for (String host : serverHosts) {
 			final JRadioButtonMenuItem item = new JRadioButtonMenuItem(host, getItemCount() == 0);
-			item.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run()
-						{
-							selectServer(item);
-						}
-					});
-				}
-			});
+			item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
 			add(item);
 		}
 	}

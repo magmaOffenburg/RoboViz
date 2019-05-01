@@ -66,30 +66,22 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		addButton = new JButton("Add");
-		addButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				tableModel.addRow(new Object[] {"New Team", Color.blue});
-				configProg.pack();
-				selectLastRow();
-			}
+		addButton.addActionListener(e -> {
+			tableModel.addRow(new Object[] {"New Team", Color.blue});
+			configProg.pack();
+			selectLastRow();
 		});
 		SwingUtil.setPreferredWidth(addButton, 80);
 
 		removeButton = new JButton("Remove");
-		removeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				int selected = teamColorTable.getSelectedRow();
-				if (selected != -1) {
-					tableModel.removeRow(selected);
-					int newSelection = Math.max(0, selected - 1);
-					if (tableModel.getRowCount() > 0)
-						teamColorTable.setRowSelectionInterval(newSelection, newSelection);
-					configProg.pack();
-				}
+		removeButton.addActionListener(e -> {
+			int selected = teamColorTable.getSelectedRow();
+			if (selected != -1) {
+				tableModel.removeRow(selected);
+				int newSelection = Math.max(0, selected - 1);
+				if (tableModel.getRowCount() > 0)
+					teamColorTable.setRowSelectionInterval(newSelection, newSelection);
+				configProg.pack();
 			}
 		});
 		SwingUtil.setPreferredWidth(removeButton, 80);
@@ -109,13 +101,8 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 		teamColorTable.setDefaultRenderer(Color.class, new ColorRenderer());
 		teamColorTable.setDefaultEditor(Color.class, new ColorEditor());
 		teamColorTable.getColumnModel().getColumn(1).setMaxWidth(30);
-		teamColorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e)
-			{
-				removeButton.setEnabled(teamColorTable.getSelectedRow() != -1);
-			}
-		});
+		teamColorTable.getSelectionModel().addListSelectionListener(
+				e -> removeButton.setEnabled(teamColorTable.getSelectedRow() != -1));
 
 		selectLastRow();
 

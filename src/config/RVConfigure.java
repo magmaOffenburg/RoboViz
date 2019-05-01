@@ -79,23 +79,17 @@ public class RVConfigure extends JFrame
 		add(networkPanel);
 
 		saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				for (SaveListener l : listeners)
-					l.configSaved(RVConfigure.this);
-				config.write();
-			}
+		saveButton.addActionListener(e -> {
+			for (SaveListener l : listeners)
+				l.configSaved(RVConfigure.this);
+			config.write();
 		});
 		southPanel.add(saveButton);
 
 		JButton startButton = new JButton("Start RoboViz");
-		startButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0)
-			{
-				RVConfigure.this.setVisible(false);
-				Viewer.main(new String[] {});
-			}
+		startButton.addActionListener(arg0 -> {
+			RVConfigure.this.setVisible(false);
+			Viewer.main(new String[] {});
 		});
 		southPanel.add(startButton);
 

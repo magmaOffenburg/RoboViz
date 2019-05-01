@@ -140,13 +140,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 
 		p.add(regexField);
 		JButton regexSearch = new JButton("Regex");
-		regexSearch.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				regexList(regexField.getText());
-			}
-		});
+		regexSearch.addActionListener(e -> regexList(regexField.getText()));
 		p.add(regexSearch);
 		regexField.addKeyListener(new KeyListener() {
 			@Override
@@ -169,12 +163,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 		frame.add(p, BorderLayout.SOUTH);
 
 		JButton clearButton = new JButton("Clear");
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0)
-			{
-				DrawingListPanel.this.drawings.clearAllShapeSets();
-			}
-		});
+		clearButton.addActionListener(arg0 -> DrawingListPanel.this.drawings.clearAllShapeSets());
 		p.add(clearButton);
 
 		this.drawings = drawings;

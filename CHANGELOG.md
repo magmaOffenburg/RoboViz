@@ -1,5 +1,6 @@
 (to be released)
 ------------------------------
+* updated the required Java version to 1.8
 * added a fade-out effect to the ball circle in pass mode etc.
 
 1.5.0

@@ -171,13 +171,9 @@ public class ServerComm implements DrawCommListener
 
 		// automatically attempt connection with server while not connected
 		if (net.autoConnect) {
-			autoConnectTimer = new Timer(net.autoConnectDelay, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					if (socket == null) {
-						connect(serverHost, serverPort);
-					}
+			autoConnectTimer = new Timer(net.autoConnectDelay, e -> {
+				if (socket == null) {
+					connect(serverHost, serverPort);
 				}
 			});
 			autoConnectTimer.setRepeats(true);

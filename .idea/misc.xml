@@ -9,7 +9,7 @@
     <option name="selectedJavaProfile" value="RoboViz" />
   </component>
   <component name="IdProvider" IDEtalkID="73393E15C8BD2086C116D90D3D0A2709" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

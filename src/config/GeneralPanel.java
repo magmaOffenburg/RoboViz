@@ -58,16 +58,12 @@ public class GeneralPanel extends JPanel implements SaveListener
 		logDirectoryTF = new JTextField(config.logfileDirectory);
 		SwingUtil.setPreferredWidth(logDirectoryTF, 150);
 		openDirectoryButton = new JButton("...");
-		openDirectoryButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				JFileChooser fileChooser = new FileChooser(logDirectoryTF.getText());
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fileChooser.setAcceptAllFileFilterUsed(false);
-				if (fileChooser.showOpenDialog(configProg) != JFileChooser.CANCEL_OPTION)
-					logDirectoryTF.setText(fileChooser.getSelectedFile().getAbsolutePath());
-			}
+		openDirectoryButton.addActionListener(e -> {
+			JFileChooser fileChooser = new FileChooser(logDirectoryTF.getText());
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			if (fileChooser.showOpenDialog(configProg) != JFileChooser.CANCEL_OPTION)
+				logDirectoryTF.setText(fileChooser.getSelectedFile().getAbsolutePath());
 		});
 
 		panel.add(recordLogsCB, c);

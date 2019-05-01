@@ -450,12 +450,7 @@ public class Viewer
 		}
 
 		final String[] arguments = args;
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run()
-			{
-				new Viewer(config, caps, arguments);
-			}
-		});
+		SwingUtilities.invokeLater(() -> new Viewer(config, caps, arguments));
 	}
 
 	@Override

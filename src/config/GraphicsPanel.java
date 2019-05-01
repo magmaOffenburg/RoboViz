@@ -110,12 +110,7 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		fsaaCB = new JCheckBox("Enabled", config.useFsaa);
-		fsaaCB.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e)
-			{
-				updateAAEnabled();
-			}
-		});
+		fsaaCB.addChangeListener(e -> updateAAEnabled());
 		samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
 		updateAAEnabled();
 
@@ -185,13 +180,7 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		fhSpinner = createSpinner(config.frameHeight, 1, 10000);
 		maximizedCB = new JCheckBox("Maximized", config.isMaximized);
 		centerCB = new JCheckBox("Center Position", config.centerFrame);
-		centerCB.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				updateFramePositionEnabled();
-			}
-		});
+		centerCB.addActionListener(e -> updateFramePositionEnabled());
 		updateFramePositionEnabled();
 		saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
 
@@ -241,12 +230,7 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		bloomCB = new JCheckBox("Bloom", config.useBloom);
 		phongCB = new JCheckBox("Phong", config.usePhong);
 		shadowCB = new JCheckBox("Shadows", config.useShadows);
-		shadowCB.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0)
-			{
-				updateShadowsEnabled();
-			}
-		});
+		shadowCB.addChangeListener(arg0 -> updateShadowsEnabled());
 
 		softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
 		shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);

@@ -33,7 +33,7 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 	private float lastGameTime;
 
 	private float serverSpeed = -1;
-	private TreeMap<Long, Float> serverMsgDeltas = new TreeMap<Long, Float>();
+	private TreeMap<Long, Float> serverMsgDeltas = new TreeMap<>();
 	private float accumulatedServerTime;
 
 	public String getServerSpeed()

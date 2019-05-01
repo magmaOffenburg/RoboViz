@@ -110,12 +110,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 		c.gridx = 1;
 		c.gridy = 3;
 		autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
-		autoConnectCB.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e)
-			{
-				updateAutoConnectEnabled();
-			}
-		});
+		autoConnectCB.addChangeListener(e -> updateAutoConnectEnabled());
 		updateAutoConnectEnabled();
 
 		panel.add(autoConnectCB, c);
