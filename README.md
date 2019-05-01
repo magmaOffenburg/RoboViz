@@ -3,11 +3,11 @@
 
 [![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
 
-RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulation League](http://wiki.robocup.org/wiki/Soccer_Simulation_League). This is a fork of the original version by Justin Stoecker [hosted on SourceForge](http://sourceforge.net/projects/rcroboviz/). It has a number of improvements, bugfixes and new features listed in the [changelog](CHANGELOG.md).
+RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulation League](http://wiki.robocup.org/wiki/Soccer_Simulation_League). This is a fork of the original version by Justin Stoecker [hosted on SourceForge](http://sourceforge.net/projects/rcroboviz/). Compared to the original version, major improvements have been made as can be seen in detail in the [changelog](CHANGELOG.md).
 
-Java 1.8 is required to run RoboViz. Pre-built binaries for Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using the appropriate `build-<platform>` script in [`scripts`](scripts).
+Java 1.8 is required to build and run RoboViz. Pre-built binaries for Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using the appropriate `build-<platform>` script in [`scripts`](scripts).
 
-![Screenshot](images/screenshot.png)
+![](images/video.gif)
 
 Except for the available shortcuts, the information on the [original website](https://sites.google.com/site/umroboviz) is still largely accurate. A complete list of shortcuts is available via a help window opened with the `F1` hotkey. Alternatively, it's also available as a `.html` file in `resources/help/controls.html`.
 
