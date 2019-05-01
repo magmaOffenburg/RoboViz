@@ -300,12 +300,21 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	public void gsPlayStateChanged(GameState gs)
 	{
 		super.gsPlayStateChanged(gs);
+
 		if (gs.hasPlayModeJustChanged()) {
 			switch (gs.getPlayMode()) {
 			case GameState.KICK_OFF_LEFT:
 			case GameState.KICK_OFF_RIGHT:
 				getServer().requestFullState();
 				break;
+			}
+
+			if (gs.getPlayMode().equals(GameState.GAME_OVER)) {
+				connectionOverlay.setMessage(String.format("Half Over, %s %d:%d %s", gs.getUIStringTeamLeft(),
+						gs.getScoreLeft(), gs.getScoreRight(), gs.getUIStringTeamRight()));
+				connectionOverlay.setVisible(true);
+			} else {
+				connectionOverlay.setVisible(false);
 			}
 		}
 	}

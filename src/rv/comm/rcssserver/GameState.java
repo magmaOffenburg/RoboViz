@@ -268,8 +268,22 @@ public class GameState implements ServerChangeListener
 		return teamLeft;
 	}
 
+	public String getUIStringTeamLeft()
+	{
+		if (teamLeft == null)
+			return "<Left>";
+		return teamLeft;
+	}
+
 	public String getTeamRight()
 	{
+		return teamRight;
+	}
+
+	public String getUIStringTeamRight()
+	{
+		if (teamRight == null)
+			return "<Right>";
 		return teamRight;
 	}
 

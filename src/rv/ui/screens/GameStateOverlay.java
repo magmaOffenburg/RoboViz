@@ -68,8 +68,8 @@ public class GameStateOverlay extends ScreenBase
 
 		void render(GL2 gl, GameState gs, int screenW, int screenH)
 		{
-			String teamL = gs.getTeamLeft() == null ? "<Left>" : gs.getTeamLeft();
-			String teamR = gs.getTeamRight() == null ? "<Right>" : gs.getTeamRight();
+			String teamL = gs.getUIStringTeamLeft();
+			String teamR = gs.getUIStringTeamRight();
 
 			String scoreText = gs.getScoreLeft() + ":" + gs.getScoreRight();
 
