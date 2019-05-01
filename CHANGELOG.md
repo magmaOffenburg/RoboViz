@@ -1,4 +1,4 @@
-(to be released)
+1.6.0 (May 1, 2019)
 ------------------------------
 * updated the required Java version to 1.8
 * added a fade-out effect to the ball circle in pass mode etc.
