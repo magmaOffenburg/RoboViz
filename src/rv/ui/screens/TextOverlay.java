@@ -52,6 +52,11 @@ public class TextOverlay implements GameState.GameStateChangeListener
 		return expired;
 	}
 
+	public TextOverlay(String text, WorldModel world, int duration)
+	{
+		this(text, world, duration, new float[] {1, 1, 1, 1});
+	}
+
 	public TextOverlay(String text, WorldModel world, int duration, float[] color)
 	{
 		this.world = world;

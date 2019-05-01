@@ -55,17 +55,6 @@ public class FoulListOverlay extends ScreenBase
 		int y = screenH - TOP_SCREEN_OFFSET;
 		int x = screenW - FOUL_WIDTH - SIDE_SCREEN_OFFSET;
 
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor4fv(new float[] {0.0f, 0.0f, 0.0f, 1.0f / 3.0f}, 0);
-		drawBox(gl, x, y - FOUL_HEIGHT, FOUL_WIDTH, FOUL_HEIGHT);
-
-		gl.glEnd();
-
-		tr.setColor(0.9f, 0.9f, 0.9f, 1.0f);
-		tr.beginRendering(screenW, screenH);
-		tr.draw("Fouls:", x + 3, y - FOUL_HEIGHT + 4);
-		tr.endRendering();
-
 		float[] lc = viewer.getWorldModel().getLeftTeam().getColorMaterial().getDiffuse();
 		float[] rc = viewer.getWorldModel().getRightTeam().getColorMaterial().getDiffuse();
 
@@ -80,8 +69,8 @@ public class FoulListOverlay extends ScreenBase
 			if (shouldDisplayFoul(f, currentTimeMillis)) {
 				float dt = (currentTimeMillis - f.receivedTime) / 1000.0f;
 				float opacity = dt > FOUL_SHOW_TIME ? 1.0f - (dt - FOUL_SHOW_TIME) / FOUL_FADE_TIME : 1.0f;
-				drawFoul(gl, x, y - (int) (FOUL_HEIGHT * n), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH, f, opacity,
-						f.team == 1 ? lc : rc);
+				drawFoul(gl, x, y - (int) (FOUL_HEIGHT * (n - 1)), FOUL_WIDTH, FOUL_HEIGHT, screenW, screenH, f,
+						opacity, f.team == 1 ? lc : rc);
 				n += opacity;
 			}
 		}

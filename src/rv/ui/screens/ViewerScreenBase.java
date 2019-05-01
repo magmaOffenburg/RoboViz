@@ -460,6 +460,8 @@ public abstract class ViewerScreenBase
 	private void toggleFouls()
 	{
 		foulListOverlay.setVisible(!foulListOverlay.isVisible());
+		textOverlays.add(new TextOverlay("Foul Overlay: " + (foulListOverlay.isVisible() ? "Enabled" : "Disabled"),
+				viewer.getWorldModel(), 100));
 	}
 
 	private void setShowNumPlayers(boolean showNumPlayers)
@@ -660,8 +662,7 @@ public abstract class ViewerScreenBase
 			return;
 		}
 
-		textOverlays.add(new TextOverlay(
-				String.format("Goal %s!", teamName), viewer.getWorldModel(), 4000, new float[] {1, 1, 1, 1}));
+		textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), viewer.getWorldModel(), 4000));
 	}
 
 	private void setRobotVantage(RobotVantageType type)
