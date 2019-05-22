@@ -1,3 +1,7 @@
+1.6.1 (to be released)
+------------------------------
+* added support for the latest server version's rectangular goals
+
 1.6.0 (May 1, 2019)
 ------------------------------
 * updated the required Java version to 1.8
