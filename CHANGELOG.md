@@ -1,6 +1,7 @@
 1.6.1 (to be released)
 ------------------------------
 * added support for the latest server version's rectangular goals
+* updated pass mode duration for rcssserver 0.7.2
 
 1.6.0 (May 1, 2019)
 ------------------------------
