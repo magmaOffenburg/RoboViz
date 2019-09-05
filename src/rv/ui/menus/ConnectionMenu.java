@@ -36,17 +36,14 @@ public class ConnectionMenu extends JMenu
 			serverHosts.add(0, overriddenHost);
 		}
 
-		for (String host : serverHosts) {
-			addHostItem(host, config.getServerPort());
-		}
-
 		add(new JSeparator());
 		JMenuItem m = new JMenuItem("Connect to ...");
 		m.addActionListener((e) -> {
 			int port = config.serverPort; // the default port
 			String message =
-					"<html>Enter an simspark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:4200', 'example.com:4321')</small></html>";
-			String host = JOptionPane.showInputDialog(null, message, "Simspark server", JOptionPane.PLAIN_MESSAGE);
+					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:4200', 'example.com:4321')</small></html>";
+			String host = JOptionPane.showInputDialog(
+					this.viewer.getFrame(), message, "Simspark server", JOptionPane.PLAIN_MESSAGE);
 
 			// canceled
 			if (host == null) {
@@ -58,7 +55,7 @@ public class ConnectionMenu extends JMenu
 				String[] parts = host.split(":");
 
 				if (parts.length != 2) {
-					JOptionPane.showMessageDialog(null,
+					JOptionPane.showMessageDialog(this.viewer.getFrame(),
 							String.format("The entered server address ('%s') is invalid", host),
 							"Invalid server address", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -70,8 +67,9 @@ public class ConnectionMenu extends JMenu
 				try {
 					port = Integer.parseInt(parts[1]);
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, String.format("The entered port ('%s') is invalid", parts[1]),
-							"Invalid port", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this.viewer.getFrame(),
+							String.format("The entered port ('%s') is invalid", parts[1]), "Invalid port",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
@@ -80,8 +78,9 @@ public class ConnectionMenu extends JMenu
 			try {
 				InetAddress.getByName(host);
 			} catch (UnknownHostException ex) {
-				JOptionPane.showMessageDialog(null, String.format("The entered host ('%s') is invalid", host),
-						"Invalid host", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.viewer.getFrame(),
+						String.format("The entered host ('%s') is invalid", host), "Invalid host",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -90,11 +89,14 @@ public class ConnectionMenu extends JMenu
 			selectServer(addHostItem(host, port));
 		});
 		add(m);
+
+		for (String host : serverHosts) {
+			addHostItem(host, config.getServerPort());
+		}
 	}
 
 	/**
 	 * Adds a new remote menu item to this menu.
-	 *
 	 * @param host
 	 * @param port
 	 * @return
@@ -103,20 +105,19 @@ public class ConnectionMenu extends JMenu
 	{
 		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 0);
 		item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
-		add(item, 0);
+		add(item, getItemCount() - 2); // append to the end, but before the seperator
 		return item;
 	}
 
 	/**
 	 * Selects the given remote menu item and connect to the corresponding server.
-	 *
 	 * @param item
 	 */
 	private void selectServer(RemoteMenuItem item)
 	{
 		for (int i = 0; i < getItemCount(); i++) {
 			if (getItem(i) instanceof JRadioButtonMenuItem) {
-				((JRadioButtonMenuItem) getItem(i)).setSelected(false);
+				getItem(i).setSelected(false);
 			}
 		}
 		item.setSelected(true);
