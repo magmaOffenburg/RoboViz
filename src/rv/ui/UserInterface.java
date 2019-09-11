@@ -100,7 +100,6 @@ public class UserInterface implements KeyListener
 
 	public UserInterface(Viewer viewer, String drawingFilter)
 	{
-		Globals.setLookFeel();
 		this.viewer = viewer;
 
 		GLAutoDrawable drawable = viewer.getCanvas();
