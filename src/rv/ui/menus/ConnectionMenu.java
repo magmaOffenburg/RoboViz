@@ -103,7 +103,7 @@ public class ConnectionMenu extends JMenu
 	 */
 	private RemoteMenuItem addHostItem(String host, int port)
 	{
-		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 0);
+		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 2);
 		item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
 		add(item, getItemCount() - 2); // append to the end, but before the seperator
 		return item;
