@@ -43,7 +43,7 @@ public class ConnectionMenu extends JMenu
 			String message =
 					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:4200', 'example.com:4321')</small></html>";
 			String host = JOptionPane.showInputDialog(
-					this.viewer.getFrame(), message, "Simspark server", JOptionPane.PLAIN_MESSAGE);
+					this.viewer.getFrame(), message, "SimSpark server", JOptionPane.PLAIN_MESSAGE);
 
 			// canceled
 			if (host == null) {
@@ -97,21 +97,17 @@ public class ConnectionMenu extends JMenu
 
 	/**
 	 * Adds a new remote menu item to this menu.
-	 * @param host
-	 * @param port
-	 * @return
 	 */
 	private RemoteMenuItem addHostItem(String host, int port)
 	{
 		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 2);
 		item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
-		add(item, getItemCount() - 2); // append to the end, but before the seperator
+		add(item, getItemCount() - 2); // append to the end, but before the separator
 		return item;
 	}
 
 	/**
 	 * Selects the given remote menu item and connect to the corresponding server.
-	 * @param item
 	 */
 	private void selectServer(RemoteMenuItem item)
 	{
