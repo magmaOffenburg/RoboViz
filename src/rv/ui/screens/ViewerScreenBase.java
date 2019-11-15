@@ -1,6 +1,5 @@
 package rv.ui.screens;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -12,15 +11,19 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
+
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import js.jogl.view.Camera3D;
-import js.jogl.view.Viewport;
-import js.math.BoundingBox;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
+
+import roboviz.jsgl.jogl.view.Camera3D;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.BoundingBox;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.BufferedSet;

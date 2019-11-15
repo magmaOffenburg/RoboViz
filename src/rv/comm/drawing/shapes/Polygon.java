@@ -17,8 +17,10 @@
 package rv.comm.drawing.shapes;
 
 import java.nio.ByteBuffer;
-import javax.media.opengl.GL2;
-import js.io.ByteUtil;
+
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.io.ByteUtil;
 import rv.comm.drawing.commands.Command;
 
 public class Polygon extends Shape

@@ -16,13 +16,14 @@
 
 package rv.world.objects;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.GLDisposable;
-import js.jogl.Texture2D;
-import js.jogl.light.Material;
-import js.math.vector.Matrix;
-import js.math.vector.Vec3f;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.GLDisposable;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.light.Material;
+import roboviz.jsgl.math.vector.Matrix;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.content.ContentManager;

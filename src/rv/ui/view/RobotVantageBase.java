@@ -1,12 +1,13 @@
 package rv.ui.view;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.fixedfunc.GLMatrixFunc;
-import javax.media.opengl.glu.GLU;
-import js.jogl.view.Camera3D;
-import js.jogl.view.Viewport;
-import js.math.vector.Matrix;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
+import com.jogamp.opengl.glu.GLU;
+
+import roboviz.jsgl.jogl.view.Camera3D;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.vector.Matrix;
 import rv.world.objects.Agent;
 
 public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeListener

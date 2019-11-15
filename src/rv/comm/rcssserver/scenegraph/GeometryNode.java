@@ -16,8 +16,8 @@
 
 package rv.comm.rcssserver.scenegraph;
 
-import js.math.vector.Matrix;
-import js.math.vector.Vec3f;
+import roboviz.jsgl.math.vector.Matrix;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.SExp;
 
 /**

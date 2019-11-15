@@ -20,12 +20,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.model.Mesh;
-import js.jogl.model.MeshPart;
-import js.jogl.model.ObjMaterial;
-import js.jogl.model.ObjMeshImporter;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.model.Mesh;
+import roboviz.jsgl.jogl.model.MeshPart;
+import roboviz.jsgl.jogl.model.ObjMaterial;
+import roboviz.jsgl.jogl.model.ObjMeshImporter;
 import rv.ui.DebugInfo;
 
 /**

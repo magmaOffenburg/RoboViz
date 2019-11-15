@@ -16,13 +16,14 @@
 
 package rv.effects;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLMatrixFunc;
-import js.jogl.GLDisposable;
-import js.jogl.light.DirLight;
-import js.jogl.view.Viewport;
-import js.math.vector.Vec3f;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
+
+import roboviz.jsgl.jogl.GLDisposable;
+import roboviz.jsgl.jogl.light.DirLight;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.content.ContentManager;

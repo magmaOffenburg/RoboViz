@@ -1,7 +1,8 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
-import js.io.ByteUtil;
+
+import roboviz.jsgl.io.ByteUtil;
 import rv.Viewer;
 import rv.world.objects.Agent;
 

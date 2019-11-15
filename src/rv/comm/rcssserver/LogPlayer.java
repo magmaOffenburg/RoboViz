@@ -21,9 +21,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import js.math.Maths;
+
+import roboviz.jsgl.math.Maths;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.rcssserver.ILogfileReader.LogfileListener;

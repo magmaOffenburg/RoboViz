@@ -24,12 +24,14 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
-import js.jogl.view.Viewport;
+
+import roboviz.jsgl.jogl.view.Viewport;
 import rv.Viewer;
 
 public class PlaymodeOverlay extends ScreenBase implements KeyListener

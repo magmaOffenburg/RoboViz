@@ -18,13 +18,15 @@ package rv.world;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLLightingFunc;
-import js.jogl.light.DirLight;
-import js.jogl.light.LightModel;
-import js.math.vector.Matrix;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.fixedfunc.GLLightingFunc;
+
+import roboviz.jsgl.jogl.light.DirLight;
+import roboviz.jsgl.jogl.light.LightModel;
+import roboviz.jsgl.math.vector.Matrix;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;

@@ -19,18 +19,24 @@ package rv;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-import js.jogl.FrameBufferObject;
-import js.jogl.GLInfo;
-import js.jogl.view.Camera3D;
-import js.jogl.view.Viewport;
+import roboviz.jsgl.jogl.FrameBufferObject;
+import roboviz.jsgl.jogl.GLInfo;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.view.Camera3D;
+import roboviz.jsgl.jogl.view.Viewport;
 import rv.Viewer.WindowResizeEvent;
 import rv.Viewer.WindowResizeListener;
 import rv.content.ContentManager;
 import rv.effects.EffectManager;
+import rv.world.rendering.BasicSceneRenderer;
+import rv.world.rendering.PhongWorldRenderer;
 import rv.world.rendering.SceneRenderer;
+import rv.world.rendering.ShadowMapRenderer;
+import rv.world.rendering.VSMPhongWorldRenderer;
 
 /**
  * Controls all rendering for the main RoboViz window

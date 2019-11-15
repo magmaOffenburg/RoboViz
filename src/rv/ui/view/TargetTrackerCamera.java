@@ -16,10 +16,10 @@
 
 package rv.ui.view;
 
-import js.jogl.view.FPCamera;
-import js.jogl.view.Viewport;
-import js.math.vector.Vec2f;
-import js.math.vector.Vec3f;
+import roboviz.jsgl.jogl.view.FPCamera;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.vector.Vec2f;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.world.ISelectable;
 import rv.world.objects.Agent;

@@ -18,10 +18,12 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.ShaderProgram;
-import js.math.vector.Matrix;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.ShaderProgram;
+import roboviz.jsgl.math.vector.Matrix;
 import rv.Configuration.Graphics;
 import rv.Renderer;
 import rv.comm.drawing.Drawings;

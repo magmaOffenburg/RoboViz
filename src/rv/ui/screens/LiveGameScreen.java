@@ -18,8 +18,10 @@ package rv.ui.screens;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import javax.media.opengl.awt.GLCanvas;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.awt.GLCanvas;
+
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;

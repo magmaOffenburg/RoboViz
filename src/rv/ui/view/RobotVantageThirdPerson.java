@@ -16,8 +16,8 @@
 
 package rv.ui.view;
 
-import js.math.vector.Matrix;
-import js.math.vector.Vec3f;
+import roboviz.jsgl.math.vector.Matrix;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.world.objects.Agent;
 
 public class RobotVantageThirdPerson extends RobotVantageBase

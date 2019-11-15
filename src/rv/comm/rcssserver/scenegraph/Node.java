@@ -17,7 +17,8 @@
 package rv.comm.rcssserver.scenegraph;
 
 import java.util.ArrayList;
-import js.math.vector.Matrix;
+
+import roboviz.jsgl.math.vector.Matrix;
 import rv.comm.rcssserver.SExp;
 
 /**

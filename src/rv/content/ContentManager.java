@@ -24,19 +24,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.imageio.ImageIO;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import js.jogl.GLInfo;
-import js.jogl.ShaderProgram;
-import js.jogl.Texture2D;
-import js.jogl.model.Mesh;
-import js.jogl.model.MeshPart;
-import js.jogl.model.ObjMaterial;
-import js.jogl.model.ObjMaterialLibrary;
-import js.jogl.model.ObjMeshImporter;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+
+import roboviz.jsgl.jogl.GLInfo;
+import roboviz.jsgl.jogl.ShaderProgram;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.model.Mesh;
+import roboviz.jsgl.jogl.model.MeshPart;
+import roboviz.jsgl.jogl.model.ObjMaterial;
+import roboviz.jsgl.jogl.model.ObjMaterialLibrary;
+import roboviz.jsgl.jogl.model.ObjMeshImporter;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Objects;
 import rv.comm.rcssserver.GameState;

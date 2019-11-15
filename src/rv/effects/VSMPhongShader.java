@@ -16,12 +16,13 @@
 
 package rv.effects;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.ShaderProgram;
-import js.jogl.Texture2D;
-import js.jogl.Uniform;
-import js.math.vector.Matrix;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.ShaderProgram;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.Uniform;
+import roboviz.jsgl.math.vector.Matrix;
 
 /**
  * Variance shadow mapping w/ Phong illumination shader. Wraps underlying ShaderProgram and gives

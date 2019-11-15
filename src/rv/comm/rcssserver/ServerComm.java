@@ -16,8 +16,6 @@
 
 package rv.comm.rcssserver;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
@@ -31,8 +29,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.swing.Timer;
-import js.math.vector.Vec3f;
+
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.DrawComm.DrawCommListener;

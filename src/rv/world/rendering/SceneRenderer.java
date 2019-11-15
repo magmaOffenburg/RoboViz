@@ -16,8 +16,9 @@
 
 package rv.world.rendering;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
 import rv.Configuration;
 import rv.comm.drawing.Drawings;
 import rv.content.ContentManager;

@@ -20,7 +20,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import javax.media.opengl.awt.GLCanvas;
+
+import com.jogamp.opengl.awt.GLCanvas;
 
 /**
  * Interface that allows customized control over the camera

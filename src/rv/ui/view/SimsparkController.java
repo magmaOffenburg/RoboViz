@@ -21,10 +21,12 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import javax.media.opengl.awt.GLCanvas;
-import js.jogl.view.FPCamera;
-import js.math.vector.Vec2f;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.awt.GLCanvas;
+
+import roboviz.jsgl.jogl.view.FPCamera;
+import roboviz.jsgl.math.vector.Vec2f;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.ui.CameraSetting;

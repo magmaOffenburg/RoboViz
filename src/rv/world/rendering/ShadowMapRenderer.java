@@ -18,16 +18,18 @@ package rv.world.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.FrameBufferObject;
-import js.jogl.RenderBuffer;
-import js.jogl.ShaderProgram;
-import js.jogl.Texture2D;
-import js.jogl.light.DirLight;
-import js.math.Gaussian;
-import js.math.vector.Matrix;
-import js.math.vector.Vec3f;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.FrameBufferObject;
+import roboviz.jsgl.jogl.RenderBuffer;
+import roboviz.jsgl.jogl.ShaderProgram;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.light.DirLight;
+import roboviz.jsgl.math.Gaussian;
+import roboviz.jsgl.math.vector.Matrix;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Configuration.Graphics;
 import rv.comm.drawing.Drawings;

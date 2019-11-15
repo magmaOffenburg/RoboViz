@@ -18,11 +18,13 @@ package rv.ui.screens;
 
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
-import js.jogl.view.Viewport;
+
+import roboviz.jsgl.jogl.view.Viewport;
 import rv.Viewer;
 import rv.effects.EffectManager;
 

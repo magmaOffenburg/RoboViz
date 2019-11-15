@@ -16,11 +16,12 @@
 
 package rv.ui.screens;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-import js.jogl.view.Viewport;
-import js.math.vector.Vec3f;
+
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.world.Team;

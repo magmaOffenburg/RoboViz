@@ -24,7 +24,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import js.io.ByteUtil;
+
+import roboviz.jsgl.io.ByteUtil;
 import rv.Viewer;
 import rv.comm.drawing.commands.Command;
 import rv.ui.DebugInfo;

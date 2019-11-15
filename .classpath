@@ -2,11 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/jogl-2.3.2/gluegen-rt.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RoboViz/lib/jogl-2.0/macosx"/>
@@ -27,9 +22,10 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RoboViz/lib/jogl-2.0/macosx"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jsgl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogl2-rc2"/>
 	<classpathentry kind="lib" path="lib/commons-compress-1.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogl-2.3.2"/>
+	<classpathentry kind="lib" path="lib/jsgl-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-1.8.0-openjdk-1.8.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

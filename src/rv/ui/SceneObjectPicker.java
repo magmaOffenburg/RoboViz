@@ -18,11 +18,12 @@ package rv.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import js.jogl.view.Camera3D;
-import js.jogl.view.Viewport;
-import js.math.Plane;
-import js.math.Ray;
-import js.math.vector.Vec3f;
+
+import roboviz.jsgl.jogl.view.Camera3D;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.Plane;
+import roboviz.jsgl.math.Ray;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.world.ISelectable;
 import rv.world.WorldModel;
 

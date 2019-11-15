@@ -17,9 +17,11 @@
 package rv.comm.drawing.shapes;
 
 import java.nio.ByteBuffer;
-import javax.media.opengl.GL2;
-import js.jogl.light.Material;
-import js.math.geom.GeodesicSphere;
+
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.light.Material;
+import roboviz.jsgl.math.geom.GeodesicSphere;
 import rv.comm.drawing.commands.Command;
 
 public class Sphere extends Shape

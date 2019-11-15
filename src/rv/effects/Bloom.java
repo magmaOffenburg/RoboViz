@@ -16,15 +16,16 @@
 
 package rv.effects;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import js.jogl.FrameBufferObject;
-import js.jogl.GLDisposable;
-import js.jogl.ShaderProgram;
-import js.jogl.Texture2D;
-import js.jogl.Uniform;
-import js.jogl.view.Viewport;
-import js.math.Gaussian;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.jogl.FrameBufferObject;
+import roboviz.jsgl.jogl.GLDisposable;
+import roboviz.jsgl.jogl.ShaderProgram;
+import roboviz.jsgl.jogl.Texture2D;
+import roboviz.jsgl.jogl.Uniform;
+import roboviz.jsgl.jogl.view.Viewport;
+import roboviz.jsgl.math.Gaussian;
 import rv.Configuration;
 import rv.Viewer.WindowResizeEvent;
 import rv.Viewer.WindowResizeListener;

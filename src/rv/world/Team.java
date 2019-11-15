@@ -19,7 +19,8 @@ package rv.world;
 import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import js.jogl.model.ObjMaterial;
+
+import roboviz.jsgl.jogl.model.ObjMaterial;
 import rv.Configuration;
 import rv.Objects;
 import rv.comm.rcssserver.GameState;

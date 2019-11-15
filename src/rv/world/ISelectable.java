@@ -16,9 +16,10 @@
 
 package rv.world;
 
-import javax.media.opengl.GL2;
-import js.math.BoundingBox;
-import js.math.vector.Vec3f;
+import com.jogamp.opengl.GL2;
+
+import roboviz.jsgl.math.BoundingBox;
+import roboviz.jsgl.math.vector.Vec3f;
 
 /**
  * Allows an object to be selected

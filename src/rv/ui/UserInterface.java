@@ -18,16 +18,18 @@ package rv.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilitiesImmutable;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilitiesImmutable;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-import js.jogl.view.FPCamera;
-import js.math.vector.Vec2f;
-import js.math.vector.Vec3f;
+
+import roboviz.jsgl.jogl.view.FPCamera;
+import roboviz.jsgl.math.vector.Vec2f;
+import roboviz.jsgl.math.vector.Vec3f;
 import rv.Globals;
 import rv.Viewer;
 import rv.ui.screens.LiveGameScreen;
