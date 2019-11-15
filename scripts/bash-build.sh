@@ -17,8 +17,9 @@ if [ ! -d $BIN ]; then
     mkdir -p $BIN
 fi
 
-VIZCLASSPATH=$CLASSPATH:$JOGL/*:../lib/jsgl-0.0.1-SNAPSHOT.jar:../lib/commons-compress-1.5.jar:../src/
+#VIZCLASSPATH=$CLASSPATH:$JOGL/*:../lib/jsgl-0.0.1-SNAPSHOT.jar:../lib/commons-compress-1.5.jar:../src/
 
+VIZCLASSPATH=$CLASSPATH:$JOGL/gluegen-rt.jar:$JOGL/jogl-all.jar:$JOGL/nativewindow.jar:$JOGL/newt-awt.jar:../lib/jsgl-0.0.1-SNAPSHOT.jar:../lib/commons-compress-1.5.jar:../src/
 javac -d $BIN -cp $VIZCLASSPATH ../src/rv/Viewer.java
 javac -d $BIN -cp $VIZCLASSPATH ../src/config/RVConfigure.java
 

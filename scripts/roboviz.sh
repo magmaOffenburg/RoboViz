@@ -20,5 +20,5 @@ set -- $args
 DIR="$( cd "$( dirname "$0" )" && pwd )" 
 cd $DIR
 
-VIZCLASSPATH=$CLASSPATH:lib/jogl.all.jar:lib/nativewindow.all.jar:lib/gluegen-rt.jar:lib/newt.all.jar:lib/jsgl.jar:lib/commons-compress-1.5.jar:RoboViz.jar:.
+VIZCLASSPATH=$CLASSPATH:lib/jogl-2.3.2/*:lib/jsgl-0.0.1-SNAPSHOT.jar:lib/commons-compress-1.5.jar:RoboViz.jar:.
 java -Xmx512m -Djava.library.path=lib/ -cp $VIZCLASSPATH rv.Viewer "$@"
