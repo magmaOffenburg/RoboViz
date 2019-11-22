@@ -1,11 +1,14 @@
 package rv.ui.menus;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import rv.Configuration;
 import rv.Viewer;
@@ -33,30 +36,117 @@ public class ConnectionMenu extends JMenu
 			serverHosts.add(0, overriddenHost);
 		}
 
+		add(new JSeparator());
+		JMenuItem m = new JMenuItem("Connect to ...");
+		m.addActionListener((e) -> {
+			int port = config.serverPort; // the default port
+			String message =
+					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:4200', 'example.com:4321')</small></html>";
+			String host = JOptionPane.showInputDialog(
+					this.viewer.getFrame(), message, "SimSpark server", JOptionPane.PLAIN_MESSAGE);
+
+			// canceled
+			if (host == null) {
+				return;
+			}
+
+			// check if host string contains port info
+			if (host.contains(":")) {
+				String[] parts = host.split(":");
+
+				if (parts.length != 2) {
+					JOptionPane.showMessageDialog(this.viewer.getFrame(),
+							String.format("The entered server address ('%s') is invalid", host),
+							"Invalid server address", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				host = parts[0];
+
+				// if an exception is thrown, the port part is invalid!
+				try {
+					port = Integer.parseInt(parts[1]);
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(this.viewer.getFrame(),
+							String.format("The entered port ('%s') is invalid", parts[1]), "Invalid port",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+
+			// if an exception is thrown, the host part is invalid!
+			try {
+				InetAddress.getByName(host);
+			} catch (UnknownHostException ex) {
+				JOptionPane.showMessageDialog(this.viewer.getFrame(),
+						String.format("The entered host ('%s') is invalid", host), "Invalid host",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			// add the valid host to the menu and host list
+			serverHosts.add(host);
+			selectServer(addHostItem(host, port));
+		});
+		add(m);
+
 		for (String host : serverHosts) {
-			final JRadioButtonMenuItem item = new JRadioButtonMenuItem(host, getItemCount() == 0);
-			item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
-			add(item);
+			addHostItem(host, config.getServerPort());
 		}
 	}
 
-	private void selectServer(JRadioButtonMenuItem item)
+	/**
+	 * Adds a new remote menu item to this menu.
+	 */
+	private RemoteMenuItem addHostItem(String host, int port)
 	{
-		int selectedIndex = -1;
+		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 2);
+		item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
+		add(item, getItemCount() - 2); // append to the end, but before the separator
+		return item;
+	}
+
+	/**
+	 * Selects the given remote menu item and connect to the corresponding server.
+	 */
+	private void selectServer(RemoteMenuItem item)
+	{
 		for (int i = 0; i < getItemCount(); i++) {
-			JRadioButtonMenuItem currentItem = (JRadioButtonMenuItem) getItem(i);
-			currentItem.setSelected(false);
-			if (currentItem == item) {
-				selectedIndex = i;
+			if (getItem(i) instanceof JRadioButtonMenuItem) {
+				getItem(i).setSelected(false);
 			}
 		}
 		item.setSelected(true);
-		String host = serverHosts.get(selectedIndex);
-		if (host.equals(config.getServerHost()))
-			return;
 
-		config.overrideServerHost(host);
+		if (item.host.equals(config.getServerHost()) && item.port == config.getServerPort()) {
+			return;
+		}
+
+		config.overrideServerHost(item.host);
+		config.overrideServerPort(item.port);
 		viewer.getDrawings().clearAllShapeSets();
-		viewer.getNetManager().getServer().changeConnection(host, config.serverPort);
+		viewer.getNetManager().getServer().changeConnection(item.host, item.port);
+	}
+
+	/**
+	 * Class representing a remote menu item, containing the host and port info.
+	 */
+	private class RemoteMenuItem extends JRadioButtonMenuItem
+	{
+		public final String host;
+		public final int port;
+
+		public RemoteMenuItem(String host, int port, boolean selected)
+		{
+			super(String.format("%s:%d", host, port), selected);
+
+			// omit the default port
+			if (port == config.serverPort) {
+				setText(host);
+			}
+
+			this.host = host;
+			this.port = port;
+		}
 	}
 }

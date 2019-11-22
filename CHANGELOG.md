@@ -1,3 +1,8 @@
+1.6.1 (June 17, 2019)
+------------------------------
+* added support for the rectangular goals in rcssserver 0.7.2
+* updated the pass mode duration for rcssserver 0.7.2
+
 1.6.0 (May 1, 2019)
 ------------------------------
 * updated the required Java version to 1.8
