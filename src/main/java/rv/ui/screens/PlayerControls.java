@@ -24,11 +24,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
@@ -39,8 +39,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
 import rv.util.swing.SwingUtil;
@@ -266,7 +265,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
 		private ImageIcon getImageIcon(String iconName)
 		{
-			String iconPath = String.format("resources/images/%s.png", iconName);
+			String iconPath = String.format("/images/%s.png", iconName);
 			return new ImageIcon(iconPath);
 		}
 

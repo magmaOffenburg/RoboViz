@@ -148,7 +148,7 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 		if (geometryUpdated) {
 			renderLines(gl);
 			geometryUpdated = false;
-			lineTexture = Texture2D.loadTex(gl, "/textures/white.png", getClass().getClassLoader());
+			lineTexture = Texture2D.loadTex(gl, "textures/white.png", getClass().getClassLoader());
 		}
 
 		gl.glNormal3f(0, 1, 0);

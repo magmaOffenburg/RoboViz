@@ -192,7 +192,7 @@ public class WorldModel
 		this.config = config;
 		GL2 gl = glObj.getGL2();
 		
-		field = new Field(cm.getModel("/models/newfield.obj"), cm);
+		field = new Field(cm.getModel("models/newfield.obj"), cm);
 		gameState.addListener(field);
 		gameState.addListener(cm);
 
@@ -201,7 +201,7 @@ public class WorldModel
 		ball = new Ball(cm);
 		sgItems.add(ball);
 
-		skyBox = new SkyBox(cm.getModel("/models/skybox.obj"));
+		skyBox = new SkyBox(cm.getModel("models/skybox.obj"));
 
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);

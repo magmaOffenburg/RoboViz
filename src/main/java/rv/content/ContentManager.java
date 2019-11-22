@@ -197,7 +197,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		InputStream is = getClass().getResourceAsStream("/materials/nao.mtl");
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		try {
-			naoMaterialLib.load(br, "/textures/", cl);
+			naoMaterialLib.load(br, "textures/", cl);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -223,9 +223,9 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 	public Mesh loadMesh(String name)
 	{
 		// System.out.println("Loading " + name);
-		String modelPath = "/models/";
-		String texturePath = "/textures/";
-		String materialPath = "/materials/";
+		String modelPath = "models/";
+		String texturePath = "textures/";
+		String materialPath = "materials/";
 		ObjMeshImporter importer = new ObjMeshImporter(modelPath, materialPath, texturePath);
 		ClassLoader cl = this.getClass().getClassLoader();
 

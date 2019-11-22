@@ -75,8 +75,6 @@ public class Model
 				ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
-
-		System.out.println(name);
 		
 		InputStream is = cl.getResourceAsStream(name);
 		if (is == null) {
