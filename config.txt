@@ -13,9 +13,9 @@ First Person FOV     : 120
 Third Person FOV     : 80
 Frame Width          : 1024
 Frame Height         : 768
-Frame X              : 0
-Frame Y              : 0
-Center Frame         : true
+Frame X              : 581
+Frame Y              : 70
+Center Frame         : false
 Frame Maximized      : false
 Save Frame State     : true
 
