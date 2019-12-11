@@ -6,99 +6,106 @@
 	<artifactId>RoboViz</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RoboViz</name>
+	<url>https://github.com/magmaOffenburg/RoboViz</url>
+	<packaging>pom</packaging>
 
-	<dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jogamp.gluegen</groupId>
+				<artifactId>gluegen-rt-main</artifactId>
+				<version>2.3.1</version>
+			</dependency>
 
-		<dependency>
-			<groupId>magmaOffenburg</groupId>
-			<artifactId>jsgl</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+			<dependency>
+				<groupId>org.jogamp.jogl</groupId>
+				<artifactId>jogl-all-main</artifactId>
+				<version>2.3.1</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jogamp.gluegen</groupId>
-			<artifactId>gluegen-rt-main</artifactId>
-			<version>2.3.1</version>
-		</dependency>
+			<dependency>
+				<groupId>org.jogamp.jogl</groupId>
+				<artifactId>nativewindow-main</artifactId>
+				<version>2.3.2</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jogamp.jogl</groupId>
-			<artifactId>jogl-all-main</artifactId>
-			<version>2.3.1</version>
-		</dependency>
+			<dependency>
+				<groupId>org.jogamp.jogl</groupId>
+				<artifactId>newt-main</artifactId>
+				<version>2.3.2</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jogamp.jogl</groupId>
-			<artifactId>nativewindow-main</artifactId>
-			<version>2.3.2</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>1.19</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jogamp.jogl</groupId>
-			<artifactId>newt-main</artifactId>
-			<version>2.3.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.19</version>
-		</dependency>
-
-	</dependencies>
-
-	<build>
-
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
 				<version>3.8.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>rv.Viewer</mainClass>
-				</configuration>
-			</plugin>
+	<!-- <build> -->
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
-				<configuration>
-					<finalName>RoboViz</finalName>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<transformers>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>rv.Viewer</mainClass>
-						</transformer>
-					</transformers>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+	<!-- <version>3.8.1</version> -->
+	<!-- <configuration> -->
+	<!-- <source>1.8</source> -->
+	<!-- <target>1.8</target> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
 
-	</build>
+	<!-- <plugin> -->
+	<!-- <groupId>org.codehaus.mojo</groupId> -->
+	<!-- <artifactId>exec-maven-plugin</artifactId> -->
+	<!-- <version>1.6.0</version> -->
+	<!-- <executions> -->
+	<!-- <execution> -->
+	<!-- <goals> -->
+	<!-- <goal>java</goal> -->
+	<!-- </goals> -->
+	<!-- </execution> -->
+	<!-- </executions> -->
+	<!-- <configuration> -->
+	<!-- <mainClass>rv.Viewer</mainClass> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-shade-plugin</artifactId> -->
+	<!-- <version>3.2.1</version> -->
+	<!-- <configuration> -->
+	<!-- <finalName>RoboViz</finalName> -->
+	<!-- <shadedArtifactAttached>true</shadedArtifactAttached> -->
+	<!-- <transformers> -->
+	<!-- <transformer -->
+	<!-- implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> -->
+	<!-- <mainClass>rv.Viewer</mainClass> -->
+	<!-- </transformer> -->
+	<!-- </transformers> -->
+	<!-- </configuration> -->
+	<!-- <executions> -->
+	<!-- <execution> -->
+	<!-- <phase>package</phase> -->
+	<!-- <goals> -->
+	<!-- <goal>shade</goal> -->
+	<!-- </goals> -->
+	<!-- </execution> -->
+	<!-- </executions> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+
+	<!-- </build> -->
+	<modules>
+		<module>jsgl</module>
+		<module>roboviz</module>
+	</modules>
 </project>
