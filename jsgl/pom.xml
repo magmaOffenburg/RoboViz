@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>magmaOffenburg</groupId>
 	<artifactId>jsgl</artifactId>
+	<version>0.0.12-SNAPSHOT</version>
 	<name>jsgl</name>
 	<packaging>jar</packaging>
 

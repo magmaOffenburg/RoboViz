@@ -86,7 +86,7 @@ public class Shader implements GLDisposable {
    private static Shader createShaderObject(GL2 gl, int type, String file,
          InputStream is) {
       int id = gl.glCreateShader(type);
-
+      
       String[] src = copySourceToArray(file, is);
       if (src == null) {
          gl.glDeleteShader(id);
