@@ -12,5 +12,25 @@ dependencies {
     testCompile 'junit:junit:3.8.1'
 }
 
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+    
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'rv.Viewer'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
 group = 'magmaOffenburg'
 description = 'RoboViz'
