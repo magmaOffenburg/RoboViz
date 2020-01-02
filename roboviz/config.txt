@@ -12,7 +12,7 @@ Target FPS           : 60
 First Person FOV     : 120
 Third Person FOV     : 80
 Frame Width          : 1549
-Frame Height         : 830
+Frame Height         : 851
 Frame X              : 89
 Frame Y              : 856
 Center Frame         : false

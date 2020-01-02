@@ -17,3 +17,10 @@ roboviz.bat
 
 #gradle
 .gradle/
+
+#Subprojects
+/jsgl/bin
+/jsgl/build
+
+/roboviz/bin
+/roboviz/build
