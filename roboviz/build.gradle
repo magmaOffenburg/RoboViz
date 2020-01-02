@@ -23,6 +23,10 @@ dependencies {
     testImplementation "junit:junit:3.8.1"
 }
 
+shadowJar{
+    archiveFileName = 'RoboViz.jar'
+}
+
 group = 'magmaOffenburg'
 description = 'RoboViz'
 mainClassName = 'rv.Viewer'
