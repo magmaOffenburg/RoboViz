@@ -6,7 +6,7 @@ IF EXIST %BIN% GOTO COMPILE
 mkdir %BIN%
 
 :COMPILE
-gradlew.bat clean shadowJar
+call gradlew.bat clean shadowJar
 
 copy roboviz\build\libs\RoboViz.jar %BIN%\
 copy scripts\roboviz.bat %BIN%\roboviz.bat
