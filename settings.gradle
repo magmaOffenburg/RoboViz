@@ -4,4 +4,4 @@
 
 rootProject.name = 'RoboViz'
 include(':jsgl')
-include(':roboviz')
+include(':client')
