@@ -63,14 +63,14 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	public void createViewMenu(Menu menu)
 	{
 		super.createViewMenu(menu);
-		menu.addItem("Toggle Server Speed", "M", this ::toggleShowServerSpeed);
-		menu.addItem("Playmode Overlay", "O", this ::openPlaymodeOverlay);
+		menu.addItem("Toggle Server Speed", "M", this::toggleShowServerSpeed);
+		menu.addItem("Playmode Overlay", "O", this::openPlaymodeOverlay);
 	}
 
 	private void createServerMenu(Menu menu)
 	{
 		if (!viewer.getConfig().networking.autoConnect)
-			menu.addItem("Connect", "C", this ::connect);
+			menu.addItem("Connect", "C", this::connect);
 
 		menu.addItem("Kill Server", "shift X", () -> getServer().killServer());
 
@@ -87,7 +87,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 
 		menu.addItem("Request Full State Update", "U", () -> getServer().requestFullState());
 
-		menu.addItem("Drop Ball", "B", this ::dropBall);
+		menu.addItem("Drop Ball", "B", this::dropBall);
 	}
 
 	private ServerComm getServer()

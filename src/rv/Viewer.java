@@ -16,6 +16,11 @@
 
 package rv;
 
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.awt.AWTKeyAdapter;
+import com.jogamp.newt.event.awt.AWTMouseAdapter;
+import com.jogamp.opengl.util.awt.Screenshot;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -45,11 +50,6 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import com.jogamp.newt.event.KeyListener;
-import com.jogamp.newt.event.MouseListener;
-import com.jogamp.newt.event.awt.AWTKeyAdapter;
-import com.jogamp.newt.event.awt.AWTMouseAdapter;
-import com.jogamp.opengl.util.awt.Screenshot;
 import js.jogl.GLInfo;
 import js.jogl.prog.GLProgram;
 import js.jogl.view.Viewport;

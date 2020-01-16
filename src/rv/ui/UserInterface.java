@@ -16,6 +16,7 @@
 
 package rv.ui;
 
+import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.media.opengl.GL;
@@ -24,7 +25,6 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilitiesImmutable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.FPCamera;
 import js.math.vector.Vec2f;
 import js.math.vector.Vec3f;

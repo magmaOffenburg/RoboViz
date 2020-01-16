@@ -16,6 +16,8 @@
 
 package rv.ui.screens;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -27,8 +29,6 @@ import java.util.regex.Pattern;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import rv.Viewer;
 

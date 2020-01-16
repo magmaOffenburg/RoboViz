@@ -181,7 +181,8 @@ public abstract class Command
 	public static float[] readRGB(ByteBuffer buf)
 	{
 		return new float[] {
-				ByteUtil.uValue(buf.get()) / 255.0f, ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
 				ByteUtil.uValue(buf.get()) / 255.0f,
 		};
 	}
@@ -192,8 +193,10 @@ public abstract class Command
 	public static float[] readRGBA(ByteBuffer buf)
 	{
 		return new float[] {
-				ByteUtil.uValue(buf.get()) / 255.0f, ByteUtil.uValue(buf.get()) / 255.0f,
-				ByteUtil.uValue(buf.get()) / 255.0f, ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
+				ByteUtil.uValue(buf.get()) / 255.0f,
 		};
 	}
 

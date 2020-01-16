@@ -116,29 +116,29 @@ public abstract class ViewerScreenBase
 	@Override
 	public void createViewMenu(Menu menu)
 	{
-		menu.addItem("Help", "F1", this ::openHelp);
-		menu.addItem("Drawings", "Y", this ::openDrawingsPanel);
+		menu.addItem("Help", "F1", this::openHelp);
+		menu.addItem("Drawings", "Y", this::openDrawingsPanel);
 		menu.addItem("Toggle Full Screen", "F11", viewer::toggleFullScreen);
-		menu.addItem("Toggle Agent Overhead Type", "I", this ::toggleOverheadType);
-		menu.addItem("Toggle Player Numbers", "N", this ::togglePlayerNumbers);
-		menu.addItem("Toggle Field Overlay", "F", this ::toggleFieldOverlay);
-		menu.addItem("Toggle Drawings", "T", this ::toggleDrawings);
-		menu.addItem("Toggle Fouls", "Q", this ::toggleFouls);
+		menu.addItem("Toggle Agent Overhead Type", "I", this::toggleOverheadType);
+		menu.addItem("Toggle Player Numbers", "N", this::togglePlayerNumbers);
+		menu.addItem("Toggle Field Overlay", "F", this::toggleFieldOverlay);
+		menu.addItem("Toggle Drawings", "T", this::toggleDrawings);
+		menu.addItem("Toggle Fouls", "Q", this::toggleFouls);
 	}
 
 	private void createCameraMenu(Menu menu)
 	{
-		menu.addItem("Track Ball", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), this ::toggleBallTracker);
+		menu.addItem("Track Ball", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), this::toggleBallTracker);
 		menu.addItem("Track Player", KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.SHIFT_MASK),
-				this ::togglePlayerTracker);
+				this::togglePlayerTracker);
 
 		menu.addItem("First Person Vantage", "V", () -> setRobotVantage(RobotVantageType.FIRST_PERSON));
 		menu.addItem("Third Person Vantage", "E", () -> setRobotVantage(RobotVantageType.THIRD_PERSON));
 
 		menu.add(new JSeparator());
 
-		menu.addItem("Select Ball", "0", this ::selectBall);
-		menu.addItem("Remove Selection", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), this ::removeSelection);
+		menu.addItem("Select Ball", "0", this::selectBall);
+		menu.addItem("Remove Selection", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), this::removeSelection);
 
 		menu.addItem("Select Previous Player", KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK),
 				() -> cyclePlayers(-1));

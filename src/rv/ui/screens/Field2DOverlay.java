@@ -16,9 +16,9 @@
 
 package rv.ui.screens;
 
+import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import com.jogamp.opengl.util.gl2.GLUT;
 import js.jogl.view.Viewport;
 import js.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
