@@ -499,7 +499,8 @@ public class Viewer
 		if (mode != Mode.LIVE)
 			return;
 
-		String host = server.isConnected() ? config.networking.getServerHost() : null;
+		String host = server.isConnected() ? config.networking.getServerHost() + ":" + config.networking.getServerPort()
+										   : null;
 		frame.setTitle(getTitle(host));
 	}
 
