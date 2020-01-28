@@ -55,10 +55,30 @@ public class ServerComm implements DrawCommListener
 	{
 		private final MessageParser parser = new MessageParser(world);
 
+		private final String host;
+
+		private final int port;
+
+		public MessageReceiver(String host, int port)
+		{
+			this.host = host;
+			this.port = port;
+		}
+
 		@Override
 		public void run()
 		{
 			try {
+				socket = new Socket(host, port);
+				out = new PrintWriter(socket.getOutputStream(), true);
+				in = new DataInputStream(socket.getInputStream());
+
+				if (autoConnectTimer != null)
+					autoConnectTimer.stop();
+				setConnected(true);
+				if (recordLogs)
+					setupNewLogfile();
+
 				String message;
 				do {
 					message = readMessage();
@@ -226,19 +246,7 @@ public class ServerComm implements DrawCommListener
 
 	public void connect(String host, int port)
 	{
-		try {
-			socket = new Socket(host, port);
-			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new DataInputStream(socket.getInputStream());
-			MessageReceiver inThread = new MessageReceiver();
-			inThread.start();
-			if (autoConnectTimer != null)
-				autoConnectTimer.stop();
-			setConnected(true);
-			if (recordLogs)
-				setupNewLogfile();
-		} catch (IOException e) {
-		}
+		new MessageReceiver(host, port).start();
 	}
 
 	public void disconnect()

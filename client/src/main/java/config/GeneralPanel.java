@@ -1,5 +1,6 @@
 package config;
 
+import config.RVConfigure.SaveListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -11,7 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.FileChooser;
 import rv.util.swing.SwingUtil;

@@ -16,6 +16,7 @@
 
 package config;
 
+import config.RVConfigure.SaveListener;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,7 +33,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.SwingUtil;
 

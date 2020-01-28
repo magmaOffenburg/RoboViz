@@ -1,8 +1,8 @@
 package rv.ui.screens;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
 import java.awt.Color;
 import java.awt.Font;
-import com.jogamp.opengl.util.awt.TextRenderer;
 
 /** A text renderer with some border effects */
 public class BorderTextRenderer extends TextRenderer

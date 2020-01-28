@@ -76,27 +76,39 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 
 		lineVerts = new float[][] {
 				// border lines
-				{-hfl - LINE_THICKNESS, 0, hfw + LINE_THICKNESS}, {-hfl - LINE_THICKNESS, 0, -hfw - LINE_THICKNESS},
-				{hfl + LINE_THICKNESS, 0, -hfw - LINE_THICKNESS}, {hfl + LINE_THICKNESS, 0, hfw + LINE_THICKNESS},
-				{-hfl + LINE_THICKNESS, 0, hfw - LINE_THICKNESS}, {-hfl + LINE_THICKNESS, 0, -hfw + LINE_THICKNESS},
-				{hfl - LINE_THICKNESS, 0, -hfw + LINE_THICKNESS}, {hfl - LINE_THICKNESS, 0, hfw - LINE_THICKNESS},
+				{-hfl - LINE_THICKNESS, 0, hfw + LINE_THICKNESS},
+				{-hfl - LINE_THICKNESS, 0, -hfw - LINE_THICKNESS},
+				{hfl + LINE_THICKNESS, 0, -hfw - LINE_THICKNESS},
+				{hfl + LINE_THICKNESS, 0, hfw + LINE_THICKNESS},
+				{-hfl + LINE_THICKNESS, 0, hfw - LINE_THICKNESS},
+				{-hfl + LINE_THICKNESS, 0, -hfw + LINE_THICKNESS},
+				{hfl - LINE_THICKNESS, 0, -hfw + LINE_THICKNESS},
+				{hfl - LINE_THICKNESS, 0, hfw - LINE_THICKNESS},
 
 				// center line
-				{-LINE_THICKNESS, 0, hfw}, {-LINE_THICKNESS, 0, -hfw}, {LINE_THICKNESS, 0, -hfw},
+				{-LINE_THICKNESS, 0, hfw},
+				{-LINE_THICKNESS, 0, -hfw},
+				{LINE_THICKNESS, 0, -hfw},
 				{LINE_THICKNESS, 0, hfw},
 
 				// right goal box
-				{-hfl, 0, hgw + LINE_THICKNESS}, {-hfl, 0, hgw - LINE_THICKNESS},
+				{-hfl, 0, hgw + LINE_THICKNESS},
+				{-hfl, 0, hgw - LINE_THICKNESS},
 				{-hfl + hgl - LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
-				{-hfl + hgl - LINE_THICKNESS, 0, -hgw + LINE_THICKNESS}, {-hfl, 0, -hgw + LINE_THICKNESS},
-				{-hfl, 0, -hgw - LINE_THICKNESS}, {-hfl + hgl + LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
+				{-hfl + hgl - LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
+				{-hfl, 0, -hgw + LINE_THICKNESS},
+				{-hfl, 0, -hgw - LINE_THICKNESS},
+				{-hfl + hgl + LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
 				{-hfl + hgl + LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
 
 				// left goal box
-				{hfl, 0, hgw + LINE_THICKNESS}, {hfl, 0, hgw - LINE_THICKNESS},
+				{hfl, 0, hgw + LINE_THICKNESS},
+				{hfl, 0, hgw - LINE_THICKNESS},
 				{hfl - hgl + LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
-				{hfl - hgl + LINE_THICKNESS, 0, -hgw + LINE_THICKNESS}, {hfl, 0, -hgw + LINE_THICKNESS},
-				{hfl, 0, -hgw - LINE_THICKNESS}, {hfl - hgl - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
+				{hfl - hgl + LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
+				{hfl, 0, -hgw + LINE_THICKNESS},
+				{hfl, 0, -hgw - LINE_THICKNESS},
+				{hfl - hgl - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
 				{hfl - hgl - LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
 		};
 

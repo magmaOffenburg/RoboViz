@@ -116,7 +116,11 @@ public class RVTester
 
 		// draw a polygon
 		float[][] v = {
-				{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 3, 0}, {-2, -2, 0},
+				{0, 0, 0},
+				{1, 0, 0},
+				{1, 1, 0},
+				{0, 3, 0},
+				{-2, -2, 0},
 		};
 		drawPolygon(v, new Color(1.0f, 1.0f, 1.0f, 0.5f), "static.polygons");
 

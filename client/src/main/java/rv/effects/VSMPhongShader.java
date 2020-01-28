@@ -34,7 +34,22 @@ public class VSMPhongShader
 {
 	// Used to transform normalized device coordinates in [-1,1] to [0,1]
 	private static final Matrix BIAS_MATRIX = new Matrix(new double[] {
-			0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0,
+			0.5,
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			0.5,
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			0.5,
+			0.0,
+			0.5,
+			0.5,
+			0.5,
+			1.0,
 	});
 
 	private final ShaderProgram prog;
