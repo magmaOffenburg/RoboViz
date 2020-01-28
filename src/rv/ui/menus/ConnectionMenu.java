@@ -37,11 +37,11 @@ public class ConnectionMenu extends JMenu
 		}
 
 		add(new JSeparator());
-		JMenuItem m = new JMenuItem("Connect to ...");
+		JMenuItem m = new JMenuItem("Connect to...");
 		m.addActionListener((e) -> {
 			int port = config.serverPort; // the default port
 			String message =
-					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:4200', 'example.com:4321')</small></html>";
+					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:3200', 'example.com:4321')</small></html>";
 			String host = JOptionPane.showInputDialog(
 					this.viewer.getFrame(), message, "SimSpark server", JOptionPane.PLAIN_MESSAGE);
 
