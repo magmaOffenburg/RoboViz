@@ -164,7 +164,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 			}
 			break;
 		case KeyEvent.VK_C:
-			connect();
+			if (!e.isControlDown())
+				connect();
 			break;
 		case KeyEvent.VK_L:
 			if (e.isShiftDown())
