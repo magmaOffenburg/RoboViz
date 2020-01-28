@@ -1,5 +1,6 @@
 package rv.ui.menus;
 
+import java.awt.event.KeyEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import rv.Configuration;
 import rv.Viewer;
@@ -58,6 +60,7 @@ public class ConnectionMenu extends JMenu
 				connectTo(host);
 			}
 		});
+		connectTo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
 		add(connectTo);
 
 		for (String host : serverHosts) {
