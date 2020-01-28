@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -37,62 +38,73 @@ public class ConnectionMenu extends JMenu
 		}
 
 		add(new JSeparator());
-		JMenuItem m = new JMenuItem("Connect to...");
-		m.addActionListener((e) -> {
-			int port = config.serverPort; // the default port
-			String message =
-					"<html>Enter a SimSpark IP address or host name<br><small>You can also specify a port (e.g. 'localhost:3200', 'example.com:4321')</small></html>";
-			String host = JOptionPane.showInputDialog(
-					this.viewer.getFrame(), message, "SimSpark server", JOptionPane.PLAIN_MESSAGE);
+		JMenuItem connectTo = new JMenuItem("Connect to...");
+		connectTo.addActionListener(e -> {
+			JComboBox<String> hostsComboBox = new JComboBox<>();
+			for (String host : config.serverHosts) {
+				hostsComboBox.addItem(host + ":" + config.serverPort);
+			}
+			hostsComboBox.setEditable(true);
+			hostsComboBox.setSelectedIndex(config.serverHosts.indexOf(config.getServerHost()));
+			SwingUtilities.invokeLater(hostsComboBox::requestFocusInWindow);
 
-			// canceled
-			if (host == null) {
+			if (JOptionPane.showConfirmDialog(viewer.getFrame(), hostsComboBox, "Connect to...",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null) != JOptionPane.OK_OPTION) {
 				return;
 			}
 
-			// check if host string contains port info
-			if (host.contains(":")) {
-				String[] parts = host.split(":");
-
-				if (parts.length != 2) {
-					JOptionPane.showMessageDialog(this.viewer.getFrame(),
-							String.format("The entered server address ('%s') is invalid", host),
-							"Invalid server address", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-
-				host = parts[0];
-
-				// if an exception is thrown, the port part is invalid!
-				try {
-					port = Integer.parseInt(parts[1]);
-				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(this.viewer.getFrame(),
-							String.format("The entered port ('%s') is invalid", parts[1]), "Invalid port",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+			String host = (String) hostsComboBox.getSelectedItem();
+			if (host != null) {
+				connectTo(host);
 			}
-
-			// if an exception is thrown, the host part is invalid!
-			try {
-				InetAddress.getByName(host);
-			} catch (UnknownHostException ex) {
-				JOptionPane.showMessageDialog(this.viewer.getFrame(),
-						String.format("The entered host ('%s') is invalid", host), "Invalid host",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			// add the valid host to the menu and host list
-			serverHosts.add(host);
-			selectServer(addHostItem(host, port));
 		});
-		add(m);
+		add(connectTo);
 
 		for (String host : serverHosts) {
 			addHostItem(host, config.getServerPort());
 		}
+	}
+
+	private void connectTo(String host)
+	{
+		int port = config.serverPort; // the default port
+
+		// check if host string contains port info
+		if (host.contains(":")) {
+			String[] parts = host.split(":");
+
+			if (parts.length != 2) {
+				JOptionPane.showMessageDialog(viewer.getFrame(),
+						String.format("The entered server address ('%s') is invalid", host), "Invalid server address",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			host = parts[0];
+
+			// if an exception is thrown, the port part is invalid!
+			try {
+				port = Integer.parseInt(parts[1]);
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(viewer.getFrame(),
+						String.format("The entered port ('%s') is invalid", parts[1]), "Invalid port",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+
+		// if an exception is thrown, the host part is invalid!
+		try {
+			InetAddress.getByName(host);
+		} catch (UnknownHostException ex) {
+			JOptionPane.showMessageDialog(viewer.getFrame(), String.format("The entered host ('%s') is invalid", host),
+					"Invalid host", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// add the valid host to the menu and host list
+		serverHosts.add(host);
+		selectServer(addHostItem(host, port));
 	}
 
 	/**
