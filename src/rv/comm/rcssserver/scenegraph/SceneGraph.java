@@ -91,8 +91,7 @@ public class SceneGraph
 			for (String material : materials) {
 				boolean containsMaterial = false;
 
-				// see if node contains current material and stop when it is
-				// found
+				// see if node contains current material and stop when it is found
 				for (String nodeMat : nodeMats) {
 					if (nodeMat.equals(material)) {
 						containsMaterial = true;

@@ -53,12 +53,9 @@ public class BasicSceneRenderer implements SceneRenderer
 	public static void applyAgentMats(Model model, StaticMeshNode node, ContentManager content)
 	{
 		// NOTE: this is a hack to get the player meshes to render with the
-		// correct
-		// team colors. The materials should be explicitly listed by the scene
-		// graph,
-		// but the material being replaced (matTeam) is not mentioned anywhere
-		// in the
-		// scene graph.
+		// correct team colors. The materials should be explicitly listed by the scene
+		// graph, but the material being replaced (matTeam) is not mentioned anywhere
+		// in the scene graph.
 		boolean isAgent = false;
 		if (node.containsMaterial("matLeft")) {
 			model.replaceMaterial("matTeam", content.getMaterial("matLeft"));
@@ -85,10 +82,8 @@ public class BasicSceneRenderer implements SceneRenderer
 	{
 		Model model = content.getModel(node.getName());
 		if (model.isLoaded()) {
-			// NOTE: this is a hack to avoid rendering certain meshes that are
-			// replaced by
-			// RoboViz; in particular, the field and skybox are treated
-			// differently
+			// NOTE: this is a hack to avoid rendering certain meshes that are replaced by
+			// RoboViz; in particular, the field and skybox are treated differently
 			for (String s : suppressedMeshes)
 				if (node.getName().endsWith(s))
 					return;
