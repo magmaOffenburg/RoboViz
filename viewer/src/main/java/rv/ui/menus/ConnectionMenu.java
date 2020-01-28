@@ -108,10 +108,18 @@ public class ConnectionMenu extends JMenu
 	}
 
 	/**
-	 * Adds a new remote menu item to this menu.
+	 * Adds a new remote menu item to this menu, or returns an existing one.
 	 */
 	private RemoteMenuItem addHostItem(String host, int port)
 	{
+		for (int i = 0; i < getItemCount(); i++) {
+			if (getItem(i) instanceof RemoteMenuItem) {
+				RemoteMenuItem item = (RemoteMenuItem) getItem(i);
+				if (item.host.equals(host) && item.port == port) {
+					return item;
+				}
+			}
+		}
 		final RemoteMenuItem item = new RemoteMenuItem(host, port, getItemCount() == 2);
 		item.addActionListener(e -> SwingUtilities.invokeLater(() -> selectServer(item)));
 		add(item, getItemCount() - 2); // append to the end, but before the separator
@@ -124,7 +132,7 @@ public class ConnectionMenu extends JMenu
 	private void selectServer(RemoteMenuItem item)
 	{
 		for (int i = 0; i < getItemCount(); i++) {
-			if (getItem(i) instanceof JRadioButtonMenuItem) {
+			if (getItem(i) instanceof RemoteMenuItem) {
 				getItem(i).setSelected(false);
 			}
 		}
