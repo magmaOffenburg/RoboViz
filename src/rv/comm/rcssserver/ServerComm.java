@@ -71,8 +71,6 @@ public class ServerComm implements DrawCommListener
 				out = new PrintWriter(socket.getOutputStream(), true);
 				in = new DataInputStream(socket.getInputStream());
 
-				if (autoConnectTimer != null)
-					autoConnectTimer.stop();
 				setConnected(true);
 				if (recordLogs)
 					setupNewLogfile();
@@ -244,6 +242,8 @@ public class ServerComm implements DrawCommListener
 
 	public void connect(String host, int port)
 	{
+		if (autoConnectTimer != null)
+			autoConnectTimer.stop();
 		new MessageReceiver(host, port).start();
 	}
 
