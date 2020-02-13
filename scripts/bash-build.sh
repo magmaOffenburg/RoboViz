@@ -18,7 +18,7 @@ mkdir -p $BIN
 ../gradlew -p .. clean shadowJar
 
 # copy over resources and libraries to bin folder
-cp ../roboviz/build/libs/RoboViz.jar $BIN/
+cp ../client/build/libs/RoboViz.jar $BIN/
 cp ../scripts/roboviz.sh $BIN/
 cp ../scripts/config.sh $BIN/
 cp ../LICENSE.md $BIN/

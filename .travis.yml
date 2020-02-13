@@ -3,25 +3,18 @@ dist: xenial
 
 script:
   - cd scripts
-  - ./build-linux32.sh
-  - ./build-linux64.sh
-  - ./build-macosx.sh
+  - ./bash-build.sh
   - cd ..
 
 before_deploy:
-  - cd bin
-  - tar czf linux32.tar.gz linux-i586/
-  - tar czf linux64.tar.gz linux-amd64/
-  - tar czf macosx.tar.gz macosx/
+  - tar czf RoboViz.tar.gz bin/
 
 deploy:
   provider: releases
   api_key:
     secure: nM54n+YgSHV/HqJ882cF1pumzji/yD0HsNYwof+Yy+wS1l6wWEBXPp6mdIGuspr9IfByHyBe1ep11SBhteiSy73X96JsKp3WUpMBoeoyNey/Bgbh7qa3Yy/ikJj68Arjl1DdCOlKjp5JIPGtKsBHxT29qFMSltxtGQ6AwV8WJYo=
   file:
-    - linux32.tar.gz
-    - linux64.tar.gz
-    - macosx.tar.gz
+    - RoboViz.tar.gz
   skip_cleanup: true
   on:
     tags: true
