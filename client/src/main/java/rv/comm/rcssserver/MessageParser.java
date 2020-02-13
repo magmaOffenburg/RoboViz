@@ -44,17 +44,20 @@ public class MessageParser
 
 	public void parse(String message) throws ParseException
 	{
-		ArrayList<SExp> expressions = SExp.parse(message);
+		synchronized (world)
+		{
+			ArrayList<SExp> expressions = SExp.parse(message);
 
-		world.getGameState().parse(expressions.get(0), world);
-		SceneGraphHeader header = SceneGraphHeader.parse(expressions.get(1));
-		if (header.getType().equals(SceneGraphHeader.FULL)) {
-			// scene graph structure has changed, so replace the old one and tell
-			// any objects that rely on the scene graph to update their references
-			SceneGraph sg = new SceneGraph(expressions.get(2));
-			world.setSceneGraph(sg);
-		} else {
-			world.getSceneGraph().update(expressions.get(2));
+			world.getGameState().parse(expressions.get(0), world);
+			SceneGraphHeader header = SceneGraphHeader.parse(expressions.get(1));
+			if (header.getType().equals(SceneGraphHeader.FULL)) {
+				// scene graph structure has changed, so replace the old one and tell
+				// any objects that rely on the scene graph to update their references
+				SceneGraph sg = new SceneGraph(expressions.get(2));
+				world.setSceneGraph(sg);
+			} else {
+				world.getSceneGraph().update(expressions.get(2));
+			}
 		}
 	}
 }

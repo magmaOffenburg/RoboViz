@@ -132,7 +132,7 @@ public class WorldModel
 		return sceneGraph;
 	}
 
-	public void setSceneGraph(SceneGraph sceneGraph)
+	public synchronized void setSceneGraph(SceneGraph sceneGraph)
 	{
 		this.sceneGraph = sceneGraph;
 
@@ -235,7 +235,7 @@ public class WorldModel
 		sgItems.add(rightTeam);
 	}
 
-	public void update(GL gl, double elapsedMS, UserInterface ui)
+	public synchronized void update(GL gl, double elapsedMS, UserInterface ui)
 	{
 		// Allow scene graph items to update their states prior to rendering.
 		// This is done in the update loop rather than the scene graph update
@@ -318,7 +318,7 @@ public class WorldModel
 			field.dispose(gl);
 	}
 
-	public void reset()
+	public synchronized void reset()
 	{
 		gameState.reset();
 		if (cm != null && config != null)

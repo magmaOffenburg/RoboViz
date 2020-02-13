@@ -143,35 +143,38 @@ public class Renderer implements WindowResizeListener
 
 	public void render(GLAutoDrawable drawable, Configuration.Graphics config)
 	{
-		GL2 gl = drawable.getGL().getGL2();
+		synchronized (viewer.getWorldModel())
+		{
+			GL2 gl = drawable.getGL().getGL2();
 
-		if (config.useShadows) {
-			ShadowMapRenderer shadowRenderer = effectManager.getShadowRenderer();
-			shadowRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
-		}
+			if (config.useShadows) {
+				ShadowMapRenderer shadowRenderer = effectManager.getShadowRenderer();
+				shadowRenderer.render(gl, viewer.getWorldModel(), viewer.getDrawings());
+			}
 
-		if (graphics.useStereo) {
-			vantage.applyLeft(gl, glu, viewer.getScreen());
-			gl.glDrawBuffer(GL2.GL_BACK_LEFT);
-			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-			drawScene(gl);
+			if (graphics.useStereo) {
+				vantage.applyLeft(gl, glu, viewer.getScreen());
+				gl.glDrawBuffer(GL2.GL_BACK_LEFT);
+				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+				drawScene(gl);
 
-			vantage.applyRight(gl, glu, viewer.getScreen());
-			gl.glDrawBuffer(GL2.GL_BACK_RIGHT);
-			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-			drawScene(gl);
+				vantage.applyRight(gl, glu, viewer.getScreen());
+				gl.glDrawBuffer(GL2.GL_BACK_RIGHT);
+				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+				drawScene(gl);
 
-			gl.glDrawBuffer(GL.GL_BACK);
-			viewer.getUI().render(gl, glu, glut);
-		} else {
-			gl.glDrawBuffer(GL.GL_BACK);
-			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+				gl.glDrawBuffer(GL.GL_BACK);
+				viewer.getUI().render(gl, glu, glut);
+			} else {
+				gl.glDrawBuffer(GL.GL_BACK);
+				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-			vantage.apply(gl, glu, viewer.getScreen());
+				vantage.apply(gl, glu, viewer.getScreen());
 
-			drawScene(gl);
+				drawScene(gl);
 
-			viewer.getUI().render(gl, glu, glut);
+				viewer.getUI().render(gl, glu, glut);
+			}
 		}
 	}
 
