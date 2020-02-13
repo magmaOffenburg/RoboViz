@@ -11,11 +11,11 @@ FSAA Samples         : 8
 Target FPS           : 60
 First Person FOV     : 120
 Third Person FOV     : 80
-Frame Width          : 1432
-Frame Height         : 769
-Frame X              : 89
-Frame Y              : 856
-Center Frame         : false
+Frame Width          : 1024
+Frame Height         : 768
+Frame X              : 0
+Frame Y              : 0
+Center Frame         : true
 Frame Maximized      : false
 Save Frame State     : true
 
