@@ -25,7 +25,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +35,7 @@ import java.util.EventObject;
 import java.util.List;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -48,6 +51,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 
 import roboviz.jsgl.jogl.GLInfo;
 import roboviz.jsgl.jogl.prog.GLProgram;
@@ -394,19 +398,23 @@ public class Viewer
 
 	private void takeScreenshot(String fileName)
 	{
-		// TODO not working currently
-		//		BufferedImage ss = Screenshot.readToBufferedImage(0, 0, screen.w, screen.h, false);
-		//		File ssFile = new File(fileName);
-		//		File ssDir = new File("screenshots");
-		//		try {
-		//			if (!ssDir.exists())
-		//				ssDir.mkdir();
-		//			ImageIO.write(ss, "png", ssFile);
-		//		} catch (IOException e) {
-		//			e.printStackTrace();
-		//		}
-		//
-		//		System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
+		// TODO Info: GLReadBufferUtil.readPixels: pre-exisiting GL error 0x501
+		
+		GLProfile glp = GLProfile.getDefault();
+		AWTGLReadBufferUtil screenshot = new AWTGLReadBufferUtil(glp, false);
+		BufferedImage ss = screenshot.readPixelsToBufferedImage(drawable.getGL(), true);
+		
+		File ssFile = new File(fileName);
+		File ssDir = new File("screenshots");
+		try {
+			if (!ssDir.exists())
+				ssDir.mkdir();
+			ImageIO.write(ss, "png", ssFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
 	}
 
 	/** Enter or exit full-screen exclusive mode depending on current mode */
