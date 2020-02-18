@@ -3,7 +3,7 @@ dist: xenial
 
 script:
   - cd scripts
-  - ./bash-build.sh
+  - ./build.sh
   - cd ..
 
 before_deploy:
