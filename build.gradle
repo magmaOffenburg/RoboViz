@@ -4,15 +4,13 @@
 
 allprojects {
     group = 'RoboViz'
-    version = '0.0.1-SNAPSHOT'
+    version = '1.6.1'
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven-publish'
 
     repositories {
-        mavenLocal()
         maven {
             url = 'https://repo.maven.apache.org/maven2'
         }
@@ -23,12 +21,4 @@ subprojects {
     }
 
     sourceCompatibility = '1.8'
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                from(components.java)
-            }
-        }
-    }
 }
