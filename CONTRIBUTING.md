@@ -12,6 +12,4 @@ Please include the following in bug reports:
 
 ## Contributing code
 
-Pull requests should be directed to the dev branch - the master branch should be in sync with the latest release.
-
 Code is auto-formatted using clang-format. The configuration and setup instructions for different IDEs can be found [here](https://github.com/hsoautonomy/formatting).
