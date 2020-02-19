@@ -23,7 +23,7 @@ dependencies {
     testImplementation "junit:junit:3.8.1"
 }
 
-shadowJar{
+shadowJar {
     archiveFileName = 'RoboViz.jar'
 }
 
