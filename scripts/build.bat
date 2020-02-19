@@ -9,8 +9,10 @@ mkdir %BIN%
 call gradlew.bat clean shadowJar
 
 copy client\build\libs\RoboViz.jar %BIN%\
-copy scripts\roboviz.bat %BIN%\roboviz.bat
-copy scripts\config.bat %BIN%\config.bat
+copy scripts\roboviz.sh %BIN%\
+copy scripts\config.sh %BIN%\
+copy scripts\roboviz.bat %BIN%\
+copy scripts\config.bat %BIN%\
 copy LICENSE.md %BIN%\
 copy NOTICE.md %BIN%\
 copy CHANGELOG.md %BIN%\

@@ -21,6 +21,8 @@ mkdir -p $BIN
 cp ../client/build/libs/RoboViz.jar $BIN/
 cp ../scripts/roboviz.sh $BIN/
 cp ../scripts/config.sh $BIN/
+cp ../scripts/roboviz.bat $BIN/
+cp ../scripts/config.bat $BIN/
 cp ../LICENSE.md $BIN/
 cp ../NOTICE.md $BIN/
 cp ../CHANGELOG.md $BIN/
