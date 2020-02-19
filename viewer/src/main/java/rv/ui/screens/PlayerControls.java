@@ -264,7 +264,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		private ImageIcon getImageIcon(String iconName)
 		{
 			String iconPath = String.format("/images/%s.png", iconName);
-			return new ImageIcon(iconPath);
+			return new ImageIcon(getClass().getResource(iconPath));
 		}
 
 		protected void initShape()

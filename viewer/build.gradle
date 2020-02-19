@@ -32,6 +32,12 @@ task runConfig(type: JavaExec) {
 	main = 'config.RVConfigure'
 }
 
+task runLogMode(type: JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = 'rv.Viewer'
+	args = ["--logMode"]
+}
+
 group = 'magmaOffenburg'
 description = 'RoboViz'
 mainClassName = 'rv.Viewer'
