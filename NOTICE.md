@@ -5,3 +5,5 @@ This product includes software developed by the following individuals:
 - Klaus Dorer
 - Jens Fischer
 - Patrick MacAlpine
+- Philipp Strobel
+- Jannik Seiler
