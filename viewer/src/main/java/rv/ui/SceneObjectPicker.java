@@ -66,10 +66,8 @@ public class SceneObjectPicker
 			return null;
 
 		List<ISelectable> selectables = new ArrayList<>();
-		for (ISelectable s : world.getLeftTeam().getAgents())
-			selectables.add(s);
-		for (ISelectable s : world.getRightTeam().getAgents())
-			selectables.add(s);
+		selectables.addAll(world.getLeftTeam().getAgents());
+		selectables.addAll(world.getRightTeam().getAgents());
 		selectables.add(world.getBall());
 
 		return pickClosest(selectables);

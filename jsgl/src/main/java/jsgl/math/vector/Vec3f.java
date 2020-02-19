@@ -183,7 +183,6 @@ public class Vec3f implements Tuplef
 	 *
 	 * @param i
 	 *           - x = 0, y = 1, z = 2
-	 * @throws IndexOutOfBoundsException
 	 */
 	@Override
 	public float get(int i) throws IndexOutOfBoundsException
@@ -229,7 +228,6 @@ public class Vec3f implements Tuplef
 	 *           - index of existing component for new second component
 	 * @param z
 	 *           - index of existing component for new third component
-	 * @return
 	 */
 	public Vec3f swizzle(int x, int y, int z) throws IndexOutOfBoundsException
 	{

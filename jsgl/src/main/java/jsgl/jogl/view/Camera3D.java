@@ -258,10 +258,10 @@ public abstract class Camera3D
 	{
 		double fov = Math.toRadians(fovY);
 
-		float windowY = (vp.h - mouseY) - vp.h / 2;
-		float normY = windowY / (vp.h / 2);
-		float windowX = mouseX - vp.w / 2;
-		float normX = windowX / (vp.w / 2);
+		float windowY = (vp.h - mouseY) - vp.h / 2.0f;
+		float normY = windowY / (vp.h / 2.0f);
+		float windowX = mouseX - vp.w / 2.0f;
+		float normX = windowX / (vp.w / 2.0f);
 
 		float nearH = (float) Math.tan(fov / 2) * nearZ;
 

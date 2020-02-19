@@ -76,7 +76,7 @@ public class GameState implements ServerChangeListener
 		}
 	}
 
-	public class Foul
+	public static class Foul
 	{
 		public float time;
 		public int index;
@@ -86,7 +86,7 @@ public class GameState implements ServerChangeListener
 		public long receivedTime;
 	}
 
-	public class HistoryItem
+	public static class HistoryItem
 	{
 		public final float time;
 		public final String playMode;

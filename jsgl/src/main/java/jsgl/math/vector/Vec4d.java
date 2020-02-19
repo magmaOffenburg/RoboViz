@@ -176,7 +176,6 @@ public class Vec4d implements Tupled
 	 *
 	 * @param i
 	 *           - x = 0, y = 1, z = 2, w = 3
-	 * @throws IndexOutOfBoundsException
 	 */
 	@Override
 	public double get(int i) throws IndexOutOfBoundsException
@@ -229,7 +228,6 @@ public class Vec4d implements Tupled
 	 *           - index of existing component for new third component
 	 * @param w
 	 *           - index of existing component for new fourth component
-	 * @return
 	 */
 	public Vec4d swizzle(int x, int y, int z, int w) throws IndexOutOfBoundsException
 	{

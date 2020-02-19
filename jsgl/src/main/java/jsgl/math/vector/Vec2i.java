@@ -158,7 +158,6 @@ public class Vec2i implements Tuplei
 	 *
 	 * @param i
 	 *           - x = 0, y = 1
-	 * @throws IndexOutOfBoundsException
 	 */
 	@Override
 	public int get(int i) throws IndexOutOfBoundsException
@@ -197,7 +196,6 @@ public class Vec2i implements Tuplei
 	 *           - index of existing component for new first component
 	 * @param y
 	 *           - index of existing component for new second component
-	 * @return
 	 */
 	public Vec2i swizzle(int x, int y) throws IndexOutOfBoundsException
 	{

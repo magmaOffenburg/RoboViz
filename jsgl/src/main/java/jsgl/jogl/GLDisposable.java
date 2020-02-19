@@ -25,8 +25,8 @@ import com.jogamp.opengl.GL;
  */
 public interface GLDisposable {
 	/** Release any resources buffered in video memory */
-	public void dispose(GL gl);
+	void dispose(GL gl);
 
 	/** The object has released any resources buffered in video memory */
-	public boolean isDisposed();
+	boolean isDisposed();
 }

@@ -38,7 +38,7 @@ public class FrameBufferObject implements GLDisposable
 	private int id;
 	private Texture2D depthTexture;
 	private Texture2D[] colorTextures;
-	private List<GLDisposable> disposables = new ArrayList<GLDisposable>();
+	private List<GLDisposable> disposables = new ArrayList<>();
 	private int texWidth;
 	private int texHeight;
 
@@ -240,8 +240,6 @@ public class FrameBufferObject implements GLDisposable
 
 	/**
 	 * Sets viewport to match color texture dimensions.
-	 *
-	 * @param gl
 	 */
 	public void setViewport(GL gl)
 	{

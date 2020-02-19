@@ -86,13 +86,11 @@ public class Viewport
 
 	/**
 	 * Transforms normalized device coordinates to window coordinates
-	 * @param ndc
-	 * @return
 	 */
 	public Vec3f transform(Vec4f ndc, float near, float far)
 	{
-		float hW = w / 2;
-		float hH = h / 2;
+		float hW = w / 2.0f;
+		float hH = h / 2.0f;
 		float wx = hW * ndc.x + (this.x + hW);
 		float wy = hH * ndc.y + (this.y + hH);
 		//       float wz = (far - near) / 2 * ndc.z + (far + near) / 2;

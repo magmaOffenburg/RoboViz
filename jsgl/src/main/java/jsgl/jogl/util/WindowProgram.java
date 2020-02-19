@@ -29,11 +29,11 @@ import jsgl.jogl.view.Viewport;
  * @author Justin Stoecker
  */
 public interface WindowProgram extends GLEventListener {
-	public GLU getGLU();
-	public GLUT getGLUT();
-	public GLAutoDrawable getGLDrawable();
-	public Viewport getWindowDimensions();
+	GLU getGLU();
+	GLUT getGLUT();
+	GLAutoDrawable getGLDrawable();
+	Viewport getWindowDimensions();
 
-	public void update(GL gl);
-	public void render(GL gl);
+	void update(GL gl);
+	void render(GL gl);
 }

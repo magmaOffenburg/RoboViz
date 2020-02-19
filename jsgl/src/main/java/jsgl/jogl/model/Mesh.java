@@ -82,8 +82,8 @@ public class Mesh implements GLDisposable
 
 	public Mesh()
 	{
-		parts = new ArrayList<MeshPart>();
-		vertices = new ArrayList<MeshVertex>();
+		parts = new ArrayList<>();
+		vertices = new ArrayList<>();
 	}
 
 	public Mesh(ArrayList<MeshVertex> vertices)
@@ -134,8 +134,6 @@ public class Mesh implements GLDisposable
 	 * Initializes materials: load textures and sorts parts by transparency.
 	 * This does not need to be called if init() is used; it's only necessary to
 	 * call this if using immediate mode rendering.
-	 *
-	 * @param gl
 	 */
 	private void initMaterials(GL2 gl)
 	{
@@ -144,13 +142,10 @@ public class Mesh implements GLDisposable
 
 		// if there are any transparent parts, push them to end of list so they
 		// render last
-		Collections.sort(parts, new Comparator<MeshPart>() {
-			public int compare(MeshPart o1, MeshPart o2)
-			{
-				int o1t = o1.getMaterial().containsTransparency ? 1 : 0;
-				int o2t = o2.getMaterial().containsTransparency ? -1 : 0;
-				return o1t + o2t;
-			}
+		parts.sort((o1, o2) -> {
+			int o1t = o1.getMaterial().containsTransparency ? 1 : 0;
+			int o2t = o2.getMaterial().containsTransparency ? -1 : 0;
+			return o1t + o2t;
 		});
 	}
 
@@ -191,8 +186,6 @@ public class Mesh implements GLDisposable
 	 * <t>mesh.renderInstance(gl, modelMatrix[i]);<br>
 	 * mesh.unset(gl);
 	 * </code>
-	 *
-	 * @param gl
 	 */
 	public void renderInstance(GL2 gl, Matrix modelMatrix)
 	{

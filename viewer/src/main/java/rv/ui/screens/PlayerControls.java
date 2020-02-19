@@ -224,7 +224,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		frame.dispose();
 	}
 
-	class RoundButton extends JButton
+	static class RoundButton extends JButton
 	{
 		private Shape shape;
 		private Shape base;

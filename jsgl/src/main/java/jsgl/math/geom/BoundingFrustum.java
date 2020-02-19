@@ -71,8 +71,8 @@ public class BoundingFrustum
 
 		// check if any corners of the box are inside the frustum
 		Vec3f[] corners = box.getCorners();
-		for (int i = 0; i < corners.length; i++)
-			if (contains(corners[i]))
+		for (Vec3f corner : corners)
+			if (contains(corner))
 				return true;
 
 		// check if an edge intersects

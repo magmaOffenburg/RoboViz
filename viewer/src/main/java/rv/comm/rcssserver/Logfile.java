@@ -79,8 +79,6 @@ public class Logfile implements ILogfileReader
 
 	/**
 	 * Opens the file for buffered reading
-	 *
-	 * @throws IOException
 	 */
 	private void open() throws IOException
 	{

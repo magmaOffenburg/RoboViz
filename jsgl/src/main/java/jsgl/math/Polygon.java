@@ -31,8 +31,6 @@ public class Polygon
 	/**
 	 * Creates a face out of of vertices. Order them counter-clockwise for the
 	 * front / normal direction
-	 *
-	 * @param verts
 	 */
 	public Polygon(Vec3f[] verts)
 	{

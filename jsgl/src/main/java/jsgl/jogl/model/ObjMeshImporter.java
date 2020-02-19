@@ -121,13 +121,13 @@ public class ObjMeshImporter
 
 	private void initDataStructures()
 	{
-		v = new ArrayList<float[]>();
-		vn = new ArrayList<float[]>();
-		vt = new ArrayList<float[]>();
+		v = new ArrayList<>();
+		vn = new ArrayList<>();
+		vt = new ArrayList<>();
 		min = new Vec3f(Float.POSITIVE_INFINITY);
 		max = new Vec3f(Float.NEGATIVE_INFINITY);
 
-		vertIndexMap = new HashMap<String, Integer>();
+		vertIndexMap = new HashMap<>();
 
 		// If these directories are null, it is assumed that textures and
 		// materials are either not used or located in the same directory as
@@ -207,13 +207,13 @@ public class ObjMeshImporter
 				float[] vTexCoords = tI == null ? null : vt.get(tI[i]);
 				MeshVertex vertex = new MeshVertex(vPos, vNormal, vTexCoords);
 
-				vertIndex = new Integer(mesh.vertices.size());
+				vertIndex = mesh.vertices.size();
 				vertIndexMap.put(key, vertIndex);
 				mesh.addVertex(vertex);
 			}
 
 			// add the vertex index to current mesh face
-			meshFaceIndices[i] = vertIndex.intValue();
+			meshFaceIndices[i] = vertIndex;
 		}
 
 		curMeshPart.addFace(new MeshFace(meshFaceIndices));

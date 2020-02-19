@@ -57,7 +57,7 @@ public class Configuration
 		return result;
 	}
 
-	public class Graphics
+	public static class Graphics
 	{
 		public boolean useBloom = false;
 		public boolean usePhong = false;
@@ -130,7 +130,7 @@ public class Configuration
 		}
 	}
 
-	public class OverlayVisibility
+	public static class OverlayVisibility
 	{
 		public boolean serverSpeed = true;
 		public boolean foulOverlay = true;
@@ -161,7 +161,7 @@ public class Configuration
 		}
 	}
 
-	public class Networking
+	public static class Networking
 	{
 		public boolean autoConnect = true;
 		public String serverHost = "localhost";
@@ -217,7 +217,7 @@ public class Configuration
 		}
 	}
 
-	public class General
+	public static class General
 	{
 		public boolean recordLogs = false;
 		public String logfileDirectory = null;
@@ -239,7 +239,7 @@ public class Configuration
 		}
 	}
 
-	public class TeamColors
+	public static class TeamColors
 	{
 		public final HashMap<String, Color> colorByTeamName = new HashMap<>();
 		public Color defaultLeftColor = new Color(0x2626ff);

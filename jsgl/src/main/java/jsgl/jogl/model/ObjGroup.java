@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class ObjGroup
 {
 	String name;
-	ArrayList<ObjModel.Face> faces = new ArrayList<ObjModel.Face>();
+	ArrayList<ObjModel.Face> faces = new ArrayList<>();
 
 	public ObjGroup(String name)
 	{

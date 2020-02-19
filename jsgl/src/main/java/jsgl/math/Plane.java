@@ -79,7 +79,7 @@ public class Plane
 	public ArrayList<Vec3f> intersect(BoundingBox b)
 	{
 		Line[] boxEdges = b.getEdges();
-		ArrayList<Vec3f> pts = new ArrayList<Vec3f>(6);
+		ArrayList<Vec3f> pts = new ArrayList<>(6);
 
 		// line / plane intersection for every edge of box
 		// max of 6 intersections

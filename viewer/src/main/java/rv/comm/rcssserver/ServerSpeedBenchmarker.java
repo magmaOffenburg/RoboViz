@@ -42,7 +42,7 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 			return "---";
 		}
 
-		return Integer.toString(Math.round(100 * serverSpeed)) + "%";
+		return Math.round(100 * serverSpeed) + "%";
 	}
 
 	private void updateServerSpeed(GameState gs)
@@ -91,7 +91,7 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 
 		float sumDeltas = 0;
 
-		Float[] deltas = serverMsgDeltas.values().toArray(new Float[serverMsgDeltas.size()]);
+		Float[] deltas = serverMsgDeltas.values().toArray(new Float[0]);
 		for (int i = 1; i < deltas.length; i++) {
 			float delta = deltas[i];
 			if (delta > 0) {

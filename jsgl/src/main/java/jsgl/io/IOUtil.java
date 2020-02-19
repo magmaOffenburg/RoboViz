@@ -34,7 +34,6 @@ public class IOUtil
 	 * @param ext
 	 *           - extension for desired file (ex. .hdr will return
 	 *           C:\Users\Justin\hello.hdr)
-	 * @return
 	 */
 	public static File getFileByExt(File file, String ext)
 	{

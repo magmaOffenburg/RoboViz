@@ -121,10 +121,10 @@ public class Icosahedron
 	public void render(GL2 gl)
 	{
 		gl.glBegin(GL.GL_TRIANGLES);
-		for (int i = 0; i < TRI_VERTS.length; i++) {
-			gl.glVertex3fv(verts[TRI_VERTS[i][0]], 0);
-			gl.glVertex3fv(verts[TRI_VERTS[i][1]], 0);
-			gl.glVertex3fv(verts[TRI_VERTS[i][2]], 0);
+		for (int[] triVert : TRI_VERTS) {
+			gl.glVertex3fv(verts[triVert[0]], 0);
+			gl.glVertex3fv(verts[triVert[1]], 0);
+			gl.glVertex3fv(verts[triVert[2]], 0);
 		}
 		gl.glEnd();
 	}
@@ -172,9 +172,9 @@ public class Icosahedron
 	{
 		gl.glColor3f(0.5f, 0.5f, 0.5f);
 		gl.glBegin(GL.GL_LINES);
-		for (int i = 0; i < EDGE_VERTS.length; i++) {
-			gl.glVertex3fv(verts[EDGE_VERTS[i][0]], 0);
-			gl.glVertex3fv(verts[EDGE_VERTS[i][1]], 0);
+		for (int[] edgeVert : EDGE_VERTS) {
+			gl.glVertex3fv(verts[edgeVert[0]], 0);
+			gl.glVertex3fv(verts[edgeVert[1]], 0);
 		}
 		// gl.glVertex3fv(verts[triangles[face][0]], 0);
 		// gl.glVertex3fv(verts[triangles[face][1]], 0);

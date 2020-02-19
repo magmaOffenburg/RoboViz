@@ -64,7 +64,7 @@ public class MeshPart implements GLDisposable
 
 	public MeshPart()
 	{
-		faces = new ArrayList<MeshFace>();
+		faces = new ArrayList<>();
 	}
 
 	public MeshPart(ArrayList<MeshFace> faces)
@@ -95,9 +95,12 @@ public class MeshPart implements GLDisposable
 		// 16 bits switch to 32-bit indices
 		if (indexType == GL.GL_UNSIGNED_SHORT) {
 			int[] indices = face.getVertIndices();
-			for (int i = 0; i < indices.length; i++)
-				if (indices[i] > USHORT_MAX)
+			for (int index : indices) {
+				if (index > USHORT_MAX) {
 					indexType = GL2ES2.GL_UNSIGNED_INT;
+					break;
+				}
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 public interface ILogfileReader {
-	public interface LogfileListener {
+	interface LogfileListener {
 		void haveDrawCmds();
 	}
 
@@ -27,8 +27,6 @@ public interface ILogfileReader {
 
 	/**
 	 * Switches back to the start of the logfile.
-	 *
-	 * @throws IOException
 	 */
 	void rewind() throws IOException;
 

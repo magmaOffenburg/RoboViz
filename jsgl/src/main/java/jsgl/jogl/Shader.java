@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.IntBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
@@ -56,8 +56,6 @@ public class Shader implements GLDisposable
 
 	/**
 	 * Returns an array of lines containing the source code of the shader
-	 *
-	 * @return
 	 */
 	public String[] getSourceLines()
 	{
@@ -94,15 +92,7 @@ public class Shader implements GLDisposable
 		int id = gl.glCreateShader(type);
 
 		String[] src = copySourceToArray(file, is);
-		if (src == null) {
-			gl.glDeleteShader(id);
-			return null;
-		}
 		IntBuffer lineLengths = getLineLengths(src);
-		if (lineLengths == null) {
-			gl.glDeleteShader(id);
-			return null;
-		}
 
 		gl.glShaderSource(id, src.length, src, lineLengths);
 		gl.glCompileShader(id);
@@ -117,7 +107,7 @@ public class Shader implements GLDisposable
 
 	private static String[] copySourceToArray(String fileName, InputStream is)
 	{
-		ArrayList<String> src = new ArrayList<String>();
+		ArrayList<String> src = new ArrayList<>();
 		BufferedReader in = new BufferedReader(new InputStreamReader(is));
 
 		try {
@@ -129,14 +119,14 @@ public class Shader implements GLDisposable
 			System.out.printf("Error creating shader (%s): could not copy source.\n%s\n", fileName, e.getMessage());
 		}
 
-		return src.toArray(new String[src.size()]);
+		return src.toArray(new String[0]);
 	}
 
 	private static IntBuffer getLineLengths(String[] src)
 	{
 		IntBuffer buf = Buffers.newDirectIntBuffer(src.length);
-		for (int i = 0; i < src.length; i++)
-			buf.put(src[i].length());
+		for (String s : src)
+			buf.put(s.length());
 		buf.rewind();
 		return buf;
 	}
@@ -152,7 +142,7 @@ public class Shader implements GLDisposable
 			int infoLogLength = iLogLengthBuf.get();
 			ByteBuffer infoLog = Buffers.newDirectByteBuffer(infoLogLength);
 			gl.glGetShaderInfoLog(id, infoLogLength, null, infoLog);
-			CharBuffer info = Charset.forName("US-ASCII").decode(infoLog);
+			CharBuffer info = StandardCharsets.US_ASCII.decode(infoLog);
 
 			System.err.printf("Error compiling shader (%s):\n%s\n", file, info.toString());
 			return false;

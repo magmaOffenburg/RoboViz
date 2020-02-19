@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 public class ObjMaterialLibrary
 {
-	protected ArrayList<ObjMaterial> materials = new ArrayList<ObjMaterial>();
+	protected ArrayList<ObjMaterial> materials = new ArrayList<>();
 
 	public ArrayList<ObjMaterial> getMaterials()
 	{

@@ -202,7 +202,6 @@ public class FPCamera extends Camera3D implements KeyListener, MouseListener, Mo
 
 	/**
 	 * Centers an object at position 'target' in front of the camera
-	 * @param target
 	 */
 	public void focus(Vec3f target)
 	{

@@ -23,7 +23,8 @@ import rv.world.objects.Agent;
 public class RobotVantageThirdPerson extends RobotVantageBase
 {
 	private static final int CAMERA_AVERAGE = 20;
-	private Vec3f avgPos[], avgForward[];
+	private Vec3f[] avgPos;
+	private Vec3f[] avgForward;
 	private int ct = 0;
 	private Vec3f lastAvgF = new Vec3f(0);
 

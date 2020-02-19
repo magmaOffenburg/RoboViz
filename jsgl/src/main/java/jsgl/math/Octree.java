@@ -70,10 +70,10 @@ public class Octree
 		// determines which triangles intersect a bounding box
 		private List<Triangle> checkTriangles(BoundingBox box, List<Triangle> triangles)
 		{
-			List<Triangle> contained = new ArrayList<Triangle>();
-			for (int i = 0; i < triangles.size(); i++)
-				if (box.intersects(triangles.get(i)))
-					contained.add(triangles.get(i));
+			List<Triangle> contained = new ArrayList<>();
+			for (Triangle triangle : triangles)
+				if (box.intersects(triangle))
+					contained.add(triangle);
 			return contained;
 		}
 
@@ -86,14 +86,14 @@ public class Octree
 
 			if (children == null) {
 				// this is a leaf node, so check the triangles
-				List<Vec3f> hits = new ArrayList<Vec3f>();
-				for (int i = 0; i < triangles.size(); i++) {
+				List<Vec3f> hits = new ArrayList<>();
+				for (Triangle triangle : triangles) {
 					// if the triangle is marked, ignore it; otherwise, mark it
-					if (checked.contains(triangles.get(i)))
+					if (checked.contains(triangle))
 						continue;
-					checked.add(triangles.get(i));
+					checked.add(triangle);
 
-					Vec3f x = triangles.get(i).intersect(r);
+					Vec3f x = triangle.intersect(r);
 					if (x != null)
 						hits.add(x);
 				}
@@ -101,7 +101,7 @@ public class Octree
 				return Maths.getNearest(r.getPosition(), hits);
 			} else {
 				// not a leaf, so check children
-				List<Vec3f> hits = new ArrayList<Vec3f>();
+				List<Vec3f> hits = new ArrayList<>();
 				for (int i = 0; i < 8; i++) {
 					Vec3f x = children[i].intersect(r);
 					if (x != null)
@@ -116,8 +116,8 @@ public class Octree
 		{
 			bounds.render(gl);
 			if (children != null) {
-				for (int i = 0; i < children.length; i++)
-					children[i].render(gl);
+				for (Node child : children)
+					child.render(gl);
 			}
 		}
 	}
@@ -143,15 +143,15 @@ public class Octree
 	public Octree(List<Triangle> triangles, int maxNodeSize)
 	{
 		MAX_NODE_SIZE = maxNodeSize;
-		checked = new HashSet<Triangle>();
+		checked = new HashSet<>();
 
 		Vec3f min = new Vec3f(Float.MAX_VALUE);
 		Vec3f max = new Vec3f(Float.MIN_VALUE);
-		for (int i = 0; i < triangles.size(); i++) {
+		for (Triangle triangle : triangles) {
 			for (int j = 0; j < 3; j++) {
-				float x = triangles.get(i).v[j].x; // .getVertX(j);
-				float y = triangles.get(i).v[j].y; // getVertY(j);
-				float z = triangles.get(i).v[j].z; // getVertZ(j);
+				float x = triangle.v[j].x; // .getVertX(j);
+				float y = triangle.v[j].y; // getVertY(j);
+				float z = triangle.v[j].z; // getVertZ(j);
 
 				if (x < min.x)
 					min.x = x;

@@ -9,7 +9,7 @@ import rv.world.WorldModel;
 
 public class LogAnalyzerThread extends Thread
 {
-	public class Goal
+	public static class Goal
 	{
 		public final int frame;
 		public final int viewFrame;

@@ -124,7 +124,6 @@ public class Texture2D implements GLDisposable
 	 * Sets a parameter of actively bound texture. Equivalent to using
 	 * glTexParameteri(GL_TEXTURE_2D, pname, value).
 	 *
-	 * @param gl
 	 * @param pname
 	 *            - GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER,
 	 *            GL_TEXTURE_MIN_LOD, GL_TEXTURE_MAX_LOD, GL_TEXTURE_BASE_LEVEL,
@@ -157,7 +156,6 @@ public class Texture2D implements GLDisposable
 	 * Sets a parameter of actively bound texture. Equivalent to using
 	 * glTexParameterf(GL_TEXTURE_2D, pname, value).
 	 *
-	 * @param gl
 	 * @param pname
 	 *            - GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER,
 	 *            GL_TEXTURE_MIN_LOD, GL_TEXTURE_MAX_LOD, GL_TEXTURE_BASE_LEVEL,
@@ -324,7 +322,6 @@ public class Texture2D implements GLDisposable
 	/**
 	 * Creates a 2D texture.
 	 *
-	 * @param gl
 	 * @param w
 	 *            - texture width
 	 * @param h
@@ -335,7 +332,6 @@ public class Texture2D implements GLDisposable
 	 *            - format for texel values uploaded to texture
 	 * @param bytesPerPixel
 	 *            - number of bytes per texel uploaded to texture
-	 * @return
 	 */
 	public static Texture2D create(GL gl, int w, int h, int internalFormat, int format, int type, int bytesPerPixel)
 	{

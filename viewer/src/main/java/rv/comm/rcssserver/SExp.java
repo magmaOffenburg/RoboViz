@@ -103,7 +103,6 @@ public class SExp
 	 * @param text
 	 *            - text to parse
 	 * @return the list of expressions, or null if there are none
-	 * @throws ParseException
 	 */
 	public static ArrayList<SExp> parse(String text) throws ParseException
 	{

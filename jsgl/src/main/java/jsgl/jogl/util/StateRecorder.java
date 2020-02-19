@@ -42,17 +42,17 @@ public class StateRecorder
 	 */
 	public interface FrameData {
 		/** Interpolation between current frame data and next frame data */
-		public FrameData interpolate(FrameData next, float s);
+		FrameData interpolate(FrameData next, float s);
 
 		/** Parse values from a line */
-		public void parseValues(String[] vals);
+		void parseValues(String[] vals);
 
 		/** Returns all values in a space-separated string */
-		public String getValues();
+		String getValues();
 	}
 
 	/** A snapshot of data */
-	public class KeyFrame
+	public static class KeyFrame
 	{
 		public FrameData data;
 		public float transitionTime; // time to transition to frame (in ms)
@@ -123,7 +123,7 @@ public class StateRecorder
 	{
 		this.msPerFrame = msPerFrame;
 		this.MAX_FRAMES = maxFrames;
-		keyFrames = new ArrayList<KeyFrame>(MAX_FRAMES / 4);
+		keyFrames = new ArrayList<>(MAX_FRAMES / 4);
 	}
 
 	/** Starts playing the recorded path */
@@ -197,12 +197,6 @@ public class StateRecorder
 
 	/**
 	 * Loads a recording from a specified file with a given FrameData class type
-	 *
-	 * @param f
-	 * @param frameDataClass
-	 * @throws IOException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
 	 */
 	public void load(File f, Class<?> frameDataClass) throws IOException, InstantiationException, IllegalAccessException
 	{
@@ -222,9 +216,6 @@ public class StateRecorder
 
 	/**
 	 * Saves the recording to a specified file
-	 *
-	 * @param f
-	 * @throws IOException
 	 */
 	public void save(File f) throws IOException
 	{

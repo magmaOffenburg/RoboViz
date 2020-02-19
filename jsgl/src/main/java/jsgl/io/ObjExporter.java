@@ -87,7 +87,7 @@ public class ObjExporter
 	}
 
 	/** Writes geometry data to file in a thread */
-	private class DataWriteThread extends Thread
+	private static class DataWriteThread extends Thread
 	{
 		private File file;
 		private Data data;

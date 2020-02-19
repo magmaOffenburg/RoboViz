@@ -70,8 +70,6 @@ public class LogfileReaderRandomAccess implements ILogfileReader
 
 	/**
 	 * Opens the file for buffered reading
-	 *
-	 * @throws FileNotFoundException
 	 */
 	private void open() throws IOException
 	{

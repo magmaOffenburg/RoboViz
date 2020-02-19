@@ -99,12 +99,9 @@ public abstract class AWTWindowProgram implements WindowProgram
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
-				new Thread(new Runnable() {
-					public void run()
-					{
-						animator.stop();
-						System.exit(0);
-					}
+				new Thread(() -> {
+					animator.stop();
+					System.exit(0);
 				}).start();
 			}
 		});

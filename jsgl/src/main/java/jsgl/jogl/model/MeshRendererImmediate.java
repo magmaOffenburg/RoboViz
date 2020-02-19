@@ -49,8 +49,8 @@ public class MeshRendererImmediate implements MeshRenderer
 			ArrayList<MeshFace> faces = part.getFaces();
 			for (MeshFace face : faces) {
 				int[] indices = face.getVertIndices();
-				for (int i = 0; i < indices.length; i++) {
-					MeshVertex v = mesh.vertices.get(indices[i]);
+				for (int index : indices) {
+					MeshVertex v = mesh.vertices.get(index);
 					float[] vn = v.getNormal();
 					float[] vp = v.getPosition();
 					float[] vt = v.getTexCoords();

@@ -28,7 +28,6 @@ import java.awt.event.KeyListener;
 import jsgl.jogl.view.FPCamera;
 import jsgl.math.vector.Vec2f;
 import jsgl.math.vector.Vec3f;
-import rv.Globals;
 import rv.Viewer;
 import rv.ui.screens.LiveGameScreen;
 import rv.ui.screens.LogfileModeScreen;

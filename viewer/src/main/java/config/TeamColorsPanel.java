@@ -16,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -135,7 +133,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 		}
 	}
 
-	private class TeamColorsTableModel extends DefaultTableModel
+	private static class TeamColorsTableModel extends DefaultTableModel
 	{
 		@Override
 		public Class getColumnClass(int columnIndex)
@@ -148,7 +146,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 	 * @see http ://www.java2s.com/Code/Java/Swing-JFC/
 	 *      Tablewithacustomcellrendererandeditorforthecolordata .htm
 	 */
-	private class ColorRenderer extends JLabel implements TableCellRenderer
+	private static class ColorRenderer extends JLabel implements TableCellRenderer
 	{
 		Border unselectedBorder = null;
 		Border selectedBorder = null;

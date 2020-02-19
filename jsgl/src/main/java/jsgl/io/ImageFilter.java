@@ -39,8 +39,8 @@ public class ImageFilter extends FileFilter
 		if (extension == null)
 			return false;
 
-		for (int i = 0; i < fileTypes.length; i++)
-			if (extension.equals(fileTypes[i]))
+		for (String fileType : fileTypes)
+			if (extension.equals(fileType))
 				return true;
 
 		return false;

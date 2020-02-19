@@ -86,8 +86,6 @@ public class BoundingBox implements Serializable
 	/**
 	 * Returns corner vertices of box in counter-clockwise order from bottom to
 	 * top first
-	 *
-	 * @return
 	 */
 	public Vec3f[] getCorners()
 	{
@@ -117,7 +115,6 @@ public class BoundingBox implements Serializable
 	 *
 	 * @param b
 	 *            - a second bounding box
-	 * @return
 	 */
 	public boolean intersects(BoundingBox b)
 	{
@@ -129,7 +126,6 @@ public class BoundingBox implements Serializable
 	 * Checks for intersection with a triangle
 	 *
 	 * @see http://www.cs.lth.se/home/Tomas_Akenine_Moller/code/tribox3.txt
-	 * @return
 	 */
 	public boolean intersects(Triangle t)
 	{
@@ -392,7 +388,7 @@ public class BoundingBox implements Serializable
 				7,
 		};
 
-		ArrayList<Vec3f> intersections = new ArrayList<Vec3f>();
+		ArrayList<Vec3f> intersections = new ArrayList<>();
 
 		Vec3f[] corners = getCorners();
 
@@ -426,7 +422,7 @@ public class BoundingBox implements Serializable
 
 		if (intersections.size() == 0)
 			return null;
-		return intersections.toArray(new Vec3f[intersections.size()]);
+		return intersections.toArray(new Vec3f[0]);
 	}
 
 	public void render(GL2 gl)

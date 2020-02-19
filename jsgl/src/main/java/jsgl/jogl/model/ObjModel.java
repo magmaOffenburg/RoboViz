@@ -55,9 +55,9 @@ public class ObjModel implements GLDisposable
 	 */
 	public static class Face
 	{
-		int vertIndices[] = null;
-		int normalIndices[] = null;
-		int texCoordIndices[] = null;
+		int[] vertIndices = null;
+		int[] normalIndices = null;
+		int[] texCoordIndices = null;
 		ObjMaterial material;
 
 		public Face(String line, ObjMaterial material)
@@ -130,11 +130,11 @@ public class ObjModel implements GLDisposable
 		}
 	}
 
-	private ArrayList<ObjGroup> groups = new ArrayList<ObjGroup>();
+	private ArrayList<ObjGroup> groups = new ArrayList<>();
 	private BoundingBox bounds;
-	private ArrayList<float[]> verts = new ArrayList<float[]>();
-	private ArrayList<float[]> normals = new ArrayList<float[]>();
-	private ArrayList<float[]> texCoords = new ArrayList<float[]>();
+	private ArrayList<float[]> verts = new ArrayList<>();
+	private ArrayList<float[]> normals = new ArrayList<>();
+	private ArrayList<float[]> texCoords = new ArrayList<>();
 	private ObjMaterialLibrary mtllib = null;
 	private boolean disposed = false;
 

@@ -105,11 +105,11 @@ public class Maths
 	{
 		float minD = 0;
 		Vec3f nearest = null;
-		for (int i = 0; i < list.size(); i++) {
-			float d = list.get(i).minus(a).lengthSquared();
+		for (Vec3f vec3f : list) {
+			float d = vec3f.minus(a).lengthSquared();
 			if (nearest == null || d < minD) {
 				minD = d;
-				nearest = list.get(i);
+				nearest = vec3f;
 			}
 		}
 		return nearest;

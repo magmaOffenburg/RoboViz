@@ -175,7 +175,6 @@ public class Vec4f implements Tuplef
 	 *
 	 * @param i
 	 *           - x = 0, y = 1, z = 2, w = 3
-	 * @throws IndexOutOfBoundsException
 	 */
 	@Override
 	public float get(int i) throws IndexOutOfBoundsException
@@ -228,7 +227,6 @@ public class Vec4f implements Tuplef
 	 *           - index of existing component for new third component
 	 * @param w
 	 *           - index of existing component for new fourth component
-	 * @return
 	 */
 	public Vec4f swizzle(int x, int y, int z, int w) throws IndexOutOfBoundsException
 	{

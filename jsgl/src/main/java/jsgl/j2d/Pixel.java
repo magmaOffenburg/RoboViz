@@ -36,8 +36,6 @@ public class Pixel
 	/**
 	 * Construct pixel from an integer whose bits are distributed such that each
 	 * channel gets 8 bits. The order must be alpha, red, green, and blue
-	 *
-	 * @param intARGB
 	 */
 	public Pixel(int intARGB)
 	{
@@ -60,8 +58,6 @@ public class Pixel
 	/**
 	 * Packs alpha, red, green, and blue color channels into a single 32-bit
 	 * integer
-	 *
-	 * @return
 	 */
 	public int packValue()
 	{

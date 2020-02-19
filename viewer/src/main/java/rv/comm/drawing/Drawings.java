@@ -37,7 +37,7 @@ import rv.comm.drawing.shapes.Shape;
 public class Drawings
 {
 	/** Event object launched when the list of sets is modified */
-	public class SetListChangeEvent extends EventObject
+	public static class SetListChangeEvent extends EventObject
 	{
 		private final CopyOnWriteArrayList<BufferedSet<Shape>> shapeSets;
 		private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets;

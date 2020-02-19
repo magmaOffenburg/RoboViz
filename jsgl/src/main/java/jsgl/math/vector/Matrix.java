@@ -267,7 +267,6 @@ public class Matrix
 	 *            - distance from eye to near clipping plane
 	 * @param far
 	 *            - distance from eye to far clipping plane
-	 * @return
 	 */
 	public static Matrix createPerspective(
 			double left, double right, double bottom, double top, double near, double far)
@@ -315,7 +314,6 @@ public class Matrix
 	 *            - distance from eye to near clipping plane
 	 * @param far
 	 *            - distance from eye to far clipping plane
-	 * @return
 	 */
 	public static Matrix createPerspective(double fovY, double aspect, double near, double far)
 	{
@@ -343,7 +341,6 @@ public class Matrix
 	 *            - distance from eye to near clipping plane
 	 * @param far
 	 *            - distance from eye to far clipping plane
-	 * @return
 	 */
 	public static Matrix createOrtho(double left, double right, double bottom, double top, double near, double far)
 	{
@@ -373,7 +370,6 @@ public class Matrix
 	 *            - distance from eye to top clipping plane at near depth
 	 * @param bottom
 	 *            - distance from eye to bottom clipping plane at near depth
-	 * @return
 	 */
 	public static Matrix createOrtho2D(double left, double right, double bottom, double top)
 	{
@@ -383,8 +379,6 @@ public class Matrix
 	/**
 	 * Creates a viewing matrix derived from an eye point, a reference point
 	 * indicating the center of the scene, and an UP vector.
-	 *
-	 * @return
 	 */
 	public static Matrix createLookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY,
 			double centerZ, double upX, double upY, double upZ)

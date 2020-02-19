@@ -167,7 +167,6 @@ public class TarBz2ZipUtil
 	 * Creates the writer as zip, bz2 or unpacked stream
 	 *
 	 * @return the writer used for sequential reading
-	 * @throws IOException
 	 */
 	public static PrintWriter createPrintWriter(File file) throws IOException
 	{

@@ -19,11 +19,11 @@ package jsgl.math;
 /** A set of n floats */
 public interface Tuplef {
 	/** Returns the numbers of elements in the tuple */
-	public int getN();
+	int getN();
 
 	/** Returns the i-th value in the tuple */
-	public float get(int i);
+	float get(int i);
 
 	/** Returns an array of the values from the tuple */
-	public float[] getVals();
+	float[] getVals();
 }

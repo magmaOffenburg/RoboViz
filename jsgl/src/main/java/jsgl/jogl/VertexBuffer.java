@@ -34,7 +34,7 @@ import jsgl.jogl.verts.Vertex;
 public class VertexBuffer implements GLDisposable
 {
 	/** Hint for how the buffer's memory should be allocated */
-	public static enum BufferUsage {
+	public enum BufferUsage {
 		/** GL_STATIC_DRAW: no changes to buffered data */
 		STATIC(GL.GL_STATIC_DRAW),
 
@@ -78,8 +78,8 @@ public class VertexBuffer implements GLDisposable
 		int numBytes = vertices[0].getSize() * vertices.length;
 		int elements = vertices[0].getSize() / (Float.SIZE / 8);
 		FloatBuffer buf = Buffers.newDirectFloatBuffer(vertices.length * elements);
-		for (int i = 0; i < vertices.length; i++)
-			buf.put(vertices[i].getElements());
+		for (Vertex vertex : vertices)
+			buf.put(vertex.getElements());
 		buf.rewind();
 		setData(buf, numBytes);
 	}

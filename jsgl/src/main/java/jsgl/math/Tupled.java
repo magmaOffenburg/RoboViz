@@ -19,11 +19,11 @@ package jsgl.math;
 /** A set of n doubles */
 public interface Tupled {
 	/** Returns the numbers of elements in the tuple */
-	public int getN();
+	int getN();
 
 	/** Returns the i-th value in the tuple */
-	public double get(int i);
+	double get(int i);
 
 	/** Returns an array of the values from the tuple */
-	public double[] getVals();
+	double[] getVals();
 }

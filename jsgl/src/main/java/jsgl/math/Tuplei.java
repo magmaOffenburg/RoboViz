@@ -18,11 +18,11 @@ package jsgl.math;
 
 public interface Tuplei {
 	/** Returns the numbers of elements in the tuple */
-	public int getN();
+	int getN();
 
 	/** Returns the i-th value in the tuple */
-	public int get(int i);
+	int get(int i);
 
 	/** Returns an array of the values from the tuple */
-	public int[] getVals();
+	int[] getVals();
 }

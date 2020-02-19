@@ -62,10 +62,10 @@ public class GeodesicSphere
 
 		private void addIcoVerts()
 		{
-			for (int i = 0; i < icoVerts.length; i++) {
-				float x = icoVerts[i][0];
-				float y = icoVerts[i][1];
-				float z = icoVerts[i][2];
+			for (float[] vert : icoVerts) {
+				float x = vert[0];
+				float y = vert[1];
+				float z = vert[2];
 				float d = (float) (radius / Math.sqrt(x * x + y * y + z * z));
 				verts[vertIndex++] = new float[] {x * d, y * d, z * d};
 			}
@@ -74,10 +74,10 @@ public class GeodesicSphere
 		private void addEdgeVerts()
 		{
 			float len = level + 1;
-			for (int edge = 0; edge < icoEdgeVerts.length; edge++) {
+			for (int[] edge : icoEdgeVerts) {
 				// the vertex positions for current edge
-				float[] a = icoVerts[icoEdgeVerts[edge][0]];
-				float[] b = icoVerts[icoEdgeVerts[edge][1]];
+				float[] a = icoVerts[edge[0]];
+				float[] b = icoVerts[edge[1]];
 
 				// vector to place vertices evenly along edge
 				float[] step = {(b[0] - a[0]) / len, (b[1] - a[1]) / len, (b[2] - a[2]) / len};
@@ -95,10 +95,10 @@ public class GeodesicSphere
 		private void addInnerVerts()
 		{
 			float len = level + 1;
-			for (int tri = 0; tri < icoTriVerts.length; tri++) {
-				float[] a = icoVerts[icoTriVerts[tri][0]];
-				float[] b = icoVerts[icoTriVerts[tri][1]];
-				float[] c = icoVerts[icoTriVerts[tri][2]];
+			for (int[] vert : icoTriVerts) {
+				float[] a = icoVerts[vert[0]];
+				float[] b = icoVerts[vert[1]];
+				float[] c = icoVerts[vert[2]];
 
 				float[] down = {(b[0] - a[0]) / len, (b[1] - a[1]) / len, (b[2] - a[2]) / len};
 				float[] right = {(c[0] - b[0]) / len, (c[1] - b[1]) / len, (c[2] - b[2]) / len};
@@ -226,9 +226,9 @@ public class GeodesicSphere
 	public void render(GL2 gl)
 	{
 		gl.glBegin(GL.GL_TRIANGLES);
-		for (int i = 0; i < triangles.length; i++) {
+		for (int[] triangle : triangles) {
 			for (int j = 0; j < 3; j++) {
-				Vec3f v = new Vec3f(verts[triangles[i][j]]);
+				Vec3f v = new Vec3f(verts[triangle[j]]);
 				gl.glNormal3fv(v.normalize().getVals(), 0);
 				gl.glVertex3fv(v.getVals(), 0);
 			}
@@ -241,8 +241,8 @@ public class GeodesicSphere
 		gl.glColor3f(0, 0, 1);
 		gl.glPointSize(6);
 		gl.glBegin(GL.GL_POINTS);
-		for (int i = 0; i < verts.length; i++) {
-			gl.glVertex3fv(verts[i], 0);
+		for (float[] vert : verts) {
+			gl.glVertex3fv(vert, 0);
 		}
 		gl.glEnd();
 		gl.glPointSize(1);

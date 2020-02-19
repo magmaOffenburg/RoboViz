@@ -53,14 +53,10 @@ public class ShaderWidgetParser
 			this.uniformName = uName;
 			final JSlider slider = new JSlider((int) (min * 10.0f), (int) (max * 10.0f));
 			slider.setValue((int) (defaultValue * 10.0f));
-			slider.addChangeListener(new ChangeListener() {
-				@Override
-				public void stateChanged(ChangeEvent e)
-				{
-					if (uVariable != null) {
-						valueChanged = true;
-						((Uniform.Float) uVariable).setValue(slider.getValue() / 10.0f);
-					}
+			slider.addChangeListener(e -> {
+				if (uVariable != null) {
+					valueChanged = true;
+					((Uniform.Float) uVariable).setValue(slider.getValue() / 10.0f);
 				}
 			});
 			this.add(slider);
@@ -93,7 +89,7 @@ public class ShaderWidgetParser
 		// go through each line in shader source code and check for ui widget
 		// declarations that follow correct format:
 		// ui_widget: <type>, <uniform declaration>, <widget name>, <param1>, ...
-		ArrayList<ShaderWidget> widgets = new ArrayList<ShaderWidget>();
+		ArrayList<ShaderWidget> widgets = new ArrayList<>();
 		for (String line : src) {
 			int paramsIndex;
 			if ((paramsIndex = line.indexOf(WIDGET_SEQ)) != -1) {
