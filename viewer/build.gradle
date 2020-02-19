@@ -29,11 +29,13 @@ shadowJar {
 
 task runConfig(type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
+	group = 'application'
 	main = 'config.RVConfigure'
 }
 
 task runLogMode(type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
+	group = 'application'
 	main = 'rv.Viewer'
 	args = ["--logMode"]
 }
