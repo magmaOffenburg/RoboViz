@@ -19,7 +19,7 @@ package rv.ui.screens;
 import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;

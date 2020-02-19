@@ -16,8 +16,8 @@
 
 package rv.ui;
 
-import roboviz.jsgl.math.vector.Vec2f;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.vector.Vec2f;
+import jsgl.math.vector.Vec3f;
 
 public class CameraSetting
 {

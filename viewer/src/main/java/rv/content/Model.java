@@ -22,10 +22,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import roboviz.jsgl.jogl.model.Mesh;
-import roboviz.jsgl.jogl.model.MeshPart;
-import roboviz.jsgl.jogl.model.ObjMaterial;
-import roboviz.jsgl.jogl.model.ObjMeshImporter;
+import jsgl.jogl.model.Mesh;
+import jsgl.jogl.model.MeshPart;
+import jsgl.jogl.model.ObjMaterial;
+import jsgl.jogl.model.ObjMeshImporter;
 import rv.ui.DebugInfo;
 
 /**

@@ -17,9 +17,9 @@
 package rv.world;
 
 import com.jogamp.opengl.GL2;
-import roboviz.jsgl.math.BoundingBox;
-import roboviz.jsgl.math.vector.Matrix;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.BoundingBox;
+import jsgl.math.vector.Matrix;
+import jsgl.math.vector.Vec3f;
 import rv.content.Model;
 
 /**

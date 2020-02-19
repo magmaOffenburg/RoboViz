@@ -22,7 +22,7 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Font;
 import java.util.Locale;
-import roboviz.jsgl.jogl.view.Viewport;
+import jsgl.jogl.view.Viewport;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;

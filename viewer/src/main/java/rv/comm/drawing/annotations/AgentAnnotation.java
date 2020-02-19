@@ -17,7 +17,7 @@
 package rv.comm.drawing.annotations;
 
 import java.nio.ByteBuffer;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.vector.Vec3f;
 import rv.comm.drawing.commands.Command;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;

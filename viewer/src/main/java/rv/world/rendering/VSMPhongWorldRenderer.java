@@ -20,7 +20,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import java.util.ArrayList;
 import java.util.List;
-import roboviz.jsgl.math.vector.Matrix;
+import jsgl.math.vector.Matrix;
 import rv.Configuration.Graphics;
 import rv.Renderer;
 import rv.comm.drawing.Drawings;

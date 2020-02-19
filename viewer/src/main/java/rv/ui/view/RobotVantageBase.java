@@ -4,9 +4,9 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
-import roboviz.jsgl.jogl.view.Camera3D;
-import roboviz.jsgl.jogl.view.Viewport;
-import roboviz.jsgl.math.vector.Matrix;
+import jsgl.jogl.view.Camera3D;
+import jsgl.jogl.view.Viewport;
+import jsgl.math.vector.Matrix;
 import rv.world.objects.Agent;
 
 public abstract class RobotVantageBase extends Camera3D implements Agent.ChangeListener

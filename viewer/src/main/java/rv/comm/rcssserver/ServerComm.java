@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Timer;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
 import rv.comm.drawing.DrawComm.DrawCommListener;

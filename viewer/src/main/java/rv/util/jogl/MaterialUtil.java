@@ -1,7 +1,7 @@
 package rv.util.jogl;
 
 import java.awt.Color;
-import roboviz.jsgl.jogl.model.ObjMaterial;
+import jsgl.jogl.model.ObjMaterial;
 
 public class MaterialUtil
 {

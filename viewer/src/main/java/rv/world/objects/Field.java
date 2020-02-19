@@ -18,11 +18,11 @@ package rv.world.objects;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import roboviz.jsgl.jogl.GLDisposable;
-import roboviz.jsgl.jogl.Texture2D;
-import roboviz.jsgl.jogl.light.Material;
-import roboviz.jsgl.math.vector.Matrix;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.jogl.GLDisposable;
+import jsgl.jogl.Texture2D;
+import jsgl.jogl.light.Material;
+import jsgl.math.vector.Matrix;
+import jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.content.ContentManager;

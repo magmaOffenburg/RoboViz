@@ -18,8 +18,8 @@ package rv.comm.drawing.shapes;
 
 import com.jogamp.opengl.GL2;
 import java.nio.ByteBuffer;
-import roboviz.jsgl.jogl.light.Material;
-import roboviz.jsgl.math.geom.GeodesicSphere;
+import jsgl.jogl.light.Material;
+import jsgl.math.geom.GeodesicSphere;
 import rv.comm.drawing.commands.Command;
 
 public class Sphere extends Shape

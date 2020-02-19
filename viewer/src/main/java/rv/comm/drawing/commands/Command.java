@@ -18,8 +18,8 @@ package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
 import java.util.Locale;
-import roboviz.jsgl.io.ByteUtil;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.io.ByteUtil;
+import jsgl.math.vector.Vec3f;
 import rv.Viewer;
 import rv.ui.DebugInfo;
 import rv.world.Team;

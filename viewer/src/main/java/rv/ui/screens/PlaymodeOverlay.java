@@ -29,7 +29,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import roboviz.jsgl.jogl.view.Viewport;
+import jsgl.jogl.view.Viewport;
 import rv.Viewer;
 
 public class PlaymodeOverlay extends ScreenBase implements KeyListener
