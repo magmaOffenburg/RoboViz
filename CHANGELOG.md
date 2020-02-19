@@ -1,3 +1,9 @@
+1.7.0 (to be released)
+------------------------------
+* added "Connection -> Connect to..." (#105)
+* updated jogl to 2.3.2 (fixes Mac compatibility - #93)
+* fixed "Auto Connect" causing unresponsiveness in the UI 
+
 1.6.1 (June 17, 2019)
 ------------------------------
 * added support for the rectangular goals in rcssserver 0.7.2
