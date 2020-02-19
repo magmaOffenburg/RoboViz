@@ -1,0 +1,7 @@
+dependencies {
+    implementation "org.jogamp.gluegen:gluegen-rt-main:$jogl_version"
+    implementation "org.jogamp.jogl:jogl-all-main:$jogl_version"
+}
+
+group = 'magmaOffenburg'
+description = 'jsgl'

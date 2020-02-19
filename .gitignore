@@ -13,3 +13,14 @@ roboviz.bat
 .idea/**/watcherTasks.xml
 .idea/dictionaries
 /buildDefault
+/target/
+
+#gradle
+.gradle/
+
+#Subprojects
+/jsgl/bin
+/jsgl/build
+
+/viewer/bin
+/viewer/build
