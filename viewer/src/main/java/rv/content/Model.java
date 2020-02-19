@@ -16,14 +16,12 @@
 
 package rv.content;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-
 import roboviz.jsgl.jogl.model.Mesh;
 import roboviz.jsgl.jogl.model.MeshPart;
 import roboviz.jsgl.jogl.model.ObjMaterial;
@@ -75,7 +73,7 @@ public class Model
 				ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
-		
+
 		InputStream is = cl.getResourceAsStream(name);
 		if (is == null) {
 			failureMessage();

@@ -18,7 +18,6 @@ package rv.effects;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-
 import roboviz.jsgl.jogl.FrameBufferObject;
 import roboviz.jsgl.jogl.GLDisposable;
 import roboviz.jsgl.jogl.ShaderProgram;

@@ -16,6 +16,18 @@
 
 package rv;
 
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.awt.AWTKeyAdapter;
+import com.jogamp.newt.event.awt.AWTMouseAdapter;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -34,25 +46,10 @@ import java.util.Calendar;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Locale;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
-import com.jogamp.newt.event.KeyListener;
-import com.jogamp.newt.event.MouseListener;
-import com.jogamp.newt.event.awt.AWTKeyAdapter;
-import com.jogamp.newt.event.awt.AWTMouseAdapter;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
-
 import roboviz.jsgl.jogl.GLInfo;
 import roboviz.jsgl.jogl.prog.GLProgram;
 import roboviz.jsgl.jogl.view.Viewport;
@@ -399,11 +396,11 @@ public class Viewer
 	private void takeScreenshot(String fileName)
 	{
 		// TODO Info: GLReadBufferUtil.readPixels: pre-exisiting GL error 0x501
-		
+
 		GLProfile glp = GLProfile.getDefault();
 		AWTGLReadBufferUtil screenshot = new AWTGLReadBufferUtil(glp, false);
 		BufferedImage ss = screenshot.readPixelsToBufferedImage(drawable.getGL(), true);
-		
+
 		File ssFile = new File(fileName);
 		File ssDir = new File("screenshots");
 		try {
@@ -413,7 +410,7 @@ public class Viewer
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
 	}
 

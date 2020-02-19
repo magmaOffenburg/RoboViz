@@ -16,14 +16,12 @@
 
 package rv.ui.view;
 
+import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
-import com.jogamp.opengl.awt.GLCanvas;
-
 import roboviz.jsgl.jogl.view.FPCamera;
 import roboviz.jsgl.math.vector.Vec2f;
 import roboviz.jsgl.math.vector.Vec3f;

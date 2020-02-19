@@ -22,5 +22,5 @@ roboviz.bat
 /jsgl/bin
 /jsgl/build
 
-/roboviz/bin
-/roboviz/build
+/viewer/bin
+/viewer/build

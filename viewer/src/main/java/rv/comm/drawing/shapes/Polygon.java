@@ -16,10 +16,8 @@
 
 package rv.comm.drawing.shapes;
 
-import java.nio.ByteBuffer;
-
 import com.jogamp.opengl.GL2;
-
+import java.nio.ByteBuffer;
 import roboviz.jsgl.io.ByteUtil;
 import rv.comm.drawing.commands.Command;
 

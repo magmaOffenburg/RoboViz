@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 
@@ -20,8 +19,10 @@ public class ControlsHelpPanel extends FramePanelBase
 		frame.setMinimumSize(new Dimension(400, 500));
 
 		String file = "Could not load help page.";
-		List<String> lines = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/help/controls.html"), 
-				StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+		List<String> lines = new BufferedReader(
+				new InputStreamReader(getClass().getResourceAsStream("/help/controls.html"), StandardCharsets.UTF_8))
+									 .lines()
+									 .collect(Collectors.toList());
 
 		if (lines != null) {
 			StringBuilder builder = new StringBuilder();

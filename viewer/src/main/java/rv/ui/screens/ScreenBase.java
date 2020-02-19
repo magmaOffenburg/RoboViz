@@ -1,7 +1,6 @@
 package rv.ui.screens;
 
 import com.jogamp.opengl.awt.GLCanvas;
-
 import rv.Viewer;
 import rv.ui.menus.Menu;
 

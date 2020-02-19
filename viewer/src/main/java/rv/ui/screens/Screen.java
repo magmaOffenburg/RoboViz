@@ -20,7 +20,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-
 import roboviz.jsgl.jogl.view.Viewport;
 import rv.Viewer;
 import rv.ui.menus.Menu;

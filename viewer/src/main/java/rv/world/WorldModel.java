@@ -16,13 +16,11 @@
 
 package rv.world;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
-
+import java.awt.Color;
+import java.util.ArrayList;
 import roboviz.jsgl.jogl.light.DirLight;
 import roboviz.jsgl.jogl.light.LightModel;
 import roboviz.jsgl.math.vector.Matrix;
@@ -191,7 +189,7 @@ public class WorldModel
 		this.cm = cm;
 		this.config = config;
 		GL2 gl = glObj.getGL2();
-		
+
 		field = new Field(cm.getModel("models/newfield.obj"), cm);
 		gameState.addListener(field);
 		gameState.addListener(cm);

@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-
 import roboviz.jsgl.math.Maths;
 import rv.Configuration;
 import rv.Viewer;

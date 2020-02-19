@@ -17,7 +17,6 @@
 package rv.world.objects;
 
 import com.jogamp.opengl.GL2;
-
 import roboviz.jsgl.math.vector.Vec3f;
 import rv.content.Model;
 import rv.world.ModelObject;

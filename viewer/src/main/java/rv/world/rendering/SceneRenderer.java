@@ -18,7 +18,6 @@ package rv.world.rendering;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-
 import rv.Configuration;
 import rv.comm.drawing.Drawings;
 import rv.content.ContentManager;

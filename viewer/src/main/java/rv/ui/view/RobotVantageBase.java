@@ -4,7 +4,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
-
 import roboviz.jsgl.jogl.view.Camera3D;
 import roboviz.jsgl.jogl.view.Viewport;
 import roboviz.jsgl.math.vector.Matrix;

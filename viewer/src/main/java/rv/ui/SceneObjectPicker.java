@@ -18,7 +18,6 @@ package rv.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import roboviz.jsgl.jogl.view.Camera3D;
 import roboviz.jsgl.jogl.view.Viewport;
 import roboviz.jsgl.math.Plane;

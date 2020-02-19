@@ -16,17 +16,15 @@
 
 package rv.comm.drawing;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.gl2.GLUT;
-
 import rv.comm.drawing.annotations.AgentAnnotation;
 import rv.comm.drawing.annotations.Annotation;
 import rv.comm.drawing.shapes.Shape;

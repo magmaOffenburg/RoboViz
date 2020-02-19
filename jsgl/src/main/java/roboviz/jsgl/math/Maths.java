@@ -17,109 +17,116 @@
 package roboviz.jsgl.math;
 
 import java.util.List;
-
 import roboviz.jsgl.math.vector.Vec2f;
 import roboviz.jsgl.math.vector.Vec3f;
 
 /**
  * Miscellaneous math methods
- * 
+ *
  * @author Justin Stoecker
  */
-public class Maths {
-    
-    private static final double PI3_OVER_2 = Math.PI * 1.5;
-    
-    /** Returns angle in radians between two vectors a and b in [0,pi] */
-    public static double vecAngle(Vec3f a, Vec3f b) {
-        Vec3f n = a.cross(b);
-        double rads = Math.atan2(n.length(), a.dot(b));
-        // if (n.dot(Vec3f.unitY()) > 0)
-        // rads *= -1;
-        return rads;
-    }
+public class Maths
+{
+	private static final double PI3_OVER_2 = Math.PI * 1.5;
 
-    /**
-     * Calculates rotations (in radians) for absolute pitch (rotation x) and yaw
-     * (rotation y) for an object at position a to point toward b
-     */
-    public static Vec2f calcPitchYaw(Vec3f a, Vec3f b) {
-        // v1 = -z axis = (0,0,-1)
-        // v2 = b-a = (b.x - a.x, 0, b.z - a.z)
-        // rotation y = 2pi   - atan2(v2.z, v2.x) - atan2(v1.z, v1.x) =
-        //            = 2pi   - atan2(b.z - a.z, b.x - a.x) - atan2(-1,0)
-        //            = 2pi   - atan2(b.z - a.z, b.x - a.x) - pi/2
-        //            = 3pi/2 - atan2(b.z - a.z, b.x - a.x)
-        
-        double yawRads = PI3_OVER_2 - Math.atan2(b.z - a.z, b.x - a.x);
-        float yaw = (float)Math.toDegrees(yawRads);
+	/** Returns angle in radians between two vectors a and b in [0,pi] */
+	public static double vecAngle(Vec3f a, Vec3f b)
+	{
+		Vec3f n = a.cross(b);
+		double rads = Math.atan2(n.length(), a.dot(b));
+		// if (n.dot(Vec3f.unitY()) > 0)
+		// rads *= -1;
+		return rads;
+	}
 
-        Vec3f v = b.minus(a);
-        double pitchRads = Math.atan2(v.y, Math.sqrt(v.x * v.x + v.z * v.z));
-        float pitch = (float)Math.toDegrees(pitchRads);
+	/**
+	 * Calculates rotations (in radians) for absolute pitch (rotation x) and yaw
+	 * (rotation y) for an object at position a to point toward b
+	 */
+	public static Vec2f calcPitchYaw(Vec3f a, Vec3f b)
+	{
+		// v1 = -z axis = (0,0,-1)
+		// v2 = b-a = (b.x - a.x, 0, b.z - a.z)
+		// rotation y = 2pi   - atan2(v2.z, v2.x) - atan2(v1.z, v1.x) =
+		//            = 2pi   - atan2(b.z - a.z, b.x - a.x) - atan2(-1,0)
+		//            = 2pi   - atan2(b.z - a.z, b.x - a.x) - pi/2
+		//            = 3pi/2 - atan2(b.z - a.z, b.x - a.x)
 
-        return new Vec2f(pitch, yaw);
-    }
+		double yawRads = PI3_OVER_2 - Math.atan2(b.z - a.z, b.x - a.x);
+		float yaw = (float) Math.toDegrees(yawRads);
 
-    /**
-     * Clamps a double value to be within a specified range
-     */
-    public static double clamp(double val, double min, double max) {
-        if (val < min)
-            return min;
-        if (val > max)
-            return max;
-        return val;
-    }
+		Vec3f v = b.minus(a);
+		double pitchRads = Math.atan2(v.y, Math.sqrt(v.x * v.x + v.z * v.z));
+		float pitch = (float) Math.toDegrees(pitchRads);
 
-    /**
-     * Clamps a float value to be within a specified range
-     */
-    public static float clamp(float val, float min, float max) {
-        if (val < min)
-            return min;
-        if (val > max)
-            return max;
-        return val;
-    }
+		return new Vec2f(pitch, yaw);
+	}
 
-    /**
-     * Clamps an integer value to be within a specified range
-     */
-    public static int clamp(int val, int min, int max) {
-        if (val < min)
-            return min;
-        if (val > max)
-            return max;
-        return val;
-    }
+	/**
+	 * Clamps a double value to be within a specified range
+	 */
+	public static double clamp(double val, double min, double max)
+	{
+		if (val < min)
+			return min;
+		if (val > max)
+			return max;
+		return val;
+	}
 
-    /**
-     * Returns the point in a list that is nearest to another point
-     */
-    public static Vec3f getNearest(Vec3f a, List<Vec3f> list) {
-        float minD = 0;
-        Vec3f nearest = null;
-        for (int i = 0; i < list.size(); i++) {
-            float d = list.get(i).minus(a).lengthSquared();
-            if (nearest == null || d < minD) {
-                minD = d;
-                nearest = list.get(i);
-            }
-        }
-        return nearest;
-    }
+	/**
+	 * Clamps a float value to be within a specified range
+	 */
+	public static float clamp(float val, float min, float max)
+	{
+		if (val < min)
+			return min;
+		if (val > max)
+			return max;
+		return val;
+	}
 
-    public static Vec2f rndVec2f(float min, float max) {
-        float x = (float) Math.random() * (max - min) + min;
-        float y = (float) Math.random() * (max - min) + min;
-        return new Vec2f(x, y);
-    }
+	/**
+	 * Clamps an integer value to be within a specified range
+	 */
+	public static int clamp(int val, int min, int max)
+	{
+		if (val < min)
+			return min;
+		if (val > max)
+			return max;
+		return val;
+	}
 
-    public static Vec3f rndVec3f(float min, float max) {
-        float x = (float) Math.random() * (max - min) + min;
-        float y = (float) Math.random() * (max - min) + min;
-        float z = (float) Math.random() * (max - min) + min;
-        return new Vec3f(x, y, z);
-    }
+	/**
+	 * Returns the point in a list that is nearest to another point
+	 */
+	public static Vec3f getNearest(Vec3f a, List<Vec3f> list)
+	{
+		float minD = 0;
+		Vec3f nearest = null;
+		for (int i = 0; i < list.size(); i++) {
+			float d = list.get(i).minus(a).lengthSquared();
+			if (nearest == null || d < minD) {
+				minD = d;
+				nearest = list.get(i);
+			}
+		}
+		return nearest;
+	}
+
+	public static Vec2f rndVec2f(float min, float max)
+	{
+		float x = (float) Math.random() * (max - min) + min;
+		float y = (float) Math.random() * (max - min) + min;
+		return new Vec2f(x, y);
+	}
+
+	public static Vec3f rndVec3f(float min, float max)
+	{
+		float x = (float) Math.random() * (max - min) + min;
+		float y = (float) Math.random() * (max - min) + min;
+		float z = (float) Math.random() * (max - min) + min;
+		return new Vec3f(x, y, z);
+	}
 }

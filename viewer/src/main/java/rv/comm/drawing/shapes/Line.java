@@ -16,11 +16,9 @@
 
 package rv.comm.drawing.shapes;
 
-import java.nio.ByteBuffer;
-
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-
+import java.nio.ByteBuffer;
 import rv.comm.drawing.commands.Command;
 
 /**

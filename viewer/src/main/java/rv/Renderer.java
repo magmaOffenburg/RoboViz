@@ -22,7 +22,6 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-
 import roboviz.jsgl.jogl.FrameBufferObject;
 import roboviz.jsgl.jogl.GLInfo;
 import roboviz.jsgl.jogl.Texture2D;

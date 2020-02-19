@@ -16,10 +16,8 @@
 
 package rv.ui.screens;
 
-import java.awt.event.KeyEvent;
-
 import com.jogamp.opengl.awt.GLCanvas;
-
+import java.awt.event.KeyEvent;
 import rv.Viewer;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;

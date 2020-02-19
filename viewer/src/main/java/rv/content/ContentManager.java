@@ -16,6 +16,9 @@
 
 package rv.content;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -24,13 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-
 import roboviz.jsgl.jogl.GLInfo;
 import roboviz.jsgl.jogl.ShaderProgram;
 import roboviz.jsgl.jogl.Texture2D;

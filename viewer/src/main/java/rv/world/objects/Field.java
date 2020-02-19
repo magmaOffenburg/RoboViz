@@ -18,7 +18,6 @@ package rv.world.objects;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-
 import roboviz.jsgl.jogl.GLDisposable;
 import roboviz.jsgl.jogl.Texture2D;
 import roboviz.jsgl.jogl.light.Material;

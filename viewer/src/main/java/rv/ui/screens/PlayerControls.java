@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
@@ -39,7 +38,6 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
 import rv.util.swing.SwingUtil;
