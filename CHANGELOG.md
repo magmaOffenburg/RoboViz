@@ -1,7 +1,8 @@
 1.7.0 (to be released)
 ------------------------------
-* added "Connection -> Connect to..." (#105)
-* updated jogl to 2.3.2 (fixes Mac compatibility - #93)
+* added "Connection -> Connect to..." ([#105](https://github.com/magmaOffenburg/RoboViz/issues/105))
+* updated jogl to 2.3.2 (fixes Mac compatibility - [#93](https://github.com/magmaOffenburg/RoboViz/issues/93))
+* switched to Gradle for build / dependency management ([#106](https://github.com/magmaOffenburg/RoboViz/issues/106))
 * fixed "Auto Connect" causing unresponsiveness in the UI 
 
 1.6.1 (June 17, 2019)
@@ -13,7 +14,7 @@
 ------------------------------
 * updated the required Java version to 1.8
 * added a fade-out effect to the ball circle in pass mode etc.
-* added a workaround for goals sometimes being missed (#104)
+* added a workaround for goals sometimes being missed ([#104](https://github.com/magmaOffenburg/RoboViz/issues/104))
 * added an overlay text and a gray-out effect when in `GameOver`
 * changed the default config to enable all overlays as in competitions
 * removed red cards from the foul overlay to avoid confusion
@@ -21,14 +22,14 @@
 
 1.5.0 (April 27, 2019)
 ------------------------------
-* added differently colored goalie jerseys (#102)
+* added differently colored goalie jerseys ([#102](https://github.com/magmaOffenburg/RoboViz/issues/102))
 * added a player tracking camera
 * added support for the new self collision foul
 * added a circle around the ball for pass / free kick / corner kick / kick in
 * added a timer for the scoring cooldown after pass mode 
 * changed the time formatting to `mm:ss`
-* more gracefully handle `NaN` values sent by the server (#99)
-* fixed hangs when switching between servers in Connection UI (#100)
+* more gracefully handle `NaN` values sent by the server ([#99](https://github.com/magmaOffenburg/RoboViz/issues/99))
+* fixed hangs when switching between servers in Connection UI ([#100](https://github.com/magmaOffenburg/RoboViz/issues/100))
 * fixed `config.txt` changes made while RoboViz is running being lost on save
 
 1.4.0 (April 12, 2018)
@@ -36,8 +37,8 @@
 * added a menu bar with Connection / Server / View / Camera menus
 * allowed specifying multiple servers in `config.txt` (comma-separated)
 * allowed switching between different servers without restarting RoboViz
-* fixed handling of packets with multiple drawings in logs (#98)
-* changed the ball tracker camera's speed to scale with ball speed (#95)
+* fixed handling of packets with multiple drawings in logs ([#98](https://github.com/magmaOffenburg/RoboViz/issues/98))
+* changed the ball tracker camera's speed to scale with ball speed ([#95](https://github.com/magmaOffenburg/RoboViz/issues/95))
  
 1.3.0 (July 29, 2016)
 ------------------------------
@@ -54,14 +55,14 @@
 
 1.2.0 (May 27, 2016)
 ------------------------------
-* fixed the log player getting stuck with draw commands occasionally (#78)
-* fixed `--logFile` paths starting with `~` in `roboviz.sh` (#80)
-* fixed the server host displayed in the window title when overridden with `--serverHost` (#83)
+* fixed the log player getting stuck with draw commands occasionally ([#78](https://github.com/magmaOffenburg/RoboViz/issues/78))
+* fixed `--logFile` paths starting with `~` in `roboviz.sh` ([#80](https://github.com/magmaOffenburg/RoboViz/issues/80))
+* fixed the server host displayed in the window title when overridden with `--serverHost` ([#83](https://github.com/magmaOffenburg/RoboViz/issues/83))
 * changed the connection overlay text from `Trying to connect to <ip>...` to `Waiting for second half...` if time is at 300
 * changed the connection overlay text to dynamically resize with the window
-* changed the the "reset time" shortcut (`Shift+R`) to `Shift+T` (#85)
-* added an overlay to display fouls (can be toggled with `Q`) (#82)
-* added `Shift+L` and `Shift+R` shortcuts to switch to the `direct_free_kick_left` / `right` play modes added in [[r405]](https://sourceforge.net/p/simspark/svn/405/) (#85)
+* changed the the "reset time" shortcut (`Shift+R`) to `Shift+T` ([#85](https://github.com/magmaOffenburg/RoboViz/issues/85))
+* added an overlay to display fouls (can be toggled with `Q`) ([#82](https://github.com/magmaOffenburg/RoboViz/issues/82))
+* added `Shift+L` and `Shift+R` shortcuts to switch to the `direct_free_kick_left` / `right` play modes added in [[r405]](https://sourceforge.net/p/simspark/svn/405/) ([#85](https://github.com/magmaOffenburg/RoboViz/issues/85))
 * added support for using `~/.roboviz/config.txt` instead of the local `config.txt` if present
 * added the RoboViz version to the window title
 
