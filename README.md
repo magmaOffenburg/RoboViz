@@ -1,4 +1,4 @@
-![Logo](resources/images/icon.png) RoboViz
+![Logo](viewer/src/main/resources/images/icon.png) RoboViz
 ==================
 
 [![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
