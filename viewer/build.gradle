@@ -27,6 +27,11 @@ shadowJar{
     archiveFileName = 'RoboViz.jar'
 }
 
+task runConfig(type: JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = 'config.RVConfigure'
+}
+
 group = 'magmaOffenburg'
 description = 'RoboViz'
 mainClassName = 'rv.Viewer'
