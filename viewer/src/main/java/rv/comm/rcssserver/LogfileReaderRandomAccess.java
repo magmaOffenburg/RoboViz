@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
-import roboviz.jsgl.math.Maths;
+import jsgl.math.Maths;
 
 /**
  * Log file reader that provides random access to non zipped logfiles.

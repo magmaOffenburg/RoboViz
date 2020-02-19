@@ -17,7 +17,7 @@
 package rv.comm.drawing.shapes;
 
 import com.jogamp.opengl.GL2;
-import roboviz.jsgl.jogl.light.Material;
+import jsgl.jogl.light.Material;
 
 public abstract class Shape
 {

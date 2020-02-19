@@ -17,9 +17,9 @@
 package rv.world.objects;
 
 import com.jogamp.opengl.GL2;
-import roboviz.jsgl.math.BoundingBox;
-import roboviz.jsgl.math.vector.Matrix;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.math.BoundingBox;
+import jsgl.math.vector.Matrix;
+import jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.ISceneGraphItem;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;

@@ -19,9 +19,9 @@ package rv.ui.view;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
-import roboviz.jsgl.jogl.view.Viewport;
-import roboviz.jsgl.math.vector.Matrix;
-import roboviz.jsgl.math.vector.Vec3f;
+import jsgl.jogl.view.Viewport;
+import jsgl.math.vector.Matrix;
+import jsgl.math.vector.Vec3f;
 import rv.world.objects.Agent;
 
 public class RobotVantageFirstPerson extends RobotVantageBase
