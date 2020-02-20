@@ -4,6 +4,7 @@
 * updated jogl to 2.3.2 (fixes Mac compatibility - [#93](https://github.com/magmaOffenburg/RoboViz/issues/93))
 * switched to Gradle for build / dependency management ([#106](https://github.com/magmaOffenburg/RoboViz/issues/106))
 * fixed "Auto Connect" causing unresponsiveness in the UI 
+* allow more precise zooming with Shift + Mouse Wheel
 
 1.6.1 (June 17, 2019)
 ------------------------------

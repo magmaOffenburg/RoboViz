@@ -300,10 +300,11 @@ public class SimsparkController implements CameraController, GameStateChangeList
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
+		float factor = e.isShiftDown() ? 0.2f : 1;
 		if (e.getWheelRotation() < 0) {
-			ui.getCamera().moveLocal(Vec3f.unitZ().times(-1));
+			ui.getCamera().moveLocal(Vec3f.unitZ().times(-1 * factor));
 		} else {
-			ui.getCamera().moveLocal(Vec3f.unitZ());
+			ui.getCamera().moveLocal(Vec3f.unitZ().times(factor));
 		}
 	}
 
