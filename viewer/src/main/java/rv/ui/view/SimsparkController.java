@@ -302,10 +302,9 @@ public class SimsparkController implements CameraController, GameStateChangeList
 	{
 		float factor = e.isShiftDown() ? 0.2f : 1;
 		if (e.getWheelRotation() < 0) {
-			ui.getCamera().moveLocal(Vec3f.unitZ().times(-1 * factor));
-		} else {
-			ui.getCamera().moveLocal(Vec3f.unitZ().times(factor));
+			factor *= -1;
 		}
+		ui.getCamera().moveLocal(Vec3f.unitZ().times(factor));
 	}
 
 	public void gsMeasuresAndRulesChanged(GameState gs)
