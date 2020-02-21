@@ -1,8 +1,10 @@
 1.7.0 (to be released)
 ------------------------------
 * added "Connection -> Connect to..." ([#105](https://github.com/magmaOffenburg/RoboViz/issues/105))
-* updated jogl to 2.3.2 (fixes Mac compatibility - [#93](https://github.com/magmaOffenburg/RoboViz/issues/93))
 * switched to Gradle for build / dependency management ([#106](https://github.com/magmaOffenburg/RoboViz/issues/106))
+    * simplified build scripts (there's only `build.sh` for Linux / Mac and `build.bat` for Windows)
+    * builds are now universal (same `bin` folder works on Windows, Linux and Mac)
+    * updated jogl to 2.3.2 (fixes Mac compatibility - [#93](https://github.com/magmaOffenburg/RoboViz/issues/93))
 * fixed "Auto Connect" causing unresponsiveness in the UI 
 * allow more precise zooming with Shift + Mouse Wheel
 
