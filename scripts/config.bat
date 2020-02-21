@@ -1,3 +1,2 @@
 @echo off
-call setEnvironment.bat
-java -Djava.library.path=lib -cp %VIZCLASSPATH% config.RVConfigure %*
+java -cp RoboViz.jar config.RVConfigure %*
