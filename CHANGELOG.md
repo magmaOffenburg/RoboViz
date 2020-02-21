@@ -1,4 +1,4 @@
-1.7.0 (to be released)
+1.7.0 (February 21, 2020)
 ------------------------------
 * added "Connection -> Connect to..." ([#105](https://github.com/magmaOffenburg/RoboViz/issues/105))
 * switched to Gradle for build / dependency management ([#106](https://github.com/magmaOffenburg/RoboViz/issues/106))
