@@ -224,7 +224,8 @@ public class ServerComm implements DrawCommListener
 
 	private void closeCurrentLogfile()
 	{
-		logfileOutput.close();
+		if (logfileOutput != null)
+			logfileOutput.close();
 	}
 
 	public void connect()
