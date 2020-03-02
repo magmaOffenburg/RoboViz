@@ -599,6 +599,9 @@ public class GameState implements ServerChangeListener
 		playModeJustChanged = previousPlayMode == null || !previousPlayMode.equals(playMode);
 		if (playModeJustChanged) {
 			playModeHistory.add(new HistoryItem(time, playMode));
+			while (playModeHistory.size() > 2) {
+				playModeHistory.remove(0);
+			}
 		}
 
 		initialized = true;
