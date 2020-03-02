@@ -113,6 +113,8 @@ public class GameState implements ServerChangeListener
 	public static final String RULE_GOAL_PAUSE_TIME = "RuleGoalPauseTime";
 	public static final String RULE_KICK_PAUSE_TIME = "RuleKickInPauseTime";
 	public static final String RULE_HALF_TIME = "RuleHalfTime";
+	public static final String PASS_MODE_MIN_OPP_BALL_DIST = "PassModeMinOppBallDist";
+	public static final String PASS_MODE_DURATION = "PassModeDuration";
 
 	// Play State
 	public static final String PLAY_MODES = "play_modes";
@@ -121,6 +123,8 @@ public class GameState implements ServerChangeListener
 	public static final String SCORE_LEFT = "score_left";
 	public static final String SCORE_RIGHT = "score_right";
 	public static final String PLAY_MODE = "play_mode";
+	public static final String PASS_MODE_SCORE_WAIT_LEFT = "pass_mode_score_wait_left";
+	public static final String PASS_MODE_SCORE_WAIT_RIGHT = "pass_mode_score_wait_right";
 
 	// Play Modes
 	public static final String BEFORE_KICK_OFF = "BeforeKickOff";
@@ -167,6 +171,11 @@ public class GameState implements ServerChangeListener
 	private float ruleGoalPauseTime;
 	private float ruleKickPauseTime;
 	private float ruleHalfTime;
+	private float passModeMinOppBallDist;
+	private float passModeDuration;
+	private boolean passModeValuesReported;
+	private float passModeScoreWaitLeft;
+	private float passModeScoreWaitRight;
 	private String[] playModes;
 	private String teamLeft;
 	private String teamRight;
@@ -258,6 +267,21 @@ public class GameState implements ServerChangeListener
 		return ruleHalfTime;
 	}
 
+	public float getPassModeMinOppBallDist()
+	{
+		return passModeMinOppBallDist;
+	}
+
+	public float getPassModeDuration()
+	{
+		return passModeDuration;
+	}
+
+	public boolean getPassModeValuesReported()
+	{
+		return passModeValuesReported;
+	}
+
 	public String[] getPlayModes()
 	{
 		return playModes;
@@ -327,6 +351,16 @@ public class GameState implements ServerChangeListener
 		return fouls;
 	}
 
+	public float getPassModeScoreWaitLeft()
+	{
+		return passModeScoreWaitLeft;
+	}
+
+	public float getPassModeScoreWaitRight()
+	{
+		return passModeScoreWaitRight;
+	}
+
 	public void addListener(GameStateChangeListener l)
 	{
 		listeners.add(l);
@@ -360,6 +394,11 @@ public class GameState implements ServerChangeListener
 		time = 0;
 		half = 0;
 		fouls = new CopyOnWriteArrayList<>();
+
+		// For support of rcssserver3d versions <= 0.7.2
+		passModeMinOppBallDist = 1;
+		passModeDuration = 4;
+		passModeValuesReported = false;
 	}
 
 	private boolean isTimeStopped()
@@ -423,6 +462,8 @@ public class GameState implements ServerChangeListener
 		String previousPlayMode = playMode;
 
 		removeExpiredFouls();
+		passModeScoreWaitLeft = 0;
+		passModeScoreWaitRight = 0;
 
 		for (SExp se : exp.getChildren()) {
 			String[] atoms = se.getAtoms();
@@ -487,6 +528,16 @@ public class GameState implements ServerChangeListener
 					ruleHalfTime = Float.parseFloat(atoms[1]);
 					measureOrRuleChanges++;
 					break;
+				case PASS_MODE_MIN_OPP_BALL_DIST:
+					passModeValuesReported = true;
+					passModeMinOppBallDist = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case PASS_MODE_DURATION:
+					passModeValuesReported = true;
+					passModeDuration = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
 				case PLAY_MODES:
 					playModes = new String[atoms.length - 1];
 					System.arraycopy(atoms, 1, playModes, 0, playModes.length);
@@ -530,6 +581,16 @@ public class GameState implements ServerChangeListener
 					foul.agentID = Integer.parseInt(atoms[4]);
 					foul.receivedTime = System.currentTimeMillis();
 					addFoul(foul);
+					break;
+				case PASS_MODE_SCORE_WAIT_LEFT:
+					passModeValuesReported = true;
+					passModeScoreWaitLeft = Float.parseFloat(atoms[1]);
+					timeChanges++;
+					break;
+				case PASS_MODE_SCORE_WAIT_RIGHT:
+					passModeValuesReported = true;
+					passModeScoreWaitRight = Float.parseFloat(atoms[1]);
+					timeChanges++;
 					break;
 				}
 			}
