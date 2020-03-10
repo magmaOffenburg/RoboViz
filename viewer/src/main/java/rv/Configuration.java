@@ -221,12 +221,14 @@ public class Configuration
 	{
 		public boolean recordLogs = false;
 		public String logfileDirectory = null;
+		public String lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
 
 		private void read(BufferedReader in) throws IOException
 		{
 			getNextLine(in);
 			recordLogs = getNextBool(in);
 			logfileDirectory = getNextString(in);
+			lookAndFeel = getNextString(in);
 			getNextLine(in);
 		}
 
@@ -235,6 +237,7 @@ public class Configuration
 			writeSection(out, "General Settings");
 			writeVal(out, "Record Logfiles", recordLogs);
 			writeVal(out, "Logfile Directory", logfileDirectory);
+			writeVal(out, "Look and Feel", lookAndFeel);
 			out.write(getNewline());
 		}
 	}

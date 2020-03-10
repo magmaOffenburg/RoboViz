@@ -49,7 +49,7 @@ public class RVConfigure extends JFrame
 			config = new Configuration();
 		}
 
-		Globals.setLookFeel();
+		Globals.setLookFeel(config.general.lookAndFeel);
 		setTitle("RoboViz Configuration");
 		setIconImage(Globals.getIcon());
 		setLayout(new GridBagLayout());

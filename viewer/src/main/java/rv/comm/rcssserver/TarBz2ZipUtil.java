@@ -83,8 +83,7 @@ public class TarBz2ZipUtil
 
 	public static Reader getZipStream(File file)
 	{
-		try {
-			ZipFile zipFile = new ZipFile(file);
+		try (ZipFile zipFile = new ZipFile(file)) {
 			if (zipFile.size() != 1) {
 				System.out.println("Only support single entry zip files");
 				zipFile.close();
