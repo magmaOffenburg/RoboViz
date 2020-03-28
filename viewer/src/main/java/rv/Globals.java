@@ -30,8 +30,6 @@ public class Globals
 
 	public static void setLookFeel(String lookAndFeel)
 	{
-		System.out.println(lookAndFeel);
-
 		try {
 			switch (lookAndFeel) {
 			case "darcula":
