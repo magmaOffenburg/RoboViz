@@ -25,11 +25,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
+import rv.util.Pair;
 
 /**
  * Configuration parameters for RoboViz startup
@@ -39,6 +45,7 @@ import java.util.List;
 public class Configuration
 {
 	private static final String CONFIG_FILE_NAME = "config.txt";
+	private static ArrayList<Pair<String, String>> configList = new ArrayList<>();
 
 	private static String getConfigFilePath()
 	{
@@ -295,6 +302,30 @@ public class Configuration
 		return line.substring(line.indexOf(":") + 1).trim();
 	}
 
+	private boolean checkLine(String line)
+	{
+		return (line.length() > 0 &&
+				!(line.equals("Graphics Settings:") || line.equals("Overlay Default Visibility:") ||
+						line.equals("Networking Settings:") || line.equals("General Settings:") ||
+						line.equals("Team Colors:")));
+	}
+
+	private void parseLine(String line)
+	{
+		String key = getKey(line);
+		String val = getVal(line);
+
+		configList.add(new Pair<String, String>(key, val));
+	}
+
+	private static String getValue(String key)
+	{
+		Pair<String, String> valuePair = new Pair<>(null, null);
+		valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
+
+		return valuePair.getSecond();
+	}
+
 	private static int getNextInt(BufferedReader in) throws IOException
 	{
 		return Integer.parseInt(getNextString(in));
@@ -398,6 +429,24 @@ public class Configuration
 
 	private Configuration read(File file)
 	{
+		// parse the configuration file
+		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
+			stream.forEach(line -> {
+				if (checkLine(line)) {
+					parseLine(line);
+				}
+			});
+		} catch (NoSuchFileException nf) {
+			System.err.println("Could not find config file");
+			nf.printStackTrace();
+			System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		// read the parsed data TODO
+
 		BufferedReader in = null;
 		try {
 			in = new BufferedReader(new FileReader(file));

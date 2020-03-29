@@ -36,6 +36,7 @@ Drawing Port         : 32769
 General Settings:
 Record Logfiles      : false
 Logfile Directory    : 
+Look and Feel        : intellij
 
 Team Colors:
 <Right>              : 0xff2626
