@@ -17,7 +17,6 @@
 package rv;
 
 import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -51,15 +50,6 @@ public class Configuration
 		if (new File(userConfig).exists())
 			return userConfig;
 		return CONFIG_FILE_NAME;
-	}
-
-	public static String getNextLine(BufferedReader in) throws IOException
-	{
-		String result = in.readLine();
-		while (result != null && result.startsWith("#")) {
-			result = in.readLine();
-		}
-		return result;
 	}
 
 	public static class Graphics
@@ -273,7 +263,7 @@ public class Configuration
 
 	private boolean checkLine(String line)
 	{
-		return (line.length() > 0 &&
+		return (line.length() > 0 && !line.startsWith("#") &&
 				!(line.equals("Graphics Settings:") || line.equals("Overlay Default Visibility:") ||
 						line.equals("Networking Settings:") || line.equals("General Settings:") ||
 						line.equals("Team Colors:")));
@@ -432,11 +422,6 @@ public class Configuration
 
 	public static Configuration loadFromFile()
 	{
-		return loadFromFile(new File(getConfigFilePath()));
-	}
-
-	public static Configuration loadFromFile(File file)
-	{
-		return new Configuration().read(file);
+		return new Configuration().read(new File(getConfigFilePath()));
 	}
 }
