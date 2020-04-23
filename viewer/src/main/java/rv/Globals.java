@@ -32,6 +32,10 @@ public class Globals
 	{
 		try {
 			switch (lookAndFeel) {
+			case "system":
+				LafManager.setTheme(LafManager.themeForPreferredStyle(LafManager.getPreferredThemeStyle()));
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
 			case "darcula":
 				LafManager.setTheme(new DarculaTheme());
 				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
