@@ -17,19 +17,22 @@
 package rv;
 
 import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
+import rv.util.Pair;
 
 /**
  * Configuration parameters for RoboViz startup
@@ -39,6 +42,7 @@ import java.util.List;
 public class Configuration
 {
 	private static final String CONFIG_FILE_NAME = "config.txt";
+	private static ArrayList<Pair<String, String>> configList = new ArrayList<>();
 
 	private static String getConfigFilePath()
 	{
@@ -46,15 +50,6 @@ public class Configuration
 		if (new File(userConfig).exists())
 			return userConfig;
 		return CONFIG_FILE_NAME;
-	}
-
-	public static String getNextLine(BufferedReader in) throws IOException
-	{
-		String result = in.readLine();
-		while (result != null && result.startsWith("#")) {
-			result = in.readLine();
-		}
-		return result;
 	}
 
 	public static class Graphics
@@ -79,29 +74,27 @@ public class Configuration
 		public int frameY = 0;
 		public int shadowResolution = 1024;
 
-		private void read(BufferedReader in) throws IOException
+		private void read()
 		{
-			getNextLine(in);
-			useBloom = getNextBool(in);
-			usePhong = getNextBool(in);
-			useShadows = getNextBool(in);
-			useSoftShadows = getNextBool(in);
-			shadowResolution = getNextInt(in);
-			useStereo = getNextBool(in);
-			useVsync = getNextBool(in);
-			useFsaa = getNextBool(in);
-			fsaaSamples = getNextInt(in);
-			targetFPS = getNextInt(in);
-			firstPersonFOV = getNextInt(in);
-			thirdPersonFOV = getNextInt(in);
-			frameWidth = getNextInt(in);
-			frameHeight = getNextInt(in);
-			frameX = getNextInteger(in);
-			frameY = getNextInteger(in);
-			centerFrame = getNextBool(in);
-			isMaximized = getNextBool(in);
-			saveFrameState = getNextBool(in);
-			getNextLine(in);
+			useBloom = getBool("Bloom");
+			usePhong = getBool("Phong");
+			useShadows = getBool("Shadows");
+			useSoftShadows = getBool("Soft Shadows");
+			shadowResolution = getInt("Shadow Resolution");
+			useStereo = getBool("Stereo 3D");
+			useVsync = getBool("V-Sync");
+			useFsaa = getBool("FSAA");
+			fsaaSamples = getInt("FSAA Samples");
+			targetFPS = getInt("Target FPS");
+			firstPersonFOV = getInt("First Person FOV");
+			thirdPersonFOV = getInt("Third Person FOV");
+			frameWidth = getInt("Frame Width");
+			frameHeight = getInt("Frame Height");
+			frameX = getInteger("Frame X");
+			frameY = getInteger("Frame Y");
+			centerFrame = getBool("Center Frame");
+			isMaximized = getBool("Frame Maximized");
+			saveFrameState = getBool("Save Frame State");
 		}
 
 		private void write(BufferedWriter out) throws IOException
@@ -138,15 +131,13 @@ public class Configuration
 		public boolean numberOfPlayers = false;
 		public boolean playerIDs = false;
 
-		private void read(BufferedReader in) throws IOException
+		private void read()
 		{
-			getNextLine(in);
-			serverSpeed = getNextBool(in);
-			foulOverlay = getNextBool(in);
-			fieldOverlay = getNextBool(in);
-			numberOfPlayers = getNextBool(in);
-			playerIDs = getNextBool(in);
-			getNextLine(in);
+			serverSpeed = getBool("Server Speed");
+			foulOverlay = getBool("Foul Overlay");
+			fieldOverlay = getBool("Field Overlay");
+			numberOfPlayers = getBool("Number of Players");
+			playerIDs = getBool("Player IDs");
 		}
 
 		private void write(BufferedWriter out) throws IOException
@@ -173,16 +164,14 @@ public class Configuration
 		public String overriddenServerHost = null;
 		private Integer overriddenServerPort = null;
 
-		private void read(BufferedReader in) throws IOException
+		private void read()
 		{
-			getNextLine(in);
-			autoConnect = getNextBool(in);
-			autoConnectDelay = getNextInt(in);
-			serverHosts = new LinkedList<>(Arrays.asList(getNextStringList(in)));
+			autoConnect = getBool("Auto-Connect");
+			autoConnectDelay = getInt("Auto-Connect Delay");
+			serverHosts = new LinkedList<>(Arrays.asList(getStringList("Server Hosts")));
 			serverHost = serverHosts.get(0);
-			serverPort = getNextInt(in);
-			listenPort = getNextInt(in);
-			getNextLine(in);
+			serverPort = getInt("Server Port");
+			listenPort = getInt("Drawing Port");
 		}
 
 		private void write(BufferedWriter out) throws IOException
@@ -221,13 +210,13 @@ public class Configuration
 	{
 		public boolean recordLogs = false;
 		public String logfileDirectory = null;
+		public String lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
 
-		private void read(BufferedReader in) throws IOException
+		private void read()
 		{
-			getNextLine(in);
-			recordLogs = getNextBool(in);
-			logfileDirectory = getNextString(in);
-			getNextLine(in);
+			recordLogs = getBool("Record Logfiles");
+			logfileDirectory = getString("Logfile Directory");
+			lookAndFeel = getString("Look and Feel");
 		}
 
 		private void write(BufferedWriter out) throws IOException
@@ -235,6 +224,7 @@ public class Configuration
 			writeSection(out, "General Settings");
 			writeVal(out, "Record Logfiles", recordLogs);
 			writeVal(out, "Logfile Directory", logfileDirectory);
+			writeVal(out, "Look and Feel", lookAndFeel);
 			out.write(getNewline());
 		}
 	}
@@ -245,24 +235,13 @@ public class Configuration
 		public Color defaultLeftColor = new Color(0x2626ff);
 		public Color defaultRightColor = new Color(0xff2626);
 
-		private void read(BufferedReader in) throws IOException
+		private void read()
 		{
-			getNextLine(in);
-			String line;
-			while (true) {
-				line = getNextLine(in);
-				if (line == null || line.trim().length() == 0)
-					break;
-				String key = getKey(line);
-				int val = Integer.decode(getVal(line));
-				Color color = new Color(val);
-				colorByTeamName.put(key, color);
+			defaultRightColor = new Color(Integer.decode(getValue("<Right>")));
+			defaultLeftColor = new Color(Integer.decode(getValue("<Left>")));
 
-				if ("<Left>".equals(key))
-					defaultLeftColor = color;
-				else if ("<Right>".equals(key))
-					defaultRightColor = color;
-			}
+			colorByTeamName.put("<Right>", defaultRightColor);
+			colorByTeamName.put("<Left>", defaultLeftColor);
 		}
 
 		private void write(BufferedWriter out) throws IOException
@@ -282,44 +261,56 @@ public class Configuration
 	public final General general = new General();
 	public final TeamColors teamColors = new TeamColors();
 
-	private static String getKey(String line)
+	private boolean checkLine(String line)
 	{
-		return line.substring(0, line.indexOf(":") - 1).trim();
+		return (line.length() > 0 && !line.startsWith("#") &&
+				!(line.equals("Graphics Settings:") || line.equals("Overlay Default Visibility:") ||
+						line.equals("Networking Settings:") || line.equals("General Settings:") ||
+						line.equals("Team Colors:")));
 	}
 
-	private static String getVal(String line)
+	private void parseLine(String line)
 	{
-		return line.substring(line.indexOf(":") + 1).trim();
+		String key = line.substring(0, line.indexOf(":") - 1).trim();
+		String val = line.substring(line.indexOf(":") + 1).trim();
+
+		configList.add(new Pair<>(key, val));
 	}
 
-	private static int getNextInt(BufferedReader in) throws IOException
+	private static String getValue(String key)
 	{
-		return Integer.parseInt(getNextString(in));
+		Pair<String, String> valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
+
+		return valuePair.getSecond();
 	}
 
-	private static Integer getNextInteger(BufferedReader in) throws IOException
+	private static boolean getBool(String key)
+	{
+		return Boolean.parseBoolean(getValue(key));
+	}
+
+	private static int getInt(String key)
+	{
+		return Integer.parseInt(getValue(key));
+	}
+
+	private static Integer getInteger(String key)
 	{
 		try {
-			return Integer.parseInt(getNextString(in));
+			return Integer.parseInt(getValue(key));
 		} catch (NumberFormatException e) {
 			return null;
 		}
 	}
 
-	private static boolean getNextBool(BufferedReader in) throws IOException
+	private static String getString(String key)
 	{
-		return Boolean.parseBoolean(getNextString(in));
+		return getValue(key);
 	}
 
-	private static String getNextString(BufferedReader in) throws IOException
+	private static String[] getStringList(String key)
 	{
-		return getVal(getNextLine(in));
-	}
-
-	private static String[] getNextStringList(BufferedReader in) throws IOException
-	{
-		String str = getVal(getNextLine(in));
-		return str.split(", ?");
+		return getValue(key).split(", ?");
 	}
 
 	private static void writeSection(Writer out, String name) throws IOException
@@ -395,32 +386,34 @@ public class Configuration
 
 	private Configuration read(File file)
 	{
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new FileReader(file));
-			try {
-				graphics.read(in);
-				overlayVisibility.read(in);
-				networking.read(in);
-				general.read(in);
-				teamColors.read(in);
-			} catch (Exception e) {
-				System.err.println(
-						"Error reading values from config file '" + file +
-						"'. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.");
-				System.exit(1);
-			}
-		} catch (FileNotFoundException e) {
-			System.err.println("Could not find config file");
-			System.exit(1);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+		// parse the configuration file
+		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
+			stream.forEach(line -> {
+				if (checkLine(line)) {
+					parseLine(line);
 				}
-			}
+			});
+		} catch (NoSuchFileException nf) {
+			System.err.println("Could not find config file");
+			nf.printStackTrace();
+			System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		// read the parsed data
+		try {
+			graphics.read();
+			overlayVisibility.read();
+			networking.read();
+			general.read();
+			teamColors.read();
+		} catch (Exception e) {
+			System.err.println(
+					"Error reading values from config file '" + file +
+					"'. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.");
+			System.exit(1);
 		}
 
 		return this;
@@ -428,11 +421,6 @@ public class Configuration
 
 	public static Configuration loadFromFile()
 	{
-		return loadFromFile(new File(getConfigFilePath()));
-	}
-
-	public static Configuration loadFromFile(File file)
-	{
-		return new Configuration().read(file);
+		return new Configuration().read(new File(getConfigFilePath()));
 	}
 }

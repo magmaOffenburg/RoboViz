@@ -260,7 +260,7 @@ public class Viewer
 
 	private void initComponents(GLCapabilities caps)
 	{
-		Globals.setLookFeel();
+		Globals.setLookFeel(config.general.lookAndFeel);
 		canvas = new GLCanvas(caps);
 		canvas.setFocusTraversalKeysEnabled(false);
 

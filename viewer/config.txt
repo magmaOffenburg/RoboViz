@@ -36,6 +36,7 @@ Drawing Port         : 32769
 General Settings:
 Record Logfiles      : false
 Logfile Directory    : 
+Look and Feel        : system
 
 Team Colors:
 <Right>              : 0xff2626
