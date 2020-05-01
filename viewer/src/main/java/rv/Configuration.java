@@ -74,7 +74,7 @@ public class Configuration
 		public int frameY = 0;
 		public int shadowResolution = 1024;
 
-		private void read() throws IOException
+		private void read()
 		{
 			useBloom = getBool("Bloom");
 			usePhong = getBool("Phong");
@@ -131,7 +131,7 @@ public class Configuration
 		public boolean numberOfPlayers = false;
 		public boolean playerIDs = false;
 
-		private void read() throws IOException
+		private void read()
 		{
 			serverSpeed = getBool("Server Speed");
 			foulOverlay = getBool("Foul Overlay");
@@ -164,7 +164,7 @@ public class Configuration
 		public String overriddenServerHost = null;
 		private Integer overriddenServerPort = null;
 
-		private void read() throws IOException
+		private void read()
 		{
 			autoConnect = getBool("Auto-Connect");
 			autoConnectDelay = getInt("Auto-Connect Delay");
@@ -212,7 +212,7 @@ public class Configuration
 		public String logfileDirectory = null;
 		public String lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
 
-		private void read() throws IOException
+		private void read()
 		{
 			recordLogs = getBool("Record Logfiles");
 			logfileDirectory = getString("Logfile Directory");
@@ -235,7 +235,7 @@ public class Configuration
 		public Color defaultLeftColor = new Color(0x2626ff);
 		public Color defaultRightColor = new Color(0xff2626);
 
-		private void read() throws IOException
+		private void read()
 		{
 			defaultRightColor = new Color(Integer.decode(getValue("<Right>")));
 			defaultLeftColor = new Color(Integer.decode(getValue("<Left>")));
@@ -274,28 +274,27 @@ public class Configuration
 		String key = line.substring(0, line.indexOf(":") - 1).trim();
 		String val = line.substring(line.indexOf(":") + 1).trim();
 
-		configList.add(new Pair<String, String>(key, val));
+		configList.add(new Pair<>(key, val));
 	}
 
 	private static String getValue(String key)
 	{
-		Pair<String, String> valuePair = new Pair<>(null, null);
-		valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
+		Pair<String, String> valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
 
 		return valuePair.getSecond();
 	}
 
-	private static boolean getBool(String key) throws IOException
+	private static boolean getBool(String key)
 	{
 		return Boolean.parseBoolean(getValue(key));
 	}
 
-	private static int getInt(String key) throws IOException
+	private static int getInt(String key)
 	{
 		return Integer.parseInt(getValue(key));
 	}
 
-	private static Integer getInteger(String key) throws IOException
+	private static Integer getInteger(String key)
 	{
 		try {
 			return Integer.parseInt(getValue(key));
@@ -304,12 +303,12 @@ public class Configuration
 		}
 	}
 
-	private static String getString(String key) throws IOException
+	private static String getString(String key)
 	{
 		return getValue(key);
 	}
 
-	private static String[] getStringList(String key) throws IOException
+	private static String[] getStringList(String key)
 	{
 		return getValue(key).split(", ?");
 	}
