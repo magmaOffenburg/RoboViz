@@ -30,6 +30,7 @@ public class Globals
 
 	public static void setLookFeel(String lookAndFeel)
 	{
+		LafManager.enableLogging(false);
 		try {
 			switch (lookAndFeel) {
 			case "system":
