@@ -61,6 +61,7 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.content.ContentManager;
 import rv.ui.UserInterface;
 import rv.ui.menus.MenuBar;
+import rv.util.MacEnhancements;
 import rv.util.commandline.Argument;
 import rv.util.commandline.BooleanArgument;
 import rv.util.commandline.IntegerArgument;
@@ -260,6 +261,10 @@ public class Viewer
 
 	private void initComponents(GLCapabilities caps)
 	{
+		if (MacEnhancements.IS_MAC) {
+			MacEnhancements.useSystemMenuBar();
+		}
+
 		Globals.setLookFeel(config.general.lookAndFeel);
 		canvas = new GLCanvas(caps);
 		canvas.setFocusTraversalKeysEnabled(false);
