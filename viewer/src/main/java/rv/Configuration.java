@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -31,7 +30,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+
 import rv.util.Pair;
 
 /**
@@ -97,29 +99,54 @@ public class Configuration
 			saveFrameState = getBool("Save Frame State");
 		}
 
-		private void write(BufferedWriter out) throws IOException
+		private void write(List<String> lines)
 		{
-			writeSection(out, "Graphics Settings");
-			writeVal(out, "Bloom", useBloom);
-			writeVal(out, "Phong", usePhong);
-			writeVal(out, "Shadows", useShadows);
-			writeVal(out, "Soft Shadows", useSoftShadows);
-			writeVal(out, "Shadow Resolution", shadowResolution);
-			writeVal(out, "Stereo 3D", useStereo);
-			writeVal(out, "V-Sync", useVsync);
-			writeVal(out, "FSAA", useFsaa);
-			writeVal(out, "FSAA Samples", fsaaSamples);
-			writeVal(out, "Target FPS", targetFPS);
-			writeVal(out, "First Person FOV", firstPersonFOV);
-			writeVal(out, "Third Person FOV", thirdPersonFOV);
-			writeVal(out, "Frame Width", frameWidth);
-			writeVal(out, "Frame Height", frameHeight);
-			writeVal(out, "Frame X", frameX);
-			writeVal(out, "Frame Y", frameY);
-			writeVal(out, "Center Frame", centerFrame);
-			writeVal(out, "Frame Maximized", isMaximized);
-			writeVal(out, "Save Frame State", saveFrameState);
-			out.write(getNewline());
+			writeVal(lines, "Bloom", useBloom);
+			writeVal(lines, "Phong", usePhong);
+			writeVal(lines, "Shadows", useShadows);
+			writeVal(lines, "Soft Shadows", useSoftShadows);
+			writeVal(lines, "Shadow Resolution", shadowResolution);
+			writeVal(lines, "Stereo 3D", useStereo);
+			writeVal(lines, "V-Sync", useVsync);
+			writeVal(lines, "FSAA", useFsaa);
+			writeVal(lines, "FSAA Samples", fsaaSamples);
+			writeVal(lines, "Target FPS", targetFPS);
+			writeVal(lines, "First Person FOV", firstPersonFOV);
+			writeVal(lines, "Third Person FOV", thirdPersonFOV);
+			writeVal(lines, "Frame Width", frameWidth);
+			writeVal(lines, "Frame Height", frameHeight);
+			writeVal(lines, "Frame X", frameX);
+			writeVal(lines, "Frame Y", frameY);
+			writeVal(lines, "Center Frame", centerFrame);
+			writeVal(lines, "Frame Maximized", isMaximized);
+			writeVal(lines, "Save Frame State", saveFrameState);
+		}
+
+		public boolean equals(Graphics other)
+		{
+			boolean equal = true;
+
+			equal &= this.useBloom == other.useBloom;
+			equal &= this.usePhong == other.usePhong;
+			equal &= this.useShadows == other.useShadows;
+			equal &= this.useSoftShadows == other.useSoftShadows;
+			equal &= this.useStereo == other.useStereo;
+			equal &= this.useVsync == other.useVsync;
+			equal &= this.useFsaa == other.useShadows;
+			equal &= this.centerFrame == other.centerFrame;
+			equal &= this.isMaximized == other.isMaximized;
+			equal &= this.saveFrameState == other.saveFrameState;
+			equal &= this.fsaaSamples == other.fsaaSamples;
+			equal &= this.targetFPS == other.targetFPS;
+			equal &= this.firstPersonFOV == other.firstPersonFOV;
+			equal &= this.thirdPersonFOV == other.thirdPersonFOV;
+			equal &= this.frameWidth == other.frameWidth;
+			equal &= this.frameHeight == other.frameHeight;
+			equal &= this.frameX == other.frameX;
+			equal &= this.frameY == other.frameY;
+			equal &= this.shadowResolution == other.shadowResolution;
+
+			return equal;
 		}
 	}
 
@@ -140,15 +167,26 @@ public class Configuration
 			playerIDs = getBool("Player IDs");
 		}
 
-		private void write(BufferedWriter out) throws IOException
+		private void write(List<String> lines)
 		{
-			writeSection(out, "Overlay Default Visibility");
-			writeVal(out, "Server Speed", serverSpeed);
-			writeVal(out, "Foul Overlay", foulOverlay);
-			writeVal(out, "Field Overlay", fieldOverlay);
-			writeVal(out, "Number of Players", numberOfPlayers);
-			writeVal(out, "Player IDs", playerIDs);
-			out.write(getNewline());
+			writeVal(lines, "Server Speed", serverSpeed);
+			writeVal(lines, "Foul Overlay", foulOverlay);
+			writeVal(lines, "Field Overlay", fieldOverlay);
+			writeVal(lines, "Number of Players", numberOfPlayers);
+			writeVal(lines, "Player IDs", playerIDs);
+		}
+
+		public boolean equals(OverlayVisibility other)
+		{
+			boolean equal = true;
+
+			equal &= this.serverSpeed == other.serverSpeed;
+			equal &= this.foulOverlay == other.foulOverlay;
+			equal &= this.fieldOverlay == other.fieldOverlay;
+			equal &= this.numberOfPlayers == other.numberOfPlayers;
+			equal &= this.playerIDs == other.playerIDs;
+
+			return equal;
 		}
 	}
 
@@ -174,15 +212,31 @@ public class Configuration
 			listenPort = getInt("Drawing Port");
 		}
 
-		private void write(BufferedWriter out) throws IOException
+		private void write(List<String> lines)
 		{
-			writeSection(out, "Networking Settings");
-			writeVal(out, "Auto-Connect", autoConnect);
-			writeVal(out, "Auto-Connect Delay", autoConnectDelay);
-			writeVal(out, "Server Hosts", serverHosts);
-			writeVal(out, "Server Port", serverPort);
-			writeVal(out, "Drawing Port", listenPort);
-			out.write(getNewline());
+			writeVal(lines, "Auto-Connect", autoConnect);
+			writeVal(lines, "Auto-Connect Delay", autoConnectDelay);
+			writeVal(lines, "Server Hosts", serverHosts);
+			writeVal(lines, "Server Port", serverPort);
+			writeVal(lines, "Drawing Port", listenPort);
+		}
+
+		public boolean equals(Networking other)
+		{
+			boolean equal = true;
+
+			equal &= this.autoConnect == other.autoConnect;
+			equal &= this.serverHost.equals(other.serverHost);
+			equal &= this.serverPort == other.serverPort;
+			equal &= this.listenPort == other.listenPort;
+			equal &= this.autoConnectDelay == other.autoConnectDelay;
+
+			equal &= this.serverHosts.size() == other.serverHosts.size();
+			for (String host : this.serverHosts) {
+				equal &= other.serverHosts.contains(host);
+			}
+
+			return equal;
 		}
 
 		public void overrideServerHost(String serverHost)
@@ -219,13 +273,22 @@ public class Configuration
 			lookAndFeel = getString("Look and Feel");
 		}
 
-		private void write(BufferedWriter out) throws IOException
+		private void write(List<String> lines)
 		{
-			writeSection(out, "General Settings");
-			writeVal(out, "Record Logfiles", recordLogs);
-			writeVal(out, "Logfile Directory", logfileDirectory);
-			writeVal(out, "Look and Feel", lookAndFeel);
-			out.write(getNewline());
+			writeVal(lines, "Record Logfiles", recordLogs);
+			writeVal(lines, "Logfile Directory", logfileDirectory);
+			writeVal(lines, "Look and Feel", lookAndFeel);
+		}
+
+		public boolean equals(General other)
+		{
+			boolean equal = true;
+
+			equal &= this.recordLogs == other.recordLogs;
+			equal &= this.logfileDirectory.equals(other.logfileDirectory);
+			equal &= this.lookAndFeel.equals(other.lookAndFeel);
+
+			return equal;
 		}
 	}
 
@@ -244,17 +307,43 @@ public class Configuration
 			colorByTeamName.put("<Left>", defaultLeftColor);
 		}
 
-		private void write(BufferedWriter out) throws IOException
+		private void write(List<String> lines)
 		{
-			writeSection(out, "Team Colors");
 			for (String teamName : colorByTeamName.keySet()) {
 				Color color = colorByTeamName.get(teamName);
-				writeVal(out, teamName, String.format("0x%06x", color.getRGB() & 0xFFFFFF));
+				writeVal(lines, teamName, String.format("0x%06x", color.getRGB() & 0xFFFFFF));
 			}
-			out.write(getNewline());
+		}
+
+		public boolean equals(TeamColors other)
+		{
+			boolean equal = true;
+
+			equal &= this.defaultLeftColor.equals(other.defaultLeftColor);
+			equal &= this.defaultRightColor.equals(other.defaultRightColor);
+
+			equal &= this.colorByTeamName.size() == other.colorByTeamName.size();
+			for (Entry<String, Color> entry : this.colorByTeamName.entrySet()) {
+				String key = entry.getKey();
+				if (entry.getValue() != null) {
+					equal &= entry.getValue().equals(other.colorByTeamName.get(key));
+				} else {
+					equal &= other.colorByTeamName.get(key) == null;
+				}
+			}
+
+			return equal;
 		}
 	}
 
+	// Original configuration read from config file
+	public final Graphics originalGraphics = new Graphics();
+	public final OverlayVisibility originalOverlayVisibility = new OverlayVisibility();
+	public final Networking originalNetworking = new Networking();
+	public final General originalGeneral = new General();
+	public final TeamColors originalTeamColors = new TeamColors();
+
+	// Current configuration
 	public final Graphics graphics = new Graphics();
 	public final OverlayVisibility overlayVisibility = new OverlayVisibility();
 	public final Networking networking = new Networking();
@@ -263,18 +352,20 @@ public class Configuration
 
 	private boolean checkLine(String line)
 	{
-		return (line.length() > 0 && !line.startsWith("#") &&
-				!(line.equals("Graphics Settings:") || line.equals("Overlay Default Visibility:") ||
-						line.equals("Networking Settings:") || line.equals("General Settings:") ||
-						line.equals("Team Colors:")));
+		return (line.trim().length() > 0 && !line.startsWith("#"));
 	}
 
 	private void parseLine(String line)
 	{
-		String key = line.substring(0, line.indexOf(":") - 1).trim();
-		String val = line.substring(line.indexOf(":") + 1).trim();
+		try {
+			String key = line.substring(0, line.indexOf(":") - 1).trim();
+			String val = line.substring(line.indexOf(":") + 1).trim();
 
-		configList.add(new Pair<>(key, val));
+			configList.add(new Pair<>(key, val));
+		} catch (IndexOutOfBoundsException e) {
+			// Line doesn't contain a colon
+			System.err.println("\"" + line + "\" is not a valid key-value pair.");
+		}
 	}
 
 	private static String getValue(String key)
@@ -313,29 +404,43 @@ public class Configuration
 		return getValue(key).split(", ?");
 	}
 
-	private static void writeSection(Writer out, String name) throws IOException
+	private static void writeConfigLine(List<String> configLines, String name, String newString)
 	{
-		out.write(name + ":" + getNewline());
+		// Escape special regex characters
+		name = name.replace("\\", "\\\\");
+		name = name.replace(".", "\\.");
+		name = name.replace("*", "\\*");
+
+		// Replace existing line
+		for (String line : configLines) {
+			if (line.matches("^" + name + " *:.*$")) {
+				configLines.set(configLines.indexOf(line), newString);
+				return;
+			}
+		}
+
+		// Name not existing in config file
+		configLines.add(newString);
 	}
 
-	private static void writeVal(Writer out, String name, int value) throws IOException
+	private static void writeVal(List<String> configLines, String name, int value)
 	{
-		out.write(formatProperty('d', name, value));
+		writeConfigLine(configLines, name, formatProperty('d', name, value));
 	}
 
-	private static void writeVal(Writer out, String name, boolean value) throws IOException
+	private static void writeVal(List<String> configLines, String name, boolean value)
 	{
-		out.write(formatProperty('b', name, value));
+		writeConfigLine(configLines, name, formatProperty('b', name, value));
 	}
 
-	private static void writeVal(Writer out, String name, String value) throws IOException
+	private static void writeVal(List<String> configLines, String name, String value)
 	{
-		out.write(formatProperty('s', name, value));
+		writeConfigLine(configLines, name, formatProperty('s', name, value));
 	}
 
-	private static void writeVal(Writer out, String name, List<String> values) throws IOException
+	private static void writeVal(List<String> configLines, String name, List<String> values)
 	{
-		out.write(formatProperty('s', name, join(values, ", ")));
+		writeConfigLine(configLines, name, formatProperty('s', name, join(values, ", ")));
 	}
 
 	private static String join(Collection<String> data, String separator)
@@ -352,7 +457,7 @@ public class Configuration
 
 	private static String formatProperty(char type, String name, Object value)
 	{
-		return String.format("%-20s : %" + type + getNewline(), name, value);
+		return String.format("%-20s : %" + type, name, value);
 	}
 
 	private static String getNewline()
@@ -360,17 +465,51 @@ public class Configuration
 		return System.getProperty("line.separator");
 	}
 
+	public boolean didChange()
+	{
+		return !(graphics.equals(originalGraphics) && overlayVisibility.equals(originalOverlayVisibility) &&
+				 networking.equals(originalNetworking) && general.equals(originalGeneral) &&
+				 teamColors.equals(originalTeamColors));
+	}
+
+	public void readLines(File file, Consumer<? super String> action)
+	{
+		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
+			stream.forEach(action);
+		} catch (NoSuchFileException nf) {
+			System.err.println("Could not find config file");
+			nf.printStackTrace();
+			System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
 	public void write()
 	{
+		if (!didChange()) {
+			// Doesn't need to be saved if nothing changed
+			return;
+		}
+
 		File configFile = new File(getConfigFilePath());
+
+		// Read configuration including comments
+		List<String> lines = new LinkedList<String>();
+		readLines(configFile, line -> lines.add(line));
+
+		graphics.write(lines);
+		overlayVisibility.write(lines);
+		networking.write(lines);
+		general.write(lines);
+		teamColors.write(lines);
+
+		// Write modified configuration file back
 		BufferedWriter out = null;
 		try {
 			out = new BufferedWriter(new FileWriter(configFile));
-			graphics.write(out);
-			overlayVisibility.write(out);
-			networking.write(out);
-			general.write(out);
-			teamColors.write(out);
+			out.write(join(lines, getNewline()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -387,20 +526,11 @@ public class Configuration
 	private Configuration read(File file)
 	{
 		// parse the configuration file
-		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
-			stream.forEach(line -> {
-				if (checkLine(line)) {
-					parseLine(line);
-				}
-			});
-		} catch (NoSuchFileException nf) {
-			System.err.println("Could not find config file");
-			nf.printStackTrace();
-			System.exit(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		readLines(file, line -> {
+			if (checkLine(line)) {
+				parseLine(line);
+			}
+		});
 
 		// read the parsed data
 		try {
@@ -409,6 +539,13 @@ public class Configuration
 			networking.read();
 			general.read();
 			teamColors.read();
+
+			// Read again to store the original configuration
+			originalGraphics.read();
+			originalOverlayVisibility.read();
+			originalNetworking.read();
+			originalGeneral.read();
+			originalTeamColors.read();
 		} catch (Exception e) {
 			System.err.println(
 					"Error reading values from config file '" + file +

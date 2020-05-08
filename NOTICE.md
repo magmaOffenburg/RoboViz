@@ -7,3 +7,4 @@ This product includes software developed by the following individuals:
 - Patrick MacAlpine
 - Philipp Strobel
 - Jannik Seiler
+- Hannes Braun
