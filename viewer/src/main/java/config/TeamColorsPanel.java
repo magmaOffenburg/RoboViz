@@ -1,12 +1,13 @@
 package config;
 
-import config.RVConfigure.SaveListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.function.Consumer;
+
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,9 +17,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.Globals;
 import rv.util.swing.SwingUtil;
@@ -33,6 +38,8 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 	JTable teamColorTable;
 	DefaultTableModel tableModel;
 
+	private Consumer<Void> onChange;
+
 	public TeamColorsPanel(RVConfigure configProg)
 	{
 		super();
@@ -40,6 +47,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 		config = configProg.config.teamColors;
 		initGUI();
 		configProg.listeners.add(this);
+		onChange = configProg.updateSaveButton;
 	}
 
 	void initGUI()
@@ -95,6 +103,15 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			i++;
 		}
 
+		tableModel.addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e)
+			{
+				updateColorByTeamNameConfig();
+				onChange.accept(null);
+			}
+		});
+
 		teamColorTable = new JTable(tableModel);
 		teamColorTable.setDefaultRenderer(Color.class, new ColorRenderer());
 		teamColorTable.setDefaultEditor(Color.class, new ColorEditor());
@@ -122,8 +139,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			teamColorTable.setRowSelectionInterval(tableModel.getRowCount() - 1, tableModel.getRowCount() - 1);
 	}
 
-	@Override
-	public void configSaved(RVConfigure configProg)
+	private void updateColorByTeamNameConfig()
 	{
 		config.colorByTeamName.clear();
 		for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -131,6 +147,12 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			Color color = (Color) tableModel.getValueAt(i, 1);
 			config.colorByTeamName.put(teamName, color);
 		}
+	}
+
+	@Override
+	public void configSaved(RVConfigure configProg)
+	{
+		updateColorByTeamNameConfig();
 	}
 
 	private static class TeamColorsTableModel extends DefaultTableModel
@@ -156,6 +178,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			setOpaque(true);
 		}
 
+		@Override
 		public Component getTableCellRendererComponent(
 				JTable table, Object color, boolean isSelected, boolean hasFocus, int row, int column)
 		{
@@ -202,6 +225,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			dialog.setIconImage(Globals.getIcon());
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			if (EDIT.equals(e.getActionCommand())) {
@@ -217,11 +241,13 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 			}
 		}
 
+		@Override
 		public Object getCellEditorValue()
 		{
 			return currentColor;
 		}
 
+		@Override
 		public Component getTableCellEditorComponent(
 				JTable table, Object value, boolean isSelected, int row, int column)
 		{

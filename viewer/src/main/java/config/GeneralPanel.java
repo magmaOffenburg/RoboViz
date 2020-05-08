@@ -1,8 +1,9 @@
 package config;
 
-import config.RVConfigure.SaveListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.function.Consumer;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -10,6 +11,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.FileChooser;
 import rv.util.swing.SwingUtil;
@@ -23,12 +28,15 @@ public class GeneralPanel extends JPanel implements SaveListener
 	JTextField logDirectoryTF;
 	JButton openDirectoryButton;
 
+	private Consumer<Void> onChange;
+
 	public GeneralPanel(RVConfigure configProg)
 	{
 		super();
 		this.configProg = configProg;
 		this.config = configProg.config.general;
 		configProg.listeners.add(this);
+		onChange = configProg.updateSaveButton;
 		initGUI();
 	}
 
@@ -53,7 +61,33 @@ public class GeneralPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		recordLogsCB = new JCheckBox("Record Logfiles", config.recordLogs);
+		recordLogsCB.addChangeListener(e -> {
+			config.recordLogs = recordLogsCB.isSelected();
+			onChange.accept(null);
+		});
 		logDirectoryTF = new JTextField(config.logfileDirectory);
+		logDirectoryTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				config.logfileDirectory = logDirectoryTF.getText();
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				config.logfileDirectory = logDirectoryTF.getText();
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				config.logfileDirectory = logDirectoryTF.getText();
+				onChange.accept(null);
+			}
+		});
 		SwingUtil.setPreferredWidth(logDirectoryTF, 150);
 		openDirectoryButton = new JButton("...");
 		openDirectoryButton.addActionListener(e -> {

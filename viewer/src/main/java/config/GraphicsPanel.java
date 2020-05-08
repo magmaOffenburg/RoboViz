@@ -19,6 +19,7 @@ package config;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -28,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import config.RVConfigure.SaveListener;
 import rv.Configuration;
@@ -59,11 +62,14 @@ public class GraphicsPanel extends JPanel implements SaveListener
 	final JLabel shadowResLabel = new JLabel("Shadow Resolution: ", SwingConstants.RIGHT);
 	final JLabel samplesLabel = new JLabel("Samples: ", SwingConstants.RIGHT);
 
+	private Consumer<Void> onChange;
+
 	public GraphicsPanel(RVConfigure configProg)
 	{
 		config = configProg.config.graphics;
 		initGUI();
 		configProg.listeners.add(this);
+		onChange = configProg.updateSaveButton;
 	}
 
 	void initGUI()
@@ -107,8 +113,34 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		fsaaCB = new JCheckBox("Enabled", config.useFsaa);
-		fsaaCB.addChangeListener(e -> updateAAEnabled());
+		fsaaCB.addChangeListener(e -> {
+			updateAAEnabled();
+			config.useFsaa = fsaaCB.isSelected();
+			onChange.accept(null);
+		});
 		samplesTF = new IntegerTextField(config.fsaaSamples, 1, Integer.MAX_VALUE);
+		samplesTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				updateFsaaSamplesConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				updateFsaaSamplesConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				updateFsaaSamplesConfig(false);
+				onChange.accept(null);
+			}
+		});
 		updateAAEnabled();
 
 		addConstrained(fsaaCB, panel, c, 0, 0);
@@ -134,10 +166,30 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		stereoCB = new JCheckBox("Stereo 3D", config.useStereo);
+		stereoCB.addChangeListener(e -> {
+			config.useStereo = stereoCB.isSelected();
+			onChange.accept(null);
+		});
 		vsyncCB = new JCheckBox("V-Sync", config.useVsync);
+		vsyncCB.addChangeListener(e -> {
+			config.useVsync = vsyncCB.isSelected();
+			onChange.accept(null);
+		});
 		fpsSpinner = createSpinner(config.targetFPS, 1, 60);
+		fpsSpinner.addChangeListener(e -> {
+			config.targetFPS = (Integer) fpsSpinner.getValue();
+			onChange.accept(null);
+		});
 		fpFovSpinner = createSpinner(config.firstPersonFOV, 1, 300);
+		fpFovSpinner.addChangeListener(e -> {
+			config.firstPersonFOV = (Integer) fpFovSpinner.getValue();
+			onChange.accept(null);
+		});
 		tpFovSpinner = createSpinner(config.thirdPersonFOV, 1, 300);
+		tpFovSpinner.addChangeListener(e -> {
+			config.thirdPersonFOV = (Integer) tpFovSpinner.getValue();
+			onChange.accept(null);
+		});
 
 		int y = 0;
 		addConstrained(stereoCB, panel, c, 0, y);
@@ -172,14 +224,42 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		fxSpinner = createSpinner(config.frameX, -100, 10000);
+		fxSpinner.addChangeListener(e -> {
+			config.frameX = (Integer) fxSpinner.getValue();
+			onChange.accept(null);
+		});
 		fySpinner = createSpinner(config.frameY, -100, 10000);
+		fySpinner.addChangeListener(e -> {
+			config.frameY = (Integer) fySpinner.getValue();
+			onChange.accept(null);
+		});
 		fwSpinner = createSpinner(config.frameWidth, 1, 10000);
+		fwSpinner.addChangeListener(e -> {
+			config.frameWidth = (Integer) fwSpinner.getValue();
+			onChange.accept(null);
+		});
 		fhSpinner = createSpinner(config.frameHeight, 1, 10000);
+		fhSpinner.addChangeListener(e -> {
+			config.frameHeight = (Integer) fhSpinner.getValue();
+			onChange.accept(null);
+		});
 		maximizedCB = new JCheckBox("Maximized", config.isMaximized);
+		maximizedCB.addChangeListener(e -> {
+			config.isMaximized = maximizedCB.isSelected();
+			onChange.accept(null);
+		});
 		centerCB = new JCheckBox("Center Position", config.centerFrame);
-		centerCB.addActionListener(e -> updateFramePositionEnabled());
+		centerCB.addChangeListener(e -> {
+			updateFramePositionEnabled();
+			config.centerFrame = centerCB.isSelected();
+			onChange.accept(null);
+		});
 		updateFramePositionEnabled();
 		saveStateCB = new JCheckBox("Save Frame State", config.saveFrameState);
+		saveStateCB.addChangeListener(e -> {
+			config.saveFrameState = saveStateCB.isSelected();
+			onChange.accept(null);
+		});
 
 		int y = 0;
 		addLabel("X: ", panel, c, 0, y);
@@ -225,12 +305,50 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 
 		bloomCB = new JCheckBox("Bloom", config.useBloom);
+		bloomCB.addChangeListener(e -> {
+			config.useBloom = bloomCB.isSelected();
+			onChange.accept(null);
+		});
 		phongCB = new JCheckBox("Phong", config.usePhong);
+		phongCB.addChangeListener(e -> {
+			config.usePhong = phongCB.isSelected();
+			onChange.accept(null);
+		});
 		shadowCB = new JCheckBox("Shadows", config.useShadows);
-		shadowCB.addChangeListener(arg0 -> updateShadowsEnabled());
+		shadowCB.addChangeListener(e -> {
+			updateShadowsEnabled();
+			config.useShadows = shadowCB.isSelected();
+			onChange.accept(null);
+		});
 
 		softShadowCB = new JCheckBox("Soft Shadows", config.useSoftShadows);
+		softShadowCB.addChangeListener(e -> {
+			config.useSoftShadows = softShadowCB.isSelected();
+			onChange.accept(null);
+		});
 		shadowResTB = new IntegerTextField(config.shadowResolution, 1, Integer.MAX_VALUE);
+		shadowResTB.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				updateShadowResolutionConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				updateShadowResolutionConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				updateShadowResolutionConfig(false);
+				onChange.accept(null);
+			}
+		});
 		updateShadowsEnabled();
 
 		addConstrained(phongCB, panel, c, 0, 0);
@@ -251,6 +369,28 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		shadowResLabel.setEnabled(shadowCB.isSelected());
 	}
 
+	private void updateFsaaSamplesConfig(boolean resetOnError)
+	{
+		try {
+			config.fsaaSamples = samplesTF.getInt();
+		} catch (Exception e) {
+			if (resetOnError) {
+				samplesTF.setText(config.fsaaSamples + "");
+			}
+		}
+	}
+
+	private void updateShadowResolutionConfig(boolean resetOnError)
+	{
+		try {
+			config.fsaaSamples = samplesTF.getInt();
+		} catch (Exception e) {
+			if (resetOnError) {
+				samplesTF.setText(config.fsaaSamples + "");
+			}
+		}
+	}
+
 	@Override
 	public void configSaved(RVConfigure configProg)
 	{
@@ -262,17 +402,8 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		config.useStereo = stereoCB.isSelected();
 		config.useVsync = vsyncCB.isSelected();
 
-		try {
-			config.fsaaSamples = samplesTF.getInt();
-		} catch (Exception e) {
-			samplesTF.setText(config.fsaaSamples + "");
-		}
-
-		try {
-			config.shadowResolution = shadowResTB.getInt();
-		} catch (Exception e) {
-			shadowResTB.setText(config.shadowResolution + "");
-		}
+		updateFsaaSamplesConfig(true);
+		updateShadowResolutionConfig(true);
 
 		config.targetFPS = (Integer) fpsSpinner.getValue();
 		config.firstPersonFOV = (Integer) fpFovSpinner.getValue();

@@ -19,6 +19,7 @@ package config;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -27,6 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import config.RVConfigure.SaveListener;
 import rv.Configuration;
@@ -45,10 +48,13 @@ public class NetworkPanel extends JPanel implements SaveListener
 	IntegerTextField drawingPortTF;
 	IntegerTextField autoConnectDelayTF;
 
+	private Consumer<Void> onChange;
+
 	public NetworkPanel(RVConfigure configProg)
 	{
 		this.config = configProg.config.networking;
 		configProg.listeners.add(this);
+		onChange = configProg.updateSaveButton;
 		initGUI();
 	}
 
@@ -105,12 +111,38 @@ public class NetworkPanel extends JPanel implements SaveListener
 		c.gridx = 1;
 		c.gridy = 2;
 		autoConnectDelayTF = new IntegerTextField(config.autoConnectDelay, 1, Integer.MAX_VALUE);
+		autoConnectDelayTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				updateAutoConnectDelayConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				updateAutoConnectDelayConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				updateAutoConnectDelayConfig(false);
+				onChange.accept(null);
+			}
+		});
 		panel.add(autoConnectDelayTF, c);
 
 		c.gridx = 1;
 		c.gridy = 3;
 		autoConnectCB = new JCheckBox("Auto-Connect", config.autoConnect);
-		autoConnectCB.addChangeListener(e -> updateAutoConnectEnabled());
+		autoConnectCB.addChangeListener(e -> {
+			updateAutoConnectEnabled();
+			config.autoConnect = autoConnectCB.isSelected();
+			onChange.accept(null);
+		});
 		updateAutoConnectEnabled();
 
 		panel.add(autoConnectCB, c);
@@ -138,9 +170,53 @@ public class NetworkPanel extends JPanel implements SaveListener
 		c.gridy = 0;
 		drawingPortTF = new PortTextField(config.listenPort);
 		drawingPortTF.setPreferredSize(new Dimension(150, 28));
+		drawingPortTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				updateListenPort(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				updateListenPort(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				updateListenPort(false);
+				onChange.accept(null);
+			}
+		});
 		panel.add(drawingPortTF, c);
 
 		return panel;
+	}
+
+	private void updateAutoConnectDelayConfig(boolean resetOnError)
+	{
+		try {
+			config.autoConnectDelay = autoConnectDelayTF.getInt();
+		} catch (Exception e) {
+			if (resetOnError) {
+				autoConnectDelayTF.setText("" + config.autoConnectDelay);
+			}
+		}
+	}
+
+	private void updateListenPort(boolean resetOnError)
+	{
+		try {
+			config.listenPort = drawingPortTF.getInt();
+		} catch (Exception e) {
+			if (resetOnError) {
+				drawingPortTF.setText("" + config.listenPort);
+			}
+		}
 	}
 
 	@Override
@@ -154,18 +230,9 @@ public class NetworkPanel extends JPanel implements SaveListener
 			serverPortTF.setText("" + config.serverPort);
 		}
 
+		updateListenPort(true);
+
 		config.autoConnect = autoConnectCB.isSelected();
-
-		try {
-			config.autoConnectDelay = autoConnectDelayTF.getInt();
-		} catch (Exception e) {
-			autoConnectDelayTF.setText("" + config.autoConnectDelay);
-		}
-
-		try {
-			config.listenPort = drawingPortTF.getInt();
-		} catch (Exception e) {
-			drawingPortTF.setText("" + config.listenPort);
-		}
+		updateAutoConnectDelayConfig(true);
 	}
 }
