@@ -16,19 +16,20 @@
 
 package config;
 
-import config.RVConfigure.SaveListener;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.util.swing.SwingUtil;
 
@@ -46,8 +47,8 @@ public class GraphicsPanel extends JPanel implements SaveListener
 	JCheckBox maximizedCB;
 	JCheckBox centerCB;
 	JCheckBox saveStateCB;
-	JTextField samplesTF;
-	JTextField shadowResTB;
+	IntegerTextField samplesTF;
+	IntegerTextField shadowResTB;
 	JSpinner fpsSpinner;
 	JSpinner fpFovSpinner;
 	JSpinner tpFovSpinner;
@@ -262,13 +263,13 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		config.useVsync = vsyncCB.isSelected();
 
 		try {
-			config.fsaaSamples = Integer.parseInt(samplesTF.getText());
+			config.fsaaSamples = samplesTF.getInt();
 		} catch (Exception e) {
 			samplesTF.setText(config.fsaaSamples + "");
 		}
 
 		try {
-			config.shadowResolution = Integer.parseInt(shadowResTB.getText());
+			config.shadowResolution = shadowResTB.getInt();
 		} catch (Exception e) {
 			shadowResTB.setText(config.shadowResolution + "");
 		}

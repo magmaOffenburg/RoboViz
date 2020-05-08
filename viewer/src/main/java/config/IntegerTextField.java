@@ -1,6 +1,8 @@
 package config;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.text.NumberFormatter;
 
@@ -16,5 +18,10 @@ public class IntegerTextField extends JFormattedTextField
 		formatter.setMaximum(maxValue);
 		formatter.setAllowsInvalid(false);
 		setFormatter(formatter);
+	}
+
+	public int getInt() throws ParseException
+	{
+		return NumberFormat.getInstance().parse(getText()).intValue();
 	}
 }

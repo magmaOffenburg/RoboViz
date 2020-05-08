@@ -16,10 +16,10 @@
 
 package config;
 
-import config.RVConfigure.SaveListener;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -27,6 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import config.RVConfigure.SaveListener;
 import rv.Configuration;
 
 /**
@@ -39,9 +41,9 @@ public class NetworkPanel extends JPanel implements SaveListener
 	final Configuration.Networking config;
 	JCheckBox autoConnectCB;
 	JTextField serverHostTF;
-	JTextField serverPortTF;
-	JTextField drawingPortTF;
-	JTextField autoConnectDelayTF;
+	IntegerTextField serverPortTF;
+	IntegerTextField drawingPortTF;
+	IntegerTextField autoConnectDelayTF;
 
 	public NetworkPanel(RVConfigure configProg)
 	{
@@ -147,7 +149,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 		config.serverHost = serverHostTF.getText();
 
 		try {
-			config.serverPort = Integer.parseInt(serverPortTF.getText());
+			config.serverPort = serverPortTF.getInt();
 		} catch (Exception e) {
 			serverPortTF.setText("" + config.serverPort);
 		}
@@ -155,13 +157,13 @@ public class NetworkPanel extends JPanel implements SaveListener
 		config.autoConnect = autoConnectCB.isSelected();
 
 		try {
-			config.autoConnectDelay = Integer.parseInt(autoConnectDelayTF.getText());
+			config.autoConnectDelay = autoConnectDelayTF.getInt();
 		} catch (Exception e) {
 			autoConnectDelayTF.setText("" + config.autoConnectDelay);
 		}
 
 		try {
-			config.listenPort = Integer.parseInt(drawingPortTF.getText());
+			config.listenPort = drawingPortTF.getInt();
 		} catch (Exception e) {
 			drawingPortTF.setText("" + config.listenPort);
 		}
