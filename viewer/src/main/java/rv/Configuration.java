@@ -132,7 +132,7 @@ public class Configuration
 			equal &= this.useSoftShadows == other.useSoftShadows;
 			equal &= this.useStereo == other.useStereo;
 			equal &= this.useVsync == other.useVsync;
-			equal &= this.useFsaa == other.useShadows;
+			equal &= this.useFsaa == other.useFsaa;
 			equal &= this.centerFrame == other.centerFrame;
 			equal &= this.isMaximized == other.isMaximized;
 			equal &= this.saveFrameState == other.saveFrameState;
@@ -147,6 +147,33 @@ public class Configuration
 			equal &= this.shadowResolution == other.shadowResolution;
 
 			return equal;
+		}
+
+		@Override
+		public Graphics clone()
+		{
+			Graphics clone = new Graphics();
+			clone.useBloom = this.useBloom;
+			clone.usePhong = this.usePhong;
+			clone.useShadows = this.useShadows;
+			clone.useSoftShadows = this.useSoftShadows;
+			clone.useStereo = this.useStereo;
+			clone.useVsync = this.useVsync;
+			clone.useFsaa = this.useFsaa;
+			clone.centerFrame = this.centerFrame;
+			clone.isMaximized = this.isMaximized;
+			clone.saveFrameState = this.saveFrameState;
+			clone.fsaaSamples = this.fsaaSamples;
+			clone.targetFPS = this.targetFPS;
+			clone.firstPersonFOV = this.firstPersonFOV;
+			clone.thirdPersonFOV = this.thirdPersonFOV;
+			clone.frameWidth = this.frameWidth;
+			clone.frameHeight = this.frameHeight;
+			clone.frameX = this.frameX;
+			clone.frameY = this.frameY;
+			clone.shadowResolution = this.shadowResolution;
+
+			return clone;
 		}
 	}
 
@@ -187,6 +214,19 @@ public class Configuration
 			equal &= this.playerIDs == other.playerIDs;
 
 			return equal;
+		}
+
+		@Override
+		public OverlayVisibility clone()
+		{
+			OverlayVisibility clone = new OverlayVisibility();
+			clone.serverSpeed = this.serverSpeed;
+			clone.foulOverlay = this.foulOverlay;
+			clone.fieldOverlay = this.fieldOverlay;
+			clone.numberOfPlayers = this.numberOfPlayers;
+			clone.playerIDs = this.playerIDs;
+
+			return clone;
 		}
 	}
 
@@ -237,6 +277,24 @@ public class Configuration
 			}
 
 			return equal;
+		}
+
+		@Override
+		public Networking clone()
+		{
+			Networking clone = new Networking();
+			clone.autoConnect = this.autoConnect;
+			clone.serverHost = this.serverHost;
+			clone.serverPort = this.serverPort;
+			clone.listenPort = this.listenPort;
+			clone.autoConnectDelay = this.autoConnectDelay;
+
+			clone.serverHosts = new LinkedList<>();
+			for (String host : serverHosts) {
+				clone.serverHosts.add(host);
+			}
+
+			return clone;
 		}
 
 		public void overrideServerHost(String serverHost)
@@ -290,6 +348,17 @@ public class Configuration
 
 			return equal;
 		}
+
+		@Override
+		public General clone()
+		{
+			General clone = new General();
+			clone.recordLogs = this.recordLogs;
+			clone.logfileDirectory = this.logfileDirectory;
+			clone.lookAndFeel = this.lookAndFeel;
+
+			return clone;
+		}
 	}
 
 	public static class TeamColors
@@ -334,14 +403,28 @@ public class Configuration
 
 			return equal;
 		}
+
+		@Override
+		public TeamColors clone()
+		{
+			TeamColors clone = new TeamColors();
+			clone.defaultLeftColor = new Color(this.defaultLeftColor.getRGB());
+			clone.defaultRightColor = new Color(this.defaultRightColor.getRGB());
+
+			for (Entry<String, Color> entry : this.colorByTeamName.entrySet()) {
+				clone.colorByTeamName.put(entry.getKey(), entry.getValue());
+			}
+
+			return clone;
+		}
 	}
 
 	// Original configuration read from config file
-	public final Graphics originalGraphics = new Graphics();
-	public final OverlayVisibility originalOverlayVisibility = new OverlayVisibility();
-	public final Networking originalNetworking = new Networking();
-	public final General originalGeneral = new General();
-	public final TeamColors originalTeamColors = new TeamColors();
+	private Graphics originalGraphics = new Graphics();
+	private OverlayVisibility originalOverlayVisibility = new OverlayVisibility();
+	private Networking originalNetworking = new Networking();
+	private General originalGeneral = new General();
+	private TeamColors originalTeamColors = new TeamColors();
 
 	// Current configuration
 	public final Graphics graphics = new Graphics();
@@ -472,6 +555,15 @@ public class Configuration
 				 teamColors.equals(originalTeamColors));
 	}
 
+	private void setCurrentStateAsOriginal()
+	{
+		originalGraphics = graphics.clone();
+		originalOverlayVisibility = overlayVisibility.clone();
+		originalNetworking = networking.clone();
+		originalGeneral = general.clone();
+		originalTeamColors = teamColors.clone();
+	}
+
 	public void readLines(File file, Consumer<? super String> action)
 	{
 		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
@@ -510,6 +602,7 @@ public class Configuration
 		try {
 			out = new BufferedWriter(new FileWriter(configFile));
 			out.write(join(lines, getNewline()));
+			setCurrentStateAsOriginal();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -540,12 +633,7 @@ public class Configuration
 			general.read();
 			teamColors.read();
 
-			// Read again to store the original configuration
-			originalGraphics.read();
-			originalOverlayVisibility.read();
-			originalNetworking.read();
-			originalGeneral.read();
-			originalTeamColors.read();
+			setCurrentStateAsOriginal();
 		} catch (Exception e) {
 			System.err.println(
 					"Error reading values from config file '" + file +
