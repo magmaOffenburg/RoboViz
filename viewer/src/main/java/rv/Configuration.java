@@ -25,13 +25,14 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import rv.util.Pair;
@@ -44,7 +45,7 @@ import rv.util.Pair;
 public class Configuration
 {
 	private static final String CONFIG_FILE_NAME = "config.txt";
-	private static ArrayList<Pair<String, String>> configList = new ArrayList<>();
+	private ArrayList<Pair<String, String>> configList = new ArrayList<>();
 
 	private static String getConfigFilePath()
 	{
@@ -54,7 +55,7 @@ public class Configuration
 		return CONFIG_FILE_NAME;
 	}
 
-	public static class Graphics
+	public class Graphics
 	{
 		public boolean useBloom = false;
 		public boolean usePhong = false;
@@ -92,8 +93,8 @@ public class Configuration
 			thirdPersonFOV = getInt("Third Person FOV");
 			frameWidth = getInt("Frame Width");
 			frameHeight = getInt("Frame Height");
-			frameX = getInteger("Frame X");
-			frameY = getInteger("Frame Y");
+			frameX = getInt("Frame X");
+			frameY = getInt("Frame Y");
 			centerFrame = getBool("Center Frame");
 			isMaximized = getBool("Frame Maximized");
 			saveFrameState = getBool("Save Frame State");
@@ -177,7 +178,7 @@ public class Configuration
 		}
 	}
 
-	public static class OverlayVisibility
+	public class OverlayVisibility
 	{
 		public boolean serverSpeed = true;
 		public boolean foulOverlay = true;
@@ -230,35 +231,54 @@ public class Configuration
 		}
 	}
 
-	public static class Networking
+	public class Networking
 	{
 		public boolean autoConnect = true;
-		public String serverHost = "localhost";
-		public List<String> serverHosts;
-		public int serverPort = 3200;
+		public List<Pair<String, Integer>> servers;
+		public String defaultServerHost = "localhost";
+		public int defaultServerPort = 3200;
 		public int listenPort = 32769;
 		public int autoConnectDelay = 1000;
 
-		public String overriddenServerHost = null;
+		private String overriddenServerHost = null;
 		private Integer overriddenServerPort = null;
 
 		private void read()
 		{
 			autoConnect = getBool("Auto-Connect");
 			autoConnectDelay = getInt("Auto-Connect Delay");
-			serverHosts = new LinkedList<>(Arrays.asList(getStringList("Server Hosts")));
-			serverHost = serverHosts.get(0);
-			serverPort = getInt("Server Port");
+			defaultServerHost = getString("Default Server Host");
+			defaultServerPort = getInt("Default Server Port");
 			listenPort = getInt("Drawing Port");
+
+			servers = new LinkedList<>();
+			List<String> serverValues = getAllValues("Server");
+			for (String serverValue : serverValues) {
+				Pair<String, String> decodedServer = decodeValueValuePair(serverValue);
+				servers.add(new Pair<>(decodedServer.getFirst(), Integer.decode(decodedServer.getSecond())));
+			}
+			if (servers.size() == 0) {
+				servers.add(new Pair<>(defaultServerHost, defaultServerPort));
+			} else {
+				// Remove duplicates (if existing)
+				servers = servers.stream().distinct().collect(Collectors.toList());
+			}
 		}
 
 		private void write(List<String> lines)
 		{
 			writeVal(lines, "Auto-Connect", autoConnect);
 			writeVal(lines, "Auto-Connect Delay", autoConnectDelay);
-			writeVal(lines, "Server Hosts", serverHosts);
-			writeVal(lines, "Server Port", serverPort);
+			writeVal(lines, "Default Server Host", defaultServerHost);
+			writeVal(lines, "Default Server Port", defaultServerPort);
 			writeVal(lines, "Drawing Port", listenPort);
+
+			List<String> encodedServers =
+					servers.stream()
+							.distinct()
+							.map(server -> encodeValueValuePair(server.getFirst(), server.getSecond().toString()))
+							.collect(Collectors.toList());
+			writeValList(lines, "Server", encodedServers);
 		}
 
 		public boolean equals(Networking other)
@@ -266,14 +286,14 @@ public class Configuration
 			boolean equal = true;
 
 			equal &= this.autoConnect == other.autoConnect;
-			equal &= this.serverHost.equals(other.serverHost);
-			equal &= this.serverPort == other.serverPort;
+			equal &= this.defaultServerHost.equals(other.defaultServerHost);
+			equal &= this.defaultServerPort == other.defaultServerPort;
 			equal &= this.listenPort == other.listenPort;
 			equal &= this.autoConnectDelay == other.autoConnectDelay;
 
-			equal &= this.serverHosts.size() == other.serverHosts.size();
-			for (String host : this.serverHosts) {
-				equal &= other.serverHosts.contains(host);
+			equal &= this.servers.size() == other.servers.size();
+			for (Pair<String, Integer> server : this.servers) {
+				equal &= other.servers.contains(server);
 			}
 
 			return equal;
@@ -284,41 +304,46 @@ public class Configuration
 		{
 			Networking clone = new Networking();
 			clone.autoConnect = this.autoConnect;
-			clone.serverHost = this.serverHost;
-			clone.serverPort = this.serverPort;
+			clone.defaultServerHost = this.defaultServerHost;
+			clone.defaultServerPort = this.defaultServerPort;
 			clone.listenPort = this.listenPort;
 			clone.autoConnectDelay = this.autoConnectDelay;
 
-			clone.serverHosts = new LinkedList<>();
-			for (String host : serverHosts) {
-				clone.serverHosts.add(host);
+			clone.servers = new LinkedList<>();
+			for (Pair<String, Integer> server : this.servers) {
+				clone.servers.add(new Pair<>(server.getFirst(), server.getSecond()));
 			}
 
 			return clone;
 		}
 
-		public void overrideServerHost(String serverHost)
+		public void overrideServer(String serverHost, Integer serverPort)
 		{
-			this.overriddenServerHost = serverHost;
+			if (serverHost != null) {
+				this.overriddenServerHost = serverHost;
+			} else {
+				this.overriddenServerHost = defaultServerHost;
+			}
+
+			if (serverPort != null) {
+				this.overriddenServerPort = serverPort;
+			} else {
+				this.overriddenServerPort = defaultServerPort;
+			}
 		}
 
-		public void overrideServerPort(Integer serverPort)
+		public String getOverriddenServerHost()
 		{
-			this.overriddenServerPort = serverPort;
+			return overriddenServerHost;
 		}
 
-		public String getServerHost()
+		public Integer getOverriddenServerPort()
 		{
-			return (overriddenServerHost == null) ? serverHost : overriddenServerHost;
-		}
-
-		public int getServerPort()
-		{
-			return (overriddenServerPort == null) ? serverPort : overriddenServerPort;
+			return overriddenServerPort;
 		}
 	}
 
-	public static class General
+	public class General
 	{
 		public boolean recordLogs = false;
 		public String logfileDirectory = null;
@@ -361,35 +386,46 @@ public class Configuration
 		}
 	}
 
-	public static class TeamColors
+	public class TeamColors
 	{
 		public final HashMap<String, Color> colorByTeamName = new HashMap<>();
-		public Color defaultLeftColor = new Color(0x2626ff);
-		public Color defaultRightColor = new Color(0xff2626);
+		public final Color defaultLeftColor = new Color(0x2626ff);
+		public final Color defaultRightColor = new Color(0xff2626);
 
 		private void read()
 		{
-			defaultRightColor = new Color(Integer.decode(getValue("<Right>")));
-			defaultLeftColor = new Color(Integer.decode(getValue("<Left>")));
+			List<String> teamColors = getAllValues("Team Color");
+			for (String teamColor : teamColors) {
+				Pair<String, String> decodedTeamColor = decodeValueValuePair(teamColor);
+				colorByTeamName.put(
+						decodedTeamColor.getFirst(), new Color(Integer.decode(decodedTeamColor.getSecond())));
+			}
 
-			colorByTeamName.put("<Right>", defaultRightColor);
-			colorByTeamName.put("<Left>", defaultLeftColor);
+			// Add default colors (if not present)
+			if (!colorByTeamName.containsKey("<Left>")) {
+				colorByTeamName.put("<Left>", defaultLeftColor);
+			}
+			if (!colorByTeamName.containsKey("<Right>")) {
+				colorByTeamName.put("<Right>", defaultRightColor);
+			}
 		}
 
 		private void write(List<String> lines)
 		{
-			for (String teamName : colorByTeamName.keySet()) {
-				Color color = colorByTeamName.get(teamName);
-				writeVal(lines, teamName, String.format("0x%06x", color.getRGB() & 0xFFFFFF));
-			}
+			List<String> encodedTeamNames =
+					colorByTeamName.entrySet()
+							.stream()
+							.map(teamColor
+									-> encodeValueValuePair(teamColor.getKey(),
+											String.format("0x%06x", teamColor.getValue().getRGB() & 0xFFFFFF)))
+							.collect(Collectors.toList());
+
+			writeValList(lines, "Team Color", encodedTeamNames);
 		}
 
 		public boolean equals(TeamColors other)
 		{
 			boolean equal = true;
-
-			equal &= this.defaultLeftColor.equals(other.defaultLeftColor);
-			equal &= this.defaultRightColor.equals(other.defaultRightColor);
 
 			equal &= this.colorByTeamName.size() == other.colorByTeamName.size();
 			for (Entry<String, Color> entry : this.colorByTeamName.entrySet()) {
@@ -408,8 +444,6 @@ public class Configuration
 		public TeamColors clone()
 		{
 			TeamColors clone = new TeamColors();
-			clone.defaultLeftColor = new Color(this.defaultLeftColor.getRGB());
-			clone.defaultRightColor = new Color(this.defaultRightColor.getRGB());
 
 			for (Entry<String, Color> entry : this.colorByTeamName.entrySet()) {
 				clone.colorByTeamName.put(entry.getKey(), entry.getValue());
@@ -438,53 +472,72 @@ public class Configuration
 		return (line.trim().length() > 0 && !line.startsWith("#"));
 	}
 
-	private void parseLine(String line)
+	private static Pair<String, String> parseLine(String line)
 	{
 		try {
-			String key = line.substring(0, line.indexOf(":") - 1).trim();
+			String key = line.substring(0, line.indexOf(":")).trim();
 			String val = line.substring(line.indexOf(":") + 1).trim();
-
-			configList.add(new Pair<>(key, val));
+			return new Pair<>(key, val);
 		} catch (IndexOutOfBoundsException e) {
 			// Line doesn't contain a colon
 			System.err.println("\"" + line + "\" is not a valid key-value pair.");
-		}
-	}
-
-	private static String getValue(String key)
-	{
-		Pair<String, String> valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
-
-		return valuePair.getSecond();
-	}
-
-	private static boolean getBool(String key)
-	{
-		return Boolean.parseBoolean(getValue(key));
-	}
-
-	private static int getInt(String key)
-	{
-		return Integer.parseInt(getValue(key));
-	}
-
-	private static Integer getInteger(String key)
-	{
-		try {
-			return Integer.parseInt(getValue(key));
-		} catch (NumberFormatException e) {
 			return null;
 		}
 	}
 
-	private static String getString(String key)
+	private String getValue(String key)
+	{
+		Pair<String, String> valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
+
+		if (valuePair != null) {
+			return valuePair.getSecond();
+		} else {
+			return "";
+		}
+	}
+
+	private List<String> getAllValues(String key)
+	{
+		return configList.stream()
+				.filter(it -> it.getFirst().equals(key))
+				.map(it -> it.getSecond())
+				.collect(Collectors.toList());
+	}
+
+	private boolean getBool(String key)
+	{
+		return Boolean.parseBoolean(getValue(key));
+	}
+
+	private int getInt(String key)
+	{
+		return Integer.parseInt(getValue(key));
+	}
+
+	private String getString(String key)
 	{
 		return getValue(key);
 	}
 
-	private static String[] getStringList(String key)
+	private static Pair<String, String> decodeValueValuePair(String pair)
 	{
-		return getValue(key).split(", ?");
+		String val1 = "";
+		String val2 = "";
+		try {
+			val1 = pair.substring(0, pair.indexOf(",")).trim();
+			val2 = pair.substring(pair.indexOf(",") + 1).trim();
+		} catch (IndexOutOfBoundsException e) {
+			// Line doesn't contain a comma
+			System.err.println("\"" + pair + "\" is not a valid csv-value pair.");
+			return null;
+		}
+
+		return new Pair<>(val1, val2);
+	}
+
+	private static String encodeValueValuePair(String val1, String val2)
+	{
+		return val1 + "," + val2;
 	}
 
 	private static void writeConfigLine(List<String> configLines, String name, String newString)
@@ -506,6 +559,44 @@ public class Configuration
 		configLines.add(newString);
 	}
 
+	private static void writeValList(List<String> configLines, String name, List<String> newStrings)
+	{
+		// Escape special regex characters
+		name = name.replace("\\", "\\\\");
+		name = name.replace(".", "\\.");
+		name = name.replace("*", "\\*");
+
+		// Replace existing lines
+		int i = 0;
+		for (String newString : newStrings) {
+			String line = formatProperty('s', name, newString);
+			boolean replaced = false;
+			while (!replaced) {
+				if (i < configLines.size()) {
+					// Line existing
+					if (configLines.get(i).matches("^" + name + " *:.*$")) {
+						configLines.set(i, line);
+						replaced = true;
+					}
+				} else {
+					// No more matching lines existing
+					configLines.add(line);
+					replaced = true;
+				}
+				i++;
+			}
+		}
+
+		// Delete leftover old values
+		while (i < configLines.size()) {
+			if (configLines.get(i).matches("^" + name + " *:.*$")) {
+				configLines.remove(i);
+			} else {
+				i++;
+			}
+		}
+	}
+
 	private static void writeVal(List<String> configLines, String name, int value)
 	{
 		writeConfigLine(configLines, name, formatProperty('d', name, value));
@@ -519,11 +610,6 @@ public class Configuration
 	private static void writeVal(List<String> configLines, String name, String value)
 	{
 		writeConfigLine(configLines, name, formatProperty('s', name, value));
-	}
-
-	private static void writeVal(List<String> configLines, String name, List<String> values)
-	{
-		writeConfigLine(configLines, name, formatProperty('s', name, join(values, ", ")));
 	}
 
 	private static String join(Collection<String> data, String separator)
@@ -555,6 +641,42 @@ public class Configuration
 				 teamColors.equals(originalTeamColors));
 	}
 
+	/**
+	 * Sorts the lines which will be written to the config file.
+	 * This prevents parameters apprearing more than once (e.g. "Server") from being spread over the whole document.
+	 */
+	private static void sortLines(List<String> lines)
+	{
+		int sameParameters;
+		for (int i = 0; i < lines.size(); i += sameParameters + 1) {
+			sameParameters = 0;
+
+			String iLine = lines.get(i);
+			if (!iLine.matches("^[^#\\t\\n\\r].*:.*")) {
+				// Not a key-value line
+				continue;
+			}
+
+			Pair<String, String> iParsedLine = parseLine(iLine);
+
+			for (int j = i + 1; j < lines.size(); j++) {
+				String jLine = lines.get(j);
+				if (!jLine.matches("^[^#\\t\\n\\r].*:.*")) {
+					// Not a key-value line
+					continue;
+				}
+
+				Pair<String, String> jParsedLine = parseLine(jLine);
+
+				if (jParsedLine.getFirst().equals(iParsedLine.getFirst())) {
+					// Move line up to the first one of its kind
+					sameParameters++;
+					Collections.rotate(lines.subList(i + sameParameters, j + 1), 1);
+				}
+			}
+		}
+	}
+
 	private void setCurrentStateAsOriginal()
 	{
 		originalGraphics = graphics.clone();
@@ -564,7 +686,7 @@ public class Configuration
 		originalTeamColors = teamColors.clone();
 	}
 
-	public void readLines(File file, Consumer<? super String> action)
+	private void readLines(File file, Consumer<? super String> action)
 	{
 		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
 			stream.forEach(action);
@@ -596,6 +718,7 @@ public class Configuration
 		networking.write(lines);
 		general.write(lines);
 		teamColors.write(lines);
+		sortLines(lines);
 
 		// Write modified configuration file back
 		BufferedWriter out = null;
@@ -621,7 +744,10 @@ public class Configuration
 		// parse the configuration file
 		readLines(file, line -> {
 			if (checkLine(line)) {
-				parseLine(line);
+				Pair<String, String> parsedLine = parseLine(line);
+				if (parsedLine != null) {
+					configList.add(parsedLine);
+				}
 			}
 		});
 

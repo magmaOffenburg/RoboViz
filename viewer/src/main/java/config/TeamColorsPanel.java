@@ -47,7 +47,7 @@ public class TeamColorsPanel extends JPanel implements SaveListener
 		config = configProg.config.teamColors;
 		initGUI();
 		configProg.listeners.add(this);
-		onChange = configProg.updateSaveButton;
+		onChange = configProg.updateSaveButtonState;
 	}
 
 	void initGUI()

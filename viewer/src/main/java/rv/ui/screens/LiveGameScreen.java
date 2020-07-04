@@ -16,9 +16,11 @@
 
 package rv.ui.screens;
 
-import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import com.jogamp.opengl.awt.GLCanvas;
+
 import jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
@@ -127,15 +129,14 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 
 	private String getConnectionMessage()
 	{
-		Configuration.Networking config = viewer.getConfig().networking;
-		String server = config.getServerHost() + ":" + config.getServerPort();
+		String server = getServer().getServerHost() + ":" + getServer().getServerPort();
 		GameState gameState = viewer.getWorldModel().getGameState();
 		// in competitions, the server is restarted for the second half
 		// display a viewer-friendly message in that case to let them know why the game has
 		// "stopped"
 		if (gameState.isInitialized() && Math.abs(gameState.getTime() - gameState.getHalfTime()) < 0.1)
 			return "Waiting for second half...";
-		else if (config.autoConnect)
+		else if (viewer.getConfig().networking.autoConnect)
 			return "Trying to connect to " + server + "...";
 		else
 			return "Press C to connect to " + server + ".";

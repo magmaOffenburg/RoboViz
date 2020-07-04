@@ -22,12 +22,15 @@ import java.awt.GridBagLayout;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -43,10 +46,11 @@ public class NetworkPanel extends JPanel implements SaveListener
 {
 	final Configuration.Networking config;
 	JCheckBox autoConnectCB;
-	JTextField serverHostTF;
-	IntegerTextField serverPortTF;
+	JTextField defaultServerHostTF;
+	IntegerTextField defaultServerPortTF;
 	IntegerTextField drawingPortTF;
 	IntegerTextField autoConnectDelayTF;
+	JButton serverListBtn;
 
 	private Consumer<Void> onChange;
 
@@ -54,7 +58,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 	{
 		this.config = configProg.config.networking;
 		configProg.listeners.add(this);
-		onChange = configProg.updateSaveButton;
+		onChange = configProg.updateSaveButtonState;
 		initGUI();
 	}
 
@@ -78,7 +82,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 		c.gridx = x;
 		c.gridy = y;
 		JLabel l = new JLabel(name, SwingConstants.RIGHT);
-		l.setPreferredSize(new Dimension(60, 28));
+		l.setPreferredSize(new Dimension(80, 28));
 		component.add(l, c);
 	}
 
@@ -91,20 +95,64 @@ public class NetworkPanel extends JPanel implements SaveListener
 		c.ipadx = 10;
 		c.fill = GridBagConstraints.HORIZONTAL;
 
-		addLabel("Host: ", panel, c, 0, 0);
+		addLabel("Default Host: ", panel, c, 0, 0);
 
 		c.gridx = 1;
 		c.gridy = 0;
-		serverHostTF = new JTextField(config.serverHost);
-		serverHostTF.setPreferredSize(new Dimension(150, 28));
-		panel.add(serverHostTF, c);
+		defaultServerHostTF = new JTextField(config.defaultServerHost);
+		defaultServerHostTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				config.defaultServerHost = defaultServerHostTF.getText();
+				onChange.accept(null);
+			}
 
-		addLabel("Port: ", panel, c, 0, 1);
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				config.defaultServerHost = defaultServerHostTF.getText();
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				config.defaultServerHost = defaultServerHostTF.getText();
+				onChange.accept(null);
+			}
+		});
+		defaultServerHostTF.setPreferredSize(new Dimension(150, 28));
+		panel.add(defaultServerHostTF, c);
+
+		addLabel("Default Port: ", panel, c, 0, 1);
 
 		c.gridx = 1;
 		c.gridy = 1;
-		serverPortTF = new PortTextField(config.serverPort);
-		panel.add(serverPortTF, c);
+		defaultServerPortTF = new PortTextField(config.defaultServerPort);
+		defaultServerPortTF.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				updateDefaultServerPortConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				updateDefaultServerPortConfig(false);
+				onChange.accept(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				updateDefaultServerPortConfig(false);
+				onChange.accept(null);
+			}
+		});
+		panel.add(defaultServerPortTF, c);
 
 		addLabel("Delay: ", panel, c, 0, 2);
 
@@ -144,8 +192,18 @@ public class NetworkPanel extends JPanel implements SaveListener
 			onChange.accept(null);
 		});
 		updateAutoConnectEnabled();
-
 		panel.add(autoConnectCB, c);
+
+		c.gridx = 1;
+		c.gridy = 4;
+		serverListBtn = new JButton("Server List...");
+		serverListBtn.addActionListener(e -> {
+			ServerListDialog serverListDialog =
+					new ServerListDialog((JFrame) SwingUtilities.getWindowAncestor(this), config.servers);
+			serverListDialog.setVisible(true);
+			onChange.accept(null);
+		});
+		panel.add(serverListBtn, c);
 
 		return panel;
 	}
@@ -197,6 +255,17 @@ public class NetworkPanel extends JPanel implements SaveListener
 		return panel;
 	}
 
+	private void updateDefaultServerPortConfig(boolean resetOnError)
+	{
+		try {
+			config.defaultServerPort = defaultServerPortTF.getInt();
+		} catch (Exception e) {
+			if (resetOnError) {
+				defaultServerPortTF.setText("" + config.defaultServerPort);
+			}
+		}
+	}
+
 	private void updateAutoConnectDelayConfig(boolean resetOnError)
 	{
 		try {
@@ -222,13 +291,8 @@ public class NetworkPanel extends JPanel implements SaveListener
 	@Override
 	public void configSaved(RVConfigure configProg)
 	{
-		config.serverHost = serverHostTF.getText();
-
-		try {
-			config.serverPort = serverPortTF.getInt();
-		} catch (Exception e) {
-			serverPortTF.setText("" + config.serverPort);
-		}
+		config.defaultServerHost = defaultServerHostTF.getText();
+		updateDefaultServerPortConfig(true);
 
 		updateListenPort(true);
 

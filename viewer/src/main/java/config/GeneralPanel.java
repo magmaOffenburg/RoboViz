@@ -36,7 +36,7 @@ public class GeneralPanel extends JPanel implements SaveListener
 		this.configProg = configProg;
 		this.config = configProg.config.general;
 		configProg.listeners.add(this);
-		onChange = configProg.updateSaveButton;
+		onChange = configProg.updateSaveButtonState;
 		initGUI();
 	}
 

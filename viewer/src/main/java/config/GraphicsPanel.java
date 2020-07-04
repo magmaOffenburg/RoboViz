@@ -69,7 +69,7 @@ public class GraphicsPanel extends JPanel implements SaveListener
 		config = configProg.config.graphics;
 		initGUI();
 		configProg.listeners.add(this);
-		onChange = configProg.updateSaveButton;
+		onChange = configProg.updateSaveButtonState;
 	}
 
 	void initGUI()
@@ -383,10 +383,10 @@ public class GraphicsPanel extends JPanel implements SaveListener
 	private void updateShadowResolutionConfig(boolean resetOnError)
 	{
 		try {
-			config.fsaaSamples = samplesTF.getInt();
+			config.shadowResolution = shadowResTB.getInt();
 		} catch (Exception e) {
 			if (resetOnError) {
-				samplesTF.setText(config.fsaaSamples + "");
+				shadowResTB.setText(config.shadowResolution + "");
 			}
 		}
 	}
