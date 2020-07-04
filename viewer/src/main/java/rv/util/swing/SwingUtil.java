@@ -11,7 +11,6 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import javax.swing.ImageIcon;
 
 public class SwingUtil
