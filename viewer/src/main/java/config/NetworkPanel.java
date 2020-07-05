@@ -19,7 +19,6 @@ package config;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -52,7 +51,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 	IntegerTextField autoConnectDelayTF;
 	JButton serverListBtn;
 
-	private Consumer<Void> onChange;
+	private Runnable onChange;
 
 	public NetworkPanel(RVConfigure configProg)
 	{
@@ -105,21 +104,21 @@ public class NetworkPanel extends JPanel implements SaveListener
 			public void insertUpdate(DocumentEvent e)
 			{
 				config.defaultServerHost = defaultServerHostTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				config.defaultServerHost = defaultServerHostTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				config.defaultServerHost = defaultServerHostTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 		});
 		defaultServerHostTF.setPreferredSize(new Dimension(150, 28));
@@ -135,21 +134,21 @@ public class NetworkPanel extends JPanel implements SaveListener
 			public void insertUpdate(DocumentEvent e)
 			{
 				updateDefaultServerPortConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				updateDefaultServerPortConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				updateDefaultServerPortConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 		});
 		panel.add(defaultServerPortTF, c);
@@ -164,21 +163,21 @@ public class NetworkPanel extends JPanel implements SaveListener
 			public void insertUpdate(DocumentEvent e)
 			{
 				updateAutoConnectDelayConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				updateAutoConnectDelayConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				updateAutoConnectDelayConfig(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 		});
 		panel.add(autoConnectDelayTF, c);
@@ -189,7 +188,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 		autoConnectCB.addChangeListener(e -> {
 			updateAutoConnectEnabled();
 			config.autoConnect = autoConnectCB.isSelected();
-			onChange.accept(null);
+			onChange.run();
 		});
 		updateAutoConnectEnabled();
 		panel.add(autoConnectCB, c);
@@ -201,7 +200,7 @@ public class NetworkPanel extends JPanel implements SaveListener
 			ServerListDialog serverListDialog =
 					new ServerListDialog((JFrame) SwingUtilities.getWindowAncestor(this), config.servers);
 			serverListDialog.setVisible(true);
-			onChange.accept(null);
+			onChange.run();
 		});
 		panel.add(serverListBtn, c);
 
@@ -233,21 +232,21 @@ public class NetworkPanel extends JPanel implements SaveListener
 			public void insertUpdate(DocumentEvent e)
 			{
 				updateListenPort(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				updateListenPort(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				updateListenPort(false);
-				onChange.accept(null);
+				onChange.run();
 			}
 		});
 		panel.add(drawingPortTF, c);

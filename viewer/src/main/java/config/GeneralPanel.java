@@ -2,7 +2,6 @@ package config;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,7 +27,7 @@ public class GeneralPanel extends JPanel implements SaveListener
 	JTextField logDirectoryTF;
 	JButton openDirectoryButton;
 
-	private Consumer<Void> onChange;
+	private Runnable onChange;
 
 	public GeneralPanel(RVConfigure configProg)
 	{
@@ -63,7 +62,7 @@ public class GeneralPanel extends JPanel implements SaveListener
 		recordLogsCB = new JCheckBox("Record Logfiles", config.recordLogs);
 		recordLogsCB.addChangeListener(e -> {
 			config.recordLogs = recordLogsCB.isSelected();
-			onChange.accept(null);
+			onChange.run();
 		});
 		logDirectoryTF = new JTextField(config.logfileDirectory);
 		logDirectoryTF.getDocument().addDocumentListener(new DocumentListener() {
@@ -71,21 +70,21 @@ public class GeneralPanel extends JPanel implements SaveListener
 			public void insertUpdate(DocumentEvent e)
 			{
 				config.logfileDirectory = logDirectoryTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				config.logfileDirectory = logDirectoryTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				config.logfileDirectory = logDirectoryTF.getText();
-				onChange.accept(null);
+				onChange.run();
 			}
 		});
 		SwingUtil.setPreferredWidth(logDirectoryTF, 150);

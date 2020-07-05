@@ -29,10 +29,10 @@ Player IDs           : true
 # Networking Settings
 Auto-Connect         : true
 Auto-Connect Delay   : 1000
-Default Server Host  : localhost
-Default Server Port  : 3200
+Default Server       : localhost:3200
 Drawing Port         : 32769
-Server               : localhost,3200
+# To store more servers, just insert more "Server" lines
+Server               : localhost:3200
 
 # General Settings
 Record Logfiles      : false
@@ -41,5 +41,5 @@ Logfile Directory    :
 Look and Feel        : system
 
 # Team Colors
-Team Color           : <Right>,0xff2626
-Team Color           : <Left>,0x2626ff
+Team Color           : <Right>:0xff2626
+Team Color           : <Left>:0x2626ff

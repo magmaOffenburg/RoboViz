@@ -21,7 +21,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -42,7 +41,7 @@ public class RVConfigure extends JFrame
 	Configuration config;
 	final JButton saveButton;
 	final ArrayList<SaveListener> listeners = new ArrayList<>();
-	Consumer<Void> updateSaveButtonState;
+	Runnable updateSaveButtonState;
 
 	public RVConfigure()
 	{
@@ -59,7 +58,7 @@ public class RVConfigure extends JFrame
 		setLayout(new GridBagLayout());
 
 		saveButton = new JButton("Save");
-		updateSaveButtonState = (Void) -> saveButton.setEnabled(config.didChange());
+		updateSaveButtonState = () -> saveButton.setEnabled(config.didChange());
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;

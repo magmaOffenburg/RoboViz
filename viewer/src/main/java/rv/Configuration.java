@@ -46,6 +46,7 @@ public class Configuration
 {
 	private static final String CONFIG_FILE_NAME = "config.txt";
 	private ArrayList<Pair<String, String>> configList = new ArrayList<>();
+	private static final String REGEX_LINE = "^[^#\\t\\n\\r].*:.*";
 
 	private static String getConfigFilePath()
 	{
@@ -247,14 +248,17 @@ public class Configuration
 		{
 			autoConnect = getBool("Auto-Connect");
 			autoConnectDelay = getInt("Auto-Connect Delay");
-			defaultServerHost = getString("Default Server Host");
-			defaultServerPort = getInt("Default Server Port");
 			listenPort = getInt("Drawing Port");
+
+			String defaultServerString = getString("Default Server");
+			Pair<String, String> defaultServerPair = decodePair(defaultServerString);
+			defaultServerHost = defaultServerPair.getFirst();
+			defaultServerPort = Integer.decode(defaultServerPair.getSecond());
 
 			servers = new LinkedList<>();
 			List<String> serverValues = getAllValues("Server");
 			for (String serverValue : serverValues) {
-				Pair<String, String> decodedServer = decodeValueValuePair(serverValue);
+				Pair<String, String> decodedServer = decodePair(serverValue);
 				servers.add(new Pair<>(decodedServer.getFirst(), Integer.decode(decodedServer.getSecond())));
 			}
 			if (servers.size() == 0) {
@@ -269,14 +273,14 @@ public class Configuration
 		{
 			writeVal(lines, "Auto-Connect", autoConnect);
 			writeVal(lines, "Auto-Connect Delay", autoConnectDelay);
-			writeVal(lines, "Default Server Host", defaultServerHost);
-			writeVal(lines, "Default Server Port", defaultServerPort);
+			writeVal(lines, "Default Server", encodePairWithoutFormatting(defaultServerHost, "" + defaultServerPort));
 			writeVal(lines, "Drawing Port", listenPort);
 
 			List<String> encodedServers =
 					servers.stream()
 							.distinct()
-							.map(server -> encodeValueValuePair(server.getFirst(), server.getSecond().toString()))
+							.map(server
+									-> encodePairWithoutFormatting(server.getFirst(), server.getSecond().toString()))
 							.collect(Collectors.toList());
 			writeValList(lines, "Server", encodedServers);
 		}
@@ -396,7 +400,7 @@ public class Configuration
 		{
 			List<String> teamColors = getAllValues("Team Color");
 			for (String teamColor : teamColors) {
-				Pair<String, String> decodedTeamColor = decodeValueValuePair(teamColor);
+				Pair<String, String> decodedTeamColor = decodePair(teamColor);
 				colorByTeamName.put(
 						decodedTeamColor.getFirst(), new Color(Integer.decode(decodedTeamColor.getSecond())));
 			}
@@ -416,7 +420,7 @@ public class Configuration
 					colorByTeamName.entrySet()
 							.stream()
 							.map(teamColor
-									-> encodeValueValuePair(teamColor.getKey(),
+									-> encodePairWithoutFormatting(teamColor.getKey(),
 											String.format("0x%06x", teamColor.getValue().getRGB() & 0xFFFFFF)))
 							.collect(Collectors.toList());
 
@@ -472,19 +476,6 @@ public class Configuration
 		return (line.trim().length() > 0 && !line.startsWith("#"));
 	}
 
-	private static Pair<String, String> parseLine(String line)
-	{
-		try {
-			String key = line.substring(0, line.indexOf(":")).trim();
-			String val = line.substring(line.indexOf(":") + 1).trim();
-			return new Pair<>(key, val);
-		} catch (IndexOutOfBoundsException e) {
-			// Line doesn't contain a colon
-			System.err.println("\"" + line + "\" is not a valid key-value pair.");
-			return null;
-		}
-	}
-
 	private String getValue(String key)
 	{
 		Pair<String, String> valuePair = configList.stream().filter(it -> it.getFirst().equals(key)).findFirst().get();
@@ -519,33 +510,29 @@ public class Configuration
 		return getValue(key);
 	}
 
-	private static Pair<String, String> decodeValueValuePair(String pair)
+	private static Pair<String, String> decodePair(String pair) throws IndexOutOfBoundsException
 	{
-		String val1 = "";
-		String val2 = "";
-		try {
-			val1 = pair.substring(0, pair.indexOf(",")).trim();
-			val2 = pair.substring(pair.indexOf(",") + 1).trim();
-		} catch (IndexOutOfBoundsException e) {
-			// Line doesn't contain a comma
-			System.err.println("\"" + pair + "\" is not a valid csv-value pair.");
-			return null;
-		}
-
+		String val1 = pair.substring(0, pair.indexOf(":")).trim();
+		String val2 = pair.substring(pair.indexOf(":") + 1).trim();
 		return new Pair<>(val1, val2);
 	}
 
-	private static String encodeValueValuePair(String val1, String val2)
+	private static String encodePairWithoutFormatting(String val1, String val2)
 	{
-		return val1 + "," + val2;
+		return val1 + ":" + val2;
+	}
+
+	private static String escapeRegexCharacters(String unescaped)
+	{
+		String escaped = unescaped.replace("\\", "\\\\");
+		escaped = escaped.replace(".", "\\.");
+		escaped = escaped.replace("*", "\\*");
+		return escaped;
 	}
 
 	private static void writeConfigLine(List<String> configLines, String name, String newString)
 	{
-		// Escape special regex characters
-		name = name.replace("\\", "\\\\");
-		name = name.replace(".", "\\.");
-		name = name.replace("*", "\\*");
+		name = escapeRegexCharacters(name);
 
 		// Replace existing line
 		for (String line : configLines) {
@@ -561,10 +548,7 @@ public class Configuration
 
 	private static void writeValList(List<String> configLines, String name, List<String> newStrings)
 	{
-		// Escape special regex characters
-		name = name.replace("\\", "\\\\");
-		name = name.replace(".", "\\.");
-		name = name.replace("*", "\\*");
+		name = escapeRegexCharacters(name);
 
 		// Replace existing lines
 		int i = 0;
@@ -652,21 +636,21 @@ public class Configuration
 			sameParameters = 0;
 
 			String iLine = lines.get(i);
-			if (!iLine.matches("^[^#\\t\\n\\r].*:.*")) {
+			if (!iLine.matches(REGEX_LINE)) {
 				// Not a key-value line
 				continue;
 			}
 
-			Pair<String, String> iParsedLine = parseLine(iLine);
+			Pair<String, String> iParsedLine = decodePair(iLine);
 
 			for (int j = i + 1; j < lines.size(); j++) {
 				String jLine = lines.get(j);
-				if (!jLine.matches("^[^#\\t\\n\\r].*:.*")) {
+				if (!jLine.matches(REGEX_LINE)) {
 					// Not a key-value line
 					continue;
 				}
 
-				Pair<String, String> jParsedLine = parseLine(jLine);
+				Pair<String, String> jParsedLine = decodePair(jLine);
 
 				if (jParsedLine.getFirst().equals(iParsedLine.getFirst())) {
 					// Move line up to the first one of its kind
@@ -744,9 +728,12 @@ public class Configuration
 		// parse the configuration file
 		readLines(file, line -> {
 			if (checkLine(line)) {
-				Pair<String, String> parsedLine = parseLine(line);
-				if (parsedLine != null) {
+				try {
+					Pair<String, String> parsedLine = decodePair(line);
 					configList.add(parsedLine);
+				} catch (IndexOutOfBoundsException e) {
+					// Line doesn't contain a colon
+					System.err.println("\"" + line + "\" is not a valid key-value pair.");
 				}
 			}
 		});
