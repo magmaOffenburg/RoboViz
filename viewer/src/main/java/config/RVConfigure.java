@@ -39,6 +39,7 @@ public class RVConfigure extends JFrame
 	Configuration config;
 	final JButton saveButton;
 	final ArrayList<SaveListener> listeners = new ArrayList<>();
+	Runnable updateSaveButtonState;
 
 	public RVConfigure()
 	{
@@ -53,6 +54,9 @@ public class RVConfigure extends JFrame
 		setTitle("RoboViz Configuration");
 		setIconImage(Globals.getIcon());
 		setLayout(new GridBagLayout());
+
+		saveButton = new JButton("Save");
+		updateSaveButtonState = () -> saveButton.setEnabled(config.didChange());
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -76,17 +80,22 @@ public class RVConfigure extends JFrame
 		c.gridy = 0;
 		add(networkPanel);
 
-		saveButton = new JButton("Save");
+		saveButton.setEnabled(false);
 		saveButton.addActionListener(e -> {
 			for (SaveListener l : listeners)
 				l.configSaved(RVConfigure.this);
 			config.write();
+			saveButton.setEnabled(false);
 		});
 		southPanel.add(saveButton);
 
 		JButton startButton = new JButton("Start RoboViz");
 		startButton.addActionListener(arg0 -> {
 			RVConfigure.this.setVisible(false);
+			for (SaveListener l : listeners) {
+				l.configSaved(RVConfigure.this);
+			}
+			config.write();
 			Viewer.main(new String[] {});
 		});
 		southPanel.add(startButton);

@@ -155,6 +155,7 @@ public class Viewer
 		return config;
 	}
 
+	@Override
 	public Viewport getScreen()
 	{
 		return screen;
@@ -228,8 +229,7 @@ public class Viewer
 		StringArgument drawingFilterArgument = new StringArgument("drawingFilter", ".*");
 
 		handleLogModeArgs(logFileArgument.parse(args), logModeArgument.parse(args));
-		config.networking.overrideServerHost(serverHostArgument.parse(args));
-		config.networking.overrideServerPort(serverPortArgument.parse(args));
+		config.networking.overrideServer(serverHostArgument.parse(args), serverPortArgument.parse(args));
 		drawingFilter = drawingFilterArgument.parse(args);
 		Argument.endParse(args);
 	}
@@ -312,8 +312,6 @@ public class Viewer
 
 	private void storeConfig()
 	{
-		Configuration config = Configuration.loadFromFile();
-
 		Configuration.Graphics graphics = config.graphics;
 		Point location = frame.getLocation();
 		Dimension size = frame.getSize();
@@ -381,11 +379,13 @@ public class Viewer
 		init = true;
 	}
 
+	@Override
 	public void addKeyListener(KeyListener l)
 	{
 		(new AWTKeyAdapter(l, canvas)).addTo(canvas);
 	}
 
+	@Override
 	public void addMouseListener(MouseListener l)
 	{
 		(new AWTMouseAdapter(l, canvas)).addTo(canvas);
@@ -436,6 +436,7 @@ public class Viewer
 		System.exit(1);
 	}
 
+	@Override
 	public void update(GL glGeneric)
 	{
 		if (!init)
@@ -509,8 +510,7 @@ public class Viewer
 		if (mode != Mode.LIVE)
 			return;
 
-		String host = server.isConnected() ? config.networking.getServerHost() + ":" + config.networking.getServerPort()
-										   : null;
+		String host = server.isConnected() ? server.getServerHost() + ":" + server.getServerPort() : null;
 		frame.setTitle(getTitle(host));
 	}
 
