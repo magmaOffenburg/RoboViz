@@ -1,12 +1,12 @@
 package config;
 
+import config.RVConfigure.SaveListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,8 +21,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-
-import config.RVConfigure.SaveListener;
 import rv.Configuration;
 import rv.Globals;
 import rv.util.swing.SwingUtil;

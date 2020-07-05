@@ -2,7 +2,6 @@ package config;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-
 import javax.swing.JFormattedTextField;
 import javax.swing.text.NumberFormatter;
 
