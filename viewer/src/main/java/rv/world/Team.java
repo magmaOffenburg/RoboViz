@@ -18,10 +18,10 @@ package rv.world;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import jsgl.jogl.model.ObjMaterial;
 import rv.Configuration;
-import rv.Objects;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.comm.rcssserver.ISceneGraphItem;
