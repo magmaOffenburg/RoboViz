@@ -1,3 +1,13 @@
+1.8.0 (to be released)
+------------------------------
+* included the [darklaf](https://github.com/weisJ/darklaf) library for better look and feels ([#110](https://github.com/magmaOffenburg/RoboViz/pull/110))
+* added "Look and Feel" to "General Settings" in `config.txt` - possible values are:
+    * `system` (default)
+    * `darcula`
+    * `intellij`
+    * `solarized_dark`
+    * `solarized_light` 
+
 1.7.0 (February 21, 2020)
 ------------------------------
 * added "Connection -> Connect to..." ([#105](https://github.com/magmaOffenburg/RoboViz/issues/105))

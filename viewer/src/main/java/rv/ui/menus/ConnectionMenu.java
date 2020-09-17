@@ -3,8 +3,8 @@ package rv.ui.menus;
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import rv.Configuration;
 import rv.Viewer;
+import rv.util.Pair;
 
 public class ConnectionMenu extends JMenu
 {
@@ -22,7 +23,7 @@ public class ConnectionMenu extends JMenu
 
 	private final Configuration.Networking config;
 
-	private final List<String> serverHosts;
+	private final List<Pair<String, Integer>> serverHosts;
 
 	public ConnectionMenu(Viewer viewer)
 	{
@@ -31,46 +32,58 @@ public class ConnectionMenu extends JMenu
 		this.config = viewer.getConfig().networking;
 
 		setMnemonic('C');
-		serverHosts = new ArrayList<>(config.serverHosts);
-
-		String overriddenHost = config.overriddenServerHost;
-		if (overriddenHost != null) {
-			serverHosts.remove(overriddenHost);
-			serverHosts.add(0, overriddenHost);
-		}
+		serverHosts = config.servers;
 
 		add(new JSeparator());
 		JMenuItem connectTo = new JMenuItem("Connect to...");
 		connectTo.addActionListener(e -> {
 			JComboBox<String> hostsComboBox = new JComboBox<>();
-			for (String host : config.serverHosts) {
-				hostsComboBox.addItem(host + ":" + config.serverPort);
+			for (int i = 0; i < getItemCount(); i++) {
+				if (getItem(i) instanceof RemoteMenuItem) {
+					RemoteMenuItem item = (RemoteMenuItem) getItem(i);
+					hostsComboBox.addItem(item.host + ":" + item.port);
+					if (item.isSelected()) {
+						hostsComboBox.setSelectedIndex(hostsComboBox.getItemCount() - 1);
+					}
+				}
 			}
+
 			hostsComboBox.setEditable(true);
-			hostsComboBox.setSelectedIndex(config.serverHosts.indexOf(config.getServerHost()));
 			SwingUtilities.invokeLater(hostsComboBox::requestFocusInWindow);
 
-			if (JOptionPane.showConfirmDialog(viewer.getFrame(), hostsComboBox, "Connect to...",
+			JCheckBox saveCheckBox = new JCheckBox("Add to config file");
+
+			Object[] paneContent = {hostsComboBox, saveCheckBox};
+			if (JOptionPane.showConfirmDialog(viewer.getFrame(), paneContent, "Connect to...",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null) != JOptionPane.OK_OPTION) {
 				return;
 			}
 
 			String host = (String) hostsComboBox.getSelectedItem();
 			if (host != null) {
-				connectTo(host);
+				connectTo(host, saveCheckBox.isSelected());
 			}
 		});
 		connectTo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
 		add(connectTo);
 
-		for (String host : serverHosts) {
-			addHostItem(host, config.getServerPort());
+		for (Pair<String, Integer> server : serverHosts) {
+			addHostItem(server.getFirst(), server.getSecond());
+		}
+		if (config.getOverriddenServerHost() != null && config.getOverriddenServerPort() != null) {
+			// Server host overridden, add to list and select the new item
+			for (int i = 0; i < getItemCount(); i++) {
+				if (getItem(i) instanceof RemoteMenuItem) {
+					getItem(i).setSelected(false);
+				}
+			}
+			addHostItem(config.getOverriddenServerHost(), config.getOverriddenServerPort()).setSelected(true);
 		}
 	}
 
-	private void connectTo(String host)
+	private void connectTo(String host, boolean save)
 	{
-		int port = config.serverPort; // the default port
+		int port = config.defaultServerPort; // the default port
 
 		// check if host string contains port info
 		if (host.contains(":")) {
@@ -105,8 +118,10 @@ public class ConnectionMenu extends JMenu
 			return;
 		}
 
-		// add the valid host to the menu and host list
-		serverHosts.add(host);
+		// add the valid host to the menu (and to the configuration if save is true)
+		if (save) {
+			serverHosts.add(new Pair<>(host, port));
+		}
 		selectServer(addHostItem(host, port));
 	}
 
@@ -141,12 +156,6 @@ public class ConnectionMenu extends JMenu
 		}
 		item.setSelected(true);
 
-		if (item.host.equals(config.getServerHost()) && item.port == config.getServerPort()) {
-			return;
-		}
-
-		config.overrideServerHost(item.host);
-		config.overrideServerPort(item.port);
 		viewer.getDrawings().clearAllShapeSets();
 		viewer.getNetManager().getServer().changeConnection(item.host, item.port);
 	}
@@ -164,7 +173,7 @@ public class ConnectionMenu extends JMenu
 			super(String.format("%s:%d", host, port), selected);
 
 			// omit the default port
-			if (port == config.serverPort) {
+			if (port == config.defaultServerPort) {
 				setText(host);
 			}
 

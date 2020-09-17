@@ -182,8 +182,13 @@ public class ServerComm implements DrawCommListener
 
 		Configuration.Networking net = config.networking;
 
-		serverHost = net.getServerHost();
-		serverPort = net.getServerPort();
+		if (net.getOverriddenServerHost() != null && net.getOverriddenServerPort() != null) {
+			serverHost = net.getOverriddenServerHost();
+			serverPort = net.getOverriddenServerPort();
+		} else {
+			serverHost = net.servers.get(0).getFirst();
+			serverPort = net.servers.get(0).getSecond();
+		}
 
 		// automatically attempt connection with server while not connected
 		if (net.autoConnect) {
@@ -378,5 +383,15 @@ public class ServerComm implements DrawCommListener
 				drawCommands += Arrays.toString(cmd);
 			}
 		}
+	}
+
+	public String getServerHost()
+	{
+		return serverHost;
+	}
+
+	public int getServerPort()
+	{
+		return serverPort;
 	}
 }

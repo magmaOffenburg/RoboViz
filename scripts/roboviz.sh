@@ -20,4 +20,9 @@ set -- $args
 DIR="$( cd "$( dirname "$0" )" && pwd )" 
 cd $DIR
 
-java -Xmx512m -jar RoboViz.jar "$@"
+if [[ `uname -s` == "Darwin" ]];
+then
+	java -Xmx512m -Xdock:name="RoboViz" -jar RoboViz.jar "$@"
+else
+	java -Xmx512m -jar RoboViz.jar "$@"
+fi

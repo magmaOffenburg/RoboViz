@@ -1,9 +1,16 @@
 package rv;
 
+import com.github.weisj.darklaf.DarkLaf;
+import com.github.weisj.darklaf.LafManager;
+import com.github.weisj.darklaf.theme.DarculaTheme;
+import com.github.weisj.darklaf.theme.IntelliJTheme;
+import com.github.weisj.darklaf.theme.SolarizedDarkTheme;
+import com.github.weisj.darklaf.theme.SolarizedLightTheme;
 import java.awt.Image;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.UIManager;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class Globals
 {
@@ -21,14 +28,34 @@ public class Globals
 		return icon;
 	}
 
-	public static void setLookFeel()
+	public static void setLookFeel(String lookAndFeel)
 	{
+		LafManager.enableLogging(false);
 		try {
-			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
+			switch (lookAndFeel) {
+			case "system":
+				LafManager.setTheme(LafManager.themeForPreferredStyle(LafManager.getPreferredThemeStyle()));
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
+			case "darcula":
+				LafManager.setTheme(new DarculaTheme());
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
+			case "intellij":
+				LafManager.setTheme(new IntelliJTheme());
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
+			case "solarized_dark":
+				LafManager.setTheme(new SolarizedDarkTheme());
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
+			case "solarized_light":
+				LafManager.setTheme(new SolarizedLightTheme());
+				UIManager.setLookAndFeel(DarkLaf.class.getCanonicalName());
+				break;
+			default:
+				UIManager.setLookAndFeel(NimbusLookAndFeel.class.getCanonicalName());
+				break;
 			}
 		} catch (Exception e) {
 			// If Nimbus is not available
