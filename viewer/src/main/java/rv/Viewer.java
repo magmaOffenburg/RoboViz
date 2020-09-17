@@ -85,35 +85,6 @@ public class Viewer
 		LIVE,
 	}
 
-	/** Event object for when the main RoboViz window is resized */
-	public class WindowResizeEvent extends EventObject
-	{
-		private final Viewport window;
-		private final GLAutoDrawable drawable;
-
-		public Viewport getWindow()
-		{
-			return window;
-		}
-
-		public GLAutoDrawable getDrawable()
-		{
-			return drawable;
-		}
-
-		public WindowResizeEvent(Object src, Viewport window)
-		{
-			super(src);
-			this.window = window;
-			this.drawable = getCanvas();
-		}
-	}
-
-	/** Event listener interface when the main RoboViz window is resized */
-	public interface WindowResizeListener {
-		void windowResized(WindowResizeEvent event);
-	}
-
 	private final List<WindowResizeListener> windowResizeListeners = new ArrayList<>();
 
 	private RVFrame frame;
@@ -135,80 +106,6 @@ public class Viewer
 	private String drawingFilter;
 	private Mode mode = Mode.LIVE;
 
-	public LogPlayer getLogPlayer()
-	{
-		return logPlayer;
-	}
-
-	public Mode getMode()
-	{
-		return mode;
-	}
-
-	public GLInfo getGLInfo()
-	{
-		return glInfo;
-	}
-
-	public Configuration getConfig()
-	{
-		return config;
-	}
-
-	@Override
-	public Viewport getScreen()
-	{
-		return screen;
-	}
-
-	public WorldModel getWorldModel()
-	{
-		return world;
-	}
-
-	public UserInterface getUI()
-	{
-		return ui;
-	}
-
-	public NetworkManager getNetManager()
-	{
-		return netManager;
-	}
-
-	public Drawings getDrawings()
-	{
-		return drawings;
-	}
-
-	public RVFrame getFrame()
-	{
-		return frame;
-	}
-
-	public void addWindowResizeListener(WindowResizeListener l)
-	{
-		windowResizeListeners.add(l);
-	}
-
-	public void removeWindowResizeListener(WindowResizeListener l)
-	{
-		windowResizeListeners.remove(l);
-	}
-
-	public void shutdown()
-	{
-		if (config.graphics.saveFrameState)
-			storeConfig();
-		frame.dispose();
-		System.exit(0);
-	}
-
-	public Renderer getRenderer()
-	{
-		return renderer;
-	}
-
 	public Viewer(Configuration config, GLCapabilities caps, String[] args)
 	{
 		super(config.graphics.frameWidth, config.graphics.frameHeight);
@@ -218,6 +115,32 @@ public class Viewer
 		initComponents(caps);
 
 		System.out.println("RoboViz " + VERSION + "\n");
+	}
+	
+	public static void main(String[] args)
+	{
+		final Configuration config = Configuration.loadFromFile();
+
+		GLProfile glp = GLProfile.get(GLProfile.GL2);
+		final GLCapabilities caps = new GLCapabilities(glp);
+		caps.setStereo(config.graphics.useStereo);
+		if (config.graphics.useFsaa) {
+			caps.setSampleBuffers(true);
+			caps.setNumSamples(config.graphics.fsaaSamples);
+		}
+
+		final String[] arguments = args;
+		SwingUtilities.invokeLater(() -> new Viewer(config, caps, arguments));
+	}
+	
+	public void addWindowResizeListener(WindowResizeListener l)
+	{
+		windowResizeListeners.add(l);
+	}
+
+	public void removeWindowResizeListener(WindowResizeListener l)
+	{
+		windowResizeListeners.remove(l);
 	}
 
 	private void parseArgs(String[] args)
@@ -425,6 +348,14 @@ public class Viewer
 		fullscreen = !fullscreen;
 		SwingUtil.getCurrentScreen(frame).setFullScreenWindow(fullscreen ? frame : null);
 	}
+	
+	public void shutdown()
+	{
+		if (config.graphics.saveFrameState)
+			storeConfig();
+		frame.dispose();
+		System.exit(0);
+	}
 
 	public void exitError(String msg)
 	{
@@ -447,22 +378,6 @@ public class Viewer
 		ui.update(gl, elapsedMS);
 		world.update(gl, elapsedMS, ui);
 		drawings.update();
-	}
-
-	public static void main(String[] args)
-	{
-		final Configuration config = Configuration.loadFromFile();
-
-		GLProfile glp = GLProfile.get(GLProfile.GL2);
-		final GLCapabilities caps = new GLCapabilities(glp);
-		caps.setStereo(config.graphics.useStereo);
-		if (config.graphics.useFsaa) {
-			caps.setSampleBuffers(true);
-			caps.setNumSamples(config.graphics.fsaaSamples);
-		}
-
-		final String[] arguments = args;
-		SwingUtilities.invokeLater(() -> new Viewer(config, caps, arguments));
 	}
 
 	@Override
@@ -534,6 +449,66 @@ public class Viewer
 			return roboviz;
 		return current + " - " + roboviz;
 	}
+	
+	/**
+	 * getters
+	 */
+	
+	public LogPlayer getLogPlayer()
+	{
+		return logPlayer;
+	}
+
+	public Mode getMode()
+	{
+		return mode;
+	}
+
+	public GLInfo getGLInfo()
+	{
+		return glInfo;
+	}
+
+	public Configuration getConfig()
+	{
+		return config;
+	}
+
+	@Override
+	public Viewport getScreen()
+	{
+		return screen;
+	}
+
+	public WorldModel getWorldModel()
+	{
+		return world;
+	}
+
+	public UserInterface getUI()
+	{
+		return ui;
+	}
+
+	public NetworkManager getNetManager()
+	{
+		return netManager;
+	}
+
+	public Drawings getDrawings()
+	{
+		return drawings;
+	}
+	
+	public Renderer getRenderer()
+	{
+		return renderer;
+	}
+
+	public RVFrame getFrame()
+	{
+		return frame;
+	}
 
 	public class RVFrame extends JFrame
 	{
@@ -557,5 +532,34 @@ public class Viewer
 		{
 			return menuBar;
 		}
+	}
+	
+	/** Event object for when the main RoboViz window is resized */
+	public class WindowResizeEvent extends EventObject
+	{
+		private final Viewport window;
+		private final GLAutoDrawable drawable;
+
+		public Viewport getWindow()
+		{
+			return window;
+		}
+
+		public GLAutoDrawable getDrawable()
+		{
+			return drawable;
+		}
+
+		public WindowResizeEvent(Object src, Viewport window)
+		{
+			super(src);
+			this.window = window;
+			this.drawable = getCanvas();
+		}
+	}
+
+	/** Event listener interface when the main RoboViz window is resized */
+	public interface WindowResizeListener {
+		void windowResized(WindowResizeEvent event);
 	}
 }
