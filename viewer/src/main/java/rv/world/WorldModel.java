@@ -256,7 +256,7 @@ public class WorldModel
 			switch (gameState.getPlayMode()) {
 			case GameState.PASS_LEFT:
 			case GameState.PASS_RIGHT:
-				ballCircleTime = ballCircleTimeLeft = 4;
+				ballCircleTime = ballCircleTimeLeft = gameState.getPassModeDuration();
 				break;
 			case GameState.KICK_IN_LEFT:
 			case GameState.KICK_IN_RIGHT:
@@ -289,7 +289,7 @@ public class WorldModel
 		switch (gameState.getPlayMode()) {
 		case GameState.PASS_LEFT:
 		case GameState.PASS_RIGHT:
-			radius = 1;
+			radius = gameState.getPassModeMinOppBallDist();
 			break;
 		case GameState.KICK_IN_LEFT:
 		case GameState.KICK_IN_RIGHT:

@@ -41,6 +41,7 @@ public class GameStateOverlay extends ScreenBase
 
 		private final TextRenderer tr1;
 		private final TextRenderer tr2;
+		private final TextRenderer tr3;
 
 		private final int x;
 
@@ -54,6 +55,7 @@ public class GameStateOverlay extends ScreenBase
 			this.y = y;
 			tr1 = new TextRenderer(new Font("Arial", Font.PLAIN, 22), true, false);
 			tr2 = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
+			tr3 = new TextRenderer(new Font("Arial", Font.BOLD, 16), true, false);
 		}
 
 		void toggleShowServerSpeed()
@@ -120,27 +122,44 @@ public class GameStateOverlay extends ScreenBase
 			if (showServerSpeed && ssb != null) {
 				tr2.draw("Server Speed: " + ssb.getServerSpeed(), x + NAME_WIDTH + SCORE_BOX_WIDTH, y - 20);
 			}
-			Float timeOfLastPassEnd = null;
-			for (int i = gs.getPlayModeHistory().size() - 1; i >= 0; i--) {
-				GameState.HistoryItem item = gs.getPlayModeHistory().get(i);
-				if (item.playMode.equals(GameState.PASS_LEFT) || item.playMode.equals(GameState.PASS_RIGHT)) {
-					if (gs.getPlayModeHistory().size() > i + 1) {
-						timeOfLastPassEnd = gs.getPlayModeHistory().get(i + 1).time;
-					}
-					break;
-				}
-			}
-			if (timeOfLastPassEnd != null) {
-				float timePassed = gs.getTime() - timeOfLastPassEnd;
-				if (timePassed > 0) {
-					final float COOLDOWN = 10;
-					float cooldownLeft = COOLDOWN - timePassed;
-					if (cooldownLeft > 0) {
-						tr2.draw(String.format(Locale.US, "%.1f", cooldownLeft), timeX, y - 20);
-					}
-				}
-			}
 			tr2.endRendering();
+
+			float passModeWaitToScoreTime = 0;
+			boolean leftTeamPassModeWaitToScore = false;
+
+			if (gs.getPassModeValuesReported()) {
+				if (gs.getPassModeScoreWaitLeft() > 0) {
+					passModeWaitToScoreTime = gs.getPassModeScoreWaitLeft();
+					leftTeamPassModeWaitToScore = true;
+				} else if (gs.getPassModeScoreWaitRight() > 0) {
+					passModeWaitToScoreTime = gs.getPassModeScoreWaitRight();
+				}
+			} else if (gs.getPlayModeHistory().size() > 1 && gs.getPlayMode().equals(GameState.PLAY_ON)) {
+				GameState.HistoryItem item = gs.getPlayModeHistory().get(gs.getPlayModeHistory().size() - 2);
+				if (item.playMode.equals(GameState.PASS_LEFT) || item.playMode.equals(GameState.PASS_RIGHT)) {
+					float timeOfLastPassEnd = gs.getPlayModeHistory().get(gs.getPlayModeHistory().size() - 1).time;
+					float timePassed = gs.getTime() - timeOfLastPassEnd;
+					if (timePassed >= 0) {
+						final float COOLDOWN = 10;
+						passModeWaitToScoreTime = COOLDOWN - timePassed;
+						if (item.playMode.equals(GameState.PASS_LEFT)) {
+							leftTeamPassModeWaitToScore = true;
+						}
+					}
+				}
+			}
+
+			if (passModeWaitToScoreTime > 0) {
+				tr3.beginRendering(screenW, screenH);
+				float a = 0.8f;
+				if (leftTeamPassModeWaitToScore) {
+					tr3.setColor(lc[0] * a, lc[1] * a, lc[2] * a, 1);
+				} else {
+					tr3.setColor(rc[0] * a, rc[1] * a, rc[2] * a, 1);
+				}
+				tr3.draw(String.format(Locale.US, "%.1f", passModeWaitToScoreTime), timeX, y - 20);
+				tr3.endRendering();
+			}
 		}
 	}
 
