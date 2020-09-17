@@ -57,7 +57,7 @@ public class SimsparkController implements CameraController, GameStateChangeList
 	public SimsparkController(UserInterface ui)
 	{
 		this.ui = ui;
-		ui.getCamera().setTranslateSpeed(4);
+		ui.getCamera().setTranslateSpeed(6);
 	}
 
 	public void update(double elapsedMS)
@@ -96,7 +96,15 @@ public class SimsparkController implements CameraController, GameStateChangeList
 		if (dD > 0)
 			tWorld.add(Vec3f.unitY().times(-dD));
 
-		float scale = (float) (elapsedMS / 1000.0f * ui.getCamera().getTranslatedSpeed());
+		// Adjust camera speed dependent on its height
+		float speed = Math.abs(cam.getPosition().y / 6.0f);
+		if (speed < 0.25f)
+			speed = 0.25f;
+		else if (speed > 4.0f)
+			speed = 4.0f;
+		speed *= ui.getCamera().getTranslatedSpeed();
+
+		float scale = (float) (elapsedMS / 1000.0f) * speed;
 
 		tLocal.mul(scale);
 		tWorld.mul(scale);
