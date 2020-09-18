@@ -30,4 +30,3 @@ jobs:
       run:  |
         cd scripts
         ./build.sh
-        cd ..
