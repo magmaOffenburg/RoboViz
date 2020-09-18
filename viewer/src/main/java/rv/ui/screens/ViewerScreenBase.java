@@ -526,6 +526,8 @@ public abstract class ViewerScreenBase
 			thirdPersonFOV += amount;
 			robotVantage.setFOV(thirdPersonFOV);
 			break;
+		default:
+			break;
 		}
 	}
 

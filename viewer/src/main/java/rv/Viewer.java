@@ -97,11 +97,11 @@ public class Viewer
 	private Drawings drawings;
 	private Renderer renderer;
 	private LogPlayer logPlayer;
-	boolean init = false;
+	boolean isInitialized = false;
+	boolean takeScreenshotOnNextRender = false;
 	private boolean fullscreen = false;
 	private GLInfo glInfo;
 	private final Configuration config;
-	private String ssName = null;
 	private File logFile;
 	private String drawingFilter;
 	private Mode mode = Mode.LIVE;
@@ -257,7 +257,7 @@ public class Viewer
 	{
 		GL2 gl = drawable.getGL().getGL2();
 
-		if (!init) { // print OpenGL renderer info
+		if (!isInitialized) { // print OpenGL renderer info
 			glInfo = new GLInfo(drawable.getGL());
 			glInfo.print();
 		}
@@ -269,7 +269,7 @@ public class Viewer
 		}
 
 		SceneGraph oldSceneGraph = null;
-		if (init)
+		if (isInitialized)
 			oldSceneGraph = world.getSceneGraph();
 		world = new WorldModel();
 		world.init(drawable.getGL(), contentManager, config, mode);
@@ -282,7 +282,7 @@ public class Viewer
 			netManager.getServer().addChangeListener(world.getGameState());
 			netManager.getServer().addChangeListener(this);
 		} else {
-			if (!init) {
+			if (!isInitialized) {
 				logPlayer = new LogPlayer(logFile, world, config, this);
 				logPlayer.addListener(this);
 				logfileChanged();
@@ -294,12 +294,50 @@ public class Viewer
 		renderer = new Renderer(this);
 		renderer.init(drawable, contentManager, glInfo);
 
-		if (init && oldSceneGraph != null)
+		if (isInitialized && oldSceneGraph != null)
 			world.setSceneGraph(oldSceneGraph);
 		world.addSceneGraphListener(contentManager);
 
 		gl.glClearColor(0, 0, 0, 1);
-		init = true;
+		isInitialized = true;
+	}
+	
+	public void changeMode(Mode newMode) {
+		mode = newMode;
+		
+		// stop currently active screen
+		ui.stopActiveScreen();
+		
+		switch (newMode) {
+			case LIVE:				
+				if (netManager == null) {
+					netManager = new NetworkManager();
+					netManager.init(this, config);
+					netManager.getServer().addChangeListener(world.getGameState());
+					netManager.getServer().addChangeListener(this);
+				}
+				break;
+			case LOGFILE:
+				if (logPlayer == null) {
+					logPlayer = new LogPlayer(logFile, world, config, this);
+					logPlayer.addListener(this);
+					logfileChanged();
+				}
+				break;
+			default:
+				System.out.println("The mode " + newMode + " is not supported.");
+				break;
+		}		
+		
+		// update the menu bar
+		frame.menuBar =  new MenuBar(Viewer.this);
+		frame.setJMenuBar(frame.menuBar);
+		SwingUtilities.updateComponentTreeUI(frame);
+			
+		// reinitialize the ui
+		ui.init();
+		
+		frame.setVisible(true); // for same strange reason ui.init() sets visible to false
 	}
 
 	@Override
@@ -314,32 +352,29 @@ public class Viewer
 		(new AWTMouseAdapter(l, canvas)).addTo(canvas);
 	}
 
-	public void takeScreenShot()
-	{
-		String s = Calendar.getInstance().getTime().toString();
-		s = s.replaceAll("[\\s:]+", "_");
-		ssName = String.format(Locale.US, "screenshots/%s_%s.png", "roboviz", s);
-	}
-
-	private void takeScreenshot(String fileName)
+	private void takeScreenshot()
 	{
 		// TODO Info: GLReadBufferUtil.readPixels: pre-exisiting GL error 0x501
+		String date = Calendar.getInstance().getTime().toString().replaceAll("[\\s:]+", "_");
+		String fileName = String.format(Locale.US, "screenshots/%s_%s.png", "roboviz", date);
 
 		GLProfile glp = GLProfile.getDefault();
-		AWTGLReadBufferUtil screenshot = new AWTGLReadBufferUtil(glp, false);
-		BufferedImage ss = screenshot.readPixelsToBufferedImage(drawable.getGL(), true);
+		AWTGLReadBufferUtil bufferUtil = new AWTGLReadBufferUtil(glp, false);
+		BufferedImage screenshot = bufferUtil.readPixelsToBufferedImage(drawable.getGL(), true);
 
-		File ssFile = new File(fileName);
-		File ssDir = new File("screenshots");
+		File file = new File(fileName);
+		File dir = new File("screenshots");
 		try {
-			if (!ssDir.exists())
-				ssDir.mkdir();
-			ImageIO.write(ss, "png", ssFile);
+			if (!dir.exists())
+				dir.mkdir();
+			ImageIO.write(screenshot, "png", file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		takeScreenshotOnNextRender = false;
 
-		System.out.println("Screenshot taken: " + ssFile.getAbsolutePath());
+		System.out.println("Screenshot taken: " + file.getAbsolutePath());
 	}
 
 	/** Enter or exit full-screen exclusive mode depending on current mode */
@@ -370,7 +405,7 @@ public class Viewer
 	@Override
 	public void update(GL glGeneric)
 	{
-		if (!init)
+		if (!isInitialized)
 			return;
 
 		GL2 gl = glGeneric.getGL2();
@@ -408,12 +443,11 @@ public class Viewer
 	@Override
 	public void render(GL gl)
 	{
-		if (!init)
+		if (!isInitialized)
 			return;
 
-		if (ssName != null) {
-			takeScreenshot(ssName);
-			ssName = null;
+		if (takeScreenshotOnNextRender) {
+			takeScreenshot();
 		}
 
 		renderer.render(drawable, config.graphics);
@@ -508,6 +542,15 @@ public class Viewer
 	public RVFrame getFrame()
 	{
 		return frame;
+	}
+	
+	/**
+	 * setters
+	 */
+	
+	public void setTakeScreenshotOnNextRender()
+	{
+		takeScreenshotOnNextRender = true;
 	}
 
 	public class RVFrame extends JFrame

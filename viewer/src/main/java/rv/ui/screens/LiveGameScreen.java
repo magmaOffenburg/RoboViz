@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import jsgl.math.vector.Vec3f;
 import rv.Configuration;
 import rv.Viewer;
+import rv.Viewer.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ServerComm;
 import rv.comm.rcssserver.ServerSpeedBenchmarker;
@@ -65,6 +66,8 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 		super.createViewMenu(menu);
 		menu.addItem("Toggle Server Speed", "M", this::toggleShowServerSpeed);
 		menu.addItem("Playmode Overlay", "O", this::openPlaymodeOverlay);
+		menu.addItem("Log Mode", "F4", this::toggelMode);
+		
 	}
 
 	private void createServerMenu(Menu menu)
@@ -198,6 +201,12 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	{
 		setEnabled((GLCanvas) viewer.getCanvas(), false);
 		playmodeOverlay.setVisible(true);
+	}
+	
+	private void toggelMode()
+	{
+		System.out.println("inti log mode");
+		viewer.changeMode(Mode.LOGFILE);
 	}
 
 	private void resetTimeIfExpired()

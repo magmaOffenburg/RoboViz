@@ -438,6 +438,15 @@ public class LogPlayer implements LogfileListener
 		}, viewer, this);
 		logAnalyzer.start();
 	}
+	
+	public void stopLogPlayer()
+	{
+		if (logRunner != null) logRunner.abort();
+		if (logAnalyzer != null) logAnalyzer.abort();
+		
+		if (logfile != null) logfile.close();
+		goals.clear();
+	}
 
 	private class LogRunnerThread extends Thread
 	{

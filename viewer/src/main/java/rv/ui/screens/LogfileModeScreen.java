@@ -19,8 +19,10 @@ package rv.ui.screens;
 import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.event.KeyEvent;
 import rv.Viewer;
+import rv.Viewer.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
+import rv.ui.menus.Menu;
 import rv.comm.rcssserver.LogPlayer;
 
 public class LogfileModeScreen extends ViewerScreenBase
@@ -52,6 +54,14 @@ public class LogfileModeScreen extends ViewerScreenBase
 			}
 		});
 	}
+	
+	@Override
+	public void createViewMenu(Menu menu)
+	{
+		super.createViewMenu(menu);
+		menu.addItem("Live Mode", "F4", this::toggelMode);
+	}
+		
 
 	@Override
 	public void setEnabled(GLCanvas canvas, boolean enabled)
@@ -114,5 +124,18 @@ public class LogfileModeScreen extends ViewerScreenBase
 		} else {
 			super.gsPlayStateChanged(gs);
 		}
+	}
+	
+	@Override
+	public void stop() {
+		System.out.println("stoping player and player dialog");
+		player.stopLogPlayer();
+		playDialog.dispose();
+	}
+	
+	private void toggelMode()
+	{
+		System.out.println("inti live mode");
+		viewer.changeMode(Mode.LIVE);
 	}
 }

@@ -32,6 +32,7 @@ import rv.Viewer;
 import rv.ui.screens.LiveGameScreen;
 import rv.ui.screens.LogfileModeScreen;
 import rv.ui.screens.Screen;
+import rv.ui.screens.ViewerScreenBase;
 import rv.ui.view.CameraController;
 import rv.ui.view.SimsparkController;
 import rv.ui.view.TargetTrackerCamera;
@@ -54,6 +55,9 @@ public class UserInterface implements KeyListener
 	private KeyListener[] tempListeners;
 	private Screen activeScreen;
 	private TargetTrackerCamera trackerCamera;
+	
+	
+	private ViewerScreenBase activeViewerScreen;
 
 	public TargetTrackerCamera getTrackerCamera()
 	{
@@ -118,6 +122,10 @@ public class UserInterface implements KeyListener
 
 		trackerCamera = new TargetTrackerCamera(camera, viewer.getWorldModel().getGameState());
 	}
+	
+	public void stopActiveScreen() {
+		if (activeScreen != null) activeScreen.stop();
+	}
 
 	private FPCamera initCamera(GLCapabilitiesImmutable glcaps)
 	{
@@ -170,7 +178,7 @@ public class UserInterface implements KeyListener
 	{
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_F12:
-			viewer.takeScreenShot();
+			viewer.setTakeScreenshotOnNextRender();
 			break;
 		default:
 			break;
