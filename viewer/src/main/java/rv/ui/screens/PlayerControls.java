@@ -16,21 +16,13 @@
 
 package rv.ui.screens;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Shape;
 import java.awt.event.ActionListener;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultButtonModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -40,7 +32,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import rv.comm.rcssserver.LogPlayer;
 import rv.ui.FramePanelBase;
-import rv.util.swing.SwingUtil;
 
 /**
  * Dialog containing the media player controls for log mode
@@ -61,7 +52,6 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
 	private final LogPlayer player;
 	private Container container;
-	private JButton fileOpenButton;
 	private JButton rewindButton;
 	private JButton previousFrameButton;
 	private JButton playPauseButton;
@@ -119,7 +109,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		previousGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_undo_black_24dp.png"));
 		nextGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_redo_black_24dp.png"));
 		
-		fileOpenButton = createButton(c, fileOpenIcon, "Open logfile...", e -> player.openFileDialog(frame));
+		createButton(c, fileOpenIcon, "Open logfile...", e -> player.openFileDialog(frame));
 
 		rewindButton = createButton(c, rewindIcon, "Rewind", e -> player.rewind());
 
