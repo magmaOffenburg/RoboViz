@@ -66,7 +66,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 		super.createViewMenu(menu);
 		menu.addItem("Toggle Server Speed", "M", this::toggleShowServerSpeed);
 		menu.addItem("Playmode Overlay", "O", this::openPlaymodeOverlay);
-		menu.addItem("Log Mode", "F4", this::toggelMode);
+		menu.addItem("Log Mode", "", this::toggelMode);
 		
 	}
 

@@ -55,9 +55,6 @@ public class UserInterface implements KeyListener
 	private KeyListener[] tempListeners;
 	private Screen activeScreen;
 	private TargetTrackerCamera trackerCamera;
-	
-	
-	private ViewerScreenBase activeViewerScreen;
 
 	public TargetTrackerCamera getTrackerCamera()
 	{

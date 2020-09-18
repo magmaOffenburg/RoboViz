@@ -309,20 +309,18 @@ public class Viewer
 		ui.stopActiveScreen();
 		
 		switch (newMode) {
-			case LIVE:				
-				if (netManager == null) {
-					netManager = new NetworkManager();
-					netManager.init(this, config);
-					netManager.getServer().addChangeListener(world.getGameState());
-					netManager.getServer().addChangeListener(this);
-				}
+			case LIVE:
+				if (logPlayer != null) logPlayer = null;
+				netManager = new NetworkManager();
+				netManager.init(this, config);
+				netManager.getServer().addChangeListener(world.getGameState());
+				netManager.getServer().addChangeListener(this);
 				break;
 			case LOGFILE:
-				if (logPlayer == null) {
-					logPlayer = new LogPlayer(logFile, world, config, this);
-					logPlayer.addListener(this);
-					logfileChanged();
-				}
+				if (netManager != null) netManager = null;
+				logPlayer = new LogPlayer(logFile, world, config, this);
+				logPlayer.addListener(this);
+				logfileChanged();
 				break;
 			default:
 				System.out.println("The mode " + newMode + " is not supported.");

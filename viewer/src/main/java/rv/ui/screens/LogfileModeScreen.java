@@ -59,7 +59,7 @@ public class LogfileModeScreen extends ViewerScreenBase
 	public void createViewMenu(Menu menu)
 	{
 		super.createViewMenu(menu);
-		menu.addItem("Live Mode", "F4", this::toggelMode);
+		menu.addItem("Live Mode", "", this::toggelMode);
 	}
 		
 
