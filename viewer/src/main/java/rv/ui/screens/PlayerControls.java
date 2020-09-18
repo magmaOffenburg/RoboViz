@@ -61,16 +61,26 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 
 	private final LogPlayer player;
 	private Container container;
-	private RoundButton rewindButton;
-	private RoundButton previousFrameButton;
-	private RoundButton playPauseButton;
-	private RoundButton nextFrameButton;
-	private RoundButton previousGoalButton;
-	private RoundButton nextGoalButton;
+	private JButton fileOpenButton;
+	private JButton rewindButton;
+	private JButton previousFrameButton;
+	private JButton playPauseButton;
+	private JButton nextFrameButton;
+	private JButton previousGoalButton;
+	private JButton nextGoalButton;
 	private JSpinner playbackSpeedSpinner;
 	private JSlider slider;
 	private boolean sliderUpdate;
-
+	
+	private ImageIcon fileOpenIcon;
+	private ImageIcon rewindIcon;
+	private ImageIcon previousFrameIcon;
+	private ImageIcon playIcon;
+	private ImageIcon pauseIcon;
+	private ImageIcon nextFrameIcon;
+	private ImageIcon previousGoalIcon;
+	private ImageIcon nextGoalIcon;
+	
 	private PlayerControls(LogPlayer player)
 	{
 		super("Logplayer");
@@ -99,36 +109,45 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 5, 0, 0);
+		
+		fileOpenIcon = new ImageIcon(getClass().getResource("/images/baseline_folder_open_black_24dp.png"));
+		rewindIcon = new ImageIcon(getClass().getResource("/images/baseline_replay_black_24dp.png"));
+		previousFrameIcon = new ImageIcon(getClass().getResource("/images/baseline_skip_previous_black_24dp.png"));
+		playIcon = new ImageIcon(getClass().getResource("/images/baseline_pause_black_24dp.png"));
+		pauseIcon = new ImageIcon(getClass().getResource("/images/baseline_play_arrow_black_24dp.png"));
+		nextFrameIcon = new ImageIcon(getClass().getResource("/images/baseline_skip_next_black_24dp.png"));
+		previousGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_undo_black_24dp.png"));
+		nextGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_redo_black_24dp.png"));
+		
+		fileOpenButton = createButton(c, fileOpenIcon, "Open logfile...", e -> player.openFileDialog(frame));
 
-		createButton(c, "file_open", "Open logfile...", e -> player.openFileDialog(frame));
+		rewindButton = createButton(c, rewindIcon, "Rewind", e -> player.rewind());
 
-		rewindButton = createButton(c, "rewind", "Rewind", e -> player.rewind());
-
-		previousFrameButton = createButton(c, "previous_frame", "Step back", e -> {
+		previousFrameButton = createButton(c, previousFrameIcon, "Step back", e -> {
 			if (!player.isPlaying())
 				player.stepBackward();
 		});
 
-		playPauseButton = createButton(c, "pause", "Pause", e -> {
+		playPauseButton = createButton(c, pauseIcon, "Pause", e -> {
 			if (player.isPlaying()) {
 				player.pause();
-				playPauseButton.setIcon("play");
+				playPauseButton.setIcon(playIcon);
 				playPauseButton.setToolTipText("Play");
 			} else {
 				player.resume();
-				playPauseButton.setIcon("pause");
+				playPauseButton.setIcon(pauseIcon);
 				playPauseButton.setToolTipText("Pause");
 			}
 		});
 
-		nextFrameButton = createButton(c, "next_frame", "Step forward", e -> {
+		nextFrameButton = createButton(c, nextFrameIcon, "Step forward", e -> {
 			if (!player.isPlaying())
 				player.stepForward();
 		});
 
-		previousGoalButton = createButton(c, "previous_goal", null, e -> player.stepBackwardGoal());
+		previousGoalButton = createButton(c, previousGoalIcon, null, e -> player.stepBackwardGoal());
 
-		nextGoalButton = createButton(c, "next_goal", null, e -> player.stepForwardGoal());
+		nextGoalButton = createButton(c, nextGoalIcon, null, e -> player.stepForwardGoal());
 
 		c.gridx++;
 		c.insets = new Insets(0, 25, 0, 0);
@@ -157,12 +176,16 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		c.insets = new Insets(15, 5, 0, 0);
 		container.add(slider, c);
 	}
-
-	private RoundButton createButton(GridBagConstraints c, String iconName, String tooltip, ActionListener listener)
+	
+	private JButton createButton(GridBagConstraints c, ImageIcon icon, String tooltip, ActionListener listener)
 	{
-		RoundButton button = new RoundButton(iconName);
+		JButton button = new JButton();
+		button.setPreferredSize(new Dimension(36, 36));
+		button.setIcon(icon);
+		button.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		button.setToolTipText(tooltip);
 		button.addActionListener(listener);
+
 		c.gridx++;
 		container.add(button, c);
 		return button;
@@ -187,7 +210,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		previousFrameButton.setEnabled(isValid && !playing && !atBeginning);
 		playPauseButton.setEnabled(isValid && (!atEnd || player.getPlayBackSpeed() <= 0) &&
 								   (!atBeginning || player.getPlayBackSpeed() >= 0));
-		playPauseButton.setIcon(playing ? "pause" : "play");
+		playPauseButton.setIcon(playing ? pauseIcon : playIcon);
 		previousGoalButton.setEnabled(isValid && player.hasPreviousGoal());
 		previousGoalButton.setToolTipText(player.getPreviousGoalMessage());
 		nextGoalButton.setEnabled(isValid && player.hasNextGoal());
@@ -223,73 +246,5 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 	{
 		frame.dispose();
 	}
-
-	static class RoundButton extends JButton
-	{
-		private Shape shape;
-		private Shape base;
-		private String iconName;
-
-		public RoundButton(String iconName)
-		{
-			setModel(new DefaultButtonModel());
-			setIcon(iconName);
-			setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-			setBackground(Color.BLACK);
-			setContentAreaFilled(false);
-			setFocusPainted(false);
-			setAlignmentY(Component.TOP_ALIGNMENT);
-			initShape();
-		}
-
-		public void setIcon(String iconName)
-		{
-			if (this.iconName != null && this.iconName.equals(iconName)) {
-				return;
-			}
-			this.iconName = iconName;
-			ImageIcon icon = getImageIcon(iconName);
-			setIcon(icon);
-			createRolloverIcon(icon);
-		}
-
-		private void createRolloverIcon(ImageIcon icon)
-		{
-			RescaleOp op = new RescaleOp(1.6f, -75, null);
-			BufferedImage bufferIcon = SwingUtil.imageIconToBufferedImage(icon);
-			op.filter(bufferIcon, bufferIcon);
-			setRolloverIcon(new ImageIcon(bufferIcon));
-		}
-
-		private ImageIcon getImageIcon(String iconName)
-		{
-			String iconPath = String.format("/images/%s.png", iconName);
-			return new ImageIcon(getClass().getResource(iconPath));
-		}
-
-		protected void initShape()
-		{
-			if (!getBounds().equals(base)) {
-				Dimension s = getPreferredSize();
-				base = getBounds();
-				shape = new Ellipse2D.Float(0, 0, s.width - 1, s.height - 1);
-			}
-		}
-
-		@Override
-		public Dimension getPreferredSize()
-		{
-			Icon icon = getIcon();
-			Insets i = getInsets();
-			int iw = Math.max(icon.getIconWidth(), icon.getIconHeight());
-			return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
-		}
-
-		@Override
-		public boolean contains(int x, int y)
-		{
-			initShape();
-			return shape.contains(x, y);
-		}
-	}
+	
 }
