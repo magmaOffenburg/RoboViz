@@ -1,7 +1,7 @@
 ![Logo](viewer/src/main/resources/images/icon.png) RoboViz
 ==================
 
-[![Build Status](https://travis-ci.org/magmaOffenburg/RoboViz.png)](https://travis-ci.org/magmaOffenburg/RoboViz)
+![Build](https://github.com/magmaOffenburg/RoboViz/workflows/Build/badge.svg)
 
 RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulation League](http://wiki.robocup.org/wiki/Soccer_Simulation_League). This is a fork of the original version by Justin Stoecker [hosted on SourceForge](http://sourceforge.net/projects/rcroboviz/). Compared to the original version, major improvements have been made as can be seen in detail in the [changelog](CHANGELOG.md).
 
