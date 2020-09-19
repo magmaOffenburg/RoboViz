@@ -67,7 +67,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 		menu.addItem("Toggle Server Speed", "M", this::toggleShowServerSpeed);
 		menu.addItem("Playmode Overlay", "O", this::openPlaymodeOverlay);
 		menu.addItem("Log Mode", "", this::toggelMode);
-		
 	}
 
 	private void createServerMenu(Menu menu)
@@ -205,7 +204,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	
 	private void toggelMode()
 	{
-		System.out.println("inti log mode");
 		viewer.changeMode(Mode.LOGFILE);
 	}
 

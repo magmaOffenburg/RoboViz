@@ -127,15 +127,14 @@ public class LogfileModeScreen extends ViewerScreenBase
 	}
 	
 	@Override
-	public void stop() {
-		System.out.println("stoping player and player dialog");
+	public void stop()
+	{
 		player.stopLogPlayer();
 		playDialog.dispose();
 	}
 	
 	private void toggelMode()
 	{
-		System.out.println("inti live mode");
 		viewer.changeMode(Mode.LIVE);
 	}
 }
