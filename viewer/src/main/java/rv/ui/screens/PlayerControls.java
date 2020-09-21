@@ -61,7 +61,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 	private JSpinner playbackSpeedSpinner;
 	private JSlider slider;
 	private boolean sliderUpdate;
-	
+
 	private ImageIcon fileOpenIcon;
 	private ImageIcon rewindIcon;
 	private ImageIcon previousFrameIcon;
@@ -70,7 +70,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 	private ImageIcon nextFrameIcon;
 	private ImageIcon previousGoalIcon;
 	private ImageIcon nextGoalIcon;
-	
+
 	private PlayerControls(LogPlayer player)
 	{
 		super("Logplayer");
@@ -99,7 +99,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 5, 0, 0);
-		
+
 		fileOpenIcon = new ImageIcon(getClass().getResource("/images/baseline_folder_open_black_24dp.png"));
 		rewindIcon = new ImageIcon(getClass().getResource("/images/baseline_replay_black_24dp.png"));
 		previousFrameIcon = new ImageIcon(getClass().getResource("/images/baseline_skip_previous_black_24dp.png"));
@@ -108,7 +108,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		nextFrameIcon = new ImageIcon(getClass().getResource("/images/baseline_skip_next_black_24dp.png"));
 		previousGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_undo_black_24dp.png"));
 		nextGoalIcon = new ImageIcon(getClass().getResource("/images/baseline_redo_black_24dp.png"));
-		
+
 		createButton(c, fileOpenIcon, "Open logfile...", e -> player.openFileDialog(frame));
 
 		rewindButton = createButton(c, rewindIcon, "Rewind", e -> player.rewind());
@@ -166,7 +166,7 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 		c.insets = new Insets(15, 5, 0, 0);
 		container.add(slider, c);
 	}
-	
+
 	private JButton createButton(GridBagConstraints c, ImageIcon icon, String tooltip, ActionListener listener)
 	{
 		JButton button = new JButton();
@@ -236,5 +236,4 @@ class PlayerControls extends FramePanelBase implements LogPlayer.StateChangeList
 	{
 		frame.dispose();
 	}
-	
 }

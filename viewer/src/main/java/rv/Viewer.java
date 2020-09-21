@@ -116,7 +116,7 @@ public class Viewer
 
 		System.out.println("RoboViz " + VERSION + "\n");
 	}
-	
+
 	public static void main(String[] args)
 	{
 		final Configuration config = Configuration.loadFromFile();
@@ -132,7 +132,7 @@ public class Viewer
 		final String[] arguments = args;
 		SwingUtilities.invokeLater(() -> new Viewer(config, caps, arguments));
 	}
-	
+
 	public void addWindowResizeListener(WindowResizeListener l)
 	{
 		windowResizeListeners.add(l);
@@ -301,40 +301,43 @@ public class Viewer
 		gl.glClearColor(0, 0, 0, 1);
 		isInitialized = true;
 	}
-	
-	public void changeMode(Mode newMode) {
+
+	public void changeMode(Mode newMode)
+	{
 		mode = newMode;
-		
+
 		// stop currently active screen
 		ui.stopActiveScreen();
-		
+
 		switch (newMode) {
-			case LIVE:
-				if (logPlayer != null) logPlayer = null;
-				netManager = new NetworkManager();
-				netManager.init(this, config);
-				netManager.getServer().addChangeListener(world.getGameState());
-				netManager.getServer().addChangeListener(this);
-				break;
-			case LOGFILE:
-				if (netManager != null) netManager = null;
-				logPlayer = new LogPlayer(logFile, world, config, this);
-				logPlayer.addListener(this);
-				logfileChanged();
-				break;
-			default:
-				System.out.println("The mode " + newMode + " is not supported.");
-				break;
-		}		
-		
+		case LIVE:
+			if (logPlayer != null)
+				logPlayer = null;
+			netManager = new NetworkManager();
+			netManager.init(this, config);
+			netManager.getServer().addChangeListener(world.getGameState());
+			netManager.getServer().addChangeListener(this);
+			break;
+		case LOGFILE:
+			if (netManager != null)
+				netManager = null;
+			logPlayer = new LogPlayer(logFile, world, config, this);
+			logPlayer.addListener(this);
+			logfileChanged();
+			break;
+		default:
+			System.out.println("The mode " + newMode + " is not supported.");
+			break;
+		}
+
 		// update the menu bar
-		frame.menuBar =  new MenuBar(Viewer.this);
+		frame.menuBar = new MenuBar(Viewer.this);
 		frame.setJMenuBar(frame.menuBar);
 		SwingUtilities.updateComponentTreeUI(frame);
-			
+
 		// reinitialize the ui
 		ui.init();
-		
+
 		frame.setVisible(true); // for same strange reason ui.init() sets visible to false
 	}
 
@@ -369,7 +372,7 @@ public class Viewer
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		takeScreenshotOnNextRender = false;
 
 		System.out.println("Screenshot taken: " + file.getAbsolutePath());
@@ -381,7 +384,7 @@ public class Viewer
 		fullscreen = !fullscreen;
 		SwingUtil.getCurrentScreen(frame).setFullScreenWindow(fullscreen ? frame : null);
 	}
-	
+
 	public void shutdown()
 	{
 		if (config.graphics.saveFrameState)
@@ -481,11 +484,11 @@ public class Viewer
 			return roboviz;
 		return current + " - " + roboviz;
 	}
-	
+
 	/**
 	 * getters
 	 */
-	
+
 	public LogPlayer getLogPlayer()
 	{
 		return logPlayer;
@@ -531,7 +534,7 @@ public class Viewer
 	{
 		return drawings;
 	}
-	
+
 	public Renderer getRenderer()
 	{
 		return renderer;
@@ -541,11 +544,11 @@ public class Viewer
 	{
 		return frame;
 	}
-	
+
 	/**
 	 * setters
 	 */
-	
+
 	public void setTakeScreenshotOnNextRender()
 	{
 		takeScreenshotOnNextRender = true;
@@ -574,7 +577,7 @@ public class Viewer
 			return menuBar;
 		}
 	}
-	
+
 	/** Event object for when the main RoboViz window is resized */
 	public class WindowResizeEvent extends EventObject
 	{

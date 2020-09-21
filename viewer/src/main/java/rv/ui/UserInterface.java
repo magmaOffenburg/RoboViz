@@ -119,9 +119,11 @@ public class UserInterface implements KeyListener
 
 		trackerCamera = new TargetTrackerCamera(camera, viewer.getWorldModel().getGameState());
 	}
-	
-	public void stopActiveScreen() {
-		if (activeScreen != null) activeScreen.stop();
+
+	public void stopActiveScreen()
+	{
+		if (activeScreen != null)
+			activeScreen.stop();
 	}
 
 	private FPCamera initCamera(GLCapabilitiesImmutable glcaps)

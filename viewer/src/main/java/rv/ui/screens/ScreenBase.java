@@ -33,10 +33,9 @@ public abstract class ScreenBase implements Screen
 	public void createViewMenu(Menu menu)
 	{
 	}
-	
+
 	@Override
 	public void stop()
 	{
 	}
-	
 }

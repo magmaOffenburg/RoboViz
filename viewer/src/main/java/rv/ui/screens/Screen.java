@@ -40,6 +40,6 @@ public interface Screen extends Viewer.WindowResizeListener {
 	void setVisible(boolean visible);
 
 	void createViewMenu(Menu menu);
-	
+
 	void stop();
 }

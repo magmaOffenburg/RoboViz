@@ -22,8 +22,8 @@ import rv.Viewer;
 import rv.Viewer.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.LogAnalyzerThread.Goal;
-import rv.ui.menus.Menu;
 import rv.comm.rcssserver.LogPlayer;
+import rv.ui.menus.Menu;
 
 public class LogfileModeScreen extends ViewerScreenBase
 {
@@ -54,14 +54,13 @@ public class LogfileModeScreen extends ViewerScreenBase
 			}
 		});
 	}
-	
+
 	@Override
 	public void createViewMenu(Menu menu)
 	{
 		super.createViewMenu(menu);
-		menu.addItem("Live Mode", "", this::toggelMode);
+		menu.addItem("Live Mode", "", this::toggleMode);
 	}
-		
 
 	@Override
 	public void setEnabled(GLCanvas canvas, boolean enabled)
@@ -125,15 +124,15 @@ public class LogfileModeScreen extends ViewerScreenBase
 			super.gsPlayStateChanged(gs);
 		}
 	}
-	
+
 	@Override
 	public void stop()
 	{
 		player.stopLogPlayer();
 		playDialog.dispose();
 	}
-	
-	private void toggelMode()
+
+	private void toggleMode()
 	{
 		viewer.changeMode(Mode.LIVE);
 	}
