@@ -16,6 +16,7 @@ import jsgl.jogl.Texture2D
 import jsgl.jogl.prog.GLProgram
 import jsgl.jogl.view.Camera3D
 import jsgl.jogl.view.Viewport
+import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.configuration.Config.General
@@ -39,6 +40,8 @@ import rv.world.rendering.VSMPhongWorldRenderer
 import java.io.File
 
 class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height) {
+
+    private val logger = logger()
 
     private lateinit var glInfo: GLInfo
     private var isInitialized = false
@@ -144,6 +147,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
         gl?.gL2?.glClearColor(0F, 0F, 0F, 1F)
         isInitialized = true
+
+        logger.info { "Initialization successful" }
     }
 
     /**
