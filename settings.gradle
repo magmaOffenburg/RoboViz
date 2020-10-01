@@ -1,3 +1,2 @@
-rootProject.name = 'RoboViz'
+rootProject.name = 'RoboViz-Kotlin'
 include(':jsgl')
-include(':viewer')
