@@ -70,6 +70,10 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         fun activeScreenIsInitialized(): Boolean {
             return this::activeScreen.isInitialized
         }
+
+        fun netManagerIsInitialized(): Boolean {
+            return this::netManager.isInitialized
+        }
     }
 
     init {
@@ -147,7 +151,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
      * always shutdown before disposing anything
      */
     override fun dispose(drawable: GLAutoDrawable?) {
-        netManager.shutdown()
+        if (netManagerIsInitialized())
+            netManager.shutdown()
 
         world.dispose(drawable?.gl)
         effectManager.dispose(drawable?.gl)
