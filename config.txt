@@ -1,0 +1,45 @@
+# Graphics Settings
+Bloom                : true
+Phong                : true
+Shadows              : true
+Soft Shadows         : true
+Shadow Resolution    : 1024
+Stereo 3D            : false
+V-Sync               : false
+FSAA                 : true
+FSAA Samples         : 8
+Target FPS           : 60
+First Person FOV     : 120
+Third Person FOV     : 80
+Frame Width          : 1024
+Frame Height         : 768
+Frame X              : 0
+Frame Y              : 0
+Center Frame         : true
+Frame Maximized      : false
+Save Frame State     : true
+
+# Overlay Default Visibility
+Server Speed         : true
+Foul Overlay         : true
+Field Overlay        : true
+Number of Players    : true
+Player IDs           : true
+
+# Networking Settings
+Auto-Connect         : true
+Auto-Connect Delay   : 1000
+Default Server       : localhost:3200
+Drawing Port         : 32769
+# To store more servers, just insert more "Server" lines
+Server               : localhost:3200
+
+# General Settings
+Record Logfiles      : false
+Logfile Directory    : 
+# Possible values for "Look and Feel" are: "system", "darcula", "intellij", "solarized_light" and "solarized_dark"
+Look and Feel        : system
+
+# Team Colors
+Team Color           : <Right>:0xff2626
+Team Color           : <Left>:0x2626ff
