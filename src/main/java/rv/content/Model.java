@@ -26,7 +26,8 @@ import jsgl.jogl.model.Mesh;
 import jsgl.jogl.model.MeshPart;
 import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMeshImporter;
-import rv.ui.DebugInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Named mesh loaded by and managed by the content manager.
@@ -35,6 +36,8 @@ import rv.ui.DebugInfo;
  */
 public class Model
 {
+	private static final Logger LOGGER = LogManager.getLogger(Model.class.getName());
+
 	private Mesh mesh;
 	private boolean loaded = false;
 	private final String name;
@@ -100,7 +103,7 @@ public class Model
 
 	private void failureMessage()
 	{
-		DebugInfo.println(getClass(), "Failed to load " + name);
+		LOGGER.debug("Failed to load " + name);
 	}
 
 	/**

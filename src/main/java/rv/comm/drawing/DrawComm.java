@@ -25,8 +25,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import jsgl.io.ByteUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.comm.drawing.commands.Command;
-import rv.ui.DebugInfo;
 
 /**
  * Communication interface between clients sending draw commands and RoboViz
@@ -35,6 +36,8 @@ import rv.ui.DebugInfo;
  */
 public class DrawComm
 {
+	private static final Logger LOGGER = LogManager.getLogger(DrawComm.class.getName());
+
 	/** Receives UDP packets */
 	private class ReceiveThread extends Thread
 	{
@@ -47,9 +50,8 @@ public class DrawComm
 			try {
 				socket = new DatagramSocket(port);
 			} catch (BindException e) {
-				DebugInfo.println(getClass(),
-						"Unable to bind to draw port " + port +
-								" - another RoboViz instance is probably already listening on the same port");
+				LOGGER.debug("Unable to bind to draw port " + port +
+						" - another RoboViz instance is probably already listening on the same port");
 				running = false;
 			}
 		}

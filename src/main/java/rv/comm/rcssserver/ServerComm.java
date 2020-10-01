@@ -31,11 +31,12 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Timer;
 import jsgl.math.vector.Vec3f;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config.General;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
 import org.magmaoffenburg.roboviz.util.DataTypes;
 import rv.comm.drawing.DrawComm.DrawCommListener;
-import rv.ui.DebugInfo;
 import rv.world.WorldModel;
 
 /**
@@ -124,6 +125,7 @@ public class ServerComm implements DrawCommListener
 		void connectionChanged(ServerComm server);
 	}
 
+	private static final Logger LOGGER = LogManager.getLogger(ServerComm.class.getName());
 	private final List<ServerChangeListener> changeListeners = new CopyOnWriteArrayList<>();
 	private Timer autoConnectTimer;
 
@@ -286,8 +288,7 @@ public class ServerComm implements DrawCommListener
 	public void sendMessage(String msg)
 	{
 		if (out == null) {
-			DebugInfo.println(getClass(), String.format("Cannot send message"
-							+ " \"%s\" - not connected to server", msg));
+			LOGGER.debug(String.format("Cannot send message \"%s\" - not connected to server", msg));
 			return;
 		}
 		char[] buf = new char[4 + msg.length()];

@@ -20,7 +20,8 @@ import java.nio.ByteBuffer;
 import java.util.Locale;
 import jsgl.io.ByteUtil;
 import jsgl.math.vector.Vec3f;
-import rv.ui.DebugInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
@@ -32,6 +33,8 @@ import rv.world.objects.Agent;
  */
 public abstract class Command
 {
+	private static final Logger LOGGER = LogManager.getLogger(Command.class.getName());
+
 	// packet command IDs
 	public static final int DRAW_OPTION = 0;
 	public static final int DRAW_SHAPE = 1;
@@ -168,8 +171,7 @@ public abstract class Command
 		try {
 			result = Float.parseFloat(message);
 		} catch (NumberFormatException e) {
-			DebugInfo.println(
-					Command.class, "Could not parse command, float '" + message + "' contains invalid characters.");
+			LOGGER.debug("Could not parse command, float '" + message + "' contains invalid characters.");
 		}
 		return result;
 	}
