@@ -31,8 +31,8 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'com.github.weisj:darklaf-core:2.4.7'
-    implementation 'com.github.weisj:darklaf-theme:2.4.7'
+    implementation 'com.github.weisj:darklaf-core:2.5.2'
+    implementation 'com.github.weisj:darklaf-theme:2.5.2'
     implementation 'org.jogamp.jogl:jogl-all-main:2.3.2'
     implementation 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
     implementation 'org.apache.commons:commons-compress:1.20'
