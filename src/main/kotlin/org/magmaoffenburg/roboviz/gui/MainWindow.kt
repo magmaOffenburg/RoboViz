@@ -52,8 +52,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
             initializeLogPlayerControls()
         }
 
-        //val testWindow = ConfigWindow()
-        //testWindow.isVisible = true
+        ConfigWindow().showWindow()
     }
 
     private fun initializeWindow() {
