@@ -5,6 +5,7 @@ import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.configuration.Config.Graphics
+import org.magmaoffenburg.roboviz.gui.config.ConfigWindow
 import org.magmaoffenburg.roboviz.gui.menus.CameraMenu
 import org.magmaoffenburg.roboviz.gui.menus.ConnectionMenu
 import org.magmaoffenburg.roboviz.gui.menus.ServerMenu
@@ -50,6 +51,9 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         if (Main.mode == DataTypes.Mode.LOG) {
             initializeLogPlayerControls()
         }
+
+        //val testWindow = ConfigWindow()
+        //testWindow.isVisible = true
     }
 
     private fun initializeWindow() {
