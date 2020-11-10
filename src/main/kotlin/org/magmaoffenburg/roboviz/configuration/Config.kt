@@ -26,10 +26,6 @@ class Config(args: Array<String>) {
         } catch (ex: Exception) {
             System.err.println("Error reading parsed values. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.")
         }
-
-//        Networking.servers.add(
-//            Pair("localhost", 3400)
-//        )
     }
 
     object General {
