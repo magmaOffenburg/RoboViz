@@ -6,11 +6,8 @@ import com.jogamp.opengl.awt.GLCanvas
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.configuration.Config.Graphics
 import org.magmaoffenburg.roboviz.gui.config.ConfigWindow
-import org.magmaoffenburg.roboviz.gui.menus.CameraMenu
-import org.magmaoffenburg.roboviz.gui.menus.ConnectionMenu
-import org.magmaoffenburg.roboviz.gui.menus.ServerMenu
-import org.magmaoffenburg.roboviz.gui.menus.ViewMenu
-import org.magmaoffenburg.roboviz.gui.panels.LogPlayerControlsPanel
+import org.magmaoffenburg.roboviz.gui.menus.*
+import org.magmaoffenburg.roboviz.gui.windows.LogPlayerControlsPanel
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import org.magmaoffenburg.roboviz.util.DataTypes
 import rv.comm.rcssserver.ServerComm
@@ -52,7 +49,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
             initializeLogPlayerControls()
         }
 
-        ConfigWindow().showWindow()
+        ConfigWindow.showWindow()
     }
 
     private fun initializeWindow() {
@@ -87,6 +84,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         val server = ServerMenu()
         val view = ViewMenu()
         val camera = CameraMenu()
+        val help = HelpMenu()
 
         // Live Mode specific items
         view.addSeparator()
@@ -97,14 +95,17 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         jMenuBar.add(server)
         jMenuBar.add(view)
         jMenuBar.add(camera)
+        jMenuBar.add(help)
     }
 
     private fun initializeLogMenu() {
         val view = ViewMenu()
         val camera = CameraMenu()
+        val help = HelpMenu()
 
         jMenuBar.add(view)
         jMenuBar.add(camera)
+        jMenuBar.add(help)
     }
 
     private fun initializeGLCanvas() {

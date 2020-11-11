@@ -68,10 +68,20 @@ class ConfigParser {
             when {
                 pair.key.startsWith("Team Color") -> {
                     val superKey = pair.key.replace("Team Color", "Team Color".padEnd(20))
+                    val newLine = "$superKey:${pair.value}"
                     val index = rawFileList.indexOfFirst { line ->
                         line.startsWith(superKey)
                     }
-                    rawFileList[index] = "$superKey:${pair.value}"
+
+                    if (index >= 0) {
+                        rawFileList[index] = newLine
+                    } else {
+                        // add a new team color
+                        val addIndex = rawFileList.indexOfLast { line ->
+                            line.startsWith("${"Team Color".padEnd(20)} :")
+                        }
+                        rawFileList.add(addIndex + 1, newLine)
+                    }
                 }
                 pair.key.startsWith("Server :") -> {
                     // only new servers will be added, existing servers can't be edited since there is no unique ID

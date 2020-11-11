@@ -1,36 +1,39 @@
 package org.magmaoffenburg.roboviz.gui.config
 
-import org.magmaoffenburg.roboviz.configuration.Config
+import org.magmaoffenburg.roboviz.configuration.Config.Networking
 import java.awt.Dimension
 import javax.swing.*
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 class ServerPanel: JPanel() {
 
+    private val serverLabel = JLabel("Server")
+    private val serverSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, serverLabel.preferredSize.height)
+    }
+    private val autoConnectCB = JCheckBox("Auto-Connect", Networking.autoConnect)
+    private val autoConnectDelayLabel = JLabel("Auto-Connect Delay:")
+    private val autoConnectDelaySpinner = JSpinner(SpinnerNumberModel(Networking.autoConnectDelay, 0, Int.MAX_VALUE, 1))
+    private val defaultServerHostLabel = JLabel("Default Host:")
+    private val defaultServerHostTf = JTextField(Networking.defaultServerHost)
+    private val defaultServerPortLabel = JLabel("Default Port:")
+    private val defaultServerPortSpinner = JSpinner(SpinnerNumberModel(Networking.defaultServerPort, 0, Int.MAX_VALUE, 1))
+    private val drawingPortLabel = JLabel("Drawing Port:")
+    private val drawingPortSpinner = JSpinner(SpinnerNumberModel(Networking.listenPort, 0, Int.MAX_VALUE, 1))
+    private val serverListButton = JButton("Open Server List")
+
     init {
-        initializePanel()
+        initializeLayout()
+        initializeActions()
     }
 
-    private fun initializePanel() {
+    private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
             autoCreateContainerGaps = true
         }
         this.layout = layout
-
-        val serverLabel = JLabel("Server")
-        val serverSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, serverLabel.preferredSize.height)
-        }
-        val autoConnectCB = JCheckBox("Auto-Connect", Config.Networking.autoConnect)
-        val autoConnectDelayLabel = JLabel("Auto-Connect Delay:")
-        val autoConnectDelaySpinner = JSpinner(SpinnerNumberModel(Config.Networking.autoConnectDelay, 0, Int.MAX_VALUE, 1))
-        val defaultServerHostLabel = JLabel("Default Host:")
-        val defaultServerHostTF = JTextField(Config.Networking.defaultServerHost)
-        val defaultServerPortLabel = JLabel("Default Port:")
-        val defaultServerPortSpinner = JSpinner(SpinnerNumberModel(Config.Networking.defaultServerPort, 0, Int.MAX_VALUE, 1))
-        val drawingPortLabel = JLabel("Drawing Port:")
-        val drawingPortSpinner = JSpinner(SpinnerNumberModel(Config.Networking.listenPort, 0, Int.MAX_VALUE, 1))
-        val serverListButton = JButton("Open Server List")
 
         layout.setHorizontalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -45,7 +48,7 @@ class ServerPanel: JPanel() {
                 )
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(defaultServerHostLabel, 0, 125, 125)
-                        .addComponent(defaultServerHostTF, 0, 120, 120)
+                        .addComponent(defaultServerHostTf, 0, 120, 120)
                 )
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(defaultServerPortLabel, 0, 125, 125)
@@ -70,7 +73,7 @@ class ServerPanel: JPanel() {
                 )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(defaultServerHostLabel)
-                        .addComponent(defaultServerHostTF)
+                        .addComponent(defaultServerHostTf)
                 )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(defaultServerPortLabel)
@@ -82,6 +85,34 @@ class ServerPanel: JPanel() {
                 )
                 .addComponent(serverListButton)
         )
+    }
+
+    private fun initializeActions() {
+        autoConnectCB.addActionListener {
+            Networking.autoConnect = autoConnectCB.isSelected
+        }
+        autoConnectDelaySpinner.addChangeListener {
+            Networking.autoConnectDelay = autoConnectDelaySpinner.value as Int
+        }
+        defaultServerHostTf.document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent?) {
+                Networking.defaultServerHost = defaultServerHostTf.text
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                Networking.defaultServerHost = defaultServerHostTf.text
+            }
+
+            override fun changedUpdate(e: DocumentEvent?) {
+                Networking.defaultServerHost = defaultServerHostTf.text
+            }
+        })
+        defaultServerPortSpinner.addChangeListener {
+            Networking.defaultServerPort = defaultServerPortSpinner.value as Int
+        }
+        drawingPortSpinner.addChangeListener {
+            Networking.listenPort = drawingPortSpinner.value as Int
+        }
     }
 
 }

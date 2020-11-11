@@ -1,16 +1,11 @@
 package org.magmaoffenburg.roboviz.etc.menuactions
 
-import org.magmaoffenburg.roboviz.gui.panels.ControlsHelpPanel
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import rv.ui.DrawingListPanel
 import rv.ui.screens.TextOverlay
 
 class ViewActions {
-
-    fun openHelp() {
-        ControlsHelpPanel().isVisible = true
-    }
 
     fun openDrawingsPanel() {
         DrawingListPanel(Renderer.drawings, "").showFrame(MainWindow.instance) // TODO drawingFilter

@@ -1,58 +1,59 @@
 package org.magmaoffenburg.roboviz.gui.config
 
-import org.magmaoffenburg.roboviz.configuration.Config
+import org.magmaoffenburg.roboviz.configuration.Config.Graphics
 import java.awt.Dimension
 import javax.swing.*
 
 class GraphicsPanel: JPanel() {
 
-    init {
-        initializePanel()
+    // lighting
+    private val lightingLabel = JLabel("Lighting")
+    private val lightingSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, lightingLabel.preferredSize.height)
+    }
+    private val bloomCb = JCheckBox("Bloom", Graphics.useBloom)
+    private val phongCb = JCheckBox("Phong", Graphics.usePhong)
+    private val shadowsCb = JCheckBox("Shadows", Graphics.useShadows)
+    private val softShadowsCb = JCheckBox("Soft Shadows", Graphics.useSoftShadows)
+    private val shadowResLabel = JLabel("Shadow Resolution:", SwingConstants.RIGHT)
+    private val shadowResSpinner = JSpinner(SpinnerNumberModel(Graphics.shadowResolution, 1, Int.MAX_VALUE, 1))
+
+    // fsaa
+    private val fsaaLabel = JLabel("Anti-Aliasing")
+    private val fsaaSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, fsaaLabel.preferredSize.height)
+    }
+    private val fsaaCb = JCheckBox("Enabled", Graphics.useFsaa)
+    private val samplesLabel = JLabel("Samples:", SwingConstants.RIGHT)
+    private val samplesSpinner = JSpinner(SpinnerNumberModel(Graphics.fsaaSamples, 1, Int.MAX_VALUE, 1)).apply {
+        isEnabled = Graphics.useFsaa
     }
 
-    private fun initializePanel() {
+    // general
+    private val generalLabel = JLabel("General Graphics")
+    private val generalSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, generalLabel.preferredSize.height)
+    }
+    private val stereoCb = JCheckBox("Stereo 3D", Graphics.useStereo)
+    private val vsyncCb = JCheckBox("V-Sync", Graphics.useVsync)
+    private val fpsLabel = JLabel("FPS:")
+    private val fpsSpinner = JSpinner(SpinnerNumberModel(Graphics.targetFPS, 1, Int.MAX_VALUE, 1))
+    private val fpFovLabel = JLabel("First Person FOV:")
+    private val fpFovSpinner = JSpinner(SpinnerNumberModel(Graphics.firstPersonFOV, 1, Int.MAX_VALUE, 1))
+    private val tpFovLabel = JLabel("Third Person FOV:")
+    private val tpFovSpinner = JSpinner(SpinnerNumberModel(Graphics.thirdPersonFOV, 1, Int.MAX_VALUE, 1))
+
+    init {
+        initializeLayout()
+        initializeActions()
+    }
+
+    private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
             autoCreateContainerGaps = true
         }
         this.layout = layout
-
-        val space = Box.createHorizontalStrut(10)
-
-        // lighting
-        val lightingLabel = JLabel("Lighting")
-        val lightingSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, lightingLabel.preferredSize.height)
-        }
-        val bloomCb = JCheckBox("Bloom", Config.Graphics.useBloom)
-        val phongCb = JCheckBox("Phong", Config.Graphics.usePhong)
-        val shadowsCb = JCheckBox("Shadows", Config.Graphics.useShadows)
-        val softShadowsCb = JCheckBox("Soft Shadows", Config.Graphics.useSoftShadows)
-        val shadowResLabel = JLabel("Shadow Resolution:", SwingConstants.RIGHT)
-        val shadowResSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.shadowResolution, 1, Int.MAX_VALUE, 1))
-
-        // fsaa
-        val fsaaLabel = JLabel("Anti-Aliasing")
-        val fsaaSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, fsaaLabel.preferredSize.height)
-        }
-        val fsaaCB = JCheckBox("Enabled", Config.Graphics.useFsaa)
-        val samplesLabel = JLabel("Samples:", SwingConstants.RIGHT)
-        val samplesSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.fsaaSamples, 1, Int.MAX_VALUE, 1))
-
-        // general
-        val generalLabel = JLabel("General Graphics")
-        val generalSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, generalLabel.preferredSize.height)
-        }
-        val stereoCb = JCheckBox("Stereo 3D", Config.Graphics.useStereo)
-        val vsyncCb = JCheckBox("V-Sync", Config.Graphics.useVsync)
-        val fpsLabel = JLabel("FPS:")
-        val fpsSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.targetFPS, 1, Int.MAX_VALUE, 1))
-        val fpFovLabel = JLabel("First Person FOV:")
-        val fpFovSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.firstPersonFOV, 1, Int.MAX_VALUE, 1))
-        val tpFovLabel = JLabel("Third Person FOV:")
-        val tpFovSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.thirdPersonFOV, 1, Int.MAX_VALUE, 1))
 
         layout.setHorizontalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -70,7 +71,6 @@ class GraphicsPanel: JPanel() {
                         .addComponent(shadowResLabel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                         .addComponent(shadowResSpinner, 0, 90, 90)
                 )
-                .addComponent(space, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
 
                 // fsaa
                 .addGroup(layout.createSequentialGroup()
@@ -78,11 +78,10 @@ class GraphicsPanel: JPanel() {
                         .addComponent(fsaaSeparator, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                 )
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(fsaaCB, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
+                        .addComponent(fsaaCb, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                         .addComponent(samplesLabel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                         .addComponent(samplesSpinner, 0, 90, 90)
                 )
-                .addComponent(space, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
 
                 // general
                 .addGroup(layout.createSequentialGroup()
@@ -119,7 +118,6 @@ class GraphicsPanel: JPanel() {
                         .addComponent(shadowResLabel)
                         .addComponent(shadowResSpinner)
                 )
-                .addComponent(space)
 
                 // fsaa
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -127,11 +125,10 @@ class GraphicsPanel: JPanel() {
                         .addComponent(fsaaSeparator)
                 )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(fsaaCB)
+                        .addComponent(fsaaCb)
                         .addComponent(samplesLabel)
                         .addComponent(samplesSpinner)
                 )
-                .addComponent(space)
 
                 // general
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -153,6 +150,52 @@ class GraphicsPanel: JPanel() {
                         .addComponent(tpFovSpinner)
                 )
         )
+    }
+
+    // TODO save
+    private fun initializeActions() {
+        // lighting
+        bloomCb.addActionListener {
+            Graphics.useBloom = bloomCb.isSelected
+        }
+        phongCb.addActionListener {
+            Graphics.usePhong = phongCb.isSelected
+        }
+        shadowsCb.addActionListener {
+            Graphics.useShadows = shadowsCb.isSelected
+        }
+        softShadowsCb.addActionListener {
+            Graphics.useSoftShadows = softShadowsCb.isSelected
+        }
+        shadowResSpinner.addChangeListener {
+            Graphics.shadowResolution = shadowResSpinner.value as Int
+        }
+
+        // fsaa
+        fsaaCb.addActionListener {
+            Graphics.useFsaa = fsaaCb.isSelected
+            samplesSpinner.isEnabled = Graphics.useFsaa
+        }
+        samplesSpinner.addChangeListener {
+            Graphics.fsaaSamples = samplesSpinner.value as Int
+        }
+
+        // general
+        stereoCb.addActionListener {
+            Graphics.useStereo = stereoCb.isSelected
+        }
+        vsyncCb.addActionListener {
+            Graphics.useVsync = vsyncCb.isSelected
+        }
+        fpsSpinner.addChangeListener {
+            Graphics.targetFPS = fpsSpinner.value as Int
+        }
+        fpFovSpinner.addChangeListener {
+            Graphics.firstPersonFOV = fpFovSpinner.value as Int
+        }
+        tpFovSpinner.addChangeListener {
+            Graphics.thirdPersonFOV = tpFovSpinner.value as Int
+        }
     }
 
 }
