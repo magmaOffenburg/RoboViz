@@ -1,56 +1,62 @@
 package org.magmaoffenburg.roboviz.gui.config
 
-import org.magmaoffenburg.roboviz.configuration.Config
-import org.magmaoffenburg.roboviz.util.etc.ColorEditor
-import org.magmaoffenburg.roboviz.util.etc.ColorRenderer
+import org.magmaoffenburg.roboviz.configuration.Config.General
+import org.magmaoffenburg.roboviz.configuration.Config.TeamColors
+import org.magmaoffenburg.roboviz.etc.ColorEditor
+import org.magmaoffenburg.roboviz.etc.ColorRenderer
 import java.awt.Color
 import java.awt.Dimension
 import javax.swing.*
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 import javax.swing.table.DefaultTableModel
+
 
 class GeneralPanel: JPanel() {
 
-    init {
-        initializePanel()
+    // log files
+    private val logfilesLabel = JLabel("Logfiles")
+    private val logfilesSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, logfilesLabel.preferredSize.height)
+    }
+    private val recordLogsCb = JCheckBox("Record Logfiles", General.recordLogs)
+    private val logDirectoryLabel = JLabel("Logfiles Directory:")
+    private val logDirectoryTf = JTextField(General.logfileDirectory)
+    private val openDirectoryButton = JButton("...")
+
+    // team colors
+    private val teamColorsLabel = JLabel("Team Colors")
+    private val teamColorsSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, teamColorsLabel.preferredSize.height)
     }
 
-    private fun initializePanel() {
+    private val tableModel = TeamColorsTableModel().apply {
+        addColumn("Team Name")
+        addColumn("Colors")
+    }
+    private val teamColorTable = JTable(tableModel).apply {
+        setDefaultRenderer(Color::class.java, ColorRenderer())
+        setDefaultEditor(Color::class.java, ColorEditor())
+        columnModel.getColumn(1).maxWidth = 30
+    }
+    private val addButton = JButton("Add")
+    private val removeButton = JButton("Remove")
+
+    init {
+        TeamColors.byTeamNames.forEach{ (teamName, color) ->
+            tableModel.addRow(arrayOf<Any>(teamName.substringAfter(":").trim(), color))
+        }
+
+        initializeLayout()
+        initializeActions()
+    }
+
+    private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
             autoCreateContainerGaps = true
         }
         this.layout = layout
-
-        val logfilesLabel = JLabel("Logfiles")
-        val logfilesSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, logfilesLabel.preferredSize.height)
-        }
-        val recordLogsCb = JCheckBox("Record Logfiles", Config.General.recordLogs)
-        val logDirectoryLabel = JLabel("Logfiles Directory:")
-        val logDirectoryTF = JTextField(Config.General.logfileDirectory)
-        val openDirectoryButton = JButton("...")
-
-        val teamColorsLabel = JLabel("Team Colors")
-        val teamColorsSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, teamColorsLabel.preferredSize.height)
-        }
-
-        val tableModel = DefaultTableModel().apply {
-            addColumn("Team Name")
-            addColumn("Colors")
-        }
-
-        Config.TeamColors.byTeamNames.forEach{ (teamName, color) ->
-            tableModel.addRow(arrayOf<Any>(teamName.substringAfter(":").trim(), color))
-        }
-
-        val teamColorTable = JTable(tableModel).apply {
-            setDefaultRenderer(Color::class.java, ColorRenderer())
-            setDefaultEditor(Color::class.java, ColorEditor())
-            columnModel.getColumn(1).maxWidth = 30
-        }
-        val addButton = JButton("Add")
-        val removeButton = JButton("Remove")
 
         layout.setHorizontalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -63,7 +69,7 @@ class GeneralPanel: JPanel() {
                 .addComponent(recordLogsCb, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(logDirectoryLabel, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(logDirectoryTF, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
+                        .addComponent(logDirectoryTf, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                         .addComponent(openDirectoryButton, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                 )
 
@@ -88,7 +94,7 @@ class GeneralPanel: JPanel() {
                 .addComponent(recordLogsCb)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(logDirectoryLabel)
-                        .addComponent(logDirectoryTF)
+                        .addComponent(logDirectoryTf)
                         .addComponent(openDirectoryButton)
                 )
 
@@ -103,6 +109,72 @@ class GeneralPanel: JPanel() {
                         .addComponent(removeButton)
                 )
         )
+    }
+
+    private fun initializeActions() {
+        // log files
+        recordLogsCb.addActionListener {
+            General.recordLogs = recordLogsCb.isSelected
+        }
+        logDirectoryTf.document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent?) {
+                General.logfileDirectory = logDirectoryTf.text
+                //onChange.run()
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                General.logfileDirectory = logDirectoryTf.text
+                //onChange.run()
+            }
+
+            override fun changedUpdate(e: DocumentEvent?) {
+                General.logfileDirectory = logDirectoryTf.text
+                //onChange.run()
+            }
+        })
+        openDirectoryButton.addActionListener {
+            val fileChooser = JFileChooser(General.logfileDirectory).apply {
+                fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+                isAcceptAllFileFilterUsed = false
+            }
+
+            if (fileChooser.showOpenDialog(ConfigWindow) != JFileChooser.CANCEL_OPTION) {
+                logDirectoryTf.text = fileChooser.selectedFile.absolutePath
+            }
+        }
+
+        // team colors
+        tableModel.addTableModelListener {
+            TeamColors.byTeamNames.clear()
+            for (i in 0 until tableModel.rowCount) {
+                val key = "Team Color : ${tableModel.getValueAt(i,0)}"
+                val color = tableModel.getValueAt(i,1) as Color
+
+                TeamColors.byTeamNames[key] = color
+            }
+
+            println("new team colors:")
+            TeamColors.byTeamNames.forEach {
+                println("${it.key} = ${it.value}")
+            }
+        }
+        addButton.addActionListener {
+            tableModel.addRow(arrayOf("New Team", Color.blue))
+            ConfigWindow.pack()
+        }
+        removeButton.addActionListener {
+            val selectedIndex = teamColorTable.selectedRow
+            if (selectedIndex != -1) {
+                tableModel.removeRow(selectedIndex)
+                ConfigWindow.pack()
+            }
+        }
+    }
+
+    private class TeamColorsTableModel : DefaultTableModel() {
+        override fun getColumnClass(columnIndex: Int): Class<*> {
+            return getValueAt(0, columnIndex).javaClass
+        }
     }
 
 }

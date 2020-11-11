@@ -1,37 +1,38 @@
 package org.magmaoffenburg.roboviz.gui.config
 
-import org.magmaoffenburg.roboviz.configuration.Config
+import org.magmaoffenburg.roboviz.configuration.Config.Graphics
 import java.awt.Dimension
 import javax.swing.*
 
 class WindowPanel: JPanel() {
 
+    private val frameLabel = JLabel("Frame")
+    private val frameSeparator = JSeparator().apply {
+        maximumSize = Dimension(0, frameLabel.preferredSize.height)
+    }
+    private val fxLabel = JLabel("X:")
+    private val fxSpinner = JSpinner(SpinnerNumberModel(Graphics.frameX, -100, 10000, 1))
+    private val fyLabel = JLabel("Y:")
+    private val fySpinner = JSpinner(SpinnerNumberModel(Graphics.frameY, -100, 10000, 1))
+    private val fwLabel = JLabel("Width:")
+    private val fwSpinner = JSpinner(SpinnerNumberModel(Graphics.frameWidth, 1, 10000, 1))
+    private val fhLabel = JLabel("Height:")
+    private val fhSpinner = JSpinner(SpinnerNumberModel(Graphics.frameHeight, 1, 10000, 1))
+    private val centerCb = JCheckBox("Center Position", Graphics.centerFrame)
+    private val saveStateCb = JCheckBox("Save Frame State", Graphics.saveFrameState)
+    private val maximizedCb = JCheckBox("Maximized", Graphics.isMaximized)
+
     init {
-        initializePanel()
+        initializeLayout()
+        initializeActions()
     }
 
-    private fun initializePanel() {
+    private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
             autoCreateContainerGaps = true
         }
         this.layout = layout
-
-        val frameLabel = JLabel("Frame")
-        val frameSeparator = JSeparator().apply {
-            maximumSize = Dimension(0, frameLabel.preferredSize.height)
-        }
-        val fxLabel = JLabel("X:")
-        val fxSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.frameX, -100, 10000, 1))
-        val fyLabel = JLabel("Y:")
-        val fySpinner = JSpinner(SpinnerNumberModel(Config.Graphics.frameY, -100, 10000, 1))
-        val fwLabel = JLabel("Width:")
-        val fwSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.frameWidth, 1, 10000, 1))
-        val fhLabel = JLabel("Height:")
-        val fhSpinner = JSpinner(SpinnerNumberModel(Config.Graphics.frameHeight, 1, 10000, 1))
-        val centerCb = JCheckBox("Center Position", Config.Graphics.centerFrame)
-        val saveStateCb = JCheckBox("Save Frame State", Config.Graphics.saveFrameState)
-        val maximizedCb = JCheckBox("Maximized", Config.Graphics.isMaximized)
 
         layout.setHorizontalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -77,5 +78,29 @@ class WindowPanel: JPanel() {
                 .addComponent(saveStateCb)
                 .addComponent(maximizedCb)
         )
+    }
+
+    private fun initializeActions() {
+        fxSpinner.addChangeListener {
+            Graphics.frameX = fxSpinner.value as Int
+        }
+        fySpinner.addChangeListener {
+            Graphics.frameY = fySpinner.value as Int
+        }
+        fwSpinner.addChangeListener {
+            Graphics.frameWidth = fwSpinner.value as Int
+        }
+        fhSpinner.addChangeListener {
+            Graphics.frameHeight = fhSpinner.value as Int
+        }
+        centerCb.addActionListener {
+            Graphics.centerFrame = centerCb.isSelected
+        }
+        saveStateCb.addActionListener {
+            Graphics.saveFrameState = saveStateCb.isSelected
+        }
+        maximizedCb.addActionListener {
+            Graphics.isMaximized = maximizedCb.isSelected
+        }
     }
 }

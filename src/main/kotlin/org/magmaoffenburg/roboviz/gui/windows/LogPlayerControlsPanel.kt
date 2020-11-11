@@ -1,4 +1,4 @@
-package org.magmaoffenburg.roboviz.gui.panels
+package org.magmaoffenburg.roboviz.gui.windows
 
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.Renderer.Companion.logPlayer

@@ -1,6 +1,7 @@
-package org.magmaoffenburg.roboviz.gui.panels
+package org.magmaoffenburg.roboviz.gui.windows
 
 import java.awt.Dimension
+import javax.imageio.ImageIO
 import javax.swing.JEditorPane
 import javax.swing.JFrame
 import javax.swing.JScrollPane
@@ -8,7 +9,7 @@ import javax.swing.JScrollPane
 /**
  * TODO key listener for close on esc
  */
-class ControlsHelpPanel : JFrame() {
+object ControlsHelpWindow : JFrame() {
 
     init {
         initializeWindow()
@@ -18,6 +19,7 @@ class ControlsHelpPanel : JFrame() {
     private fun initializeWindow() {
         title = "Help"
         size = Dimension(600, 800)
+        iconImage = ImageIO.read(ControlsHelpWindow::class.java.getResource("/images/icon.png"))
         minimumSize = Dimension(400, 500)
     }
 
@@ -32,7 +34,15 @@ class ControlsHelpPanel : JFrame() {
     }
 
     private fun loadText(): String {
-        return ControlsHelpPanel::class.java.getResource("/help/controls.html").readText()
+        return ControlsHelpWindow::class.java.getResource("/help/controls.html").readText()
+    }
+
+    fun showWindow(): ControlsHelpWindow = apply {
+        if (!isVisible) {
+            isVisible = true
+        } else {
+            toFront()
+        }
     }
 
 }

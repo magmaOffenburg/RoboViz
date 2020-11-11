@@ -14,7 +14,6 @@ class ViewMenu : MenuBase() {
     private fun initializeMenu() {
         text = "View"
 
-        addItem("Help", KeyEvent.VK_F1) { actions.openHelp() }
         addItem("Drawings", KeyEvent.VK_Y) { actions.openDrawingsPanel() }
         addItem("Toggle Full Screen", KeyEvent.VK_F11) { actions.toggleFullScreen() }
         addItem("Toggle Agent Overhead Type", KeyEvent.VK_I) { actions.toggleOverheadType() }

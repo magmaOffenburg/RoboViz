@@ -1,4 +1,4 @@
-package org.magmaoffenburg.roboviz.util.etc
+package org.magmaoffenburg.roboviz.etc
 
 import java.awt.Color
 import java.awt.Component
@@ -9,12 +9,17 @@ import javax.swing.border.Border
 import javax.swing.table.TableCellRenderer
 
 /**
- * @see http ://www.java2s.com/Code/Java/Swing-JFC/
- * Tablewithacustomcellrendererandeditorforthecolordata .htm
+ * @see https://www.java2s.com/Code/Java/Swing-JFC/
+ * Tablewithacustomcellrendererandeditorforthecolordata.htm
  */
 class ColorRenderer : JLabel(), TableCellRenderer {
-    var unselectedBorder: Border? = null
-    var selectedBorder: Border? = null
+    private var unselectedBorder: Border? = null
+    private var selectedBorder: Border? = null
+
+    init {
+        isOpaque = true
+    }
+
     override fun getTableCellRendererComponent(
             table: JTable, color: Any, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
         val newColor = color as Color
@@ -34,7 +39,4 @@ class ColorRenderer : JLabel(), TableCellRenderer {
         return this
     }
 
-    init {
-        isOpaque = true
-    }
 }
