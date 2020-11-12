@@ -127,7 +127,7 @@ class ConfigParser {
             }
             rawFileList.removeAt(index)
         }
-        keyToDelete.clear()
+        keyToDelete.clear() // clear keys to delete, otherwise we try to delete them again
 
         // rawFileList to String with StringBuilder
         val sb = StringBuilder()

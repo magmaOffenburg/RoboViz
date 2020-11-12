@@ -1,5 +1,6 @@
 package org.magmaoffenburg.roboviz.configuration
 
+import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.etc.ConfigChangeListener
 import java.awt.Color
 import java.io.File
@@ -11,6 +12,8 @@ import java.io.File
  * contain one space.
  */
 class Config(args: Array<String>) {
+
+    private val logger = logger()
 
     private val localPath = "config.txt"
     private val globalPath = System.getProperty("user.home") + "/.roboviz/config.txt"
@@ -227,6 +230,8 @@ class Config(args: Array<String>) {
     }
 
     fun configChanged() {
+        logger.info { "Config changed" }
+
         configChangeListeners.forEach {
             it.onConfigChanged()
         }

@@ -189,8 +189,11 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         synchronized(world) {
             val gl2 = drawable.gl.gL2
             if (Graphics.useShadows) {
-                val shadowRenderer = effectManager.shadowRenderer
-                shadowRenderer.render(gl2, world, drawings)
+                if (effectManager.shadowRenderer == null) {
+                    effectManager.initShadowRenderer(gl2, Graphics, contentManager)
+                }
+
+                effectManager.shadowRenderer.render(gl2, world, drawings)
             }
 
             if (Graphics.useStereo) {
@@ -238,7 +241,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
         val event = WindowResizeEvent(this, screen)
         activeScreen.windowResized(event)
-        effectManager.bloom.windowResized(event)
+        effectManager.bloom?.windowResized(event)
     }
 
     override fun addKeyListener(l: KeyListener?) {
@@ -302,6 +305,11 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
     private fun drawScene(gl: GL2) {
         if (Graphics.useBloom) {
+            // bloom can be enabled at runtime level
+            if (effectManager.bloom == null) {
+                effectManager.initBloom(gl, getScreen(), Graphics, contentManager)
+            }
+
             if (msSceneFBO != null) {
                 msSceneFBO!!.bind(gl)
                 msSceneFBO!!.clear(gl)
