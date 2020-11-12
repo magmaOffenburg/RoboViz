@@ -1,5 +1,6 @@
 package org.magmaoffenburg.roboviz.configuration
 
+import org.magmaoffenburg.roboviz.etc.ConfigChangeListener
 import java.awt.Color
 import java.io.File
 
@@ -16,6 +17,8 @@ class Config(args: Array<String>) {
 
     private val parser = ConfigParser()
     private val filePath = if (File(globalPath).exists()) globalPath else localPath
+
+    private val configChangeListeners = arrayListOf<ConfigChangeListener>()
 
     init {
         parser.parseArgs(args)
@@ -221,6 +224,20 @@ class Config(args: Array<String>) {
         }
 
         parser.writeFile(filePath)
+    }
+
+    fun configChanged() {
+        configChangeListeners.forEach {
+            it.onConfigChanged()
+        }
+    }
+
+    fun addConfigChangedListener(listener: ConfigChangeListener) {
+        configChangeListeners.add(listener)
+    }
+
+    fun removeConfigChangedListener(listener: ConfigChangeListener) {
+        configChangeListeners.remove(listener)
     }
 
 }

@@ -98,6 +98,9 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         view.addItem("Toggle Server Speed", KeyEvent.VK_M) { println("TODO toggleShowServerSpeed") }
         view.addItem("Playmode Overlay", KeyEvent.VK_O) { println("TODO openPlaymodeOverlay") }
 
+        // add connection menu to config change listeners
+        Main.config.addConfigChangedListener(connection)
+
         jMenuBar.add(connection)
         jMenuBar.add(server)
         jMenuBar.add(view)
