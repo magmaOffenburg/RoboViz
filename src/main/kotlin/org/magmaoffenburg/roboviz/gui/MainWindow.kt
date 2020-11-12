@@ -5,15 +5,16 @@ import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.configuration.Config.Graphics
-import org.magmaoffenburg.roboviz.gui.config.ConfigWindow
 import org.magmaoffenburg.roboviz.gui.menus.*
 import org.magmaoffenburg.roboviz.gui.windows.LogPlayerControlsPanel
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import org.magmaoffenburg.roboviz.util.DataTypes
+import org.magmaoffenburg.roboviz.util.SwingUtils
 import rv.comm.rcssserver.ServerComm
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
+import java.awt.Point
 import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -42,14 +43,12 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         initializeMenu()
         initializeGLCanvas()
 
-        isVisible = true
+        isVisible = true // set visible after everything is initialized
         instance = this
 
         if (Main.mode == DataTypes.Mode.LOG) {
             initializeLogPlayerControls()
         }
-
-        ConfigWindow.showWindow()
     }
 
     private fun initializeWindow() {
@@ -58,6 +57,14 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         size = Dimension(Graphics.frameWidth, Graphics.frameHeight)
         jMenuBar = JMenuBar()
         iconImage = ImageIO.read(MainWindow::class.java.getResource("/images/icon.png"))
+
+        // set the main window position
+        location = if (Graphics.centerFrame) {
+            SwingUtils.centerWindowOnScreen(this, Point(0,0))
+        } else {
+            Point(Graphics.frameX, Graphics.frameY)
+        }
+        toFront()
 
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {

@@ -6,6 +6,7 @@ class ConfigParser {
 
     val argsList = arrayListOf<Pair<String, String>>()
     val fileMap = hashMapOf<String, String>()
+    val keyToDelete = ArrayList<String>()
 
     /**
      * parse the args into a ArrayList, delimiter is "="
@@ -109,6 +110,25 @@ class ConfigParser {
             }
         }
 
+        // delete all lines containing a key from keyToDelete list
+        keyToDelete.forEach { key ->
+            val searchKey = when {
+                key.startsWith("Team Color") -> {
+                    key.replace("Team Color", "Team Color".padEnd(20))
+                }
+                key.startsWith("Server :") -> {
+                    key.replace("Server", "Server".padEnd(20))
+                }
+                else -> key
+            }
+
+            val index = rawFileList.indexOfFirst { line ->
+                line.startsWith(searchKey)
+            }
+            rawFileList.removeAt(index)
+        }
+
+        // rawFileList to String with StringBuilder
         val sb = StringBuilder()
         rawFileList.forEach { line ->
             sb.append(line)
@@ -143,6 +163,11 @@ class ConfigParser {
         return fileMap.filter {
             it.key.startsWith(superKey)
         }.entries.toList()
+    }
+
+    fun removeValue(key: String) {
+        fileMap.remove(key)
+        keyToDelete.add(key)
     }
 
 }

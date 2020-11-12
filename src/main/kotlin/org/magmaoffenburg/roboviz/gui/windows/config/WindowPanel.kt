@@ -1,4 +1,4 @@
-package org.magmaoffenburg.roboviz.gui.config
+package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.configuration.Config.Graphics
 import java.awt.Dimension
@@ -27,6 +27,9 @@ class WindowPanel: JPanel() {
         initializeActions()
     }
 
+    /**
+     * initialize the panels layout
+     */
     private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
@@ -80,6 +83,10 @@ class WindowPanel: JPanel() {
         )
     }
 
+    /**
+     * initialize the actions for all gui elements
+     * used by this panel
+     */
     private fun initializeActions() {
         fxSpinner.addChangeListener {
             Graphics.frameX = fxSpinner.value as Int

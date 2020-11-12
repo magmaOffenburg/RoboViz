@@ -193,6 +193,13 @@ class Config(args: Array<String>) {
             val value = "${it.first}:${it.second}"
             parser.setValue(key, value)
         }
+        parser.getValueSuperKey("Server :").forEach { (key, value) ->
+            val pair = Pair(value.substringBefore(":"), value.substringAfter(":").toInt())
+            if (!Networking.servers.contains(pair)) {
+                parser.removeValue(key) // remove deleted server
+            }
+        }
+
         parser.setValue("Drawing Port", Networking.listenPort.toString())
         parser.setValue("Default Server", "${Networking.defaultServerHost}:${Networking.defaultServerPort}")
 
@@ -206,6 +213,11 @@ class Config(args: Array<String>) {
         // team colors
         TeamColors.byTeamNames.forEach {
             parser.setValue(it.key, "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}")
+        }
+        parser.getValueSuperKey("Team Color").forEach {
+            if (!TeamColors.byTeamNames.containsKey(it.key)) {
+                parser.removeValue(it.key) // remove deleted team color
+            }
         }
 
         parser.writeFile(filePath)
