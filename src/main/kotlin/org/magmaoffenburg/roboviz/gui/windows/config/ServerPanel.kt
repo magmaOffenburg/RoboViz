@@ -1,6 +1,7 @@
-package org.magmaoffenburg.roboviz.gui.config
+package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.configuration.Config.Networking
+import org.magmaoffenburg.roboviz.gui.dialogs.ServerListDialog
 import java.awt.Dimension
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -28,6 +29,9 @@ class ServerPanel: JPanel() {
         initializeActions()
     }
 
+    /**
+     * initialize the panels layout
+     */
     private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
@@ -87,6 +91,10 @@ class ServerPanel: JPanel() {
         )
     }
 
+    /**
+     * initialize the actions for all gui elements
+     * used by this panel
+     */
     private fun initializeActions() {
         autoConnectCB.addActionListener {
             Networking.autoConnect = autoConnectCB.isSelected
@@ -112,6 +120,9 @@ class ServerPanel: JPanel() {
         }
         drawingPortSpinner.addChangeListener {
             Networking.listenPort = drawingPortSpinner.value as Int
+        }
+        serverListButton.addActionListener {
+            ServerListDialog.showDialog()
         }
     }
 

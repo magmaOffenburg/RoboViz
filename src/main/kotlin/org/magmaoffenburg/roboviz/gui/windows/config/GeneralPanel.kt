@@ -1,4 +1,4 @@
-package org.magmaoffenburg.roboviz.gui.config
+package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.configuration.Config.General
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors
@@ -6,11 +6,11 @@ import org.magmaoffenburg.roboviz.etc.ColorEditor
 import org.magmaoffenburg.roboviz.etc.ColorRenderer
 import java.awt.Color
 import java.awt.Dimension
+import java.awt.Image
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.table.DefaultTableModel
-
 
 class GeneralPanel: JPanel() {
 
@@ -22,7 +22,13 @@ class GeneralPanel: JPanel() {
     private val recordLogsCb = JCheckBox("Record Logfiles", General.recordLogs)
     private val logDirectoryLabel = JLabel("Logfiles Directory:")
     private val logDirectoryTf = JTextField(General.logfileDirectory)
-    private val openDirectoryButton = JButton("...")
+    private val openDirectoryButton = JButton().apply {
+        // resize the image, else the button is way to big
+        icon = ImageIcon(
+                ImageIcon(GeneralPanel::class.java.getResource("/images/baseline_folder_open_black_24dp.png"))
+                .image.getScaledInstance(14,14, Image.SCALE_DEFAULT)
+        )
+    }
 
     // team colors
     private val teamColorsLabel = JLabel("Team Colors")
@@ -39,8 +45,8 @@ class GeneralPanel: JPanel() {
         setDefaultEditor(Color::class.java, ColorEditor())
         columnModel.getColumn(1).maxWidth = 30
     }
-    private val addButton = JButton("Add")
-    private val removeButton = JButton("Remove")
+    private val addColorButton = JButton("Add")
+    private val removeColorButton = JButton("Remove")
 
     init {
         TeamColors.byTeamNames.forEach{ (teamName, color) ->
@@ -51,6 +57,9 @@ class GeneralPanel: JPanel() {
         initializeActions()
     }
 
+    /**
+     * initialize the panels layout
+     */
     private fun initializeLayout() {
         val layout = GroupLayout(this).apply {
             autoCreateGaps = true
@@ -80,8 +89,8 @@ class GeneralPanel: JPanel() {
                 )
                 .addComponent(teamColorTable, GroupLayout.Alignment.CENTER, 0, 150, GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
-                        .addComponent(removeButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
+                        .addComponent(addColorButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
+                        .addComponent(removeColorButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                 )
         )
 
@@ -105,12 +114,16 @@ class GeneralPanel: JPanel() {
                 )
                 .addComponent(teamColorTable)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(addButton)
-                        .addComponent(removeButton)
+                        .addComponent(addColorButton)
+                        .addComponent(removeColorButton)
                 )
         )
     }
 
+    /**
+     * initialize the actions for all gui elements
+     * used by this panel
+     */
     private fun initializeActions() {
         // log files
         recordLogsCb.addActionListener {
@@ -158,11 +171,11 @@ class GeneralPanel: JPanel() {
                 println("${it.key} = ${it.value}")
             }
         }
-        addButton.addActionListener {
+        addColorButton.addActionListener {
             tableModel.addRow(arrayOf("New Team", Color.blue))
             ConfigWindow.pack()
         }
-        removeButton.addActionListener {
+        removeColorButton.addActionListener {
             val selectedIndex = teamColorTable.selectedRow
             if (selectedIndex != -1) {
                 tableModel.removeRow(selectedIndex)

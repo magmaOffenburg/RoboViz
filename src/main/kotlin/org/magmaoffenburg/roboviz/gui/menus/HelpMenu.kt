@@ -1,6 +1,6 @@
 package org.magmaoffenburg.roboviz.gui.menus
 
-import org.magmaoffenburg.roboviz.gui.config.ConfigWindow
+import org.magmaoffenburg.roboviz.gui.windows.config.ConfigWindow
 import org.magmaoffenburg.roboviz.gui.windows.ControlsHelpWindow
 import java.awt.event.KeyEvent
 

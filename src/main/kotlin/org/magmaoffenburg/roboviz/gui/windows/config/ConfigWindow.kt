@@ -1,11 +1,16 @@
-package org.magmaoffenburg.roboviz.gui.config
+package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.Main
+import org.magmaoffenburg.roboviz.util.SwingUtils
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GridLayout
+import java.awt.Point
 import javax.imageio.ImageIO
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JFrame
+import javax.swing.JPanel
+import javax.swing.JTabbedPane
 
 object ConfigWindow : JFrame() {
 
@@ -36,20 +41,26 @@ object ConfigWindow : JFrame() {
             this.isVisible = false
             this.dispose()
         }
-        val applyButton = JButton("Save and Close")
-        applyButton.addActionListener {
+        val saveButton = JButton("Save and Close")
+        saveButton.addActionListener {
             Main.config.write() // save to the config file
-            println("write")
+
             this.isVisible = false
             this.dispose()
+
+            // TODO make optional, add option to restart
+//            JOptionPane.showMessageDialog(
+//                    MainWindow.instance,
+//                    "For some changes to apply, you need to restart RoboViz."
+//            )
         }
 
         val bottomPanel = JPanel(GridLayout(1, 2)).apply {
             add(cancelButton)
-            add(applyButton)
+            add(saveButton)
         }
 
-        this.rootPane.defaultButton = applyButton
+        this.rootPane.defaultButton = saveButton
         this.layout = BorderLayout()
         this.add(tabbedPane, BorderLayout.CENTER)
         this.add(bottomPanel, BorderLayout.PAGE_END)
@@ -60,6 +71,7 @@ object ConfigWindow : JFrame() {
      */
     fun showWindow(): ConfigWindow = apply {
         if (!isVisible) {
+            location = SwingUtils.centerWindowOnScreen(this@ConfigWindow, Point(0,0))
             isVisible = true
         } else {
             toFront()
