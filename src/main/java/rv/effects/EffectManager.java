@@ -52,26 +52,32 @@ public class EffectManager implements GLDisposable
 
 	public void init(GL2 gl, Viewport screen, Graphics config, ContentManager cm)
 	{
+		if (config.getUseBloom()) {
+			initBloom(gl, screen, config, cm);
+		}
+
+		if (config.getUseShadows()) {
+			initShadowRenderer(gl, config, cm);
+		}
+	}
+
+	public void initBloom(GL2 gl, Viewport screen, Graphics config, ContentManager cm) {
+		bloom = new Bloom();
+		boolean success = bloom.init(gl, screen, cm, config);
+		if (!success)
+			bloom = null;
+	}
+
+	public void initShadowRenderer(GL2 gl, Graphics config, ContentManager cm) {
 		// configure sun
 		Vec3f lightPos = new Vec3f(-11, 10, 9);
 		Vec3f lightDir = lightPos.times(-1).normalize();
 		DirLight light = new DirLight(lightDir);
 		LightShadowVolume sun = new LightShadowVolume(light, lightPos, new Vec3f(0, 0, 0), Vec3f.unitY(), 40, 40, 40);
 
-		if (config.getUseBloom()) {
-			bloom = new Bloom();
-			boolean success = bloom.init(gl, screen, cm, config);
-			if (!success)
-				bloom = null;
-			//else
-				// viewer.addWindowResizeListener(bloom); // not needed windowResized is called in Renderer.reshape
-		}
-
-		if (config.getUseShadows()) {
-			shadowRenderer = new ShadowMapRenderer(sun);
-			if (!shadowRenderer.init(gl, config, cm))
-				shadowRenderer = null;
-		}
+		shadowRenderer = new ShadowMapRenderer(sun);
+		if (!shadowRenderer.init(gl, config, cm))
+			shadowRenderer = null;
 	}
 
 	/**
