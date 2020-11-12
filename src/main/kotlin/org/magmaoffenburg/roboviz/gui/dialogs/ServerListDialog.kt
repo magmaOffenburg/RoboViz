@@ -98,7 +98,6 @@ object ServerListDialog : JDialog() {
 
                 Networking.servers.add(Pair(key, port))
             }
-            // TODO notify GUI/etc about changes
 
             dispose()
         }

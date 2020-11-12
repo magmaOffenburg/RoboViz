@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.gui.menus
 
 import org.magmaoffenburg.roboviz.configuration.Config.Networking
+import org.magmaoffenburg.roboviz.etc.ConfigChangeListener
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import java.awt.Component
 import java.awt.event.KeyEvent
@@ -12,7 +13,7 @@ import javax.swing.*
  * the connection menu depends on swing more than other menus,
  * therefore it does not have a separate actions class
  */
-class ConnectionMenu(private val parent: Component) : MenuBase() {
+class ConnectionMenu(private val parent: Component) : MenuBase(), ConfigChangeListener {
 
     private val group = ButtonGroup()
 
@@ -119,5 +120,10 @@ class ConnectionMenu(private val parent: Component) : MenuBase() {
 
         Networking.currentHost = host
         Networking.currentPort = port
+    }
+
+    override fun onConfigChanged() {
+        removeAll()
+        initializeMenu()
     }
 }

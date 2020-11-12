@@ -44,6 +44,7 @@ object ConfigWindow : JFrame() {
         val saveButton = JButton("Save and Close")
         saveButton.addActionListener {
             Main.config.write() // save to the config file
+            Main.config.configChanged()
 
             this.isVisible = false
             this.dispose()
