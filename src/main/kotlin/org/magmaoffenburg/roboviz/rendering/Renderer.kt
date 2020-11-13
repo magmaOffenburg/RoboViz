@@ -139,7 +139,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         activeScreen = if (Main.mode == DataTypes.Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
         activeScreen.setEnabled(MainWindow.glCanvas, true)
 
-        gl?.let { initEffects(gl, Graphics) }
+        gl?.let { initEffects(gl) }
+        vantage = CameraController.camera
 
         if (isInitialized && oldSceneGraph != null) {
             world.sceneGraph = oldSceneGraph
@@ -256,29 +257,33 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
     /**
      * This is the former Renderer.init()
-     * Initialize effects (FSAA, Bool, VSync)
+     * Initialize effects (FSAA, Bloom, VSync)
      */
-    private fun initEffects(gl: GL, graphics: Graphics) {
+    private fun initEffects(gl: GL) {
         val supportAAFBO = glInfo.extSupported("GL_EXT_framebuffer_multisample") && glInfo.extSupported("GL_EXT_framebuffer_blit")
-        if (graphics.useFsaa && !supportAAFBO)
-            println("Warning: no support for FSAA while bloom enabled")
+        if (Graphics.useFsaa && !supportAAFBO) {
+            logger.warn { "No support for FSAA while bloom enabled" }
+        }
 
-        val useFSAA = graphics.useFsaa && (supportAAFBO && graphics.useBloom || !graphics.useBloom)
-        if (useFSAA)
-            drawable?.gl?.glEnable(GL.GL_MULTISAMPLE)
+        val useFSAA = Graphics.useFsaa && (supportAAFBO && Graphics.useBloom || !Graphics.useBloom)
+        if (useFSAA) {
+            drawable.gl.glEnable(GL.GL_MULTISAMPLE)
+        } else {
+            drawable.gl.glDisable(GL.GL_MULTISAMPLE)
+        }
 
-        drawable?.gl?.swapInterval = if (graphics.useVsync) 1 else 0 // vsync
+        drawable?.gl?.swapInterval = if (Graphics.useVsync) 1 else 0 // vsync
 
         effectManager = EffectManager()
-        effectManager.init(gl.gL2, getScreen(), graphics, contentManager)
+        effectManager.init(gl.gL2, getScreen(), Graphics, contentManager)
 
-        if (graphics.useBloom) {
-            numSamples = if (useFSAA) graphics.fsaaSamples else -1
+        if (Graphics.useBloom) {
+            numSamples = if (useFSAA) Graphics.fsaaSamples else -1
             genFBO(gl.gL2, screen) // if we do post-processing we'll need an FBO for the scene
         }
 
         selectRenderer(gl.gL2, contentManager)
-        vantage = CameraController.camera
+        //vantage = CameraController.camera
     }
 
     private fun selectRenderer(gl: GL2, cm: ContentManager) {
@@ -307,11 +312,6 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
     private fun drawScene(gl: GL2) {
         if (Graphics.useBloom) {
-            // bloom can be enabled at runtime level
-            if (effectManager.bloom == null) {
-                effectManager.initBloom(gl, getScreen(), Graphics, contentManager)
-            }
-
             if (msSceneFBO != null) {
                 msSceneFBO!!.bind(gl)
                 msSceneFBO!!.clear(gl)
@@ -350,22 +350,22 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     private fun updateRenderingSettings() {
-        updateShadowRendering()
+        // create new EffectManager and SceneRenderer
+        effectManager.dispose(drawable.gl)
+        sceneFBO?.dispose(drawable!!.gl)
+        msSceneFBO?.dispose(drawable!!.gl)
+        sceneRenderer?.dispose(drawable?.gl)
+        sceneFBO = null
+        msSceneFBO = null
+        sceneRenderer = null
+        initEffects(drawable.gl)
 
-        renderSettingsChanged = false
-    }
-
-    // update or disable shadow rendering
-    private fun updateShadowRendering() {
-        effectManager.disposeShadowRenderer(drawable.gl)
-        if (Graphics.useShadows) {
-            effectManager.initShadowRenderer(drawable.gl.gL2, Graphics, contentManager)
+        // bloom can be enabled at runtime level
+        if (Graphics.useBloom && effectManager.bloom == null) {
+            effectManager.initBloom(drawable.gl.gL2, getScreen(), Graphics, contentManager)
         }
 
-        // create a new renderer since shadows changed obviously
-        sceneRenderer?.dispose(drawable?.gl)
-        sceneRenderer = null
-        selectRenderer(drawable.gl.gL2, contentManager)
+        renderSettingsChanged = false
     }
 
     /**

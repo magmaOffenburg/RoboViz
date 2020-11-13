@@ -168,6 +168,7 @@ class GraphicsPanel: JPanel() {
         // lighting
         bloomCb.addActionListener {
             Graphics.useBloom = bloomCb.isSelected
+            Renderer.renderSettingsChanged = true
         }
         phongCb.addActionListener {
             Graphics.usePhong = phongCb.isSelected
@@ -194,6 +195,8 @@ class GraphicsPanel: JPanel() {
         fsaaCb.addActionListener {
             Graphics.useFsaa = fsaaCb.isSelected
             samplesSpinner.isEnabled = Graphics.useFsaa
+
+            Renderer.renderSettingsChanged = true
         }
         samplesSpinner.addChangeListener {
             Graphics.fsaaSamples = samplesSpinner.value as Int
