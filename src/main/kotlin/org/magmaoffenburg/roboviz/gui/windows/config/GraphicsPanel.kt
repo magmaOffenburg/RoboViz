@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.configuration.Config.Graphics
+import org.magmaoffenburg.roboviz.rendering.Renderer
 import java.awt.Dimension
 import javax.swing.*
 
@@ -14,9 +15,13 @@ class GraphicsPanel: JPanel() {
     private val bloomCb = JCheckBox("Bloom", Graphics.useBloom)
     private val phongCb = JCheckBox("Phong", Graphics.usePhong)
     private val shadowsCb = JCheckBox("Shadows", Graphics.useShadows)
-    private val softShadowsCb = JCheckBox("Soft Shadows", Graphics.useSoftShadows)
+    private val softShadowsCb = JCheckBox("Soft Shadows", Graphics.useSoftShadows).apply {
+        isEnabled = Graphics.useShadows
+    }
     private val shadowResLabel = JLabel("Shadow Resolution:", SwingConstants.RIGHT)
-    private val shadowResSpinner = JSpinner(SpinnerNumberModel(Graphics.shadowResolution, 1, Int.MAX_VALUE, 1))
+    private val shadowResSpinner = JSpinner(SpinnerNumberModel(Graphics.shadowResolution, 1, Int.MAX_VALUE, 1)).apply {
+        isEnabled = Graphics.useShadows && Graphics.useSoftShadows
+    }
 
     // fsaa
     private val fsaaLabel = JLabel("Anti-Aliasing")
@@ -169,12 +174,20 @@ class GraphicsPanel: JPanel() {
         }
         shadowsCb.addActionListener {
             Graphics.useShadows = shadowsCb.isSelected
+            softShadowsCb.isEnabled = Graphics.useShadows
+            shadowResSpinner.isEnabled = Graphics.useShadows
+
+            Renderer.renderSettingsChanged = true
         }
         softShadowsCb.addActionListener {
             Graphics.useSoftShadows = softShadowsCb.isSelected
+            shadowResSpinner.isEnabled = Graphics.useSoftShadows
+
+            Renderer.renderSettingsChanged = true
         }
         shadowResSpinner.addChangeListener {
             Graphics.shadowResolution = shadowResSpinner.value as Int
+            Renderer.renderSettingsChanged = true
         }
 
         // fsaa

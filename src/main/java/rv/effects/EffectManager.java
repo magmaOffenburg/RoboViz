@@ -80,6 +80,12 @@ public class EffectManager implements GLDisposable
 			shadowRenderer = null;
 	}
 
+	public void disposeShadowRenderer(GL gl) {
+		if (shadowRenderer != null)
+			shadowRenderer.dispose(gl);
+		shadowRenderer = null;
+	}
+
 	/**
 	 * Renders a screen-aligned quad with identity viewing / projection matrices
 	 */
