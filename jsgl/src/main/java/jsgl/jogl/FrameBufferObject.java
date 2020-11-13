@@ -28,8 +28,7 @@ import java.util.List;
  * an FBO, it must be bound as the current Framebuffer.
  *
  * @author Justin Stoecker
- * @see http
- *      ://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt
+ * @see http://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt
  * @see http://www.songho.ca/opengl/gl_fbo.html
  */
 public class FrameBufferObject implements GLDisposable
@@ -82,14 +81,10 @@ public class FrameBufferObject implements GLDisposable
 	 * a texture of a specified with and height. The texture resolution does not
 	 * affect the portion of the scene that is rendered, only its quality.
 	 *
-	 * @param gl
-	 *            - OpenGL context
-	 * @param width
-	 *            - width of texture
-	 * @param height
-	 *            - height of texture
-	 * @param internalFormat
-	 *            -
+	 * @param gl - OpenGL context
+	 * @param w - width of texture
+	 * @param h - height of texture
+	 * @param internalFormat -
 	 * @return Returns a Framebuffer Objects if successful; null otherwise
 	 */
 	public static FrameBufferObject create(GL gl, int w, int h, int internalFormat)

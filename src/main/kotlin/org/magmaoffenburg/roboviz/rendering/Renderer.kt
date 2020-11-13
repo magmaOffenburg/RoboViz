@@ -55,6 +55,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
     companion object {
         lateinit var instance: Renderer
+        var renderSettingsChanged = false
 
         lateinit var contentManager: ContentManager
         lateinit var world: WorldModel
@@ -188,11 +189,12 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         // Renderer.render()
         synchronized(world) {
             val gl2 = drawable.gl.gL2
-            if (Graphics.useShadows) {
-                if (effectManager.shadowRenderer == null) {
-                    effectManager.initShadowRenderer(gl2, Graphics, contentManager)
-                }
 
+            if (renderSettingsChanged) {
+                updateRenderingSettings()
+            }
+
+            if (Graphics.useShadows) {
                 effectManager.shadowRenderer.render(gl2, world, drawings)
             }
 
@@ -288,7 +290,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             }
 
             if (!sceneRenderer!!.init(gl, Graphics, cm)) {
-                System.err.println("Could not initialize $sceneRenderer")
+                logger.error { "Could not initialize $sceneRenderer" }
                 sceneRenderer = null
             }
         }
@@ -345,6 +347,25 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             screen.apply(gl)
             sceneRenderer?.render(gl, world, drawings)
         }
+    }
+
+    private fun updateRenderingSettings() {
+        updateShadowRendering()
+
+        renderSettingsChanged = false
+    }
+
+    // update or disable shadow rendering
+    private fun updateShadowRendering() {
+        effectManager.disposeShadowRenderer(drawable.gl)
+        if (Graphics.useShadows) {
+            effectManager.initShadowRenderer(drawable.gl.gL2, Graphics, contentManager)
+        }
+
+        // create a new renderer since shadows changed obviously
+        sceneRenderer?.dispose(drawable?.gl)
+        sceneRenderer = null
+        selectRenderer(drawable.gl.gL2, contentManager)
     }
 
     /**
