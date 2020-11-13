@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
@@ -27,6 +28,7 @@ subprojects {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -43,4 +45,8 @@ dependencies {
     implementation project(':jsgl')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+shadowJar {
+    archiveFileName = 'RoboViz.jar'
 }
