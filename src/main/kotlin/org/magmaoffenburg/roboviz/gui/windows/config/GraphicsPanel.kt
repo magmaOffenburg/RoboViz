@@ -172,12 +172,12 @@ class GraphicsPanel: JPanel() {
         }
         phongCb.addActionListener {
             Graphics.usePhong = phongCb.isSelected
+            Renderer.renderSettingsChanged = true
         }
         shadowsCb.addActionListener {
             Graphics.useShadows = shadowsCb.isSelected
             softShadowsCb.isEnabled = Graphics.useShadows
             shadowResSpinner.isEnabled = Graphics.useShadows
-
             Renderer.renderSettingsChanged = true
         }
         softShadowsCb.addActionListener {
@@ -195,7 +195,6 @@ class GraphicsPanel: JPanel() {
         fsaaCb.addActionListener {
             Graphics.useFsaa = fsaaCb.isSelected
             samplesSpinner.isEnabled = Graphics.useFsaa
-
             Renderer.renderSettingsChanged = true
         }
         samplesSpinner.addChangeListener {
