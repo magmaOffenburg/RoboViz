@@ -265,7 +265,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             logger.warn { "No support for FSAA while bloom enabled" }
         }
 
-        val useFSAA = Graphics.useFsaa && (supportAAFBO && Graphics.useBloom || !Graphics.useBloom)
+        val useFSAA = Graphics.useFsaa && ((supportAAFBO && Graphics.useBloom) || !Graphics.useBloom)
         if (useFSAA) {
             drawable.gl.glEnable(GL.GL_MULTISAMPLE)
         } else {
@@ -350,14 +350,16 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     private fun updateRenderingSettings() {
-        // create new EffectManager and SceneRenderer
+        // dispose EffectManager, SceneRenderer and Buffers
         effectManager.dispose(drawable.gl)
         sceneFBO?.dispose(drawable!!.gl)
         msSceneFBO?.dispose(drawable!!.gl)
         sceneRenderer?.dispose(drawable?.gl)
-        sceneFBO = null
-        msSceneFBO = null
+        sceneFBO = null // needs to be null -> drawScene()
+        msSceneFBO = null // needs to be null -> drawScene()
         sceneRenderer = null
+
+        // create new EffectManager and SceneRenderer
         initEffects(drawable.gl)
 
         // bloom can be enabled at runtime level
