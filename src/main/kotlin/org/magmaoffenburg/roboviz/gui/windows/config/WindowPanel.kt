@@ -11,9 +11,9 @@ class WindowPanel: JPanel() {
         maximumSize = Dimension(0, frameLabel.preferredSize.height)
     }
     private val fxLabel = JLabel("X:")
-    private val fxSpinner = JSpinner(SpinnerNumberModel(Graphics.frameX, -100, 10000, 1))
+    private val fxSpinner = JSpinner(SpinnerNumberModel(Graphics.frameX, Int.MIN_VALUE, Int.MAX_VALUE, 1))
     private val fyLabel = JLabel("Y:")
-    private val fySpinner = JSpinner(SpinnerNumberModel(Graphics.frameY, -100, 10000, 1))
+    private val fySpinner = JSpinner(SpinnerNumberModel(Graphics.frameY, Int.MIN_VALUE, Int.MAX_VALUE, 1))
     private val fwLabel = JLabel("Width:")
     private val fwSpinner = JSpinner(SpinnerNumberModel(Graphics.frameWidth, 1, 10000, 1))
     private val fhLabel = JLabel("Height:")
