@@ -7,8 +7,10 @@ import com.jogamp.newt.event.awt.AWTMouseAdapter
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL2
 import com.jogamp.opengl.GLAutoDrawable
+import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.fixedfunc.GLLightingFunc
 import com.jogamp.opengl.glu.GLU
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil
 import com.jogamp.opengl.util.gl2.GLUT
 import jsgl.jogl.FrameBufferObject
 import jsgl.jogl.GLInfo
@@ -18,10 +20,8 @@ import jsgl.jogl.view.Camera3D
 import jsgl.jogl.view.Viewport
 import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.Main
+import org.magmaoffenburg.roboviz.configuration.Config.*
 import org.magmaoffenburg.roboviz.gui.MainWindow
-import org.magmaoffenburg.roboviz.configuration.Config.General
-import org.magmaoffenburg.roboviz.configuration.Config.Graphics
-import org.magmaoffenburg.roboviz.configuration.Config.TeamColors
 import org.magmaoffenburg.roboviz.util.DataTypes
 import rv.comm.NetworkManager
 import rv.comm.drawing.Drawings
@@ -38,6 +38,10 @@ import rv.world.rendering.PhongWorldRenderer
 import rv.world.rendering.SceneRenderer
 import rv.world.rendering.VSMPhongWorldRenderer
 import java.io.File
+import java.io.IOException
+import java.util.*
+import javax.imageio.ImageIO
+
 
 class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height) {
 
@@ -56,6 +60,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     companion object {
         lateinit var instance: Renderer
         var renderSettingsChanged = false
+        var screenshotOnRender = false
 
         lateinit var contentManager: ContentManager
         lateinit var world: WorldModel
@@ -102,7 +107,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
         contentManager = ContentManager(TeamColors)
         if (!contentManager.init(drawable, glInfo)) {
-            System.err.println("Problems loading resource files!")
+            logger.error { "Problems loading resource files!" }
         }
 
         world = WorldModel()
@@ -154,7 +159,6 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     /**
-     * TODO maybe this needs null checks
      * always shutdown before disposing anything
      */
     override fun dispose(drawable: GLAutoDrawable?) {
@@ -185,7 +189,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     override fun render(gl: GL?) {
         if (!isInitialized) return
 
-        // TODO screenshot
+        // screenshot
+        if (screenshotOnRender) takeScreenshot()
 
         // Renderer.render()
         synchronized(world) {
@@ -349,6 +354,28 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         }
     }
 
+    // TODO Info: GLReadBufferUtil.readPixels: pre-exisiting GL error 0x501
+    private fun takeScreenshot() {
+        val date = Calendar.getInstance().time.toString().replace("[\\s:]+".toRegex(), "_")
+
+        val glp = GLProfile.getDefault()
+        val bufferUtil = AWTGLReadBufferUtil(glp, false)
+        val screenshot = bufferUtil.readPixelsToBufferedImage(drawable.gl, true)
+
+        val file = File("screenshots/roboviz_$date.png")
+        val dir = File("screenshots")
+        try {
+            if (!dir.exists()) dir.mkdir()
+            ImageIO.write(screenshot, "png", file)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        screenshotOnRender = false
+
+        logger.info { "Screenshot taken: ${file.absolutePath}" }
+    }
+
     private fun updateRenderingSettings() {
         // dispose EffectManager, SceneRenderer and Buffers
         effectManager.dispose(drawable.gl)
@@ -357,7 +384,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         sceneRenderer?.dispose(drawable?.gl)
         sceneFBO = null // needs to be null -> drawScene()
         msSceneFBO = null // needs to be null -> drawScene()
-        sceneRenderer = null
+        sceneRenderer = null // needs to be null -> selectRenderer()
 
         // create new EffectManager and SceneRenderer
         initEffects(drawable.gl)
