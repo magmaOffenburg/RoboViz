@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.gui.menus
 
 import org.magmaoffenburg.roboviz.etc.menuactions.ViewActions
+import org.magmaoffenburg.roboviz.rendering.Renderer
 import java.awt.event.KeyEvent
 
 class ViewMenu : MenuBase() {
@@ -13,6 +14,9 @@ class ViewMenu : MenuBase() {
 
     private fun initializeMenu() {
         text = "View"
+
+        addItem("Screenshot", KeyEvent.VK_F12) { Renderer.screenshotOnRender = true}
+        this.addSeparator()
 
         addItem("Drawings", KeyEvent.VK_Y) { actions.openDrawingsPanel() }
         addItem("Toggle Full Screen", KeyEvent.VK_F11) { actions.toggleFullScreen() }

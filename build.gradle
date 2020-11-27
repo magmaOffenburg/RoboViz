@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.20'
 }
 
 group 'org.magmaOffenburg'
@@ -33,8 +33,9 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'com.github.weisj:darklaf-core:2.5.2'
-    implementation 'com.github.weisj:darklaf-theme:2.5.2'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'com.github.weisj:darklaf-core:2.5.3'
+    implementation 'com.github.weisj:darklaf-theme:2.5.3'
     implementation 'org.jogamp.jogl:jogl-all-main:2.3.2'
     implementation 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
     implementation 'org.apache.commons:commons-compress:1.20'
