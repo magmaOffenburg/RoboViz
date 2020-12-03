@@ -143,7 +143,7 @@ class Config(args: Array<String>) {
 
         // TeamColors
         parser.getValueSuperKey("Team Color").forEach {
-            TeamColors.byTeamNames[it.key] = Color(Integer.decode(it.value))
+            TeamColors.byTeamNames[it.key.substringAfter(":").trim()] = Color(Integer.decode(it.value))
         }
 
         // Args
@@ -226,7 +226,12 @@ class Config(args: Array<String>) {
             }
         }
 
-        parser.writeFile(filePath)
+        try {
+            parser.writeFile(filePath)
+        } catch (e: Exception) {
+            logger.error { "Error while trying to save the config: ${e.printStackTrace()}" }
+        }
+
     }
 
     fun configChanged() {
