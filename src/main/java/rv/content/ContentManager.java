@@ -300,12 +300,12 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		// if team name changed, update the materials
 		String teamNameLeft = gs.getTeamLeft();
 		if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
-			updateTeamColor(teamNameLeft, "matLeft", config.getDefaultLeft());
+			updateTeamColor(teamNameLeft, "matLeft", config.getByTeamNames().get("<Left>"));
 			this.teamNameLeft = teamNameLeft;
 		}
 		String teamNameRight = gs.getTeamRight();
 		if (!Objects.equals(teamNameRight, this.teamNameRight)) {
-			updateTeamColor(teamNameRight, "matRight", config.getDefaultRight());
+			updateTeamColor(teamNameRight, "matRight", config.getByTeamNames().get("<Right>"));
 			this.teamNameRight = teamNameRight;
 		}
 	}
