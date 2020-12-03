@@ -145,6 +145,8 @@ class Config(args: Array<String>) {
         parser.getValueSuperKey("Team Color").forEach {
             TeamColors.byTeamNames[it.key.substringAfter(":").trim()] = Color(Integer.decode(it.value))
         }
+        TeamColors.byTeamNames.putIfAbsent("<Left>", TeamColors.defaultLeft)
+        TeamColors.byTeamNames.putIfAbsent("<Right>", TeamColors.defaultRight)
 
         // Args
         Networking.currentHost = parser.argsList.firstOrNull {
