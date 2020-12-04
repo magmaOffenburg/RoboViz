@@ -160,7 +160,7 @@ class GeneralPanel: JPanel() {
         tableModel.addTableModelListener {
             TeamColors.byTeamNames.clear()
             for (i in 0 until tableModel.rowCount) {
-                val key = "Team Color : ${tableModel.getValueAt(i,0)}"
+                val key = tableModel.getValueAt(i,0).toString()
                 val color = tableModel.getValueAt(i,1) as Color
 
                 TeamColors.byTeamNames[key] = color
