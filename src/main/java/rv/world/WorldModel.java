@@ -222,9 +222,11 @@ public class WorldModel
 		}
 
 		TeamColors teamColors = TeamColors.INSTANCE;
-		leftTeam = new Team(teamColors.getByTeamNames().get("<Left>"), Team.LEFT, cm, teamColors);
+		leftTeam = new Team(teamColors.getByTeamNames().getOrDefault("<Left>", teamColors.getDefaultLeft())
+				, Team.LEFT, cm, teamColors);
 		gameState.addListener(leftTeam);
-		rightTeam = new Team(teamColors.getByTeamNames().get("<Right>"), Team.RIGHT, cm, teamColors);
+		rightTeam = new Team(teamColors.getByTeamNames().getOrDefault("<Right>", teamColors.getDefaultRight())
+				, Team.RIGHT, cm, teamColors);
 		gameState.addListener(rightTeam);
 
 		sgItems.add(leftTeam);

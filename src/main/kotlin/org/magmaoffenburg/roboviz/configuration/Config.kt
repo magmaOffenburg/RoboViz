@@ -220,18 +220,18 @@ class Config(args: Array<String>) {
 
         // team colors
         TeamColors.byTeamNames.forEach {
-            parser.setValue(it.key, "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}")
+            parser.setValue("Team Color : ${it.key}", "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}")
         }
         parser.getValueSuperKey("Team Color").forEach {
-            if (!TeamColors.byTeamNames.containsKey(it.key)) {
+            if (!TeamColors.byTeamNames.containsKey(it.key.substringAfter(":").trim())) {
                 parser.removeValue(it.key) // remove deleted team color
             }
         }
 
         try {
             parser.writeFile(filePath)
-        } catch (e: Exception) {
-            logger.error { "Error while trying to save the config: ${e.printStackTrace()}" }
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            logger.error("Error while trying to save the config.", e)
         }
 
     }
