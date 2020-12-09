@@ -397,6 +397,40 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         renderSettingsChanged = false
     }
 
+    fun onModeChange() {
+        // shut down old stuff
+        activeScreen.setEnabled(MainWindow.glCanvas, false)
+        activeScreen.stop()
+
+        // TODO shutdown when netManager was active before
+        if (netManagerIsInitialized()) {
+            netManager.shutdown()
+        }
+
+        // dispose and recreate world, else we still have old agents
+        world.dispose(drawable?.gl)
+        world = WorldModel()
+        world.init(drawable?.gl, contentManager, Main.mode)
+
+        when (Main.mode) {
+            DataTypes.Mode.LIVE -> {
+                netManager = NetworkManager()
+                netManager.init()
+                netManager.server.addChangeListener(world.gameState)
+                netManager.server.addChangeListener(MainWindow.instance)
+            }
+            DataTypes.Mode.LOG -> {
+                val helperFile = File(General.logReplayFile)
+                logPlayer = LogPlayer(helperFile, world)
+                Thread.sleep(10) // there needs to be a short delay, or else the logMode wont happen FIXME
+                logPlayer.addListener(MainWindow.logPlayerControls)
+            }
+        }
+
+        activeScreen = if (Main.mode == DataTypes.Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
+        activeScreen.setEnabled(MainWindow.glCanvas, true)
+    }
+
     /**
      * getters
      */

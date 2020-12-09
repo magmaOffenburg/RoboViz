@@ -287,4 +287,10 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 			}
 		}
 	}
+
+	@Override
+	public void stop() {
+		Renderer.netManager.getServer().removeChangeListener(this);
+		//Renderer.netManager.getServer().removeChangeListener(ssb);
+	}
 }

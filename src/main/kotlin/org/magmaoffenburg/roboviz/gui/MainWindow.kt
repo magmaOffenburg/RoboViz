@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent
 import javax.imageio.ImageIO
 import javax.swing.JFrame
 import javax.swing.JMenuBar
+import javax.swing.SwingUtilities
 
 /**
  * FIXME auto focus for canvas to allow key listener to work
@@ -97,6 +98,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         view.addSeparator()
         view.addItem("Toggle Server Speed", KeyEvent.VK_M) { println("TODO toggleShowServerSpeed") }
         view.addItem("Playmode Overlay", KeyEvent.VK_O) { println("TODO openPlaymodeOverlay") }
+        view.addItem("Log Mode", KeyEvent.VK_F4) { Main.changeMode() }
 
         // add connection menu to config change listeners
         Main.config.addConfigChangedListener(connection)
@@ -112,6 +114,9 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         val view = ViewMenu()
         val camera = CameraMenu()
         val help = HelpMenu()
+
+        view.addSeparator()
+        view.addItem("Live Mode", KeyEvent.VK_F4) { Main.changeMode() }
 
         jMenuBar.add(view)
         jMenuBar.add(camera)
@@ -151,6 +156,16 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         val device = GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice
         device.fullScreenWindow = if (isFullscreen) null else this
         isFullscreen = !isFullscreen
+    }
+
+    fun onModeChange() {
+        initializeMenu() // reinitialize the menu
+        SwingUtilities.updateComponentTreeUI(this)
+
+        when (Main.mode) {
+            DataTypes.Mode.LOG -> initializeLogPlayerControls()
+            DataTypes.Mode.LIVE -> logPlayerControls?.dispose()
+        }
     }
 
 }
