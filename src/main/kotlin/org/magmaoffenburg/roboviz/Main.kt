@@ -21,7 +21,6 @@ class Main {
         lateinit var renderer: Renderer
 
         fun changeMode() {
-            println("changing mode ...")
             mode = when(mode) {
                 Mode.LIVE -> Mode.LOG
                 Mode.LOG -> Mode.LIVE
