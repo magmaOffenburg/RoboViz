@@ -62,7 +62,11 @@ public class NetworkManager
 		if (agentComm != null) {
 			agentComm.shutdown();
 			agentComm.removeListener(serverComm);
+			agentComm = null;
 		}
-		serverComm.disconnect();
+
+		if (serverComm != null) {
+			serverComm.disconnect();
+		}
 	}
 }
