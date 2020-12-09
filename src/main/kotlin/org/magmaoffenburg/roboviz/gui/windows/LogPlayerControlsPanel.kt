@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.gui.windows
 
 import org.magmaoffenburg.roboviz.gui.MainWindow
+import org.magmaoffenburg.roboviz.rendering.CameraController
 import org.magmaoffenburg.roboviz.rendering.Renderer.Companion.logPlayer
 import rv.comm.rcssserver.LogPlayer
 import java.awt.Dimension
@@ -20,6 +21,7 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
 
     private lateinit var playbackSpeedSpinner: JSpinner
     private lateinit var slider: JSlider
+    private var ignoreSliderEvent = false
 
     private val fileOpenIcon = getIcon("/images/baseline_folder_open_black_24dp.png")
     private val rewindIcon = getIcon("/images/baseline_replay_black_24dp.png")
@@ -74,7 +76,9 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
         slider = JSlider(0 , 100, 1).apply {
             toolTipText = "Select Frame"
             preferredSize = Dimension(370, 20)
-            addChangeListener { selectFrame(this.value) }
+            addChangeListener {
+                if (!ignoreSliderEvent) selectFrame(this.value)
+            }
         }
         add(slider)
     }
@@ -149,14 +153,17 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     private fun updateSlider() {
         if (slider.maximum < logPlayer.numFrames) slider.maximum = logPlayer.numFrames
 
+        ignoreSliderEvent = true
         if (logPlayer.logfileHasDrawCmds()) {
             SwingUtilities.invokeLater {
                 slider.value = logPlayer.desiredFrame
                 slider.isEnabled = logPlayer.isValid
+                ignoreSliderEvent = false
             }
         } else {
             slider.value = logPlayer.desiredFrame
             slider.isEnabled = logPlayer.isValid
+            ignoreSliderEvent = false
         }
     }
 
@@ -176,6 +183,8 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     override fun playerStateChanged(playing: Boolean) {
         updateButtons()
         updateSlider()
+
+        CameraController.trackerCamera.setPlaybackSpeed(logPlayer.playBackSpeed)
     }
 
     override fun logfileChanged() {

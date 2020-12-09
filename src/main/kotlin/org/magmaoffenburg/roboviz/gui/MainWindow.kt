@@ -27,7 +27,7 @@ import javax.swing.JMenuBar
  */
 class MainWindow : JFrame(), ServerComm.ServerChangeListener {
 
-    private val windowTitle = "RoboVizKt ${Main.version}"
+    private val windowTitle = "${Main.name} ${Main.version}"
 
     private var isFullscreen = false
 
