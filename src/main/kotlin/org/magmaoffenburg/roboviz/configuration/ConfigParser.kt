@@ -5,8 +5,10 @@ import java.io.File
 class ConfigParser {
 
     val argsList = arrayListOf<Pair<String, String>>()
-    val fileMap = hashMapOf<String, String>()
-    val keyToDelete = ArrayList<String>()
+    private val fileMap = hashMapOf<String, String>()
+    private val filePairMap = hashMapOf<String, MutableList<Pair<String, String>>>()
+
+    private val pairKeys = listOf("Team Color", "Server")
 
     /**
      * parse the args into a ArrayList, delimiter is "="
@@ -30,26 +32,25 @@ class ConfigParser {
         fileMap.clear()
 
         File(path).forEachLine { line ->
-            if (line.trim().isNotEmpty() && !line.startsWith("#")) {
-                val pair = when {
-                    line.startsWith("Team Color") -> {
-                        val superKey = line.substringBefore(":").trim()
-                        val key = line.substringBeforeLast(":").replaceBefore(":", "$superKey ")
-                        val value = line.substringAfterLast(":")
+            if (line.trim().isEmpty() || line.startsWith("#")) {
+                return@forEachLine
+            }
 
-                        Pair(key.trim(), value.trim())
-                    }
-                    line.substringBefore(":").trim() == "Server" -> {
-                        val key = "${line.substringBefore(":").trim()} : ${line.substringAfter(":").trim()}"
-                        val value = line.substringAfter(":").trim()
-                        Pair(key, value)
-                    }
-                    else -> {
-                        Pair(line.substringBefore(":").trim(), line.substringAfter(":").trim())
+            val key = line.substringBefore(":").trim()
+            when {
+                pairKeys.contains(key) -> {
+                    val value1 = line.substringBeforeLast(":").substringAfter(":").trim()
+                    val value2 = line.substringAfterLast(":").trim()
+
+                    if (filePairMap[key] != null) {
+                        filePairMap[key]?.add(Pair(value1, value2))
+                    } else {
+                        filePairMap[key] = mutableListOf(Pair(value1, value2))
                     }
                 }
-
-                fileMap[pair.first] = pair.second
+                else -> {
+                    fileMap[key] = line.substringAfter(":").trim()
+                }
             }
         }
 
@@ -65,69 +66,19 @@ class ConfigParser {
         // read raw file
         val rawFileList = configFile.readLines().toMutableList()
 
+        val matchKey = { line: String, key: String -> line.substringBefore(":").trim() == key }
+
         fileMap.forEach { pair ->
-            when {
-                pair.key.startsWith("Team Color") -> {
-                    val superKey = pair.key.replace("Team Color", "Team Color".padEnd(20))
-                    val newLine = "$superKey:${pair.value}"
-                    val index = rawFileList.indexOfFirst { line ->
-                        line.startsWith(superKey)
-                    }
-
-                    if (index >= 0) {
-                        rawFileList[index] = newLine
-                    } else {
-                        // add a new team color
-                        val addIndex = rawFileList.indexOfLast { line ->
-                            line.startsWith("${"Team Color".padEnd(20)} :")
-                        }
-                        rawFileList.add(addIndex + 1, newLine)
-                    }
-                }
-                pair.key.startsWith("Server :") -> {
-                    // only new servers will be added, existing servers can't be edited since there is no unique ID
-                    val newLine = pair.key.replace("Server", "Server".padEnd(20))
-                    val index = rawFileList.indexOfFirst { line ->
-                        line.startsWith(newLine)
-                    }
-
-                    if (index >= 0) {
-                        rawFileList[index] = newLine
-                    } else {
-                        // add a new server
-                        val addIndex = rawFileList.indexOfLast { line ->
-                            line.startsWith("${"Server".padEnd(20)} :")
-                        }
-                        rawFileList.add(addIndex + 1, newLine)
-                    }
-                }
-                else -> {
-                    val index = rawFileList.indexOfFirst { line ->
-                        line.startsWith("${pair.key.padEnd(20)} :")
-                    }
-                    rawFileList[index] = "${pair.key.padEnd(20)} : ${pair.value}"
-                }
+            val index = rawFileList.indexOfFirst { matchKey(it, pair.key) }
+            rawFileList[index] = "${pair.key.padEnd(20)} : ${pair.value}"
+        }
+        filePairMap.forEach { pairList ->
+            val firstIndex = rawFileList.indexOfFirst { matchKey(it, pairList.key) }
+            rawFileList.removeIf { matchKey(it, pairList.key) }
+            pairList.value.forEachIndexed { i, pair ->
+                rawFileList.add(firstIndex + i, "${pairList.key.padEnd(20)} : ${pair.first}:${pair.second}")
             }
         }
-
-        // delete all lines containing a key from keyToDelete list
-        keyToDelete.forEach { key ->
-            val searchKey = when {
-                key.startsWith("Team Color") -> {
-                    key.replace("Team Color", "Team Color".padEnd(20))
-                }
-                key.startsWith("Server :") -> {
-                    key.replace("Server", "Server".padEnd(20))
-                }
-                else -> key
-            }
-
-            val index = rawFileList.indexOfFirst { line ->
-                line.startsWith(searchKey)
-            }
-            rawFileList.removeAt(index)
-        }
-        keyToDelete.clear() // clear keys to delete, otherwise we try to delete them again
 
         // rawFileList to String with StringBuilder
         val sb = StringBuilder()
@@ -141,13 +92,16 @@ class ConfigParser {
     /**
      * get the value of a key
      */
-    fun getValue(key: String): String {
-        return if (fileMap.containsKey(key)) {
-            fileMap[key]!!
-        } else {
-            System.err.println("The key \"$key\" does not exist!")
-            ""
-        }
+    fun getValue(key: String) = fileMap[key] ?: "".also{
+        System.err.println("The key \"$key\" does not exist!")
+    }
+
+
+    /**
+     * get the value pair list of a key
+     */
+    fun getValuePairList(key: String) = filePairMap[key] ?: emptyList<Pair<String, String>>().also {
+        System.err.println("The key \"$key\" does not exist!")
     }
 
     /**
@@ -158,17 +112,9 @@ class ConfigParser {
     }
 
     /**
-     * get all key value pairs, where the key starts with the superKey
+     * set the value pair list of a key
      */
-    fun getValueSuperKey(superKey: String): List<Map.Entry<String, String>> {
-        return fileMap.filter {
-            it.key.startsWith(superKey)
-        }.entries.toList()
+    fun setValuePairList(key: String, value: List<Pair<String, String>>) {
+        filePairMap[key] = value.toMutableList()
     }
-
-    fun removeValue(key: String) {
-        fileMap.remove(key)
-        keyToDelete.add(key)
-    }
-
 }

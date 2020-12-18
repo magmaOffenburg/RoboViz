@@ -128,8 +128,8 @@ class Config(args: Array<String>) {
         Networking.autoConnectDelay = parser.getValue("Auto-Connect Delay").toInt()
         Networking.listenPort = parser.getValue("Drawing Port").toInt()
 
-        parser.getValueSuperKey("Server :").forEach {
-            Networking.servers.add(Pair(it.value.substringBefore(":"), it.value.substringAfter(":").toInt()))
+        parser.getValuePairList("Server").forEach {
+            Networking.servers.add(Pair(it.first, it.second.toInt()))
         }
         Networking.defaultServerHost = parser.getValue("Default Server").substringBefore(":")
         Networking.defaultServerPort = parser.getValue("Default Server").substringAfter(":").toInt()
@@ -142,8 +142,8 @@ class Config(args: Array<String>) {
         OverlayVisibility.playerIDs = parser.getValue("Player IDs").toBoolean()
 
         // TeamColors
-        parser.getValueSuperKey("Team Color").forEach {
-            TeamColors.byTeamNames[it.key.substringAfter(":").trim()] = Color(Integer.decode(it.value))
+        parser.getValuePairList("Team Color").forEach {
+            TeamColors.byTeamNames[it.first] = Color(Integer.decode(it.second))
         }
         TeamColors.byTeamNames.putIfAbsent("<Left>", TeamColors.defaultLeft)
         TeamColors.byTeamNames.putIfAbsent("<Right>", TeamColors.defaultRight)
@@ -196,17 +196,7 @@ class Config(args: Array<String>) {
         parser.setValue("Auto-Connect Delay", Networking.autoConnectDelay.toString())
         parser.setValue("Drawing Port", Networking.listenPort.toString())
 
-        Networking.servers.forEach {
-            val key = "Server : ${it.first}:${it.second}"
-            val value = "${it.first}:${it.second}"
-            parser.setValue(key, value)
-        }
-        parser.getValueSuperKey("Server :").forEach { (key, value) ->
-            val pair = Pair(value.substringBefore(":"), value.substringAfter(":").toInt())
-            if (!Networking.servers.contains(pair)) {
-                parser.removeValue(key) // remove deleted server
-            }
-        }
+        parser.setValuePairList("Server", Networking.servers.map { Pair(it.first, it.second.toString()) })
 
         parser.setValue("Drawing Port", Networking.listenPort.toString())
         parser.setValue("Default Server", "${Networking.defaultServerHost}:${Networking.defaultServerPort}")
@@ -219,14 +209,9 @@ class Config(args: Array<String>) {
         parser.setValue("Player IDs", OverlayVisibility.playerIDs.toString())
 
         // team colors
-        TeamColors.byTeamNames.forEach {
-            parser.setValue("Team Color : ${it.key}", "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}")
-        }
-        parser.getValueSuperKey("Team Color").forEach {
-            if (!TeamColors.byTeamNames.containsKey(it.key.substringAfter(":").trim())) {
-                parser.removeValue(it.key) // remove deleted team color
-            }
-        }
+        parser.setValuePairList(
+            "Team Color",
+            TeamColors.byTeamNames.map { Pair(it.key, "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}") })
 
         try {
             parser.writeFile(filePath)
