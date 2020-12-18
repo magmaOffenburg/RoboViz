@@ -25,6 +25,7 @@ class ConnectionMenu(private val parent: Component) : MenuBase(), ConfigChangeLi
         text = "Connection"
 
         addServerItems()
+        addSeparator()
         addItem("Connect to...", KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK) { connectTo() }
     }
 
@@ -77,7 +78,6 @@ class ConnectionMenu(private val parent: Component) : MenuBase(), ConfigChangeLi
             host = raw.substringBefore(":")
             try {
                 port = raw.substringAfter(":").toInt()
-                println(port)
             } catch (ex: NumberFormatException) {
                 showErrorDialog("Invalid port", "The entered port ${raw.substringAfter(":")} is invalid")
                 return
@@ -99,7 +99,7 @@ class ConnectionMenu(private val parent: Component) : MenuBase(), ConfigChangeLi
         // add server to menu and select it
         val server = JRadioButtonMenuItem("$host:$port")
         group.add(server)
-        add(server)
+        add(server, itemCount - 2)
 
         // change server
         changeServer(host, port)
