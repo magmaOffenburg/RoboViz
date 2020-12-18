@@ -1,8 +1,10 @@
 package org.magmaoffenburg.roboviz.configuration
 
+import org.apache.logging.log4j.kotlin.logger
 import java.io.File
 
 class ConfigParser {
+    private val logger = logger()
 
     val argsList = arrayListOf<Pair<String, String>>()
     private val fileMap = hashMapOf<String, String>()
@@ -92,8 +94,8 @@ class ConfigParser {
     /**
      * get the value of a key
      */
-    fun getValue(key: String) = fileMap[key] ?: "".also{
-        System.err.println("The key \"$key\" does not exist!")
+    fun getValue(key: String) = fileMap[key] ?: "".also {
+        logger.error("The key \"$key\" does not exist!")
     }
 
 
@@ -101,7 +103,7 @@ class ConfigParser {
      * get the value pair list of a key
      */
     fun getValuePairList(key: String) = filePairMap[key] ?: emptyList<Pair<String, String>>().also {
-        System.err.println("The key \"$key\" does not exist!")
+        logger.error("The key \"$key\" does not exist!")
     }
 
     /**
