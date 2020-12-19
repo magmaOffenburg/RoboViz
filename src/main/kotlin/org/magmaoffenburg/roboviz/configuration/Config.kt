@@ -158,7 +158,7 @@ class Config(args: Array<String>) {
         }?.second?.toInt() ?: Networking.defaultServerPort
         General.logReplayFile = parser.argsList.firstOrNull {
             it.first == "logFile"
-        }?.second.toString()
+        }?.second ?: ""
     }
 
     /**
