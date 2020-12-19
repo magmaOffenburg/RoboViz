@@ -3,9 +3,11 @@ package org.magmaoffenburg.roboviz.gui.windows
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.CameraController
 import org.magmaoffenburg.roboviz.rendering.Renderer.Companion.logPlayer
+import org.magmaoffenburg.roboviz.util.SwingUtils
 import rv.comm.rcssserver.LogPlayer
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.awt.Point
 import javax.imageio.ImageIO
 import javax.swing.*
 
@@ -178,6 +180,18 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
 
     private fun getIcon(path: String): ImageIcon {
         return ImageIcon(LogPlayerControlsPanel::class.java.getResource(path))
+    }
+
+    /**
+     * if the windows is visible already, call toFront(), else set visible to true
+     */
+    fun showWindow(): LogPlayerControlsPanel = apply {
+        if (!isVisible) {
+            location = SwingUtils.centerWindowOnScreen(this@LogPlayerControlsPanel, Point(0,0))
+            isVisible = true
+        } else {
+            toFront()
+        }
     }
 
     override fun playerStateChanged(playing: Boolean) {

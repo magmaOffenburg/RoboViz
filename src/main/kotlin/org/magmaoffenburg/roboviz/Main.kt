@@ -34,10 +34,11 @@ class Main {
 }
 
 fun main(args: Array<String>) {
-    setInitMode(args)
-
     // parse parameters and config
-    config = Config(args) // TODO --logFile, --drawingFilter
+    config = Config(args) // TODO --drawingFilter
+    if (args.contains("--logMode") || General.logReplayFile.isNotEmpty()) {
+        mode = Mode.LOG
+    }
 
     // set Look and Feel
     LookAndFeelController.setLookAndFeel(General.lookAndFeel)
@@ -51,10 +52,4 @@ private fun createAndShowGUI() {
     Main.mainWindow.isVisible = true
 
     Main.renderer = Renderer() // create the Renderer
-}
-
-private fun setInitMode(args: Array<String>) {
-    if (args.contains("--logMode")) {
-        mode = Mode.LOG
-    }
 }
