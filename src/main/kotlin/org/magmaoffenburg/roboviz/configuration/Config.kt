@@ -39,6 +39,7 @@ class Config(args: Array<String>) {
         var logfileDirectory = ""
         var logReplayFile = ""
         var lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel"
+        var drawingFilter = ".*"
     }
 
     object Graphics {
@@ -159,6 +160,9 @@ class Config(args: Array<String>) {
         General.logReplayFile = parser.argsList.firstOrNull {
             it.first == "logFile"
         }?.second ?: ""
+        General.drawingFilter = parser.argsList.firstOrNull {
+            it.first == "drawingFilter"
+        }?.second ?: ".*"
     }
 
     /**
@@ -234,6 +238,7 @@ class Config(args: Array<String>) {
         configChangeListeners.add(listener)
     }
 
+    @Suppress("unused")
     fun removeConfigChangedListener(listener: ConfigChangeListener) {
         configChangeListeners.remove(listener)
     }

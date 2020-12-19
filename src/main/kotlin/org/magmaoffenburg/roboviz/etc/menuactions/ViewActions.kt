@@ -1,5 +1,6 @@
 package org.magmaoffenburg.roboviz.etc.menuactions
 
+import org.magmaoffenburg.roboviz.configuration.Config
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import rv.ui.DrawingListPanel
@@ -9,7 +10,7 @@ import rv.ui.screens.TextOverlay
 class ViewActions {
 
     fun openDrawingsPanel() {
-        DrawingListPanel(Renderer.drawings, "").showFrame(MainWindow.instance) // TODO drawingFilter
+        DrawingListPanel(Renderer.drawings, Config.General.drawingFilter).showFrame(MainWindow.instance) // TODO drawingFilter
     }
 
     fun toggleFullScreen() {
