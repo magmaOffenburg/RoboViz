@@ -49,7 +49,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		IDS
 	}
 
-	enum RobotVantageType
+	public enum RobotVantageType
 	{
 		NONE,
 		FIRST_PERSON,
@@ -205,7 +205,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 
 	protected void renderBillboardText(String text, Vec3f pos3D, float[] color)
 	{
-		Camera3D camera = Renderer.instance.getVantage();
+		Camera3D camera = CameraController.vantage;
 		Vec3f screenPos = camera.project(pos3D, Renderer.instance.getScreen());
 		int x = (int) (screenPos.x - tr.getBounds(text).getWidth() / 2);
 		int y = (int) screenPos.y;
@@ -491,7 +491,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		textOverlays.add(new TextOverlay(String.format("Goal %s!", teamName), Renderer.world, 4000));
 	}
 
-	private void setRobotVantage(RobotVantageType type)
+	public void setRobotVantage(RobotVantageType type)
 	{
 		boolean differentType = robotVantageType != type;
 		Agent oldAgent = null;
@@ -500,7 +500,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 			oldAgent = robotVantage.getAgent();
 			robotVantage.detach();
 			robotVantage = null;
-			//viewer.getRenderer().setVantage(CameraController.camera); // TODO
+			CameraController.vantage = CameraController.camera;
 			CameraController.cameraController.attachToCanvas(MainWindow.glCanvas);
 			robotVantageType = RobotVantageType.NONE;
 		}
@@ -520,8 +520,8 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 				robotVantage = new RobotVantageFirstPerson(agent, firstPersonFOV);
 			else
 				robotVantage = new RobotVantageThirdPerson(agent, thirdPersonFOV);
-			//viewer.getRenderer().setVantage(robotVantage); // TODO
-			//viewer.getUI().getCameraControl().detachFromCanvas(MainWindow.glCanvas);
+			CameraController.vantage = robotVantage;
+			CameraController.cameraController.detachFromCanvas(MainWindow.glCanvas);
 			robotVantageType = type;
 		}
 	}

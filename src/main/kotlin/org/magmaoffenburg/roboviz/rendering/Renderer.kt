@@ -16,7 +16,6 @@ import jsgl.jogl.FrameBufferObject
 import jsgl.jogl.GLInfo
 import jsgl.jogl.Texture2D
 import jsgl.jogl.prog.GLProgram
-import jsgl.jogl.view.Camera3D
 import jsgl.jogl.view.Viewport
 import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.Main
@@ -42,7 +41,6 @@ import java.io.IOException
 import java.util.*
 import javax.imageio.ImageIO
 
-
 class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height) {
 
     private val logger = logger()
@@ -55,7 +53,6 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     private var sceneFBO: FrameBufferObject? = null
     private var msSceneFBO: FrameBufferObject? = null
     private var sceneRenderer: SceneRenderer? = null
-    private var vantage: Camera3D? = null // TODO can this be replaced with camera?
 
     companion object {
         lateinit var instance: Renderer
@@ -145,7 +142,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         activeScreen.setEnabled(MainWindow.glCanvas, true)
 
         gl?.let { initEffects(gl) }
-        vantage = CameraController.camera
+        CameraController.vantage = CameraController.camera
 
         if (isInitialized && oldSceneGraph != null) {
             world.sceneGraph = oldSceneGraph
@@ -205,17 +202,17 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             }
 
             if (Graphics.useStereo) {
-                vantage?.applyLeft(gl2, glu, screen)
+                CameraController.vantage.applyLeft(gl2, glu, screen)
                 gl2?.glDrawBuffer(GL2.GL_BACK_LEFT)
                 gl2?.glClear(GL.GL_COLOR_BUFFER_BIT or GL.GL_DEPTH_BUFFER_BIT)
                 drawScene(gl2)
 
-                vantage?.applyRight(gl2, glu, screen)
+                CameraController.vantage.applyRight(gl2, glu, screen)
                 gl2.glDrawBuffer(GL2.GL_BACK_RIGHT)
                 gl2.glClear(GL.GL_COLOR_BUFFER_BIT or GL.GL_DEPTH_BUFFER_BIT)
                 drawScene(gl2)
             } else {
-                vantage?.apply(gl2, glu, screen)
+                CameraController.vantage.apply(gl2, glu, screen)
                 gl2.glDrawBuffer(GL.GL_BACK)
                 gl2.glClear(GL.GL_COLOR_BUFFER_BIT or GL.GL_DEPTH_BUFFER_BIT)
                 drawScene(gl2)
@@ -430,13 +427,5 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         activeScreen = if (Main.mode == DataTypes.Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
         activeScreen.setEnabled(MainWindow.glCanvas, true)
     }
-
-    /**
-     * getters
-     */
-    fun getVantage(): Camera3D? {
-        return vantage
-    }
-
 
 }
