@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.etc.menuactions
 
 import org.magmaoffenburg.roboviz.rendering.Renderer
+import rv.ui.screens.ViewerScreenBase
 
 class CameraActions {
 
@@ -13,11 +14,11 @@ class CameraActions {
     }
 
     fun setRobotVantageFirst() {
-        println("TODO setRobotVantageFirst")
+        Renderer.activeScreen.setRobotVantage(ViewerScreenBase.RobotVantageType.FIRST_PERSON)
     }
 
     fun setRobotVantageThird() {
-        println("TODO setRobotVantageThird")
+        Renderer.activeScreen.setRobotVantage(ViewerScreenBase.RobotVantageType.THIRD_PERSON)
     }
 
     fun selectBall() {

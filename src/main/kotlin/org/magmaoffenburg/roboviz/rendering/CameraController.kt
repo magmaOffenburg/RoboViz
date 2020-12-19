@@ -1,6 +1,7 @@
 package org.magmaoffenburg.roboviz.rendering
 
 import com.jogamp.opengl.GLAutoDrawable
+import jsgl.jogl.view.Camera3D
 import jsgl.jogl.view.FPCamera
 import jsgl.math.vector.Vec2f
 import jsgl.math.vector.Vec3f
@@ -12,6 +13,7 @@ import rv.ui.view.TargetTrackerCamera
 class CameraController(private val drawable: GLAutoDrawable) {
 
     companion object {
+        lateinit var vantage: Camera3D // TODO can this be replaced with camera? FPCamera is a Camera3D but not vice versa
         lateinit var camera: FPCamera
         lateinit var cameraController: ICameraController
         lateinit var trackerCamera: TargetTrackerCamera
