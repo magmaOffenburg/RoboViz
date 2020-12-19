@@ -298,6 +298,12 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 			nextAgentOverheadType();
 	}
 
+
+	public void toggleShowServerSpeed()
+	{
+		gameStateOverlay.toggleShowServerSpeed();
+	}
+
 	private void switchTrackerCamera(ISelectable target, TrackerCameraType type)
 	{
 		TargetTrackerCamera camera = CameraController.trackerCamera;
@@ -534,11 +540,6 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		if (trackerCameraType == TrackerCameraType.PLAYER && newSelection instanceof Agent) {
 			CameraController.trackerCamera.setTarget(newSelection);
 		}
-	}
-
-	protected void toggleShowServerSpeed()
-	{
-		gameStateOverlay.toggleShowServerSpeed();
 	}
 
 	@Override

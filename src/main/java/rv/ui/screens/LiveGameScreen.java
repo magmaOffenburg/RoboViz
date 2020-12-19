@@ -16,12 +16,10 @@
 
 package rv.ui.screens;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import jsgl.math.vector.Vec3f;
-import org.magmaoffenburg.roboviz.gui.MainWindow;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
 import org.magmaoffenburg.roboviz.configuration.Config.OverlayVisibility;
+import org.magmaoffenburg.roboviz.gui.MainWindow;
 import org.magmaoffenburg.roboviz.rendering.CameraController;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.rcssserver.GameState;
@@ -32,6 +30,8 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 import rv.world.objects.Ball;
+
+import java.awt.event.MouseEvent;
 
 public class LiveGameScreen extends ViewerScreenBase implements ServerComm.ServerChangeListener
 {
@@ -64,36 +64,6 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 		return Renderer.netManager.getServer();
 	}
 
-	private void kickOff(boolean left)
-	{
-		resetTimeIfExpired();
-		getServer().kickOff(left);
-	}
-
-	private void directFreeKick(boolean left)
-	{
-		resetTimeIfExpired();
-		getServer().directFreeKick(left);
-	}
-
-	private void freeKick(boolean left)
-	{
-		resetTimeIfExpired();
-		getServer().freeKick(left);
-	}
-
-	private void connect()
-	{
-		if (!getServer().isConnected())
-			getServer().connect();
-	}
-
-	private void dropBall()
-	{
-		resetTimeIfExpired();
-		getServer().dropBall();
-	}
-
 	private String getConnectionMessage()
 	{
 		String server = getServer().getServerHost() + ":" + getServer().getServerPort();
@@ -109,72 +79,11 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 			return "Press C to connect to " + server + ".";
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e)
+	public void openPlaymodeOverlay()
 	{
-		super.keyPressed(e);
-
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_X:
-			if (e.isShiftDown())
-				getServer().killServer();
-			break;
-		case KeyEvent.VK_K:
-			kickOff(true);
-			break;
-		case KeyEvent.VK_J:
-			kickOff(false);
-			break;
-		case KeyEvent.VK_O:
-			if (Renderer.world.getGameState() != null &&
-					Renderer.world.getGameState().getPlayModes() != null) {
-				openPlaymodeOverlay();
-			}
-			break;
-		case KeyEvent.VK_C:
-			if (!e.isControlDown())
-				connect();
-			break;
-		case KeyEvent.VK_L:
-			if (e.isShiftDown())
-				directFreeKick(true);
-			else
-				freeKick(true);
-			break;
-		case KeyEvent.VK_R:
-			if (e.isShiftDown())
-				directFreeKick(false);
-			else
-				freeKick(false);
-			break;
-		case KeyEvent.VK_T:
-			if (e.isShiftDown())
-				getServer().resetTime();
-			break;
-		case KeyEvent.VK_U:
-			getServer().requestFullState();
-			break;
-		case KeyEvent.VK_B:
-			dropBall();
-			break;
-		case KeyEvent.VK_M:
-			toggleShowServerSpeed();
-			break;
-		}
-	}
-
-	private void openPlaymodeOverlay()
-	{
+		// TODO setVisible only if visible == false?
 		setEnabled(MainWindow.glCanvas, false);
 		playmodeOverlay.setVisible(true);
-	}
-
-	private void resetTimeIfExpired()
-	{
-		// changing the play mode doesn't have any effect if the game has ended
-		float gameTime = Renderer.world.getGameState().getHalfTime() * 2;
-		if (Renderer.world.getGameState().getTime() >= gameTime)
-			Renderer.netManager.getServer().resetTime();
 	}
 
 	@Override

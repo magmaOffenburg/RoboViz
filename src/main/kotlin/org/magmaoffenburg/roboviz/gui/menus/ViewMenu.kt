@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent
 
 class ViewMenu : MenuBase() {
 
-    private val actions = ViewActions()
+    val actions = ViewActions()
 
     init {
         initializeMenu()

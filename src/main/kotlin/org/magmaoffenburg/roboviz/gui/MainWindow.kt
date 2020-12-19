@@ -96,8 +96,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
 
         // Live Mode specific items
         view.addSeparator()
-        view.addItem("Toggle Server Speed", KeyEvent.VK_M) { println("TODO toggleShowServerSpeed") }
-        view.addItem("Playmode Overlay", KeyEvent.VK_O) { println("TODO openPlaymodeOverlay") }
+        view.addItem("Toggle Server Speed", KeyEvent.VK_M) { view.actions.toggleShowServerSpeed() }
+        view.addItem("Playmode Overlay", KeyEvent.VK_O) { view.actions.openPlaymodeOverlay() }
         view.addItem("Log Mode", KeyEvent.VK_F4) { Main.changeMode() }
 
         // add connection menu to config change listeners
