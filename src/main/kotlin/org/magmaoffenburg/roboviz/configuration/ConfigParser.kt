@@ -19,7 +19,7 @@ class ConfigParser {
         argsList.clear()
 
         args.forEach { arg ->
-            if (arg.startsWith("--")) {
+            if (arg.startsWith("--") && arg.contains("=")) {
                 argsList.add(Pair(arg.substring(2).substringBefore("="), arg.substringAfter("=")))
             }
         }

@@ -142,7 +142,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
 
     private fun initializeLogPlayerControls() {
         logPlayerControls = LogPlayerControlsPanel()
-        logPlayerControls!!.isVisible = true
+        logPlayerControls!!.showWindow()
     }
 
     // TODO investigate window title for logMode
