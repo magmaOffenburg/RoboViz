@@ -6,7 +6,13 @@
     * `darcula`
     * `intellij`
     * `solarized_dark`
-    * `solarized_light` 
+    * `solarized_light`
+* reimplement the RoboViz GUI in Kotlin to better separate GUI and Rendering ([#117](https://github.com/magmaOffenburg/RoboViz/pull/117))
+    * settings window can be opened via menu (graphics settings can be changed without a restart)
+    * default team colors can be overwritten
+    * switch between Live- and LogMode via Menu ([#55](https://github.com/magmaOffenburg/RoboViz/issues/55))
+    * fixed playback speed textfield not selectable on Linux ([#31](https://github.com/magmaOffenburg/RoboViz/issues/31))
+    
 
 1.7.0 (February 21, 2020)
 ------------------------------
