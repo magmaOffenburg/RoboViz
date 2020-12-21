@@ -54,7 +54,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 
 	public SimsparkController()
 	{
-		CameraController.camera.setTranslateSpeed(6);
+		CameraController.fpCamera.setTranslateSpeed(6);
 	}
 
 	public void update(double elapsedMS)
@@ -65,7 +65,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 		// world move is vector in world space
 		Vec3f tWorld = new Vec3f(0);
 
-		FPCamera cam = CameraController.camera;
+		FPCamera cam = CameraController.fpCamera;
 
 		dR = moveR ? dMax : Math.max(dR - dChange, 0);
 		dL = moveL ? dMax : Math.max(dL - dChange, 0);
@@ -99,7 +99,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 			speed = 0.25f;
 		else if (speed > 4.0f)
 			speed = 4.0f;
-		speed *= CameraController.camera.getTranslatedSpeed();
+		speed *= CameraController.fpCamera.getTranslatedSpeed();
 
 		float scale = (float) (elapsedMS / 1000.0f) * speed;
 
@@ -117,7 +117,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 		if (i >= cameras.length || i < 0)
 			return;
 
-		FPCamera camera = CameraController.camera;
+		FPCamera camera = CameraController.fpCamera;
 		camera.setPosition(cameras[i].getPosition().clone());
 		camera.setRotation(cameras[i].getRotation().clone());
 	}
@@ -128,7 +128,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 		float fl = gs.getFieldLength();
 		float fw = gs.getFieldWidth();
 
-		double fov = Math.toRadians(CameraController.camera.getFOVY());
+		double fov = Math.toRadians(CameraController.fpCamera.getFOVY());
 		float aerialHeight = (float) (0.5 * fw / Math.tan(fov * 0.5) * 1.1);
 
 		cameras = new CameraSetting[] {new CameraSetting(new Vec3f(fl * 0.8f, fl * 0.4f, 0), new Vec2f(-35, 90)),
@@ -191,7 +191,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 	{
 		if (rotate) {
 			Vec2f mouseMove = new Vec2f(e.getX(), e.getY()).minus(lastMouse);
-			CameraController.camera.rotate(mouseMove.times(CameraController.camera.getRotateSpeed()));
+			CameraController.fpCamera.rotate(mouseMove.times(CameraController.fpCamera.getRotateSpeed()));
 		}
 		lastMouse = new Vec2f(e.getX(), e.getY());
 	}
@@ -309,7 +309,7 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 		if (e.getWheelRotation() < 0) {
 			factor *= -1;
 		}
-		CameraController.camera.moveLocal(Vec3f.unitZ().times(factor));
+		CameraController.fpCamera.moveLocal(Vec3f.unitZ().times(factor));
 	}
 
 	public void gsMeasuresAndRulesChanged(GameState gs)

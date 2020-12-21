@@ -244,7 +244,7 @@ public class WorldModel
 				sgi.update(sceneGraph);
 		}
 
-		skyBox.setPosition(CameraController.camera.getPosition());
+		skyBox.setPosition(CameraController.fpCamera.getPosition());
 
 		ballCircleTimeLeft -= elapsedMS / 1000.0;
 	}

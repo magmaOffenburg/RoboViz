@@ -492,7 +492,7 @@ public abstract class ViewerScreenBase
 			oldAgent = robotVantage.getAgent();
 			robotVantage.detach();
 			robotVantage = null;
-			CameraController.vantage = CameraController.camera;
+			CameraController.vantage = CameraController.fpCamera;
 			CameraController.cameraController.attachToCanvas(MainWindow.glCanvas);
 			robotVantageType = RobotVantageType.NONE;
 		}
