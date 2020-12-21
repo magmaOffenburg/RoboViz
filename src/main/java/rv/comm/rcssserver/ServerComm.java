@@ -251,6 +251,9 @@ public class ServerComm implements DrawCommListener
 
 	public void disconnect()
 	{
+		if (autoConnectTimer != null)
+			autoConnectTimer.stop();
+
 		if (recordLogs)
 			closeCurrentLogfile();
 
