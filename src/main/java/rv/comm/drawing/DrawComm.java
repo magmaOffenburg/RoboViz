@@ -66,11 +66,18 @@ public class DrawComm
 					socket.receive(packet);
 					handle(packet);
 				} catch (IOException e) {
-					e.printStackTrace();
+					if (!e.getMessage().equals("Socket closed"))
+						e.printStackTrace();
 				}
 			}
+		}
+
+		public void shutdown()
+		{
 			if (socket != null)
 				socket.close();
+
+			running = false;
 		}
 	}
 
@@ -138,7 +145,7 @@ public class DrawComm
 	/** Stops receiving UDP packets and closes connections */
 	public void shutdown()
 	{
-		packetReceiver.running = false;
+		packetReceiver.shutdown();
 	}
 
 	/** Prints packet contents for debug purposes */
