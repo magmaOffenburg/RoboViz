@@ -19,7 +19,6 @@ package rv.ui.screens;
 import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
-
 import org.magmaoffenburg.roboviz.gui.MainWindow;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.rcssserver.GameState;
@@ -53,7 +52,6 @@ public class LogfileModeScreen extends ViewerScreenBase
 			}
 		});
 	}
-		
 
 	@Override
 	public void setEnabled(GLCanvas canvas, boolean enabled)
@@ -116,7 +114,7 @@ public class LogfileModeScreen extends ViewerScreenBase
 			super.gsPlayStateChanged(gs);
 		}
 	}
-	
+
 	@Override
 	public void stop()
 	{

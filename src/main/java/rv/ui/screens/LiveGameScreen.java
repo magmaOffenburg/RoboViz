@@ -16,6 +16,7 @@
 
 package rv.ui.screens;
 
+import java.awt.event.MouseEvent;
 import jsgl.math.vector.Vec3f;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
 import org.magmaoffenburg.roboviz.configuration.Config.OverlayVisibility;
@@ -30,8 +31,6 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 import rv.world.objects.Ball;
-
-import java.awt.event.MouseEvent;
 
 public class LiveGameScreen extends ViewerScreenBase implements ServerComm.ServerChangeListener
 {
@@ -198,8 +197,9 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 	}
 
 	@Override
-	public void stop() {
+	public void stop()
+	{
 		Renderer.netManager.getServer().removeChangeListener(this);
-		//Renderer.netManager.getServer().removeChangeListener(ssb);
+		// Renderer.netManager.getServer().removeChangeListener(ssb);
 	}
 }

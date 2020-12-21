@@ -39,8 +39,9 @@ import rv.world.Team;
 import rv.world.WorldModel;
 import rv.world.objects.Agent;
 
-public abstract class ViewerScreenBase extends ScreenBase implements KeyListener, MouseListener, MouseMotionListener,
-		MouseWheelListener, GameState.GameStateChangeListener, WorldModel.SelectionChangeListener
+public abstract class ViewerScreenBase
+		extends ScreenBase implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener,
+									  GameState.GameStateChangeListener, WorldModel.SelectionChangeListener
 {
 	enum AgentOverheadType
 	{
@@ -49,12 +50,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		IDS
 	}
 
-	public enum RobotVantageType
-	{
-		NONE,
-		FIRST_PERSON,
-		THIRD_PERSON
-	}
+	public enum RobotVantageType { NONE, FIRST_PERSON, THIRD_PERSON }
 
 	enum TrackerCameraType
 	{
@@ -292,12 +288,10 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 	public void toggleOverheadType()
 	{
 		nextAgentOverheadType();
-		if (agentOverheadType == AgentOverheadType.ANNOTATIONS &&
-				!teamHasAnnotations(Renderer.world.getLeftTeam()) &&
+		if (agentOverheadType == AgentOverheadType.ANNOTATIONS && !teamHasAnnotations(Renderer.world.getLeftTeam()) &&
 				!teamHasAnnotations(Renderer.world.getRightTeam()))
 			nextAgentOverheadType();
 	}
-
 
 	public void toggleShowServerSpeed()
 	{
@@ -353,7 +347,6 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		agentOverheadType = vals[(agentOverheadType.ordinal() + 1) % vals.length];
 	}
 
-
 	private boolean teamHasAnnotations(Team team)
 	{
 		for (Agent agent : team.getAgents()) {
@@ -363,7 +356,6 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		}
 		return false;
 	}
-
 
 	@Override
 	public void keyReleased(KeyEvent e)
@@ -450,7 +442,7 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 		if (trackerCameraType == TrackerCameraType.PLAYER) {
 			ISelectable target = camera.getTarget();
 			boolean agentExists = Renderer.world.getLeftTeam().getAgents().contains(target) ||
-					Renderer.world.getRightTeam().getAgents().contains(target);
+								  Renderer.world.getRightTeam().getAgents().contains(target);
 			if (target == null || !agentExists) {
 				target = getTrackedPlayer();
 			}
@@ -549,24 +541,28 @@ public abstract class ViewerScreenBase extends ScreenBase implements KeyListener
 			overlay.windowResized(event);
 	}
 
-	public Field2DOverlay getFieldOverlay() {
+	public Field2DOverlay getFieldOverlay()
+	{
 		return fieldOverlay;
 	}
 
-	public FoulListOverlay getFoulListOverlay() {
+	public FoulListOverlay getFoulListOverlay()
+	{
 		return foulListOverlay;
 	}
 
-	public List<TextOverlay> getTextOverlays() {
-		 return textOverlays;
+	public List<TextOverlay> getTextOverlays()
+	{
+		return textOverlays;
 	}
 
-	public boolean isShowNumPlayers() {
-		return  showNumPlayers;
+	public boolean isShowNumPlayers()
+	{
+		return showNumPlayers;
 	}
 
-	public AgentOverheadType getAgentOverheadType() {
+	public AgentOverheadType getAgentOverheadType()
+	{
 		return agentOverheadType;
 	}
-
 }

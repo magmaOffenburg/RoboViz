@@ -37,6 +37,6 @@ public interface Screen extends WindowResizeListener {
 	boolean isVisible();
 
 	void setVisible(boolean visible);
-	
+
 	void stop();
 }

@@ -93,7 +93,7 @@ public class ServerComm implements DrawCommListener
 
 				// If the thread gets to this point the server has stopped
 				// sending messages by closing the connection
-				//DebugInfo.println(getClass(), "rcssserver3d closed TCP connection");
+				// DebugInfo.println(getClass(), "rcssserver3d closed TCP connection");
 				disconnect();
 				if (autoConnectTimer != null)
 					autoConnectTimer.start();
