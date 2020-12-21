@@ -40,7 +40,7 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     }
 
     private fun initializeWindow() {
-        title = "Log-Player"
+        title = "Log Player"
         defaultCloseOperation = DO_NOTHING_ON_CLOSE
         size = Dimension(380, 120)
         isResizable = false
