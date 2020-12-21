@@ -122,13 +122,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             netManager.server.addChangeListener(MainWindow.instance)
         } else {
             if (!isInitialized) {
-                val helperFile = File(General.logReplayFile)
-                logPlayer = LogPlayer(helperFile, world)
-                Thread.sleep(10) // there needs to be a short delay, or else the logMode wont happen FIXME
-                logPlayer.addListener(MainWindow.logPlayerControls)
-                // TODO do we need this (Window Title renaming)
-                //logPlayer.addListener(this)
-                //logfileChanged()
+                initLogPlayer()
             } else {
                 logPlayer.setWorldModel(world)
             }
@@ -255,6 +249,15 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
 
     override fun addMouseListener(l: MouseListener?) {
         AWTMouseAdapter(l, MainWindow.glCanvas).addTo(MainWindow.glCanvas)
+    }
+
+    private fun initLogPlayer() {
+        val helperFile = File(General.logReplayFile)
+        logPlayer = LogPlayer(helperFile, world)
+        Thread.sleep(10) // there needs to be a short delay, or else the logMode wont happen FIXME
+        logPlayer.addListener(MainWindow.logPlayerControls)
+        logPlayer.addListener(MainWindow.instance)
+        MainWindow.instance.logfileChanged()
     }
 
     /**
@@ -417,10 +420,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
                 netManager.server.addChangeListener(MainWindow.instance)
             }
             DataTypes.Mode.LOG -> {
-                val helperFile = File(General.logReplayFile)
-                logPlayer = LogPlayer(helperFile, world)
-                Thread.sleep(10) // there needs to be a short delay, or else the logMode wont happen FIXME
-                logPlayer.addListener(MainWindow.logPlayerControls)
+                initLogPlayer()
             }
         }
 

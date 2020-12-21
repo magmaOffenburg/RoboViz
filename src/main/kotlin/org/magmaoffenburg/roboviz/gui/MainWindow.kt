@@ -10,6 +10,7 @@ import org.magmaoffenburg.roboviz.gui.windows.LogPlayerControlsPanel
 import org.magmaoffenburg.roboviz.rendering.Renderer
 import org.magmaoffenburg.roboviz.util.DataTypes
 import org.magmaoffenburg.roboviz.util.SwingUtils
+import rv.comm.rcssserver.LogPlayer
 import rv.comm.rcssserver.ServerComm
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -26,7 +27,7 @@ import javax.swing.SwingUtilities
 /**
  * FIXME auto focus for canvas to allow key listener to work
  */
-class MainWindow : JFrame(), ServerComm.ServerChangeListener {
+class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateChangeListener {
 
     private val windowTitle = "${Main.name} ${Main.version}"
 
@@ -145,7 +146,6 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
         logPlayerControls!!.showWindow()
     }
 
-    // TODO investigate window title for logMode
     override fun connectionChanged(server: ServerComm?) {
         server?.let {
             title = if (it.isConnected) "${it.serverHost}:${it.serverPort} - $windowTitle" else windowTitle
@@ -166,6 +166,12 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener {
             DataTypes.Mode.LOG -> initializeLogPlayerControls()
             DataTypes.Mode.LIVE -> logPlayerControls?.dispose()
         }
+    }
+
+    override fun playerStateChanged(playing: Boolean) = Unit
+
+    override fun logfileChanged() {
+        title = if (Renderer.logPlayer.filePath != null) "${Renderer.logPlayer.filePath} - $windowTitle" else windowTitle
     }
 
 }
