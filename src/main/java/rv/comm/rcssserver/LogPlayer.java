@@ -433,7 +433,7 @@ public class LogPlayer implements LogfileListener
 		}, this);
 		logAnalyzer.start();
 	}
-	
+
 	public void stopLogPlayer()
 	{
 		if (logRunner != null)

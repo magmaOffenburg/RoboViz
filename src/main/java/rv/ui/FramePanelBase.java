@@ -32,7 +32,7 @@ public class FramePanelBase
 		frame = new JFrame(title);
 		try {
 			frame.setIconImage(ImageIO.read(FramePanelBase.class.getResourceAsStream("/images/icon.png")));
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

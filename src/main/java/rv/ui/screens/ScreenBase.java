@@ -27,10 +27,9 @@ public abstract class ScreenBase implements Screen
 	public void windowResized(WindowResizeEvent event)
 	{
 	}
-	
+
 	@Override
 	public void stop()
 	{
 	}
-	
 }

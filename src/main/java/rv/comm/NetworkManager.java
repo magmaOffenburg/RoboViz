@@ -17,7 +17,6 @@
 package rv.comm;
 
 import java.net.SocketException;
-
 import org.magmaoffenburg.roboviz.Main;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
 import org.magmaoffenburg.roboviz.rendering.Renderer;

@@ -61,14 +61,16 @@ public class EffectManager implements GLDisposable
 		}
 	}
 
-	public void initBloom(GL2 gl, Viewport screen, Graphics config, ContentManager cm) {
+	public void initBloom(GL2 gl, Viewport screen, Graphics config, ContentManager cm)
+	{
 		bloom = new Bloom();
 		boolean success = bloom.init(gl, screen, cm, config);
 		if (!success)
 			bloom = null;
 	}
 
-	public void initShadowRenderer(GL2 gl, Graphics config, ContentManager cm) {
+	public void initShadowRenderer(GL2 gl, Graphics config, ContentManager cm)
+	{
 		// configure sun
 		Vec3f lightPos = new Vec3f(-11, 10, 9);
 		Vec3f lightDir = lightPos.times(-1).normalize();
@@ -80,7 +82,8 @@ public class EffectManager implements GLDisposable
 			shadowRenderer = null;
 	}
 
-	public void disposeShadowRenderer(GL gl) {
+	public void disposeShadowRenderer(GL gl)
+	{
 		if (shadowRenderer != null)
 			shadowRenderer.dispose(gl);
 		shadowRenderer = null;

@@ -26,9 +26,9 @@ import jsgl.jogl.Uniform;
 import jsgl.jogl.view.Viewport;
 import jsgl.math.Gaussian;
 import org.magmaoffenburg.roboviz.configuration.Config;
+import rv.content.ContentManager;
 import rv.util.WindowResizeEvent;
 import rv.util.WindowResizeListener;
-import rv.content.ContentManager;
 
 /**
  * Bloom post-processing effect
