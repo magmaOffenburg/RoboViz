@@ -136,7 +136,6 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         activeScreen.setEnabled(MainWindow.glCanvas, true)
 
         gl?.let { initEffects(gl) }
-        CameraController.vantage = CameraController.camera
 
         if (isInitialized && oldSceneGraph != null) {
             world.sceneGraph = oldSceneGraph

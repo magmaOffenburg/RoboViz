@@ -13,8 +13,9 @@ import rv.ui.view.TargetTrackerCamera
 class CameraController(private val drawable: GLAutoDrawable) {
 
     companion object {
+
         lateinit var vantage: Camera3D // TODO can this be replaced with camera? FPCamera is a Camera3D but not vice versa
-        lateinit var camera: FPCamera
+        lateinit var fpCamera: FPCamera
         lateinit var cameraController: ICameraController
         lateinit var trackerCamera: TargetTrackerCamera
 
@@ -35,12 +36,14 @@ class CameraController(private val drawable: GLAutoDrawable) {
         val near = 0.1f // near clip plane distance
         val far = 200f // far clip plane distance
 
-        camera = FPCamera(pos, rot, fov, near, far)
+        fpCamera = FPCamera(pos, rot, fov, near, far)
 
         if (drawable.chosenGLCapabilities.stereo) {
-            camera.focalLength = 8f
-            camera.eyeSeparation = 3 / 20.0f
+            fpCamera.focalLength = 8f
+            fpCamera.eyeSeparation = 3 / 20.0f
         }
+
+        vantage = fpCamera
     }
 
     private fun initCameraController() {
@@ -50,15 +53,15 @@ class CameraController(private val drawable: GLAutoDrawable) {
     }
 
     private fun initTargetTrackerCamera() {
-        trackerCamera = TargetTrackerCamera(camera, Renderer.world.gameState)
+        trackerCamera = TargetTrackerCamera(fpCamera, Renderer.world.gameState)
     }
 
     private fun initPicker() {
-        objectPicker = SceneObjectPicker(Renderer.world, camera)
+        objectPicker = SceneObjectPicker(Renderer.world, fpCamera)
     }
 
     fun update(elapsedMS: Double) {
-        camera.update(elapsedMS)
+        fpCamera.update(elapsedMS)
         cameraController.update(elapsedMS)
         trackerCamera.update(Renderer.instance.screen)
     }
