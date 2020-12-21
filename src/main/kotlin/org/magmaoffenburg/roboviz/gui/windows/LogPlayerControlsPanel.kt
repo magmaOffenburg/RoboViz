@@ -1,13 +1,14 @@
 package org.magmaoffenburg.roboviz.gui.windows
 
+import org.magmaoffenburg.roboviz.etc.LookAndFeelController
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.CameraController
 import org.magmaoffenburg.roboviz.rendering.Renderer.Companion.logPlayer
 import org.magmaoffenburg.roboviz.util.SwingUtils
 import rv.comm.rcssserver.LogPlayer
-import java.awt.Dimension
-import java.awt.FlowLayout
-import java.awt.Point
+import java.awt.*
+import java.awt.image.FilteredImageSource
+import java.awt.image.ImageProducer
 import javax.imageio.ImageIO
 import javax.swing.*
 
@@ -101,13 +102,13 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
         if (logPlayer.isPlaying) {
             logPlayer.pause()
             playPauseBtn.apply {
-                icon = playIcon
+                setModeDependantIcon(playIcon)
                 toolTipText = "Play"
             }
         } else {
             logPlayer.resume()
             playPauseBtn.apply {
-                icon = pauseIcon
+                setModeDependantIcon(pauseIcon)
                 toolTipText = "Pause"
             }
         }
@@ -172,10 +173,25 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     private fun createBtn(icon: ImageIcon, toolTipText: String?, func: () -> Unit): JButton {
         return JButton().apply {
             preferredSize = Dimension(36, 36)
-            this.icon = icon
+            setModeDependantIcon(icon)
             this.toolTipText = toolTipText
             addActionListener { func() }
         }
+    }
+
+    private fun JButton.setModeDependantIcon(i: ImageIcon) {
+        if (LookAndFeelController.isDarkMode()) {
+            this.icon = i.toDarkMode(true)
+            this.disabledIcon = i.toDarkMode(false)
+        } else {
+            this.icon = i
+        }
+    }
+
+    private fun ImageIcon.toDarkMode(enabled: Boolean) : ImageIcon {
+        val filter = GrayFilter(true, if (enabled) 73 else 36)
+        val prod = FilteredImageSource(this.image.source, filter)
+        return ImageIcon(Toolkit.getDefaultToolkit().createImage(prod))
     }
 
     private fun getIcon(path: String): ImageIcon {
