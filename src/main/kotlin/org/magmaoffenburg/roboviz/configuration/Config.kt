@@ -132,7 +132,6 @@ class Config(args: Array<String>) {
         parser.getValuePairList("Server").forEach {
             Networking.servers.add(Pair(it.first, it.second.toInt()))
         }
-        Networking.servers.sortBy { ("${it.first.toServerSortString()} : ${it.second}") }
         Networking.defaultServerHost = parser.getValue("Default Server").substringBefore(":")
         Networking.defaultServerPort = parser.getValue("Default Server").substringAfter(":").toInt()
 
@@ -243,12 +242,4 @@ class Config(args: Array<String>) {
         configChangeListeners.remove(listener)
     }
 
-}
-
-fun String.toServerSortString(): String {
-    return if (this.matches(Regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\$"))) {
-        this.split(".").joinToString(".") { it.padStart(3, '0') }
-    } else {
-        this
-    }
 }

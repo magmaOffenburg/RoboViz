@@ -35,7 +35,7 @@ class Main {
 
 fun main(args: Array<String>) {
     // parse parameters and config
-    config = Config(args) // TODO --drawingFilter
+    config = Config(args)
     if (args.contains("--logMode") || General.logReplayFile.isNotEmpty()) {
         mode = Mode.LOG
     }
