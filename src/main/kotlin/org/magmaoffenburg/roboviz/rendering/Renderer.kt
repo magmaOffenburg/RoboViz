@@ -411,6 +411,9 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         world = WorldModel()
         world.init(drawable?.gl, contentManager, Main.mode)
 
+        // after recreating the world, we need to re-initialize the picker in CameraController
+        cameraController.initPicker()
+
         when (Main.mode) {
             DataTypes.Mode.LIVE -> {
                 netManager = NetworkManager()

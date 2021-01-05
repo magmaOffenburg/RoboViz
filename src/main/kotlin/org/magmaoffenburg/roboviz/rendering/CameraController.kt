@@ -56,7 +56,7 @@ class CameraController(private val drawable: GLAutoDrawable) {
         trackerCamera = TargetTrackerCamera(fpCamera, Renderer.world.gameState)
     }
 
-    private fun initPicker() {
+    fun initPicker() {
         objectPicker = SceneObjectPicker(Renderer.world, fpCamera)
     }
 
