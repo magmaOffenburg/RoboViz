@@ -7,16 +7,17 @@ roboviz.bat
 *.java-*
 
 #Intelij
-
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/watcherTasks.xml
+*.iml
+.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
 .idea/dictionaries
-/buildDefault
-/target/
+.idea/libraries
 
 #gradle
 .gradle/
+build/
 
 #Subprojects
 /jsgl/bin

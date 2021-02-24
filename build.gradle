@@ -1,6 +1,16 @@
-allprojects {
-    group = 'RoboViz'
-    version = '1.7.0'
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+}
+
+group 'org.magmaoffenburg.roboviz'
+version '1.8.0'
+mainClassName = 'org.magmaoffenburg.roboviz.MainKt'
+
+ext {
+    jogl_version = '2.3.2'
 }
 
 subprojects {
@@ -11,11 +21,33 @@ subprojects {
             url = 'https://repo.maven.apache.org/maven2'
         }
     }
-    
-    ext {
-        jogl_version = '2.3.2'
-    }
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'com.github.weisj:darklaf-core:2.5.3'
+    implementation 'com.github.weisj:darklaf-theme:2.5.3'
+    implementation "org.jogamp.jogl:jogl-all-main:$jogl_version"
+    implementation "org.jogamp.gluegen:gluegen-rt-main:$jogl_version"
+    implementation 'org.apache.commons:commons-compress:1.20'
+    implementation 'org.apache.logging.log4j:log4j-api-kotlin:1.0.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.0'
+
+    implementation project(':jsgl')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+shadowJar {
+    archiveFileName = 'RoboViz.jar'
 }
