@@ -1,4 +1,4 @@
-![Logo](viewer/src/main/resources/images/icon.png) RoboViz
+![Logo](src/main/resources/images/icon.png) RoboViz
 ==================
 
 ![Build](https://github.com/magmaOffenburg/RoboViz/workflows/Build/badge.svg)
