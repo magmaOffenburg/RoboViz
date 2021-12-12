@@ -43,9 +43,9 @@ dependencies {
     implementation "org.jogamp.jogl:jogl-all-main:$jogl_version"
     implementation "org.jogamp.gluegen:gluegen-rt-main:$jogl_version"
     implementation 'org.apache.commons:commons-compress:1.20'
-    implementation 'org.apache.logging.log4j:log4j-api-kotlin:1.0.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.14.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.0'
+    implementation 'org.apache.logging.log4j:log4j-api-kotlin:1.1.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.15.0'
 
     implementation project(':jsgl')
 
