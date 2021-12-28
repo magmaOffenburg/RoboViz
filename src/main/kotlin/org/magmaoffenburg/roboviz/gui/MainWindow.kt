@@ -148,7 +148,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
 
     override fun connectionChanged(server: ServerComm?) {
         server?.let {
-            title = if (it.isConnected) "${it.serverHost}:${it.serverPort} - $windowTitle" else windowTitle
+            val newTitle = if (it.isConnected) "${it.serverHost}:${it.serverPort} - $windowTitle" else windowTitle
+            SwingUtilities.invokeLater { title = newTitle }
         }
     }
 
@@ -171,7 +172,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
     override fun playerStateChanged(playing: Boolean) = Unit
 
     override fun logfileChanged() {
-        title = if (Renderer.logPlayer.filePath != null) "${Renderer.logPlayer.filePath} - $windowTitle" else windowTitle
+        val newTitle = if (Renderer.logPlayer.filePath != null) "${Renderer.logPlayer.filePath} - $windowTitle" else windowTitle
+        SwingUtilities.invokeLater { title = newTitle }
     }
 
 }
