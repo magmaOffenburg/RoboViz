@@ -411,7 +411,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         world = WorldModel()
         world.init(drawable?.gl, contentManager, Main.mode)
 
-        // after recreating the world, we need to re-initialize the picker in CameraController
+        // after recreating the world, we need to re-initialize the target tracker camera and the picker in CameraController
+        cameraController.initTargetTrackerCamera()
         cameraController.initPicker()
 
         when (Main.mode) {
