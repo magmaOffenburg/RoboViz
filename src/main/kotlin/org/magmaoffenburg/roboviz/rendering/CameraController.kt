@@ -52,7 +52,7 @@ class CameraController(private val drawable: GLAutoDrawable) {
         Renderer.world.gameState.addListener(controller)
     }
 
-    private fun initTargetTrackerCamera() {
+    fun initTargetTrackerCamera() {
         trackerCamera = TargetTrackerCamera(fpCamera, Renderer.world.gameState)
     }
 
