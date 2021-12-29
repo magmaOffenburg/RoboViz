@@ -10,7 +10,7 @@ import rv.ui.screens.TextOverlay
 class ViewActions {
 
     fun openDrawingsPanel() {
-        DrawingListPanel(Renderer.drawings, Config.General.drawingFilter).showFrame(MainWindow.instance) // TODO drawingFilter
+        DrawingListPanel(Renderer.drawings, Config.General.drawingFilter).showFrame(MainWindow.instance)
     }
 
     fun toggleFullScreen() {

@@ -401,7 +401,6 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         activeScreen.setEnabled(MainWindow.glCanvas, false)
         activeScreen.stop()
 
-        // TODO shutdown when netManager was active before
         if (netManagerIsInitialized()) {
             netManager.shutdown()
         }
