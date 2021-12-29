@@ -71,7 +71,7 @@ public class Drawings
 	private final CopyOnWriteArrayList<BufferedSet<Shape>> shapeSets = new CopyOnWriteArrayList<>();
 	private final CopyOnWriteArrayList<BufferedSet<Annotation>> annotationSets = new CopyOnWriteArrayList<>();
 	private boolean changed = false;
-	private boolean visible = false;
+	private boolean visible = true;
 
 	public boolean isVisible()
 	{
