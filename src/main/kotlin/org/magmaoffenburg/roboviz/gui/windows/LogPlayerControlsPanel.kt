@@ -55,8 +55,8 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
         previousFrameBtn = createBtn(previousFrameIcon, "Step back") { previousFrame() }
         playPauseBtn = createBtn(pauseIcon, "Pause") { togglePlayPause() }
         nextFrameBtn = createBtn(nextFrameIcon, "Step forward") { nextFrame() }
-        previousGoalBtn = createBtn(previousGoalIcon, null) { previousGoal() }
-        nextGoalBtn = createBtn(nextGoalIcon, null) { nextGoal() }
+        previousGoalBtn = createBtn(previousGoalIcon, "Previous goal") { previousGoal() }
+        nextGoalBtn = createBtn(nextGoalIcon, "Next goal") { nextGoal() }
 
         add(fileOpenBtn)
         add(rewindBtn)
