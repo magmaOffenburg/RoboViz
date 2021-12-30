@@ -14,13 +14,12 @@ object ControlsHelpWindow : JFrame() {
     init {
         initializeWindow()
         createTextArea()
+        pack()
     }
 
     private fun initializeWindow() {
         title = "Help"
-        size = Dimension(600, 800)
         iconImage = ImageIO.read(ControlsHelpWindow::class.java.getResource("/images/icon.png"))
-        minimumSize = Dimension(400, 500)
     }
 
     private fun createTextArea() {
@@ -31,7 +30,10 @@ object ControlsHelpWindow : JFrame() {
         textArea.text = loadText()
         textArea.caretPosition = 0
 
-        add(JScrollPane(textArea))
+        add(JScrollPane(textArea).apply {
+            minimumSize = Dimension(400, 500)
+            preferredSize = Dimension(600, 800)
+        })
     }
 
     private fun loadText(): String {

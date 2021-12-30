@@ -38,14 +38,14 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     init {
         initializeWindow()
         createControls()
+
+        pack()
     }
 
     private fun initializeWindow() {
         title = "Log Player"
         defaultCloseOperation = DO_NOTHING_ON_CLOSE
-        size = Dimension(380, 120)
         isResizable = false
-        layout = FlowLayout(FlowLayout.LEADING, 5, 7)
         iconImage = ImageIO.read(MainWindow::class.java.getResource("/images/icon.png"))
     }
 
@@ -58,22 +58,13 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
         previousGoalBtn = createBtn(previousGoalIcon, "Previous goal") { previousGoal() }
         nextGoalBtn = createBtn(nextGoalIcon, "Next goal") { nextGoal() }
 
-        add(fileOpenBtn)
-        add(rewindBtn)
-        add(previousFrameBtn)
-        add(playPauseBtn)
-        add(nextFrameBtn)
-        add(previousGoalBtn)
-        add(nextGoalBtn)
 
-        add(Box.createHorizontalStrut(20))
 
         playbackSpeedSpinner = JSpinner(SpinnerNumberModel(1.0, -10.0, 10.0, 0.25)).apply {
             toolTipText = "Playback speed factor"
             preferredSize = Dimension(60, 30)
             addChangeListener { setPlaybackSpeed(this.value as Double) }
         }
-        add(playbackSpeedSpinner)
 
         //slider = JSlider(0 ,logPlayer.numFrames, logPlayer.desiredFrame).apply {
         slider = JSlider(0 , 100, 1).apply {
@@ -83,7 +74,23 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
                 if (!ignoreSliderEvent) selectFrame(this.value)
             }
         }
-        add(slider)
+
+        add(JPanel(FlowLayout(FlowLayout.LEADING, 5, 7)).apply {
+            preferredSize = Dimension(380, 77)
+
+            add(fileOpenBtn)
+            add(rewindBtn)
+            add(previousFrameBtn)
+            add(playPauseBtn)
+            add(nextFrameBtn)
+            add(previousGoalBtn)
+            add(nextGoalBtn)
+
+            add(Box.createHorizontalStrut(20))
+
+            add(playbackSpeedSpinner)
+            add(slider)
+        })
     }
 
     private fun fileOpen() {

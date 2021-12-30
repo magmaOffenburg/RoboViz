@@ -45,6 +45,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
         initializeMenu()
         initializeGLCanvas()
 
+        pack()
         isVisible = true // set visible after everything is initialized
         instance = this
 
@@ -56,7 +57,6 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
     private fun initializeWindow() {
         title = windowTitle
         defaultCloseOperation = EXIT_ON_CLOSE
-        size = Dimension(Graphics.frameWidth, Graphics.frameHeight)
         jMenuBar = JMenuBar()
         iconImage = ImageIO.read(MainWindow::class.java.getResource("/images/icon.png"))
 
@@ -70,8 +70,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
 
         addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
-                Graphics.frameWidth = width
-                Graphics.frameHeight = height
+                Graphics.frameWidth = glCanvas.width
+                Graphics.frameHeight = glCanvas.height
 
                 Main.config.write()
                 Renderer.instance.dispose(glCanvas)
@@ -138,6 +138,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
         glCanvas = GLCanvas(glCapabilities)
         glCanvas.focusTraversalKeysEnabled = false
 
+        glCanvas.preferredSize = Dimension(Graphics.frameWidth, Graphics.frameHeight)
         add(glCanvas, BorderLayout.CENTER)
     }
 

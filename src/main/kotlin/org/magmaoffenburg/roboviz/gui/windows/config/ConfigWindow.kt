@@ -22,7 +22,6 @@ object ConfigWindow : JFrame() {
 
     private fun initializeWindow() {
         title = "RoboViz Configuration"
-        size = Dimension(350, 470)
         iconImage = ImageIO.read(ConfigWindow::class.java.getResource("/images/icon.png"))
         isResizable = false
     }
@@ -62,9 +61,11 @@ object ConfigWindow : JFrame() {
         }
 
         this.rootPane.defaultButton = saveButton
-        this.layout = BorderLayout()
-        this.add(tabbedPane, BorderLayout.CENTER)
-        this.add(bottomPanel, BorderLayout.PAGE_END)
+        this.add(JPanel(BorderLayout()).apply {
+            preferredSize = Dimension(350, 444)
+            add(tabbedPane, BorderLayout.CENTER)
+            add(bottomPanel, BorderLayout.PAGE_END)
+        })
     }
 
     /**
