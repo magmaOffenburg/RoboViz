@@ -29,6 +29,7 @@ object ControlsHelpWindow : JFrame() {
         textArea.isEditable = false
         textArea.isFocusable = false
         textArea.text = loadText()
+        textArea.caretPosition = 0
 
         add(JScrollPane(textArea))
     }
