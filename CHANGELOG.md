@@ -1,4 +1,4 @@
-1.8.0 (to be released)
+1.8.0 (December 30, 2021)
 ------------------------------
 * included the [darklaf](https://github.com/weisJ/darklaf) library for better look and feels ([#110](https://github.com/magmaOffenburg/RoboViz/pull/110))
 * added "Look and Feel" to "General Settings" in `config.txt` - possible values are:
@@ -7,12 +7,16 @@
     * `intellij`
     * `solarized_dark`
     * `solarized_light`
-* reimplement the RoboViz GUI in Kotlin to better separate GUI and Rendering ([#117](https://github.com/magmaOffenburg/RoboViz/pull/117))
+* reimplemented the RoboViz GUI in Kotlin to better separate GUI and Rendering ([#117](https://github.com/magmaOffenburg/RoboViz/pull/117))
     * settings window can be opened via menu (graphics settings can be changed without a restart)
     * default team colors can be overwritten
-    * switch between Live- and LogMode via Menu ([#55](https://github.com/magmaOffenburg/RoboViz/issues/55))
-    * fixed playback speed textfield not selectable on Linux ([#31](https://github.com/magmaOffenburg/RoboViz/issues/31))
-    
+    * switch between live and log mode via menu ([#55](https://github.com/magmaOffenburg/RoboViz/issues/55))
+    * fixed playback speed text field not selectable on Linux ([#31](https://github.com/magmaOffenburg/RoboViz/issues/31))
+* configuration improvements ([#112](https://github.com/magmaOffenburg/RoboViz/pull/112))
+    * Commented out lines are kept on save
+    * New syntax for storing multiple servers and team colors
+* made camera movement speed relative to the distance from the ground
+* pass mode timer update ([#114](https://github.com/magmaOffenburg/RoboViz/pull/114))
 
 1.7.0 (February 21, 2020)
 ------------------------------
