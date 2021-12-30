@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
 }
 
 group 'org.magmaoffenburg.roboviz'
@@ -38,18 +38,18 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation 'com.github.weisj:darklaf-core:2.5.3'
-    implementation 'com.github.weisj:darklaf-theme:2.5.3'
+    implementation 'com.github.weisj:darklaf-core:2.7.3'
+    implementation 'com.github.weisj:darklaf-theme:2.7.3'
     implementation "org.jogamp.jogl:jogl-all-main:$jogl_version"
     implementation "org.jogamp.gluegen:gluegen-rt-main:$jogl_version"
-    implementation 'org.apache.commons:commons-compress:1.20'
+    implementation 'org.apache.commons:commons-compress:1.21'
     implementation 'org.apache.logging.log4j:log4j-api-kotlin:1.1.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.15.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.0'
 
     implementation project(':jsgl')
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 shadowJar {

@@ -7,13 +7,14 @@ import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.weisj.darklaf.theme.Theme
 import com.github.weisj.darklaf.theme.SolarizedDarkTheme
 import com.github.weisj.darklaf.theme.SolarizedLightTheme
+import java.util.logging.Level
 import javax.swing.UIManager
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 object LookAndFeelController {
 
     fun setLookAndFeel(lookAndFeel: String) {
-        LafManager.enableLogging(false)
+        LafManager.setLogLevel(Level.WARNING)
         try {
 
             when (lookAndFeel) {
