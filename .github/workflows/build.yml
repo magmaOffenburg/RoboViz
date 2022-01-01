@@ -29,3 +29,7 @@ jobs:
       run:  |
         cd scripts
         ./build.sh
+    - name: Build RVTester (Java)
+      run: make -C examples/java
+    - name: Build RVTester (C++)
+      run: make -C examples/cpp
