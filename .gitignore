@@ -5,6 +5,7 @@ logfiles/
 roboviz.bat
 *.TMP
 *.java-*
+*.class
 
 #Intelij
 *.iml
@@ -22,6 +23,3 @@ build/
 #Subprojects
 /jsgl/bin
 /jsgl/build
-
-/viewer/bin
-/viewer/build
