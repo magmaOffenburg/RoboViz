@@ -48,7 +48,7 @@ public class RVTester
 	public RVTester() throws SocketException, UnknownHostException
 	{
 		socket = new DatagramSocket();
-		address = InetAddress.getLocalHost();
+		address = InetAddress.getLoopbackAddress();
 
 		animationTimer = new Timer(16, arg0 -> {
 			try {
