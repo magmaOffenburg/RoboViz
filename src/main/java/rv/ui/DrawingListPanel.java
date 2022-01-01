@@ -25,6 +25,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -96,6 +98,8 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 		}
 	}
 
+	private static final Pattern DOTALL_PATTERN = Pattern.compile(".*");
+
 	private Drawings drawings;
 	private final JTextField regexField;
 	private final JList<CheckListItem> list;
@@ -138,7 +142,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 
 		p.add(regexField);
 		JButton regexSearch = new JButton("Regex");
-		regexSearch.addActionListener(e -> regexList(regexField.getText()));
+		regexSearch.addActionListener(e -> regexList(getRegex()));
 		p.add(regexSearch);
 		regexField.addKeyListener(new KeyListener() {
 			@Override
@@ -155,7 +159,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 			public void keyPressed(KeyEvent e)
 			{
 				if (e.getKeyCode() == KeyEvent.VK_ENTER)
-					regexList(regexField.getText());
+					regexList(getRegex());
 			}
 		});
 		frame.add(p, BorderLayout.SOUTH);
@@ -173,11 +177,12 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 		drawings.clearAllShapeSets();
 	}
 
-	private void regexList(String s)
+	private void regexList(Pattern p)
 	{
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckListItem cli = (model.getElementAt(i));
-			cli.setSelected(cli.item.getName().matches(s));
+			String name = cli.item.getName();
+			cli.setSelected(p.matcher(name).matches());
 		}
 		list.repaint();
 	}
@@ -185,7 +190,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 	@Override
 	public void setListChanged(SetListChangeEvent evt)
 	{
-		String regex = regexField.getText();
+		Pattern regex = getRegex();
 
 		model.clear();
 		List<BufferedSet<Shape>> shapeSets = evt.getShapeSets();
@@ -193,7 +198,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 			if (shapeSet != null) {
 				CheckListItem item = new CheckListItem(shapeSet);
 				boolean visible = shapeSet.isVisible();
-				boolean matchRegex = regex == null || shapeSet.getName().matches(regex);
+				boolean matchRegex = regex.matcher(shapeSet.getName()).matches();
 				item.setSelected(visible && matchRegex);
 				model.addElement(item);
 			}
@@ -204,10 +209,29 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 			if (annotationSet != null) {
 				CheckListItem item = new CheckListItem(annotationSet);
 				boolean visible = annotationSet.isVisible();
-				boolean matchRegex = regex == null || annotationSet.getName().matches(regex);
+				boolean matchRegex = regex.matcher(annotationSet.getName()).matches();
 				item.setSelected(visible && matchRegex);
 				model.addElement(item);
 			}
 		}
+	}
+
+	private Pattern getRegex()
+	{
+		String s = regexField.getText();
+		if (s == null) {
+			// Match everything
+			return DOTALL_PATTERN;
+		}
+
+		Pattern pattern;
+		try {
+			pattern = Pattern.compile(s);
+		} catch (PatternSyntaxException e) {
+			// Invalid regex
+			// Match everything instead
+			pattern = DOTALL_PATTERN;
+		}
+		return pattern;
 	}
 }
