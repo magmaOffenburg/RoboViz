@@ -19,8 +19,6 @@ package jsgl.jogl.model;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import jsgl.jogl.GLDisposable;
 import jsgl.math.BoundingBox;
 import jsgl.math.vector.Matrix;

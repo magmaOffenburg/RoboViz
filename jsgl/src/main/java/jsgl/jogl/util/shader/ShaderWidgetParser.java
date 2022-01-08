@@ -18,8 +18,6 @@ package jsgl.jogl.util.shader;
 
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import jsgl.jogl.Shader;
 import jsgl.jogl.Uniform;
 
