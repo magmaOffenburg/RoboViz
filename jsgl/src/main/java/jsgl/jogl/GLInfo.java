@@ -71,7 +71,7 @@ public class GLInfo
 	 */
 	public boolean extSupported(String ext)
 	{
-		return extensions == null ? false : extensions.indexOf(ext) != -1;
+		return extensions == null ? false : extensions.contains(ext);
 	}
 
 	/**
