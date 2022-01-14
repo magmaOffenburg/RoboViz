@@ -238,7 +238,7 @@ public class Logfile implements ILogfileReader
 
 			if (execDrawCmds) {
 				String drawCmd = line.substring(0, endIndex);
-				String[] drawCmdByteValues = drawCmd.substring(1, drawCmd.length()).split(",");
+				String[] drawCmdByteValues = drawCmd.substring(1).split(",");
 				byte[] drawCmdBytes = new byte[drawCmdByteValues.length];
 				for (int i = 0; i < drawCmdBytes.length; i++) {
 					try {
