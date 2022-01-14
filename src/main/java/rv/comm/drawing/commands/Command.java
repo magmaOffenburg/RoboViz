@@ -33,7 +33,7 @@ import rv.world.objects.Agent;
  */
 public abstract class Command
 {
-	private static final Logger LOGGER = LogManager.getLogger(Command.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	// packet command IDs
 	public static final int DRAW_OPTION = 0;

@@ -3,6 +3,8 @@ package rv.comm.rcssserver;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.world.Team;
 import rv.world.WorldModel;
 
@@ -29,6 +31,8 @@ public class LogAnalyzerThread extends Thread
 
 		void finished(int numFrames);
 	}
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final File file;
 	private final ResultCallback callback;
@@ -69,7 +73,7 @@ public class LogAnalyzerThread extends Thread
 			logfile = new LogfileReaderBuffered(new Logfile(file, false), 200);
 			logfile.addListener(logPlayer);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to open logfile", e);
 		}
 
 		while (!logfile.isAtEndOfLog() && !aborted) {
@@ -77,7 +81,7 @@ public class LogAnalyzerThread extends Thread
 			try {
 				logfile.stepForward();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Unable to read logfile", e);
 			}
 		}
 		processFrame();
@@ -92,7 +96,7 @@ public class LogAnalyzerThread extends Thread
 			try {
 				parser.parse(msg);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				LOGGER.error("Unable to parse frame message", e);
 			}
 
 			processGoals();

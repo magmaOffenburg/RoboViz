@@ -36,7 +36,7 @@ import rv.comm.drawing.commands.Command;
  */
 public class DrawComm
 {
-	private static final Logger LOGGER = LogManager.getLogger(DrawComm.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	/** Receives UDP packets */
 	private class ReceiveThread extends Thread
@@ -67,7 +67,7 @@ public class DrawComm
 					handle(packet);
 				} catch (IOException e) {
 					if (!e.getMessage().equals("Socket closed"))
-						e.printStackTrace();
+						LOGGER.error("Error while trying to receive draw commands", e);
 				}
 			}
 		}
@@ -124,7 +124,7 @@ public class DrawComm
 				cmd = Command.parse(buf);
 			} catch (Exception e) {
 				if (SHOW_WARNINGS) {
-					System.out.printf("Exception parsing command (start index %d)\n", buf.position());
+					LOGGER.error("Exception parsing command (start index {}})", buf.position());
 					printPacket(packet);
 				}
 				return;
@@ -132,7 +132,7 @@ public class DrawComm
 
 			if (cmd == null) {
 				if (SHOW_WARNINGS) {
-					System.out.printf("Null command (start index %d)\n", buf.position());
+					LOGGER.warn("Null command (start index {})", buf.position());
 					printPacket(packet);
 				}
 				return;

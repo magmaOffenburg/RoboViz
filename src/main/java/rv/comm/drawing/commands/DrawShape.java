@@ -18,6 +18,8 @@ package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
 import jsgl.io.ByteUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.drawing.Drawings;
 import rv.comm.drawing.shapes.Circle;
@@ -35,6 +37,8 @@ import rv.comm.drawing.shapes.Sphere;
  */
 public class DrawShape extends Command
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final int CIRCLE = 0;
 	public static final int LINE = 1;
 	public static final int POINT = 2;
@@ -67,7 +71,7 @@ public class DrawShape extends Command
 			shape = Polygon.parse(buf);
 			break;
 		default:
-			System.err.println("Unknown shape : " + type);
+			LOGGER.warn("Unknown shape : " + type);
 			shape = null;
 		}
 	}

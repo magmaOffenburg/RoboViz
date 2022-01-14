@@ -25,6 +25,8 @@ import jsgl.jogl.Texture2D;
 import jsgl.jogl.Uniform;
 import jsgl.jogl.view.Viewport;
 import jsgl.math.Gaussian;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import rv.content.ContentManager;
 import rv.util.WindowResizeEvent;
@@ -37,6 +39,8 @@ import rv.util.WindowResizeListener;
  */
 public class Bloom implements GLDisposable, WindowResizeListener
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 
 	private ShaderProgram luminosityShader;
@@ -72,7 +76,6 @@ public class Bloom implements GLDisposable, WindowResizeListener
 	{
 		luminosityShader = cm.loadShader(gl, "luminosity");
 		if (luminosityShader == null) {
-			System.err.println("Bloom: could not compile luminosity shader.");
 			abortInit(gl, "could not compile luminosity shader", config);
 			return false;
 		}
@@ -111,7 +114,7 @@ public class Bloom implements GLDisposable, WindowResizeListener
 
 	private void abortInit(GL2 gl, String error, Config.Graphics config)
 	{
-		System.err.println("Bloom: " + error);
+		LOGGER.error("Bloom: " + error);
 		dispose(gl);
 		config.setUseBloom(false);
 	}

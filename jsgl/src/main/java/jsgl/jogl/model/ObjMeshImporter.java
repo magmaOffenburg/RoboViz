@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import jsgl.math.BoundingBox;
 import jsgl.math.vector.Vec3f;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Imports OBJ model as a standard Mesh object. Resources can be loaded from
@@ -36,6 +38,8 @@ import jsgl.math.vector.Vec3f;
  */
 public class ObjMeshImporter
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	// Locations where files may be found. If classLoader is set, the files
 	// are loaded from the class loader; otherwise, files are located on disk
 	private String materialPath;
@@ -233,14 +237,14 @@ public class ObjMeshImporter
 			try {
 				br = new BufferedReader(new FileReader(libFile));
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				LOGGER.error("File not found", e);
 			}
 		}
 
 		try {
 			materialLib.load(br, texturePath, classLoader);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to load material library", e);
 		}
 	}
 

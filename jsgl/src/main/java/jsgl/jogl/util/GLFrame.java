@@ -24,6 +24,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.*;
 import java.awt.event.*;
 import jsgl.jogl.view.Viewport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract class that creates an AWT frame with an OpenGL canvas that can be
@@ -34,6 +36,8 @@ import jsgl.jogl.view.Viewport;
  */
 public abstract class GLFrame implements GLEventListener
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	// utility classes
 	public final GLUT glut = new GLUT();
 	public final GLU glu = new GLU();
@@ -146,7 +150,7 @@ public abstract class GLFrame implements GLEventListener
 			gDevice.setFullScreenWindow(frame);
 			fullScreen = true;
 		} catch (Exception e) {
-			System.err.println("Attemping full screen: " + e.getMessage());
+			LOGGER.error("Error while attempting full screen", e);
 			gDevice.setFullScreenWindow(null);
 		}
 	}

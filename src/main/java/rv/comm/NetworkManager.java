@@ -17,6 +17,8 @@
 package rv.comm;
 
 import java.net.SocketException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.Main;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
@@ -30,6 +32,8 @@ import rv.comm.rcssserver.ServerComm;
  */
 public class NetworkManager
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private DrawComm agentComm = null;
 	private ServerComm serverComm;
 
@@ -48,7 +52,7 @@ public class NetworkManager
 		try {
 			agentComm = new DrawComm(Networking.INSTANCE.getListenPort());
 		} catch (SocketException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to open draw communation", e);
 		}
 		serverComm = new ServerComm(Renderer.Companion.getWorld(), Main.Companion.getMode());
 		if (agentComm != null) {

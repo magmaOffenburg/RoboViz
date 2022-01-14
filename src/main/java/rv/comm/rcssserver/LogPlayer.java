@@ -24,6 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import jsgl.math.Maths;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config.General;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.rcssserver.ILogfileReader.LogfileListener;
@@ -45,6 +47,8 @@ public class LogPlayer implements LogfileListener
 
 		void logfileChanged();
 	}
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	/** the $monitorLoggerStep value from spark.rb */
 	private static float SECONDS_PER_FRAME = 0.2f;
@@ -86,7 +90,7 @@ public class LogPlayer implements LogfileListener
 		openLogfile(file);
 
 		if (!logfile.isValid()) {
-			System.out.println("Logfile could not be loaded.");
+			LOGGER.error("Logfile could not be loaded.");
 			return;
 		}
 
@@ -387,7 +391,7 @@ public class LogPlayer implements LogfileListener
 			for (StateChangeListener l : listeners)
 				l.logfileChanged();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to open log file", e);
 		}
 	}
 

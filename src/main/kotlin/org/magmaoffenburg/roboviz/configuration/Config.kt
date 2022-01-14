@@ -30,7 +30,7 @@ class Config(args: Array<String>) {
         try {
             read()
         } catch (ex: Exception) {
-            System.err.println("Error reading parsed values. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.")
+            logger.error("Error reading parsed values. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.")
         }
     }
 

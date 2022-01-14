@@ -28,6 +28,8 @@ import jsgl.jogl.light.DirLight;
 import jsgl.math.Gaussian;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import rv.comm.drawing.Drawings;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
@@ -85,6 +87,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		}
 	}
 
+	private static final Logger LOGGER = LogManager.getLogger();
 	private final static int TEX_FORMAT = GL2.GL_RG32F;
 
 	private ContentManager content;
@@ -149,7 +152,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		fbo.unbind(gl);
 
 		if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
-			System.out.println("ERROR creating shadow FBO - disabling shadows");
+			LOGGER.error("Error creating shadow FBO - disabling shadows");
 			fbo.dispose(gl);
 			fbo = null;
 		}
@@ -175,7 +178,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		fbo.unbind(gl);
 
 		if (fboStatus != GL.GL_FRAMEBUFFER_COMPLETE) {
-			System.out.println("ERROR creating blur FBO - disabling shadows");
+			LOGGER.error("Error creating blur FBO - disabling shadows");
 			fbo.dispose(gl);
 			fbo = null;
 		}
@@ -185,7 +188,7 @@ public class ShadowMapRenderer implements SceneRenderer
 
 	private boolean abortInit(GL2 gl, String error, Config.Graphics config)
 	{
-		System.err.println("Shadow Map: " + error);
+		LOGGER.error("Shadow Map: " + error);
 		dispose(gl);
 		config.setUseShadows(false);
 		return false;

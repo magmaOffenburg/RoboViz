@@ -18,6 +18,8 @@ package jsgl.jogl;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A compiled and linked set of vertex and fragment shaders that can be enabled
@@ -27,6 +29,8 @@ import com.jogamp.opengl.GL2;
  */
 public class ShaderProgram implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed;
 	private int id;
 	private Shader vShader;
@@ -127,7 +131,7 @@ public class ShaderProgram implements GLDisposable
 	public void finalize()
 	{
 		if (!disposed)
-			System.err.printf("WARNING: ShaderProgram %d was not disposed!\n", id);
+			LOGGER.warn("ShaderProgram {} was not disposed!", id);
 	}
 
 	public static boolean isSupported(GLInfo info)

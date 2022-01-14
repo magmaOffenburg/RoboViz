@@ -11,8 +11,10 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.table.DefaultTableModel
+import org.apache.logging.log4j.kotlin.logger
 
 class GeneralPanel: JPanel() {
+    private val logger = logger()
 
     // log files
     private val logfilesLabel = JLabel("Logfiles")
@@ -166,9 +168,9 @@ class GeneralPanel: JPanel() {
                 TeamColors.byTeamNames[key] = color
             }
 
-            println("new team colors:")
+            logger.info("New team colors:")
             TeamColors.byTeamNames.forEach {
-                println("${it.key} = ${it.value}")
+                logger.info("${it.key} = ${it.value}")
             }
         }
         addColorButton.addActionListener {

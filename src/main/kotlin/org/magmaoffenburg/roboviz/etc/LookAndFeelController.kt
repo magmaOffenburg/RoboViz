@@ -10,8 +10,10 @@ import com.github.weisj.darklaf.theme.SolarizedLightTheme
 import java.util.logging.Level
 import javax.swing.UIManager
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
+import org.apache.logging.log4j.kotlin.logger
 
 object LookAndFeelController {
+    private val logger = logger()
 
     fun setLookAndFeel(lookAndFeel: String) {
         LafManager.setLogLevel(Level.WARNING)
@@ -44,7 +46,7 @@ object LookAndFeelController {
             }
 
         } catch (ex: Exception) {
-            System.err.println("Error while setting Look and Feel")
+            logger.error("Error while setting Look and Feel", ex)
         }
     }
 

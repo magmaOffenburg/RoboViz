@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Model
 {
-	private static final Logger LOGGER = LogManager.getLogger(Model.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private Mesh mesh;
 	private boolean loaded = false;

@@ -17,6 +17,8 @@
 package rv.comm.rcssserver.scenegraph;
 
 import jsgl.math.vector.Matrix;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.comm.rcssserver.SExp;
 
 /**
@@ -27,6 +29,8 @@ import rv.comm.rcssserver.SExp;
  */
 public class TransformNode extends Node
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/** Abbreviation declaring this node type in an s-expression */
 	public static final String EXP_ABRV = "TRF";
 
@@ -50,7 +54,7 @@ public class TransformNode extends Node
 				try {
 					a[i] = Double.parseDouble(atoms[i + 1]);
 				} catch (NumberFormatException e) {
-					e.printStackTrace();
+					LOGGER.error("Error setting matrix", e);
 					// ignore nan values from a server bug (see https://gitlab.com/robocup-sim/SimSpark/issues/5)
 				}
 			}

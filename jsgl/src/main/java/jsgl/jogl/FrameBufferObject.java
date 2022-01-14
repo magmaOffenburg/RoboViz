@@ -22,6 +22,8 @@ import com.jogamp.opengl.GL2;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An off-screen buffer that can be used for render-to-texture purposes. To use
@@ -33,6 +35,8 @@ import java.util.List;
  */
 public class FrameBufferObject implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 	private int id;
 	private Texture2D depthTexture;
@@ -108,7 +112,7 @@ public class FrameBufferObject implements GLDisposable
 		int status = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
 		gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0);
 		if (status != GL.GL_FRAMEBUFFER_COMPLETE) {
-			System.err.println("ERROR creating FBO - releasing resources");
+			LOGGER.error("ERROR creating FBO - releasing resources");
 			fbo.dispose(gl);
 			return null;
 		}
@@ -136,7 +140,7 @@ public class FrameBufferObject implements GLDisposable
 		int status = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
 		gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0);
 		if (status != GL.GL_FRAMEBUFFER_COMPLETE) {
-			System.err.println("ERROR creating FBO - releasing resources");
+			LOGGER.error("ERROR creating FBO - releasing resources");
 			fbo.dispose(gl);
 			return null;
 		}
@@ -162,7 +166,7 @@ public class FrameBufferObject implements GLDisposable
 		int status = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
 		gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0);
 		if (status != GL.GL_FRAMEBUFFER_COMPLETE) {
-			System.err.println("ERROR creating FBO - releasing resources");
+			LOGGER.error("ERROR creating FBO - releasing resources");
 			fbo.dispose(gl);
 			return null;
 		}
@@ -282,6 +286,6 @@ public class FrameBufferObject implements GLDisposable
 	public void finalize()
 	{
 		if (!disposed)
-			System.err.printf("WARNING: FBO %d was not disposed!\n", id);
+			LOGGER.warn("FBO {} was not disposed!", id);
 	}
 }

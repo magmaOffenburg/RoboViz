@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import jsgl.jogl.ShaderProgram;
 import jsgl.math.vector.Matrix;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.drawing.Drawings;
@@ -37,6 +39,8 @@ import rv.world.WorldModel;
  */
 public class PhongWorldRenderer implements SceneRenderer
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private ContentManager content;
 
 	private ShaderProgram shader;
@@ -50,7 +54,7 @@ public class PhongWorldRenderer implements SceneRenderer
 		shader = cm.loadShader(gl, "phong");
 		if (shader == null) {
 			graphics.setUsePhong(false);
-			System.err.println("Phong shader failed to load!");
+			LOGGER.error("Phong shader failed to load!");
 		}
 
 		if (shader == null) {

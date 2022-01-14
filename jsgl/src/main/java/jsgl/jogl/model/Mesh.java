@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import jsgl.jogl.GLDisposable;
 import jsgl.math.BoundingBox;
 import jsgl.math.vector.Matrix;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A mesh is a collection of mesh parts that form a model. The mesh contains all
@@ -32,6 +34,8 @@ import jsgl.math.vector.Matrix;
  */
 public class Mesh implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/**
 	 * Determines how mesh data is organized and which commands are issued to
 	 * render the mesh. The default mode is VBO, or vertex buffer objects, which
@@ -231,8 +235,8 @@ public class Mesh implements GLDisposable
 
 	public void printInfo()
 	{
-		System.out.println("Mesh Info:");
-		System.out.println("Num Verts: " + vertices.size());
+		LOGGER.info("Mesh Info:");
+		LOGGER.info("Num Verts: " + vertices.size());
 		for (MeshPart part : parts)
 			part.printInfo();
 	}
