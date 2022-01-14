@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import jsgl.jogl.Texture2D;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Material used for shading an OBJ model
@@ -33,6 +35,8 @@ import jsgl.jogl.Texture2D;
  */
 public class ObjMaterial extends MeshMaterial
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	protected float alpha = 1.0f;
 	protected int illum = 1;
 	protected Texture2D texture = null;
@@ -89,7 +93,7 @@ public class ObjMaterial extends MeshMaterial
 			if (img.getColorModel().hasAlpha())
 				containsTransparency = true;
 		} catch (IOException e) {
-			System.err.println("ERROR loading material texture: " + e.getMessage());
+			LOGGER.error("Error loading material texture", e);
 		}
 	}
 

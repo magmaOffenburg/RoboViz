@@ -19,6 +19,8 @@ package jsgl.jogl.util;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUtessellatorCallback;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Used by GLU for tessellating polygons
@@ -29,6 +31,8 @@ import com.jogamp.opengl.glu.GLUtessellatorCallback;
  */
 public class TessCallback implements GLUtessellatorCallback
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private GL2 gl;
 	private GLU glu;
 
@@ -68,7 +72,7 @@ public class TessCallback implements GLUtessellatorCallback
 		String estring;
 
 		estring = glu.gluErrorString(errnum);
-		System.err.println("Tessellation Error: " + estring);
+		LOGGER.error("Tessellation Error: " + estring);
 		System.exit(0);
 	}
 

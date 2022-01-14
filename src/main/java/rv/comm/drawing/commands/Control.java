@@ -2,11 +2,15 @@ package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
 import jsgl.io.ByteUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.world.objects.Agent;
 
 public class Control extends Command
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final int AGENT_SELECT = 0;
 
 	private final Agent agent;
@@ -22,7 +26,7 @@ public class Control extends Command
 			agent = Command.readAgent(buf, Renderer.Companion.getWorld());
 			break;
 		default:
-			System.err.println("Unknown control : " + type);
+			LOGGER.warn("Unknown control : " + type);
 			agent = null;
 		}
 	}

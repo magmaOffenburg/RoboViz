@@ -22,6 +22,8 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL2GL3;
 import java.nio.Buffer;
 import java.nio.IntBuffer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A buffer used to store vertex and pixel data in video memory. Allows pixel
@@ -33,6 +35,8 @@ import java.nio.IntBuffer;
  */
 public class PixelBufferObject implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 	private int id;
 	private int target;
@@ -113,6 +117,6 @@ public class PixelBufferObject implements GLDisposable
 	public void finalize()
 	{
 		if (!disposed)
-			System.err.printf("WARNING: PBO %d was not disposed!\n", id);
+			LOGGER.warn("PBO {} was not disposed!", id);
 	}
 }

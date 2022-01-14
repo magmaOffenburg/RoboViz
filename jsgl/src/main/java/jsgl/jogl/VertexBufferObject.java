@@ -20,6 +20,8 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
 import java.nio.Buffer;
 import java.nio.IntBuffer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A buffer used to store vertex data (position, normal, color, etc.) in video
@@ -31,6 +33,8 @@ import java.nio.IntBuffer;
  */
 public class VertexBufferObject implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 	private int id;
 	private int target;
@@ -110,7 +114,7 @@ public class VertexBufferObject implements GLDisposable
 	public void finalize()
 	{
 		if (!disposed)
-			System.err.printf("WARNING: VBO %d was not disposed!\n", id);
+			LOGGER.warn("VBO {} was not disposed!", id);
 	}
 
 	@Override

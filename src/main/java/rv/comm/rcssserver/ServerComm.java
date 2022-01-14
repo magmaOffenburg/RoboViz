@@ -86,7 +86,7 @@ public class ServerComm implements DrawCommListener
 							if (logfileOutput != null)
 								writeToLogfile(message);
 						} catch (ParseException e) {
-							e.printStackTrace();
+							LOGGER.error("Unable to parse server message", e);
 						}
 					}
 				} while (message != null);
@@ -125,7 +125,7 @@ public class ServerComm implements DrawCommListener
 		void connectionChanged(ServerComm server);
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger(ServerComm.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 	private final List<ServerChangeListener> changeListeners = new CopyOnWriteArrayList<>();
 	private Timer autoConnectTimer;
 
@@ -215,11 +215,11 @@ public class ServerComm implements DrawCommListener
 		String s = Calendar.getInstance().getTime().toString();
 		s = s.replaceAll("[\\s:]+", "_");
 		File logFile = new File(logDirPath + String.format("/roboviz_log_%s.log", s));
-		System.out.println("Recording to new logfile: " + logFile.getPath());
+		LOGGER.info("Recording to new logfile: " + logFile.getPath());
 		try {
 			logfileOutput = new PrintWriter(new BufferedWriter(new FileWriter(logFile)));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to create new logfile", e);
 		}
 	}
 
@@ -262,8 +262,7 @@ public class ServerComm implements DrawCommListener
 			try {
 				in.close();
 			} catch (IOException e) {
-				System.err.println("Error: closing input stream with server" + e.getMessage());
-				e.printStackTrace();
+				LOGGER.error("Closing input stream with server", e);
 			}
 			out.close();
 
@@ -271,7 +270,7 @@ public class ServerComm implements DrawCommListener
 				if (socket != null)
 					socket.close();
 			} catch (IOException e) {
-				System.err.println("Error: closing input stream with server" + e.getMessage());
+				LOGGER.error("Error: closing input stream with server", e);
 			}
 
 			socket = null;

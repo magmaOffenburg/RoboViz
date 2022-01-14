@@ -25,6 +25,8 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import jsgl.jogl.GLDisposable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A mesh part is a collection of mesh faces with a shared material.
@@ -33,6 +35,8 @@ import jsgl.jogl.GLDisposable;
  */
 public class MeshPart implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private static final int USHORT_MAX = 65535;
 
 	protected MeshMaterial material;
@@ -155,8 +159,8 @@ public class MeshPart implements GLDisposable
 
 	public void printInfo()
 	{
-		System.out.println("Mesh Part");
-		System.out.println("  Material: " + material.name);
-		System.out.println(String.format("  Num. Faces %d (%d tris)", faces.size(), numTriangles));
+		LOGGER.info("Mesh Part");
+		LOGGER.info("  Material: " + material.name);
+		LOGGER.info(String.format("  Num. Faces %d (%d tris)", faces.size(), numTriangles));
 	}
 }

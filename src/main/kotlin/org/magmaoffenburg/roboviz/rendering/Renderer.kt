@@ -367,7 +367,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             if (!dir.exists()) dir.mkdir()
             ImageIO.write(screenshot, "png", file)
         } catch (e: IOException) {
-            e.printStackTrace()
+            logger.error("Unable to write screenshot", e)
         }
 
         screenshotOnRender = false

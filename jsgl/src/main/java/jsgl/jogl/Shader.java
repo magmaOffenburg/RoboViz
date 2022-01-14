@@ -30,6 +30,8 @@ import java.nio.CharBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Creates a compiled GLSL shader from a source code. Supports both OpenGL 2.0+
@@ -39,6 +41,8 @@ import java.util.ArrayList;
  */
 public class Shader implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 	private int id;
 	private String fileName;
@@ -116,7 +120,7 @@ public class Shader implements GLDisposable
 				src.add(currentLine + "\n");
 			in.close();
 		} catch (IOException e) {
-			System.out.printf("Error creating shader (%s): could not copy source.\n%s\n", fileName, e.getMessage());
+			LOGGER.error("Error creating shader ({}): could not copy source.\n{}", fileName, e.getMessage());
 		}
 
 		return src.toArray(new String[0]);
@@ -144,7 +148,7 @@ public class Shader implements GLDisposable
 			gl.glGetShaderInfoLog(id, infoLogLength, null, infoLog);
 			CharBuffer info = StandardCharsets.US_ASCII.decode(infoLog);
 
-			System.err.printf("Error compiling shader (%s):\n%s\n", file, info.toString());
+			LOGGER.error("Error compiling shader ({}):\n{}", file, info.toString());
 			return false;
 		}
 		return true;

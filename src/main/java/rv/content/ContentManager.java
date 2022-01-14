@@ -38,6 +38,8 @@ import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMaterialLibrary;
 import jsgl.jogl.model.ObjMeshImporter;
 import jsgl.math.vector.Vec3f;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.scenegraph.Node;
@@ -53,6 +55,8 @@ import rv.util.jogl.MaterialUtil;
  */
 public class ContentManager implements SceneGraphListener, GameState.GameStateChangeListener
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final String MODEL_ROOT = "models/";
 	public static final String TEXTURE_ROOT = "textures/";
 	public static final String MATERIAL_ROOT = "materials/";
@@ -196,7 +200,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		try {
 			naoMaterialLib.load(br, "textures/", cl);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to load Nao material library", e);
 		}
 
 		for (ObjMaterial m : naoMaterialLib.getMaterials())
@@ -212,14 +216,14 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 			img = ImageIO.read(getClass().getResourceAsStream("/textures/" + name));
 			return Texture2D.loadTex(gl, img);
 		} catch (IOException | IllegalArgumentException e) {
-			System.err.println("Error loading texture: " + name);
+			LOGGER.error("Error loading texture: " + name, e);
 		}
 		return null;
 	}
 
 	public Mesh loadMesh(String name)
 	{
-		// System.out.println("Loading " + name);
+		LOGGER.debug("Loading " + name);
 		String modelPath = "models/";
 		String texturePath = "textures/";
 		String materialPath = "materials/";
@@ -232,7 +236,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		try {
 			mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to load mesh", e);
 			return null;
 		}
 
@@ -346,8 +350,8 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 			// colorGoalie = color.darker();
 			colorGoalie = new Color(r + r * -factor, g + g * -factor, b + b * -factor);
 		}
-		// System.out.println(color);
-		// System.out.println(colorGoalie);
+		LOGGER.debug("New team color for {}: {}", teamName, color);
+		LOGGER.debug("New goalie color for {}: {}", teamName, colorGoalie);
 
 		MaterialUtil.setColor(matGoalie, colorGoalie);
 

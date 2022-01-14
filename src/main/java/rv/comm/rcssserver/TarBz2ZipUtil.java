@@ -47,6 +47,8 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -54,6 +56,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
  */
 public class TarBz2ZipUtil
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/**
 	 * Creates the reader used for sequential reading
 	 *
@@ -85,7 +89,7 @@ public class TarBz2ZipUtil
 	{
 		try (ZipFile zipFile = new ZipFile(file)) {
 			if (zipFile.size() != 1) {
-				System.out.println("Only support single entry zip files");
+				LOGGER.error("Only support single entry zip files");
 				zipFile.close();
 				return null;
 			} else {
@@ -95,7 +99,7 @@ public class TarBz2ZipUtil
 
 		} catch (IOException e) {
 			// not a zip file
-			System.out.println("File has zip ending, but seems to be not zip");
+			LOGGER.error("File has zip ending, but seems to be not zip");
 			return null;
 		}
 	}
@@ -121,7 +125,7 @@ public class TarBz2ZipUtil
 				}
 			}
 			if (entry == null) {
-				System.out.println("tar file does not contain logfile");
+				LOGGER.error("tar file does not contain logfile");
 				return null;
 			}
 
@@ -131,7 +135,7 @@ public class TarBz2ZipUtil
 			}
 
 			if (entry == null) {
-				System.out.println("tar file does not contain logfile");
+				LOGGER.error("tar file does not contain logfile");
 				return null;
 			}
 
@@ -140,10 +144,9 @@ public class TarBz2ZipUtil
 
 		} catch (IOException e) {
 			// not a bz2 file
-			System.out.println("File has bz2 ending, but seems to be not bz2");
-			e.printStackTrace();
+			LOGGER.error("File has bz2 ending, but seems to be not bz2", e);
 		} catch (CompressorException e) {
-			e.printStackTrace();
+			LOGGER.error("Error decompressing data", e);
 		}
 		return null;
 	}
@@ -157,7 +160,7 @@ public class TarBz2ZipUtil
 			return new InputStreamReader(bz2InputStream);
 
 		} catch (IOException | CompressorException e) {
-			e.printStackTrace();
+			LOGGER.error("Error getting compressed input stream", e);
 		}
 		return null;
 	}
@@ -198,7 +201,7 @@ public class TarBz2ZipUtil
 			return new OutputStreamWriter(bz2Stream);
 
 		} catch (IOException | CompressorException e) {
-			e.printStackTrace();
+			LOGGER.error("Error getting compressing writer", e);
 		}
 		return null;
 	}

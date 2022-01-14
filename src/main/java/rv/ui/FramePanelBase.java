@@ -8,10 +8,14 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.util.swing.SwingUtil;
 
 public class FramePanelBase
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	protected final JFrame frame;
 
 	public void showFrame(JFrame parent)
@@ -33,7 +37,7 @@ public class FramePanelBase
 		try {
 			frame.setIconImage(ImageIO.read(FramePanelBase.class.getResourceAsStream("/images/icon.png")));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to set icon image", e);
 		}
 	}
 

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.comm.drawing.commands.Command;
 
 /**
@@ -32,6 +34,8 @@ import rv.comm.drawing.commands.Command;
  */
 public class Logfile implements ILogfileReader
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/** used for sequentially playing frames */
 	private BufferedReader br;
 
@@ -244,7 +248,7 @@ public class Logfile implements ILogfileReader
 					try {
 						drawCmdBytes[i] = Byte.parseByte(drawCmdByteValues[i].trim());
 					} catch (Exception e) {
-						System.out.println(e);
+						LOGGER.error("Error parsing byte of draw command", e);
 					}
 				}
 				ByteBuffer buf = ByteBuffer.wrap(drawCmdBytes);
@@ -257,7 +261,7 @@ public class Logfile implements ILogfileReader
 							cmd.execute();
 						}
 					} catch (Exception e) {
-						System.out.println(e);
+						LOGGER.error("Error while executing draw command", e);
 					}
 				}
 			}

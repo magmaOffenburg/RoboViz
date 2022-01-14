@@ -26,6 +26,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A texture object that can be applied to geometry using texture coordinates
@@ -34,6 +36,8 @@ import javax.imageio.ImageIO;
  */
 public class Texture2D implements GLDisposable
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean disposed = false;
 	private int id;
 	private int w;
@@ -226,7 +230,7 @@ public class Texture2D implements GLDisposable
 		try {
 			pixelData = readPixels(img, alpha);
 		} catch (InterruptedException e) {
-			System.out.println("Error buffering pixel data: " + e.getMessage());
+			LOGGER.error("Error buffering pixel data", e);
 			return null;
 		}
 
@@ -272,7 +276,7 @@ public class Texture2D implements GLDisposable
 		try {
 			pixelData = readPixels(img, alpha);
 		} catch (InterruptedException e) {
-			System.out.println("Error buffering pixel data: " + e.getMessage());
+			LOGGER.error("Error buffering pixel data", e);
 			return null;
 		}
 
@@ -301,7 +305,7 @@ public class Texture2D implements GLDisposable
 		try {
 			img = ImageIO.read(loader.getResourceAsStream(name));
 		} catch (IOException e) {
-			System.out.println("Error loading image: " + e.getMessage());
+			LOGGER.error("Error loading image", e);
 			return null;
 		}
 		return loadTexMipmaps(gl, glu, img);
@@ -313,7 +317,7 @@ public class Texture2D implements GLDisposable
 		try {
 			img = ImageIO.read(loader.getResourceAsStream(name));
 		} catch (IOException e) {
-			System.out.println("Error loading image: " + e.getMessage());
+			LOGGER.error("Error loading image", e);
 			return null;
 		}
 		return loadTex(gl, img);

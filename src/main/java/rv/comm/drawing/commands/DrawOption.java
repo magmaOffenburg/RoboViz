@@ -18,6 +18,8 @@ package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
 import jsgl.io.ByteUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.drawing.Drawings;
 
@@ -28,6 +30,8 @@ import rv.comm.drawing.Drawings;
  */
 public class DrawOption extends Command
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final int SWAP_BUFFERS = 0;
 
 	private final String setName;
@@ -44,7 +48,7 @@ public class DrawOption extends Command
 			setName = getString(buf);
 			break;
 		default:
-			System.err.println("Unknown draw option : " + type);
+			LOGGER.warn("Unknown draw option : " + type);
 			setName = null;
 		}
 	}

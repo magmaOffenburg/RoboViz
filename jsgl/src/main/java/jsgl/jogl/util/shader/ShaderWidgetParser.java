@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 import jsgl.jogl.Shader;
 import jsgl.jogl.Uniform;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Reads a shader file for custom UI widget comments for interacting with the
@@ -60,6 +62,8 @@ public class ShaderWidgetParser
 			this.add(slider);
 		}
 	}
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final String WIDGET_SEQ = "ui_widget:";
 
@@ -159,7 +163,7 @@ public class ShaderWidgetParser
 
 	private static SWCheckbox createCheckbox(UniformType uType, String uName, String widgetName)
 	{
-		System.out.println("new sw checkbox");
+		LOGGER.debug("new sw checkbox");
 		return new SWCheckbox(widgetName, uName);
 	}
 

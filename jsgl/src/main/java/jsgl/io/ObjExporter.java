@@ -17,6 +17,8 @@
 package jsgl.io;
 
 import java.io.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Creates Wavefront .obj files from 3D geometry data
@@ -25,6 +27,8 @@ import java.io.*;
  */
 public class ObjExporter
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/** Geometry data to be written to translated and written to file */
 	public static class Data
 	{
@@ -106,14 +110,13 @@ public class ObjExporter
 				writeToFile(out);
 				out.close();
 			} catch (IOException e) {
-				System.err.println("Error writing obj file: " + e.getMessage());
-				e.printStackTrace();
+				LOGGER.error("Error writing obj file", e);
 			}
 		}
 
 		private void writeToFile(BufferedWriter out) throws IOException
 		{
-			System.out.println("Writing .obj file...");
+			LOGGER.info("Writing .obj file...");
 
 			boolean useTexCoords = data.texCoords != null;
 			boolean useNormals = data.normals != null;
@@ -137,7 +140,7 @@ public class ObjExporter
 			for (int i = 0; i < data.faces.length; i++)
 				writeFace(data.faces[i], useTexCoords, useNormals, data.faceType, out);
 
-			System.out.println(file.getName() + " successfully written.");
+			LOGGER.info(file.getName() + " successfully written.");
 		}
 	}
 
