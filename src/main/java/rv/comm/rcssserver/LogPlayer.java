@@ -243,7 +243,7 @@ public class LogPlayer implements LogfileListener
 	private int getGoalStepThresholdFrames()
 	{
 		float fps = 1 / SECONDS_PER_FRAME;
-		return (int) Math.round(fps * GOAL_STEP_THRESHOLD_SECONDS);
+		return Math.round(fps * GOAL_STEP_THRESHOLD_SECONDS);
 	}
 
 	public boolean hasPreviousGoal()
@@ -487,7 +487,7 @@ public class LogPlayer implements LogfileListener
 						else
 							nextFrame--;
 					} else {
-						Thread.sleep((int) Math.round(msPerFrame));
+						Thread.sleep(Math.round(msPerFrame));
 					}
 
 					if (desiredFrame != null) {

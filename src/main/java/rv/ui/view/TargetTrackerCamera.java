@@ -100,8 +100,8 @@ public class TargetTrackerCamera
 		// Amount that screen velocity is multiplied by when determining scale
 		float VEL_SCALE_FACTOR = 0.003f;
 
-		double screenVel = Math.sqrt(Math.pow((double) (lastScreenPos.x - screenPos.x), 2.0) +
-									 Math.pow((double) (lastScreenPos.y - screenPos.y), 2.0));
+		double screenVel =
+				Math.sqrt(Math.pow(lastScreenPos.x - screenPos.x, 2.0) + Math.pow(lastScreenPos.y - screenPos.y, 2.0));
 		scale = (float) Math.max(
 				Math.min(1 - screenVel * VEL_SCALE_FACTOR, scale), 1 - (0.02f * playbackSpeed * VEL_SCALE_FACTOR_MAX));
 		lastScreenPos = screenPos;
