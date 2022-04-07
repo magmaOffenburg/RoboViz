@@ -1,3 +1,8 @@
+1.8.1 (April 7, 2022)
+------------------------------
+* fixed crashing RoboViz due to an invalid regex ([#52](https://github.com/magmaOffenburg/RoboViz/issues/52))
+* migrated logging to Log4j ([#124](https://github.com/magmaOffenburg/RoboViz/pull/124))
+
 1.8.0 (December 30, 2021)
 ------------------------------
 * included the [darklaf](https://github.com/weisJ/darklaf) library for better look and feels ([#110](https://github.com/magmaOffenburg/RoboViz/pull/110))
