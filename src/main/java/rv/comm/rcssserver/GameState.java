@@ -403,7 +403,7 @@ public class GameState implements ServerChangeListener
 
 	private boolean isTimeStopped()
 	{
-		return "BeforeKickOff".equals(playMode) || "GameOver".equals(playMode);
+		return BEFORE_KICK_OFF.equals(playMode) || GAME_OVER.equals(playMode);
 	}
 
 	private void removeExpiredFouls()
