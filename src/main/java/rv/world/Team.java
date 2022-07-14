@@ -80,7 +80,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 		return agents;
 	}
 
-	public String getName()
+	public String getDisplayName()
 	{
 		return (name != null) ? name : ((id == LEFT) ? Config.defaultLeftTeamName : Config.defaultRightTeamName);
 	}

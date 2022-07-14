@@ -169,7 +169,7 @@ public abstract class ViewerScreenBase
 
 	private String formatNumTeamPlayers(Team team)
 	{
-		return String.format("%s : %d", team.getName(), team.getAgents().size());
+		return String.format("%s : %d", team.getDisplayName(), team.getAgents().size());
 	}
 
 	private void renderAgentOverheads(Team team)
