@@ -174,8 +174,8 @@ class Config(args: Array<String>) {
         parser.getValuePairList("Team Color").forEach {
             TeamColors.byTeamNames[it.first] = Color(Integer.decode(it.second))
         }
-        TeamColors.byTeamNames.putIfAbsent(Config.defaultLeftTeamName, TeamColors.defaultLeft)
-        TeamColors.byTeamNames.putIfAbsent(Config.defaultRightTeamName, TeamColors.defaultRight)
+        TeamColors.byTeamNames.putIfAbsent(defaultLeftTeamName, TeamColors.defaultLeft)
+        TeamColors.byTeamNames.putIfAbsent(defaultRightTeamName, TeamColors.defaultRight)
 
         // Args
         Networking.currentHost = parser.argsList.firstOrNull {
