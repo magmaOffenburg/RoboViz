@@ -25,6 +25,7 @@ import jsgl.jogl.light.DirLight;
 import jsgl.jogl.light.LightModel;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
+import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import org.magmaoffenburg.roboviz.rendering.CameraController;
 import org.magmaoffenburg.roboviz.util.DataTypes;
@@ -222,10 +223,12 @@ public class WorldModel
 		}
 
 		TeamColors teamColors = TeamColors.INSTANCE;
-		leftTeam = new Team(teamColors.getByTeamNames().getOrDefault("<Left>", teamColors.getDefaultLeft()), Team.LEFT,
-				cm, teamColors);
+		leftTeam = new Team(
+				teamColors.getByTeamNames().getOrDefault(Config.defaultLeftTeamName, teamColors.getDefaultLeft()),
+				Team.LEFT, cm, teamColors);
 		gameState.addListener(leftTeam);
-		rightTeam = new Team(teamColors.getByTeamNames().getOrDefault("<Right>", teamColors.getDefaultRight()),
+		rightTeam = new Team(
+				teamColors.getByTeamNames().getOrDefault(Config.defaultRightTeamName, teamColors.getDefaultRight()),
 				Team.RIGHT, cm, teamColors);
 		gameState.addListener(rightTeam);
 

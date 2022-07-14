@@ -19,6 +19,7 @@ package rv.comm.rcssserver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.magmaoffenburg.roboviz.configuration.Config;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.ui.screens.FoulListOverlay;
 import rv.world.WorldModel;
@@ -295,7 +296,7 @@ public class GameState implements ServerChangeListener
 	public String getUIStringTeamLeft()
 	{
 		if (teamLeft == null)
-			return "<Left>";
+			return Config.defaultLeftTeamName;
 		return teamLeft;
 	}
 
@@ -307,7 +308,7 @@ public class GameState implements ServerChangeListener
 	public String getUIStringTeamRight()
 	{
 		if (teamRight == null)
-			return "<Right>";
+			return Config.defaultRightTeamName;
 		return teamRight;
 	}
 

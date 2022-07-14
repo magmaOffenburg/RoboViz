@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.imageio.ImageIO;
 import jsgl.jogl.GLInfo;
 import jsgl.jogl.ShaderProgram;
@@ -302,27 +301,19 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 	public void gsPlayStateChanged(GameState gs)
 	{
 		// if team name changed, update the materials
-		String teamNameLeft = gs.getTeamLeft();
-		if (!Objects.equals(teamNameLeft, this.teamNameLeft)) {
-			updateTeamColor(
-					teamNameLeft, "matLeft", config.getByTeamNames().getOrDefault("<Left>", config.getDefaultLeft()));
-			this.teamNameLeft = teamNameLeft;
-		}
-		String teamNameRight = gs.getTeamRight();
-		if (!Objects.equals(teamNameRight, this.teamNameRight)) {
-			updateTeamColor(teamNameRight, "matRight",
-					config.getByTeamNames().getOrDefault("<Right>", config.getDefaultRight()));
-			this.teamNameRight = teamNameRight;
-		}
+		this.teamNameLeft = gs.getTeamLeft();
+		this.teamNameRight = gs.getTeamRight();
+
+		Color colorLeft = config.getLeftColor(this.teamNameLeft, this.teamNameRight);
+		Color colorRight = config.getRightColor(this.teamNameLeft, this.teamNameRight);
+
+		updateTeamColor(this.teamNameLeft, "matLeft", colorLeft);
+		updateTeamColor(this.teamNameRight, "matRight", colorRight);
 	}
 
-	private void updateTeamColor(String teamName, String materialName, Color defaultColor)
+	private void updateTeamColor(String teamName, String materialName, Color color)
 	{
 		ObjMaterial mat = getMaterial(materialName);
-		Color color = config.getByTeamNames().get(teamName);
-		if (color == null) {
-			color = defaultColor;
-		}
 		MaterialUtil.setColor(mat, color);
 
 		// For goalie

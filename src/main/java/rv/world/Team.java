@@ -18,9 +18,9 @@ package rv.world;
 
 import java.awt.Color;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import jsgl.jogl.model.ObjMaterial;
+import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
@@ -46,9 +46,9 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 
 	private final TeamColors config;
 	private final ContentManager content;
-	private final Color defaultColor;
 	private final int id;
 	private String name;
+	private String otherTeamName;
 	private final List<Agent> agents;
 	private final ObjMaterial colorMaterial;
 	private Color color;
@@ -82,7 +82,7 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 
 	public String getName()
 	{
-		return name;
+		return (name != null) ? name : ((id == LEFT) ? Config.defaultLeftTeamName : Config.defaultRightTeamName);
 	}
 
 	/**
@@ -93,20 +93,6 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 		return id;
 	}
 
-	public void setName(String name)
-	{
-		if (Objects.equals(this.name, name))
-			return;
-
-		this.name = name;
-
-		Color color = config.getByTeamNames().get(name);
-		if (color == null) {
-			color = defaultColor;
-		}
-		setColor(color);
-	}
-
 	public void setScore(int score)
 	{
 		this.score = score;
@@ -114,15 +100,12 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 
 	public Team(Color defaultColor, int id, ContentManager content, TeamColors config)
 	{
-		this.defaultColor = defaultColor;
 		this.id = id;
 		this.content = content;
 		this.config = config;
 		agents = new CopyOnWriteArrayList<>();
 
-		name = (id == LEFT) ? "<Left>" : "<Right>";
-
-		colorMaterial = new ObjMaterial(name);
+		colorMaterial = new ObjMaterial((id == LEFT) ? Config.defaultLeftTeamName : Config.defaultRightTeamName);
 		setColor(defaultColor);
 		colorMaterial.setShininess(96);
 		colorMaterial.setSpecular(1, 1, 1, 1);
@@ -202,12 +185,16 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 	@Override
 	public void gsPlayStateChanged(GameState gs)
 	{
-		// update team name & score
+		// update team color, name & score
 		if (id == LEFT) {
-			setName(gs.getTeamLeft() == null ? "<Left>" : gs.getTeamLeft());
+			this.name = gs.getTeamLeft();
+			this.otherTeamName = gs.getTeamRight();
+			setColor(config.getLeftColor(name, otherTeamName));
 			score = gs.getScoreLeft();
 		} else {
-			setName(gs.getTeamRight() == null ? "<Right>" : gs.getTeamRight());
+			this.name = gs.getTeamRight();
+			this.otherTeamName = gs.getTeamLeft();
+			setColor(config.getRightColor(otherTeamName, name));
 			score = gs.getScoreRight();
 		}
 	}

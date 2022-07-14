@@ -91,6 +91,34 @@ class Config(args: Array<String>) {
         val byTeamNames = hashMapOf<String, Color>()
         val defaultLeft = Color(0x2626ff)
         val defaultRight = Color(0xff2626)
+
+        fun getLeftColor(teamNameLeft: String?, teamNameRight: String?) =
+            byTeamNames[teamNameLeft] ?: if (teamNameLeft != null && teamNameRight != null) {
+                getOrderedColor(teamNameLeft, teamNameRight, true)
+            } else {
+                byTeamNames.getOrDefault(defaultLeftTeamName, defaultLeft)
+            }
+
+        fun getRightColor(teamNameLeft: String?, teamNameRight: String?) =
+            byTeamNames[teamNameRight] ?: if (teamNameLeft != null && teamNameRight != null) {
+                getOrderedColor(teamNameLeft, teamNameRight, false)
+            } else {
+                byTeamNames.getOrDefault(defaultRightTeamName, defaultRight)
+            }
+
+        private fun getOrderedColor(leftTeam: String, rightTeam: String, left: Boolean): Color {
+            val switchColors = leftTeam < rightTeam
+            return if ((left && !switchColors) || (!left && switchColors)) {
+                byTeamNames.getOrDefault(defaultLeftTeamName, defaultLeft)
+            } else {
+                byTeamNames.getOrDefault(defaultRightTeamName, defaultRight)
+            }
+        }
+    }
+
+    companion object {
+        const val defaultLeftTeamName = "<Left>"
+        const val defaultRightTeamName = "<Right>"
     }
 
     /**
@@ -146,8 +174,8 @@ class Config(args: Array<String>) {
         parser.getValuePairList("Team Color").forEach {
             TeamColors.byTeamNames[it.first] = Color(Integer.decode(it.second))
         }
-        TeamColors.byTeamNames.putIfAbsent("<Left>", TeamColors.defaultLeft)
-        TeamColors.byTeamNames.putIfAbsent("<Right>", TeamColors.defaultRight)
+        TeamColors.byTeamNames.putIfAbsent(Config.defaultLeftTeamName, TeamColors.defaultLeft)
+        TeamColors.byTeamNames.putIfAbsent(Config.defaultRightTeamName, TeamColors.defaultRight)
 
         // Args
         Networking.currentHost = parser.argsList.firstOrNull {
