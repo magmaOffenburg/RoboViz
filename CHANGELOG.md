@@ -1,3 +1,7 @@
+1.8.2 (July 14, 2022)
+------------------------------
+* Assign default team color based on team name
+
 1.8.1 (April 7, 2022)
 ------------------------------
 * fixed crashing RoboViz due to an invalid regex ([#52](https://github.com/magmaOffenburg/RoboViz/issues/52))
