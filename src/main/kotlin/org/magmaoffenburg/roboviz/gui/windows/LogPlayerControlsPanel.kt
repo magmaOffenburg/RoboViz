@@ -8,7 +8,6 @@ import org.magmaoffenburg.roboviz.util.SwingUtils
 import rv.comm.rcssserver.LogPlayer
 import java.awt.*
 import java.awt.image.FilteredImageSource
-import java.awt.image.ImageProducer
 import javax.imageio.ImageIO
 import javax.swing.*
 
