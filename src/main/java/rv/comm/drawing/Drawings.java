@@ -61,7 +61,8 @@ public class Drawings
 	}
 
 	/** Interface for listeners of set list change events */
-	public interface ShapeListListener extends EventListener {
+	public interface ShapeListListener extends EventListener
+	{
 		void setListChanged(SetListChangeEvent evt);
 	}
 
@@ -121,8 +122,7 @@ public class Drawings
 			// shape has a set name that hasn't been seen, so create a new set
 			BufferedSet<Annotation> newSet = new BufferedSet<>(setName);
 			newSet.put(annotation);
-			synchronized (this)
-			{
+			synchronized (this) {
 				annotationSets.add(newSet);
 			}
 			annotationSetListing.put(setName, newSet);
@@ -141,8 +141,7 @@ public class Drawings
 			// shape has a set name that hasn't been seen, so create a new set
 			BufferedSet<Shape> newSet = new BufferedSet<>(setName);
 			newSet.put(shape);
-			synchronized (this)
-			{
+			synchronized (this) {
 				shapeSets.add(newSet);
 			}
 			shapeSetListing.put(setName, newSet);

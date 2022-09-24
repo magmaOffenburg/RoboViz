@@ -28,7 +28,8 @@ import jsgl.math.vector.Vec4f;
  */
 public class BoundingFrustum
 {
-	public enum ContainmentType {
+	public enum ContainmentType
+	{
 		Disjoint,
 		Contains,
 		Intersects,

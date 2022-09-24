@@ -17,7 +17,8 @@
 package jsgl.math;
 
 /** A set of n doubles */
-public interface Tupled {
+public interface Tupled
+{
 	/** Returns the numbers of elements in the tuple */
 	int getN();
 

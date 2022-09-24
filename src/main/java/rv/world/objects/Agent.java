@@ -40,7 +40,8 @@ import rv.world.WorldModel;
  */
 public class Agent implements ISelectable
 {
-	public interface ChangeListener {
+	public interface ChangeListener
+	{
 		void transformChanged(Matrix headTransform);
 	}
 

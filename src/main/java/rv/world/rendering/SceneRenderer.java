@@ -28,7 +28,8 @@ import rv.world.WorldModel;
  *
  * @author justin
  */
-public interface SceneRenderer {
+public interface SceneRenderer
+{
 	/**
 	 * Initializes renderer to be prepared for rendering; must be called once before render method.
 	 *

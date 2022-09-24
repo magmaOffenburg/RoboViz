@@ -33,7 +33,8 @@ import rv.world.WorldModel;
 @SuppressWarnings("unused")
 public class GameState implements ServerChangeListener
 {
-	public interface GameStateChangeListener {
+	public interface GameStateChangeListener
+	{
 		/** Called when measurements (field dimensions, etc.) or rules change */
 		void gsMeasuresAndRulesChanged(GameState gs);
 
@@ -44,7 +45,8 @@ public class GameState implements ServerChangeListener
 		void gsTimeChanged(GameState gs);
 	}
 
-	public interface ServerMessageReceivedListener {
+	public interface ServerMessageReceivedListener
+	{
 		/** Called when a valid message from the server is received */
 		void gsServerMessageReceived(GameState gs);
 
@@ -52,7 +54,8 @@ public class GameState implements ServerChangeListener
 		void gsServerMessageProcessed(GameState gs);
 	}
 
-	public enum FoulType {
+	public enum FoulType
+	{
 		CROWDING(0, "crowding"),
 		TOUCHING(1, "touching"),
 		ILLEGAL_DEFENCE(2, "illegal defence"),

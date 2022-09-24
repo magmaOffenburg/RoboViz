@@ -24,7 +24,8 @@ public class LogAnalyzerThread extends Thread
 		}
 	}
 
-	public interface ResultCallback {
+	public interface ResultCallback
+	{
 		void stepSizeFound(float stepSize, int numFrames);
 
 		void goalFound(Goal goal);

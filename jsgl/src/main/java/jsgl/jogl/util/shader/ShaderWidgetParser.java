@@ -73,13 +73,22 @@ public class ShaderWidgetParser
 	// ui_widget(checkbox, "bool useLighting")
 	// ui_widget(slider, "float specExponent", "Specular Exponent", 0.0, 128.0);
 
-	private enum WidgetType {
+	private enum WidgetType
+	{
 		SLIDER,
 		VEC3_SLIDER,
 		CHECKBOX,
 	}
 
-	private enum UniformType { BOOL, INT, FLOAT, VEC2, VEC3, VEC4 }
+	private enum UniformType
+	{
+		BOOL,
+		INT,
+		FLOAT,
+		VEC2,
+		VEC3,
+		VEC4
+	}
 
 	public static ArrayList<ShaderWidget> parse(Shader s)
 	{

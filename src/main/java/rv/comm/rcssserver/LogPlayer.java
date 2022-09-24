@@ -42,7 +42,8 @@ import rv.world.WorldModel;
  */
 public class LogPlayer implements LogfileListener
 {
-	public interface StateChangeListener {
+	public interface StateChangeListener
+	{
 		void playerStateChanged(boolean playing);
 
 		void logfileChanged();

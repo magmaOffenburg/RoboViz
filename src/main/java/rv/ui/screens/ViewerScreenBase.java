@@ -50,7 +50,12 @@ public abstract class ViewerScreenBase
 		IDS
 	}
 
-	public enum RobotVantageType { NONE, FIRST_PERSON, THIRD_PERSON }
+	public enum RobotVantageType
+	{
+		NONE,
+		FIRST_PERSON,
+		THIRD_PERSON
+	}
 
 	enum TrackerCameraType
 	{

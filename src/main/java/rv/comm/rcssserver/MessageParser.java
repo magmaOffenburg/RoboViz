@@ -44,8 +44,7 @@ public class MessageParser
 
 	public void parse(String message) throws ParseException
 	{
-		synchronized (world)
-		{
+		synchronized (world) {
 			ArrayList<SExp> expressions = SExp.parse(message);
 
 			world.getGameState().parse(expressions.get(0), world);

@@ -28,7 +28,8 @@ import jsgl.jogl.view.Viewport;
  *
  * @author Justin Stoecker
  */
-public interface WindowProgram extends GLEventListener {
+public interface WindowProgram extends GLEventListener
+{
 	GLU getGLU();
 	GLUT getGLUT();
 	GLAutoDrawable getGLDrawable();

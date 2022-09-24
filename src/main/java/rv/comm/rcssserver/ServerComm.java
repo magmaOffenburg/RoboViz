@@ -121,7 +121,8 @@ public class ServerComm implements DrawCommListener
 		}
 	}
 
-	public interface ServerChangeListener {
+	public interface ServerChangeListener
+	{
 		void connectionChanged(ServerComm server);
 	}
 
@@ -170,8 +171,7 @@ public class ServerComm implements DrawCommListener
 
 	private void writeToLogfile(String msg)
 	{
-		synchronized (this)
-		{
+		synchronized (this) {
 			logfileOutput.write(drawCommands);
 			drawCommands = "";
 		}
@@ -374,8 +374,7 @@ public class ServerComm implements DrawCommListener
 	public void drawCommandReceived(byte[] cmd)
 	{
 		if (logfileOutput != null) {
-			synchronized (this)
-			{
+			synchronized (this) {
 				drawCommands += Arrays.toString(cmd);
 			}
 		}

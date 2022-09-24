@@ -1,5 +1,6 @@
 package rv.util;
 
-public interface WindowResizeListener {
+public interface WindowResizeListener
+{
 	void windowResized(WindowResizeEvent event);
 }

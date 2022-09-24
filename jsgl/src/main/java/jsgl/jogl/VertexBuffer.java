@@ -34,7 +34,8 @@ import jsgl.jogl.verts.Vertex;
 public class VertexBuffer implements GLDisposable
 {
 	/** Hint for how the buffer's memory should be allocated */
-	public enum BufferUsage {
+	public enum BufferUsage
+	{
 		/** GL_STATIC_DRAW: no changes to buffered data */
 		STATIC(GL.GL_STATIC_DRAW),
 

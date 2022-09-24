@@ -3,8 +3,10 @@ package rv.comm.rcssserver;
 import java.io.File;
 import java.io.IOException;
 
-public interface ILogfileReader {
-	interface LogfileListener {
+public interface ILogfileReader
+{
+	interface LogfileListener
+	{
 		void haveDrawCmds();
 	}
 

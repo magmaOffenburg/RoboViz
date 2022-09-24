@@ -46,7 +46,8 @@ import rv.world.objects.SkyBox;
  */
 public class WorldModel
 {
-	public interface SelectionChangeListener {
+	public interface SelectionChangeListener
+	{
 		void selectionChanged(ISelectable newSelection);
 	}
 

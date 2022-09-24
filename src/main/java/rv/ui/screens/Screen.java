@@ -29,7 +29,8 @@ import rv.util.WindowResizeListener;
  *
  * @author justin
  */
-public interface Screen extends WindowResizeListener {
+public interface Screen extends WindowResizeListener
+{
 	void setEnabled(GLCanvas canvas, boolean enabled);
 
 	void render(GL2 gl, GLU glu, GLUT glut, Viewport vp);

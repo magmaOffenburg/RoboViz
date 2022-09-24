@@ -33,7 +33,10 @@ public class ObjExporter
 	public static class Data
 	{
 		/** Primitive shape type vertices are associated with */
-		public enum FaceType { TriangleList }
+		public enum FaceType
+		{
+			TriangleList
+		}
 
 		float[][] vertices;
 		float[][] normals;

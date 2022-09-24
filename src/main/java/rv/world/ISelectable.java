@@ -25,7 +25,8 @@ import jsgl.math.vector.Vec3f;
  *
  * @author Justin Stoecker
  */
-public interface ISelectable {
+public interface ISelectable
+{
 	Vec3f getPosition();
 
 	BoundingBox getBoundingBox();

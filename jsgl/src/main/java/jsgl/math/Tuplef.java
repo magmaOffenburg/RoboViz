@@ -17,7 +17,8 @@
 package jsgl.math;
 
 /** A set of n floats */
-public interface Tuplef {
+public interface Tuplef
+{
 	/** Returns the numbers of elements in the tuple */
 	int getN();
 

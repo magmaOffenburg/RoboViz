@@ -23,7 +23,8 @@ import com.jogamp.opengl.GL;
  *
  * @author Justin Stoecker
  */
-public interface MeshRenderer {
+public interface MeshRenderer
+{
 	public void init(GL gl, Mesh mesh);
 	public void setState(GL gl);
 	public void render(GL gl);

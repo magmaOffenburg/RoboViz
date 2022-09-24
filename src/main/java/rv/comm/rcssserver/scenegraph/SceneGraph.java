@@ -27,7 +27,8 @@ import rv.comm.rcssserver.SExp;
  */
 public class SceneGraph
 {
-	public interface SceneGraphListener {
+	public interface SceneGraphListener
+	{
 		void newSceneGraph(SceneGraph sg);
 
 		void updatedSceneGraph(SceneGraph sg);

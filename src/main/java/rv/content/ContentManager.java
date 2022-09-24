@@ -72,8 +72,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		public void run()
 		{
 			model.readMeshData(ContentManager.this);
-			synchronized (ContentManager.this)
-			{
+			synchronized (ContentManager.this) {
 				modelsToInitialize.add(model);
 			}
 		}

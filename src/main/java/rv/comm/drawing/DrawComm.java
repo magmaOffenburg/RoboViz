@@ -81,7 +81,8 @@ public class DrawComm
 		}
 	}
 
-	public interface DrawCommListener {
+	public interface DrawCommListener
+	{
 		void drawCommandReceived(byte[] command);
 	}
 

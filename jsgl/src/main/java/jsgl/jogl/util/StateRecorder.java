@@ -40,7 +40,8 @@ public class StateRecorder
 	 * sure any class that implements this has a default constructor. upon
 	 * playback
 	 */
-	public interface FrameData {
+	public interface FrameData
+	{
 		/** Interpolation between current frame data and next frame data */
 		FrameData interpolate(FrameData next, float s);
 
@@ -65,7 +66,13 @@ public class StateRecorder
 	}
 
 	/** Possible states of the camcorder */
-	public enum State { Playing, Recording, Idle, FinishedPlaying }
+	public enum State
+	{
+		Playing,
+		Recording,
+		Idle,
+		FinishedPlaying
+	}
 	;
 
 	private final int MAX_FRAMES;

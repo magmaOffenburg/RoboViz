@@ -28,7 +28,9 @@ import java.awt.event.MouseWheelListener;
  * @author justin
  *
  */
-public interface ICameraController extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
+public interface ICameraController extends MouseListener, MouseMotionListener, MouseWheelListener,
+										   KeyListener
+{
 	void attachToCanvas(GLCanvas canvas);
 
 	void detachFromCanvas(GLCanvas canvas);

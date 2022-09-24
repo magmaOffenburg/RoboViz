@@ -42,7 +42,8 @@ public class Mesh implements GLDisposable
 	 * is usually the fastest. Other modes are provided for compatibility with
 	 * older GPUs.
 	 */
-	public enum RenderMode {
+	public enum RenderMode
+	{
 		/** Default rendering mode. Fastest */
 		VBO,
 		/** Use if VBO is not supported. */

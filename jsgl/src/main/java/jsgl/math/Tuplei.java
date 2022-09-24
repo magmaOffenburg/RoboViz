@@ -16,7 +16,8 @@
 
 package jsgl.math;
 
-public interface Tuplei {
+public interface Tuplei
+{
 	/** Returns the numbers of elements in the tuple */
 	int getN();
 

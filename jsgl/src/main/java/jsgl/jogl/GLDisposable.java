@@ -23,7 +23,8 @@ import com.jogamp.opengl.GL;
  *
  * @author Justin Stoecker
  */
-public interface GLDisposable {
+public interface GLDisposable
+{
 	/** Release any resources buffered in video memory */
 	void dispose(GL gl);
 

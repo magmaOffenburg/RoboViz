@@ -28,7 +28,8 @@ import rv.comm.rcssserver.scenegraph.SceneGraph;
  *
  * @author Justin Stoecker
  */
-public interface ISceneGraphItem {
+public interface ISceneGraphItem
+{
 	/**
 	 * The scene graph's structure typically remains consistent throughout the life of the
 	 * simulation, but sometimes it is entirely new. This occurs, for example, when the monitor
