@@ -51,8 +51,6 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.18.0'
 
     implementation project(':jsgl')
-
-    testImplementation 'junit:junit:4.13.2'
 }
 
 shadowJar {
