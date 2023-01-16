@@ -95,6 +95,7 @@ public class FoulListOverlay extends ScreenBase
 		case KICKOFF:
 		case CHARGING:
 		case SELF_COLLISION:
+		case BALL_HOLDING:
 		default:
 			// Yellow
 			cardFillColor = new float[] {0.8f, 0.6f, 0.0f, 1.0f};
