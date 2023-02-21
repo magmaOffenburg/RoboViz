@@ -42,7 +42,8 @@ import rv.world.WorldModel;
 /**
  * Communication interface between RoboViz and SimSpark server
  *
- * @see https://gitlab.com/robocup-sim/SimSpark/-/wikis/Network-Protocol
+ * @see <a href="https://gitlab.com/robocup-sim/SimSpark/-/wikis/Network-Protocol">
+ *     https://gitlab.com/robocup-sim/SimSpark/-/wikis/Network-Protocol</a>
  * @author Justin Stoecker
  */
 public class ServerComm implements DrawCommListener
