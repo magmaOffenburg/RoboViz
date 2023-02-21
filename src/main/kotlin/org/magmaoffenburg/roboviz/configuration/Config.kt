@@ -229,8 +229,6 @@ class Config(args: Array<String>) {
         parser.setValue("Drawing Port", Networking.listenPort.toString())
 
         parser.setValuePairList("Server", Networking.servers.map { Pair(it.first, it.second.toString()) })
-
-        parser.setValue("Drawing Port", Networking.listenPort.toString())
         parser.setValue("Default Server", "${Networking.defaultServerHost}:${Networking.defaultServerPort}")
 
         // OverlayVisibility
