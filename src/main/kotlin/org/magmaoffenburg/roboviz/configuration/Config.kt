@@ -126,49 +126,49 @@ class Config(args: Array<String>) {
      */
     fun read() {
         // General
-        General.recordLogs = parser.getValue("Record Logfiles").toBoolean()
-        General.logfileDirectory = parser.getValue("Logfile Directory")
-        General.lookAndFeel = parser.getValue("Look and Feel")
+        parser.getValue("Record Logfiles")?.let { General.recordLogs = it.toBoolean() }
+        parser.getValue("Logfile Directory")?.let { General.logfileDirectory = it }
+        parser.getValue("Look and Feel")?.let { General.lookAndFeel = it }
 
         // Graphics
-        Graphics.useBloom = parser.getValue("Bloom").toBoolean()
-        Graphics.usePhong = parser.getValue("Phong").toBoolean()
-        Graphics.useShadows = parser.getValue("Shadows").toBoolean()
-        Graphics.useSoftShadows = parser.getValue("Soft Shadows").toBoolean()
-        Graphics.shadowResolution = parser.getValue("Shadow Resolution").toInt()
-        Graphics.useStereo = parser.getValue("Stereo 3D").toBoolean()
-        Graphics.useVsync = parser.getValue("V-Sync").toBoolean()
-        Graphics.useFsaa = parser.getValue("FSAA").toBoolean()
-        Graphics.fsaaSamples = parser.getValue("FSAA Samples").toInt()
-        Graphics.targetFPS = parser.getValue("Target FPS").toInt()
-        Graphics.firstPersonFOV = parser.getValue("First Person FOV").toInt()
-        Graphics.thirdPersonFOV = parser.getValue("Third Person FOV").toInt()
+        parser.getValue("Bloom")?.let { Graphics.useBloom = it.toBoolean() }
+        parser.getValue("Phong")?.let { Graphics.usePhong = it.toBoolean() }
+        parser.getValue("Shadows")?.let { Graphics.useShadows = it.toBoolean() }
+        parser.getValue("Soft Shadows")?.let { Graphics.useSoftShadows = it.toBoolean() }
+        parser.getValue("Shadow Resolution")?.let { Graphics.shadowResolution = it.toInt() }
+        parser.getValue("Stereo 3D")?.let { Graphics.useStereo = it.toBoolean() }
+        parser.getValue("V-Sync")?.let { Graphics.useVsync = it.toBoolean() }
+        parser.getValue("FSAA")?.let { Graphics.useFsaa = it.toBoolean() }
+        parser.getValue("FSAA Samples")?.let { Graphics.fsaaSamples = it.toInt() }
+        parser.getValue("Target FPS")?.let { Graphics.targetFPS = it.toInt() }
+        parser.getValue("First Person FOV")?.let { Graphics.firstPersonFOV = it.toInt() }
+        parser.getValue("Third Person FOV")?.let { Graphics.thirdPersonFOV = it.toInt() }
 
-        Graphics.frameWidth = parser.getValue("Frame Width").toInt()
-        Graphics.frameHeight = parser.getValue("Frame Height").toInt()
-        Graphics.frameX = parser.getValue("Frame X").toInt()
-        Graphics.frameY = parser.getValue("Frame Y").toInt()
-        Graphics.centerFrame = parser.getValue("Center Frame").toBoolean()
-        Graphics.isMaximized = parser.getValue("Frame Maximized").toBoolean()
-        Graphics.saveFrameState = parser.getValue("Save Frame State").toBoolean()
+        parser.getValue("Frame Width")?.let { Graphics.frameWidth = it.toInt() }
+        parser.getValue("Frame Height")?.let { Graphics.frameHeight = it.toInt() }
+        parser.getValue("Frame X")?.let { Graphics.frameX = it.toInt() }
+        parser.getValue("Frame Y")?.let { Graphics.frameY = it.toInt() }
+        parser.getValue("Center Frame")?.let { Graphics.centerFrame = it.toBoolean() }
+        parser.getValue("Frame Maximized")?.let { Graphics.isMaximized = it.toBoolean() }
+        parser.getValue("Save Frame State")?.let { Graphics.saveFrameState = it.toBoolean() }
 
         // Networking
-        Networking.autoConnect = parser.getValue("Auto-Connect").toBoolean()
-        Networking.autoConnectDelay = parser.getValue("Auto-Connect Delay").toInt()
-        Networking.listenPort = parser.getValue("Drawing Port").toInt()
+        parser.getValue("Auto-Connect")?.let { Networking.autoConnect = it.toBoolean() }
+        parser.getValue("Auto-Connect Delay")?.let { Networking.autoConnectDelay = it.toInt() }
+        parser.getValue("Drawing Port")?.let { Networking.listenPort = it.toInt() }
 
         parser.getValuePairList("Server").forEach {
             Networking.servers.add(Pair(it.first, it.second.toInt()))
         }
-        Networking.defaultServerHost = parser.getValue("Default Server").substringBefore(":")
-        Networking.defaultServerPort = parser.getValue("Default Server").substringAfter(":").toInt()
+        parser.getValue("Default Server")?.let { Networking.defaultServerHost = it.substringBefore(":") }
+        parser.getValue("Default Server")?.let { Networking.defaultServerPort = it.substringAfter(":").toInt() }
 
         // OverlayVisibility
-        OverlayVisibility.serverSpeed = parser.getValue("Server Speed").toBoolean()
-        OverlayVisibility.foulOverlay = parser.getValue("Foul Overlay").toBoolean()
-        OverlayVisibility.fieldOverlay = parser.getValue("Field Overlay").toBoolean()
-        OverlayVisibility.numberOfPlayers = parser.getValue("Number of Players").toBoolean()
-        OverlayVisibility.playerIDs = parser.getValue("Player IDs").toBoolean()
+        parser.getValue("Server Speed")?.let { OverlayVisibility.serverSpeed = it.toBoolean() }
+        parser.getValue("Foul Overlay")?.let { OverlayVisibility.foulOverlay = it.toBoolean() }
+        parser.getValue("Field Overlay")?.let { OverlayVisibility.fieldOverlay = it.toBoolean() }
+        parser.getValue("Number of Players")?.let { OverlayVisibility.numberOfPlayers = it.toBoolean() }
+        parser.getValue("Player IDs")?.let { OverlayVisibility.playerIDs = it.toBoolean() }
 
         // TeamColors
         parser.getValuePairList("Team Color").forEach {

@@ -72,7 +72,14 @@ class ConfigParser {
 
         fileMap.forEach { pair ->
             val index = rawFileList.indexOfFirst { matchKey(it, pair.key) }
-            rawFileList[index] = "${pair.key.padEnd(20)} : ${pair.value}"
+            val updatedLine = "${pair.key.padEnd(20)} : ${pair.value}"
+            if (index == -1) {
+                // Key not yet present in config file
+                // Add it to the bottom of the file
+                rawFileList.add(updatedLine)
+            } else {
+                rawFileList[index] = updatedLine
+            }
         }
         filePairMap.forEach { pairList ->
             val firstIndex = rawFileList.indexOfFirst { matchKey(it, pairList.key) }
@@ -94,8 +101,8 @@ class ConfigParser {
     /**
      * get the value of a key
      */
-    fun getValue(key: String) = fileMap[key] ?: "".also {
-        logger.error("The key \"$key\" does not exist!")
+    fun getValue(key: String) = fileMap[key] ?: null.also {
+        logger.warn("The key \"$key\" does not exist!")
     }
 
 
@@ -103,7 +110,7 @@ class ConfigParser {
      * get the value pair list of a key
      */
     fun getValuePairList(key: String) = filePairMap[key] ?: emptyList<Pair<String, String>>().also {
-        logger.error("The key \"$key\" does not exist!")
+        logger.warn("The key \"$key\" does not exist!")
     }
 
     /**
