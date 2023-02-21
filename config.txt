@@ -31,6 +31,8 @@ Auto-Connect         : true
 Auto-Connect Delay   : 1000
 Default Server       : localhost:3200
 Drawing Port         : 32769
+Monitor Step         : 0.04
+Network Buffer       : false
 # To store more servers, just insert more "Server" lines
 Server               : localhost:3200
 

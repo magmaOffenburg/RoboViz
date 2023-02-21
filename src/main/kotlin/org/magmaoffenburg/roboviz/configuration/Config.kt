@@ -77,6 +77,9 @@ class Config(args: Array<String>) {
 
         var currentHost = defaultServerHost
         var currentPort = defaultServerPort
+
+        var monitorStep = 0.04
+        var useBuffer = false
     }
 
     object OverlayVisibility {
@@ -156,6 +159,8 @@ class Config(args: Array<String>) {
         parser.getValue("Auto-Connect")?.let { Networking.autoConnect = it.toBoolean() }
         parser.getValue("Auto-Connect Delay")?.let { Networking.autoConnectDelay = it.toInt() }
         parser.getValue("Drawing Port")?.let { Networking.listenPort = it.toInt() }
+        parser.getValue("Monitor Step")?.let { Networking.monitorStep = it.toDouble() }
+        parser.getValue("Network Buffer")?.let { Networking.useBuffer = it.toBoolean() }
 
         parser.getValuePairList("Server").forEach {
             Networking.servers.add(Pair(it.first, it.second.toInt()))
@@ -230,6 +235,9 @@ class Config(args: Array<String>) {
 
         parser.setValuePairList("Server", Networking.servers.map { Pair(it.first, it.second.toString()) })
         parser.setValue("Default Server", "${Networking.defaultServerHost}:${Networking.defaultServerPort}")
+
+        parser.setValue("Monitor Step", Networking.monitorStep.toString())
+        parser.setValue("Network Buffer", Networking.useBuffer.toString())
 
         // OverlayVisibility
         parser.setValue("Server Speed", OverlayVisibility.serverSpeed.toString())

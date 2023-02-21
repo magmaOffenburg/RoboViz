@@ -24,11 +24,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.Timer;
 import jsgl.math.vector.Vec3f;
 import org.apache.logging.log4j.LogManager;
@@ -69,28 +67,28 @@ public class ServerComm implements DrawCommListener
 		@Override
 		public void run()
 		{
-			try {
-				socket = new Socket(host, port);
-				out = new PrintWriter(socket.getOutputStream(), true);
-				in = new DataInputStream(socket.getInputStream());
-
-				setConnected(true);
-				if (recordLogs)
-					setupNewLogfile();
-
-				String message;
-				do {
-					message = readMessage();
-					if (message != null) {
-						try {
-							parser.parse(message);
-							if (logfileOutput != null)
-								writeToLogfile(message);
-						} catch (ParseException e) {
-							LOGGER.error("Unable to parse server message", e);
-						}
+			// Receive messages in a separate thread and put them in a queue
+			LinkedBlockingQueue<Optional<String>> messages = new LinkedBlockingQueue<>(3000);
+			new Thread(() -> {
+				try {
+					socket = new Socket(host, port);
+					out = new PrintWriter(socket.getOutputStream(), true);
+					in = new DataInputStream(socket.getInputStream());
+					setConnected(true);
+					String message;
+					do {
+						message = readMessage();
+						messages.put(Optional.ofNullable(message));
+					} while (message != null);
+				} catch (IOException | InterruptedException e) {
+					// This is fine, just leave.
+					// The surrounding thread will quit when receiving an
+					// empty optional.
+					try {
+						messages.put(Optional.empty());
+					} catch (InterruptedException ignored) {
 					}
-				} while (message != null);
+				}
 
 				// If the thread gets to this point the server has stopped
 				// sending messages by closing the connection
@@ -98,11 +96,50 @@ public class ServerComm implements DrawCommListener
 				disconnect();
 				if (autoConnectTimer != null)
 					autoConnectTimer.start();
-			} catch (IOException e) {
-				disconnect();
-				if (autoConnectTimer != null)
-					autoConnectTimer.start();
+			}).start();
+
+			if (recordLogs) {
+				setupNewLogfile();
 			}
+
+			Optional<String> message = Optional.empty();
+			long lastUpdateTimestamp = 0;
+			long monitorStepMillis = Math.round(Networking.INSTANCE.getMonitorStep() * 1000.0);
+			do {
+				// Retrieve a message from the queue
+				try {
+					message = messages.take();
+				} catch (InterruptedException e) {
+					continue;
+				}
+
+				if (Networking.INSTANCE.getUseBuffer()) {
+					// Wait until the time for one monitor frame elapsed.
+					// This ensures that two messages are not applied immediately after each
+					// other. That may be the case with a bad network connection.
+					long elapsed = System.currentTimeMillis() - lastUpdateTimestamp;
+					long timeLeft = monitorStepMillis - elapsed;
+					if (timeLeft > 0) {
+						try {
+							Thread.sleep(timeLeft);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					lastUpdateTimestamp = System.currentTimeMillis();
+				}
+
+				// Process message
+				message.ifPresent(msg -> {
+					try {
+						parser.parse(msg);
+						if (logfileOutput != null)
+							writeToLogfile(msg);
+					} catch (ParseException e) {
+						LOGGER.error("Unable to parse server message", e);
+					}
+				});
+			} while (message.isPresent());
 		}
 
 		private String readMessage() throws IOException

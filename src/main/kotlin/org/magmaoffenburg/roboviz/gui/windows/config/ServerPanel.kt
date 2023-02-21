@@ -22,6 +22,9 @@ class ServerPanel: JPanel() {
     private val defaultServerPortSpinner = JSpinner(SpinnerNumberModel(Networking.defaultServerPort, 0, Int.MAX_VALUE, 1))
     private val drawingPortLabel = JLabel("Drawing Port:")
     private val drawingPortSpinner = JSpinner(SpinnerNumberModel(Networking.listenPort, 0, Int.MAX_VALUE, 1))
+    private val monitorStepLabel = JLabel("Monitor step duration:")
+    private val monitorStepSpinner = JSpinner(SpinnerNumberModel(Networking.monitorStep, 0.0, Double.MAX_VALUE, 0.01))
+    private val useBufferCB = JCheckBox("Use Buffer", Networking.useBuffer)
     private val serverListButton = JButton("Open Server List")
 
     init {
@@ -62,6 +65,11 @@ class ServerPanel: JPanel() {
                         .addComponent(drawingPortLabel, 0, 125, 125)
                         .addComponent(drawingPortSpinner, 0, 120, 120)
                 )
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(monitorStepLabel, 0, 125, 125)
+                    .addComponent(monitorStepSpinner, 0, 120, 120)
+                )
+                .addComponent(useBufferCB, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                 .addComponent(serverListButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
         )
 
@@ -87,6 +95,11 @@ class ServerPanel: JPanel() {
                         .addComponent(drawingPortLabel)
                         .addComponent(drawingPortSpinner)
                 )
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(monitorStepLabel)
+                    .addComponent(monitorStepSpinner)
+                )
+                .addComponent(useBufferCB)
                 .addComponent(serverListButton)
         )
     }
@@ -123,6 +136,12 @@ class ServerPanel: JPanel() {
         }
         serverListButton.addActionListener {
             ServerListDialog.showDialog()
+        }
+        monitorStepSpinner.addChangeListener {
+            Networking.monitorStep = monitorStepSpinner.value as Double
+        }
+        useBufferCB.addActionListener {
+            Networking.useBuffer = useBufferCB.isSelected
         }
     }
 
