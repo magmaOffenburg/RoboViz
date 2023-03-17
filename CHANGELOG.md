@@ -1,6 +1,11 @@
+1.8.3 (March 18, 2023)
+------------------------------
+* add support for ball holding foul introduced with RCSSServer3D 0.7.6
+* add optional buffering mechanism for bad network connections
+
 1.8.2 (July 14, 2022)
 ------------------------------
-* Assign default team color based on team name
+* assign default team color based on team name
 
 1.8.1 (April 7, 2022)
 ------------------------------
