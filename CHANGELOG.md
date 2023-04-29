@@ -1,3 +1,7 @@
+1.8.4 (April 29, 2023)
+------------------------------
+* increase tracking speed of camera when tracking the ball
+
 1.8.3 (March 18, 2023)
 ------------------------------
 * add support for ball holding foul introduced with RCSSServer3D 0.7.6
