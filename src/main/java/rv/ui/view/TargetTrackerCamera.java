@@ -95,7 +95,7 @@ public class TargetTrackerCamera
 		}
 
 		// Maximum factor that velocity can increase scale by
-		float VEL_SCALE_FACTOR_MAX = 3.0f;
+		float VEL_SCALE_FACTOR_MAX = 12.0f;
 
 		// Amount that screen velocity is multiplied by when determining scale
 		float VEL_SCALE_FACTOR = 0.003f;
