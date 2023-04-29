@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.github.weisj:darklaf-core:3.0.2'
     implementation "org.jogamp.jogl:jogl-all-main:$jogl_version"
     implementation "org.jogamp.gluegen:gluegen-rt-main:$jogl_version"
-    implementation 'org.apache.commons:commons-compress:1.22'
+    implementation 'org.apache.commons:commons-compress:1.23.0'
     implementation 'org.apache.logging.log4j:log4j-api-kotlin:1.2.0'
     implementation "org.apache.logging.log4j:log4j-api:$log4j_version"
     implementation "org.apache.logging.log4j:log4j-core:$log4j_version"
