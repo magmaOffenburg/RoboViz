@@ -39,6 +39,9 @@ public class GameStateOverlay extends ScreenBase
 		private static final int Y_PAD = 4;
 		private static final int PLAYMODE_WIDTH = 2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6;
 
+		/** the time a player has to execute a single penalty shot */
+		private static final float PENALTY_SHOT_TIME = 25.0f;
+
 		private final TextRenderer tr1;
 		private final TextRenderer tr2;
 		private final TextRenderer tr3;
@@ -159,6 +162,28 @@ public class GameStateOverlay extends ScreenBase
 				}
 				tr3.draw(String.format(Locale.US, "%.1f", passModeWaitToScoreTime), timeX, y - 20);
 				tr3.endRendering();
+			}
+
+			// Remaining time for penalty shot
+			if (gs.isPenaltyShootout()) {
+				gs.getPenaltyShotStartTime().ifPresent((it) -> {
+					final float remainingTime = Math.max(0.0f, PENALTY_SHOT_TIME - (gs.getTime() - it));
+					final int remainingPenaltyMinutes = (int) Math.floor(remainingTime / 60.0);
+					final int remainingPenaltySeconds = (int) Math.ceil(remainingTime - remainingPenaltyMinutes * 60);
+
+					gl.glBegin(GL2.GL_QUADS);
+					gl.glColor4f(0, 0, 0, 0.36f);
+					drawBox(gl, x - 3 + (2 * NAME_WIDTH + SCORE_BOX_WIDTH + TIME_WIDTH + 6), y - 3, TIME_WIDTH,
+							BAR_HEIGHT + 6);
+					gl.glEnd();
+
+					String remainingPenaltyTimeText =
+							String.format(Locale.US, "%02d:%02d", remainingPenaltyMinutes, remainingPenaltySeconds);
+					int penaltyTimeX = timeX + TIME_WIDTH;
+					tr1.beginRendering(screenW, screenH);
+					tr1.draw(remainingPenaltyTimeText, penaltyTimeX, y + Y_PAD);
+					tr1.endRendering();
+				});
 			}
 		}
 	}

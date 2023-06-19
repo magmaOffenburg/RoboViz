@@ -18,6 +18,7 @@ package rv.comm.rcssserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
@@ -192,6 +193,10 @@ public class GameState implements ServerChangeListener
 	private float time;
 	private int half;
 	private List<Foul> fouls = new CopyOnWriteArrayList<>();
+
+	private boolean penaltyShootout = false;
+
+	private Float penaltyShotStartTime = null;
 
 	private final List<GameStateChangeListener> listeners = new CopyOnWriteArrayList<>();
 
@@ -404,6 +409,8 @@ public class GameState implements ServerChangeListener
 		passModeMinOppBallDist = 1;
 		passModeDuration = 4;
 		passModeValuesReported = false;
+
+		penaltyShotStartTime = null;
 	}
 
 	private boolean isTimeStopped()
@@ -607,6 +614,18 @@ public class GameState implements ServerChangeListener
 			while (playModeHistory.size() > 2) {
 				playModeHistory.remove(0);
 			}
+
+			switch (playMode) {
+			case KICK_OFF_LEFT:
+			case KICK_OFF_RIGHT:
+				penaltyShotStartTime = time;
+				break;
+			case BEFORE_KICK_OFF:
+			case GOAL_LEFT:
+			case GOAL_RIGHT:
+				penaltyShotStartTime = null;
+				break;
+			}
 		}
 
 		initialized = true;
@@ -633,5 +652,20 @@ public class GameState implements ServerChangeListener
 		if (server.isConnected()) {
 			server.getWorldModel().reset();
 		}
+	}
+
+	public boolean isPenaltyShootout()
+	{
+		return penaltyShootout;
+	}
+
+	public void setPenaltyShootout(boolean penaltyShootout)
+	{
+		this.penaltyShootout = penaltyShootout;
+	}
+
+	public Optional<Float> getPenaltyShotStartTime()
+	{
+		return Optional.ofNullable(penaltyShotStartTime);
 	}
 }

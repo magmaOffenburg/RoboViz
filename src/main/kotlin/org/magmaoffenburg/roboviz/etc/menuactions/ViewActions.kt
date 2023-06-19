@@ -53,4 +53,9 @@ class ViewActions {
         }
     }
 
+    fun togglePenaltyView() {
+        Renderer.world.gameState?.let {
+            it.isPenaltyShootout = !it.isPenaltyShootout
+        }
+    }
 }

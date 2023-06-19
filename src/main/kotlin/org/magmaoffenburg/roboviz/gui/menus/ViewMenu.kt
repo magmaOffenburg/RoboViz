@@ -25,6 +25,7 @@ class ViewMenu : MenuBase() {
         addItem("Toggle Field Overlay", KeyEvent.VK_F) { actions.toggleFieldOverlay() }
         addItem("Toggle Drawings", KeyEvent.VK_T) { actions.toggleDrawings() }
         addItem("Toggle Fouls", KeyEvent.VK_Q) { actions.toggleFouls() }
+        addItem("Toggle Penalty View", KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK) { actions.togglePenaltyView() }
     }
 
 }
