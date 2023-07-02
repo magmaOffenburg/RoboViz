@@ -1,3 +1,7 @@
+1.8.5 (July 2, 2023)
+------------------------------
+* add timer for penalties in RCSSServer3D 0.7.6
+
 1.8.4 (April 29, 2023)
 ------------------------------
 * increase tracking speed of camera when tracking the ball
