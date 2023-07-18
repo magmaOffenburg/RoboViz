@@ -11,6 +11,8 @@ Java 1.8 is required to build and run RoboViz. Pre-built binaries for Windows, L
 
 Except for the available shortcuts, the information on the [original website](https://sites.google.com/site/umroboviz) is still largely accurate. A complete list of shortcuts is available via a help window opened with the `F1` hotkey. Alternatively, it's also available as a `.html` file in `resources/help/controls.html`.
 
+If you're using Mesa and you're getting an error saying that the profile GL2 is not available, try setting the environment variable `MESA_GL_VERSION_OVERRIDE` to `3.0` when running RoboViz.
+
 ## Command line arguments
 
 | Argument           | Description                                                               |
