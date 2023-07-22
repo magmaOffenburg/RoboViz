@@ -17,6 +17,7 @@
 package rv.comm.drawing.commands;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import jsgl.io.ByteUtil;
 import jsgl.math.vector.Vec3f;
@@ -49,11 +50,14 @@ public abstract class Command
 	 */
 	public static String getString(ByteBuffer buf)
 	{
-		StringBuilder sb = new StringBuilder();
-		char c;
-		while ((c = (char) ByteUtil.uValue(buf.get())) != 0)
-			sb.append(c);
-		return sb.toString();
+		ByteBuffer str = buf.slice();
+		int i = 0;
+		while (buf.hasRemaining() && buf.get() != 0x00) {
+			// Count bytes until null
+			i++;
+		}
+		str.limit(i);
+		return StandardCharsets.UTF_8.decode(str).toString();
 	}
 
 	/**

@@ -16,6 +16,7 @@
 
 import java.awt.Color;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
@@ -28,7 +29,7 @@ public class RVDraw
 	/** Writes a float formatted in 6 ASCII characters to a buffer */
 	public static void writeFloatToBuffer(ByteBuffer buf, float value)
 	{
-		buf.put(String.format(Locale.US, "%6f", value).substring(0, 6).getBytes());
+		buf.put(String.format(Locale.US, "%6f", value).substring(0, 6).getBytes(StandardCharsets.UTF_8));
 	}
 
 	/** Writes RGB values of a Color object to a buffer */
@@ -42,9 +43,9 @@ public class RVDraw
 	}
 
 	/** Writes a string to a buffer */
-	public static void writeStringToBuffer(ByteBuffer buf, String s)
+	public static void writeStringToBuffer(ByteBuffer buf, byte[] s)
 	{
-		buf.put(s.getBytes());
+		buf.put(s);
 		buf.put((byte) 0);
 	}
 
@@ -64,13 +65,18 @@ public class RVDraw
 	 */
 	public static byte[] newBufferSwap(String group)
 	{
-		int numBytes = 3 + ((group != null) ? group.length() : 0);
+		int numBytes = 3;
+		byte[] groupEncoded = null;
+		if (group != null) {
+			groupEncoded = group.getBytes(StandardCharsets.UTF_8);
+			numBytes += groupEncoded.length;
+		}
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 0);
 		buf.put((byte) 0);
 		if (group != null)
-			buf.put(group.getBytes());
+			buf.put(groupEncoded);
 		buf.put((byte) 0);
 
 		return buf.array();
@@ -92,7 +98,8 @@ public class RVDraw
 	 */
 	public static byte[] newCircle(float[] center, float radius, float thickness, Color color, String group)
 	{
-		int numBytes = 30 + group.length();
+		byte[] groupEncoded = group.getBytes(StandardCharsets.UTF_8);
+		int numBytes = 30 + groupEncoded.length;
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 1);
@@ -102,7 +109,7 @@ public class RVDraw
 		writeFloatToBuffer(buf, radius);
 		writeFloatToBuffer(buf, thickness);
 		writeColorToBuffer(buf, color, false);
-		writeStringToBuffer(buf, group);
+		writeStringToBuffer(buf, groupEncoded);
 
 		return buf.array();
 	}
@@ -123,7 +130,8 @@ public class RVDraw
 	 */
 	public static byte[] newLine(float[] a, float[] b, float thickness, Color color, String group)
 	{
-		int numBytes = 48 + group.length();
+		byte[] groupEncoded = group.getBytes(StandardCharsets.UTF_8);
+		int numBytes = 48 + groupEncoded.length;
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 1);
@@ -136,7 +144,7 @@ public class RVDraw
 		writeFloatToBuffer(buf, b[2]);
 		writeFloatToBuffer(buf, thickness);
 		writeColorToBuffer(buf, color, false);
-		writeStringToBuffer(buf, group);
+		writeStringToBuffer(buf, groupEncoded);
 
 		return buf.array();
 	}
@@ -155,7 +163,8 @@ public class RVDraw
 	 */
 	public static byte[] newPoint(float[] p, float size, Color color, String group)
 	{
-		int numBytes = 30 + group.length();
+		byte[] groupEncoded = group.getBytes(StandardCharsets.UTF_8);
+		int numBytes = 30 + groupEncoded.length;
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 1);
@@ -165,7 +174,7 @@ public class RVDraw
 		writeFloatToBuffer(buf, p[2]);
 		writeFloatToBuffer(buf, size);
 		writeColorToBuffer(buf, color, false);
-		writeStringToBuffer(buf, group);
+		writeStringToBuffer(buf, groupEncoded);
 
 		return buf.array();
 	}
@@ -184,7 +193,8 @@ public class RVDraw
 	 */
 	public static byte[] newSphere(float[] p, float radius, Color color, String group)
 	{
-		int numBytes = 30 + group.length();
+		byte[] groupEncoded = group.getBytes(StandardCharsets.UTF_8);
+		int numBytes = 30 + groupEncoded.length;
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 1);
@@ -194,14 +204,15 @@ public class RVDraw
 		writeFloatToBuffer(buf, p[2]);
 		writeFloatToBuffer(buf, radius);
 		writeColorToBuffer(buf, color, false);
-		writeStringToBuffer(buf, group);
+		writeStringToBuffer(buf, groupEncoded);
 
 		return buf.array();
 	}
 
 	public static byte[] newPolygon(float[][] v, Color color, String set)
 	{
-		int numBytes = 18 * v.length + 8 + set.length();
+		byte[] setEncoded = set.getBytes(StandardCharsets.UTF_8);
+		int numBytes = 18 * v.length + 8 + setEncoded.length;
 
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
@@ -218,20 +229,23 @@ public class RVDraw
 			writeFloatToBuffer(buf, v[i][2]);
 		}
 
-		// set.length + 1 bytes
-		writeStringToBuffer(buf, set);
+		// setEncoded.length + 1 bytes
+		writeStringToBuffer(buf, setEncoded);
 
 		return buf.array();
 	}
 
 	public static byte[] newAnnotation(String text, float[] pos, Color color, String set)
 	{
+		byte[] textEncoded = text.getBytes(StandardCharsets.UTF_8);
+		byte[] setEncoded = set.getBytes(StandardCharsets.UTF_8);
+
 		// header bytes                        = 2
 		// pos  = 3 floats * 6 bytes per float = 18
 		// color                               = 3
-		// text                                = text.length + 1
-		// set                                 = set.length + 1
-		int numBytes = 25 + text.length() + set.length();
+		// text                                = textEncoded.length + 1
+		// set                                 = setEncoded.length + 1
+		int numBytes = 25 + textEncoded.length + setEncoded.length;
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 2);
@@ -240,8 +254,8 @@ public class RVDraw
 		writeFloatToBuffer(buf, pos[1]);
 		writeFloatToBuffer(buf, pos[2]);
 		writeColorToBuffer(buf, color, false);
-		writeStringToBuffer(buf, text);
-		writeStringToBuffer(buf, set);
+		writeStringToBuffer(buf, textEncoded);
+		writeStringToBuffer(buf, setEncoded);
 
 		return buf.array();
 	}
@@ -252,7 +266,12 @@ public class RVDraw
 	 */
 	public static byte[] newAgentAnnotation(String text, boolean leftTeam, int agentNum, Color color)
 	{
-		int numBytes = (text == null) ? 3 : 7 + text.length();
+		int numBytes = 3;
+		byte[] textEncoded = null;
+		if (text != null) {
+			textEncoded = text.getBytes(StandardCharsets.UTF_8);
+			numBytes += 4 + textEncoded.length;
+		}
 		ByteBuffer buf = ByteBuffer.allocate(numBytes);
 
 		buf.put((byte) 2);
@@ -263,7 +282,7 @@ public class RVDraw
 			buf.put((byte) 1);
 			buf.put((byte) (leftTeam ? agentNum - 1 : agentNum + 127));
 			writeColorToBuffer(buf, color, false);
-			writeStringToBuffer(buf, text);
+			writeStringToBuffer(buf, text.getBytes(StandardCharsets.UTF_8));
 		}
 
 		return buf.array();
