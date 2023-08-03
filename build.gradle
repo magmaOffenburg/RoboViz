@@ -10,7 +10,7 @@ version '1.8.5'
 mainClassName = 'org.magmaoffenburg.roboviz.MainKt'
 
 ext {
-    jogl_version = '2.3.2'
+    jogl_version = '2.4.0'
     log4j_version = '2.20.0'
 }
 
@@ -18,8 +18,9 @@ subprojects {
     apply plugin: 'java'
 
     repositories {
+        mavenCentral()
         maven {
-            url = 'https://repo.maven.apache.org/maven2'
+            url 'https://www.jogamp.org/deployment/maven/'
         }
     }
 
@@ -38,6 +39,9 @@ compileKotlin {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://www.jogamp.org/deployment/maven/'
+    }
 }
 
 dependencies {
