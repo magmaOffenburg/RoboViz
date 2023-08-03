@@ -10,18 +10,8 @@ import rv.world.WorldModel;
 
 public class LogAnalyzerThread extends Thread
 {
-	public static class Goal
+	public record Goal(int frame, int viewFrame, int scoringTeam)
 	{
-		public final int frame;
-		public final int viewFrame;
-		public final int scoringTeam;
-
-		public Goal(int frame, int viewFrame, int scoringTeam)
-		{
-			this.frame = frame;
-			this.viewFrame = viewFrame;
-			this.scoringTeam = scoringTeam;
-		}
 	}
 
 	public interface ResultCallback

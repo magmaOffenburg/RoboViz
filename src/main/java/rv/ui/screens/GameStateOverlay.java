@@ -139,13 +139,13 @@ public class GameStateOverlay extends ScreenBase
 				}
 			} else if (gs.getPlayModeHistory().size() > 1 && gs.getPlayMode().equals(GameState.PLAY_ON)) {
 				GameState.HistoryItem item = gs.getPlayModeHistory().get(gs.getPlayModeHistory().size() - 2);
-				if (item.playMode.equals(GameState.PASS_LEFT) || item.playMode.equals(GameState.PASS_RIGHT)) {
-					float timeOfLastPassEnd = gs.getPlayModeHistory().get(gs.getPlayModeHistory().size() - 1).time;
+				if (item.playMode().equals(GameState.PASS_LEFT) || item.playMode().equals(GameState.PASS_RIGHT)) {
+					float timeOfLastPassEnd = gs.getPlayModeHistory().get(gs.getPlayModeHistory().size() - 1).time();
 					float timePassed = gs.getTime() - timeOfLastPassEnd;
 					if (timePassed >= 0) {
 						final float COOLDOWN = 10;
 						passModeWaitToScoreTime = COOLDOWN - timePassed;
-						if (item.playMode.equals(GameState.PASS_LEFT)) {
+						if (item.playMode().equals(GameState.PASS_LEFT)) {
 							leftTeamPassModeWaitToScore = true;
 						}
 					}

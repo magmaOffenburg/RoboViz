@@ -215,8 +215,8 @@ public class LogPlayer implements LogfileListener
 		int relativeFrame = getDesiredFrame() - getGoalStepThresholdFrames();
 		int closestFrame = -1;
 		for (Goal goal : goals) {
-			if (goal.viewFrame < relativeFrame && goal.viewFrame > closestFrame) {
-				closestFrame = goal.viewFrame;
+			if (goal.viewFrame() < relativeFrame && goal.viewFrame() > closestFrame) {
+				closestFrame = goal.viewFrame();
 			}
 		}
 		if (closestFrame != -1) {
@@ -229,8 +229,8 @@ public class LogPlayer implements LogfileListener
 		int relativeFrame = getDesiredFrame() + getGoalStepThresholdFrames();
 		int closestFrame = Integer.MAX_VALUE;
 		for (Goal goal : goals) {
-			if (goal.viewFrame > relativeFrame && goal.viewFrame < closestFrame) {
-				closestFrame = goal.viewFrame;
+			if (goal.viewFrame() > relativeFrame && goal.viewFrame() < closestFrame) {
+				closestFrame = goal.viewFrame();
 			}
 		}
 		if (closestFrame != Integer.MAX_VALUE) {
@@ -257,7 +257,7 @@ public class LogPlayer implements LogfileListener
 			return false;
 
 		for (Goal goal : goals) {
-			if (getDesiredFrame() - getGoalStepThresholdFrames() > goal.viewFrame)
+			if (getDesiredFrame() - getGoalStepThresholdFrames() > goal.viewFrame())
 				return true;
 		}
 		return false;
@@ -269,7 +269,7 @@ public class LogPlayer implements LogfileListener
 			return false;
 
 		for (Goal goal : goals) {
-			if (getDesiredFrame() + getGoalStepThresholdFrames() < goal.viewFrame)
+			if (getDesiredFrame() + getGoalStepThresholdFrames() < goal.viewFrame())
 				return true;
 		}
 		return false;
@@ -297,7 +297,7 @@ public class LogPlayer implements LogfileListener
 	{
 		Integer previousGoalNumber = null;
 		for (int i = 0; i < goals.size(); i++) {
-			if (getDesiredFrame() - getGoalStepThresholdFrames() > goals.get(i).viewFrame) {
+			if (getDesiredFrame() - getGoalStepThresholdFrames() > goals.get(i).viewFrame()) {
 				previousGoalNumber = i + 1;
 			}
 		}
@@ -308,7 +308,7 @@ public class LogPlayer implements LogfileListener
 	{
 		Integer nextGoalNumber = null;
 		for (int i = 0; i < goals.size(); i++) {
-			if (getDesiredFrame() + getGoalStepThresholdFrames() < goals.get(i).viewFrame) {
+			if (getDesiredFrame() + getGoalStepThresholdFrames() < goals.get(i).viewFrame()) {
 				nextGoalNumber = i + 1;
 				break;
 			}
@@ -423,7 +423,7 @@ public class LogPlayer implements LogfileListener
 			public void goalFound(Goal goal)
 			{
 				goals.add(goal);
-				analyzedFrames = goal.frame;
+				analyzedFrames = goal.frame();
 				stateChanged();
 			}
 

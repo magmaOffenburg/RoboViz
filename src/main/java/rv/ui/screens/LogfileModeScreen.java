@@ -106,8 +106,8 @@ public class LogfileModeScreen extends ViewerScreenBase
 		int frame = player.getFrame();
 		if (player.getAnalyzedFrames() > frame) {
 			for (Goal goal : player.getGoals()) {
-				if (goal.frame == frame) {
-					addTeamScoredOverlay(gs, goal.scoringTeam);
+				if (goal.frame() == frame) {
+					addTeamScoredOverlay(gs, goal.scoringTeam());
 				}
 			}
 		} else {

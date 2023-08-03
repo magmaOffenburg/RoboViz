@@ -92,16 +92,8 @@ public class GameState implements ServerChangeListener
 		public long receivedTime;
 	}
 
-	public static class HistoryItem
+	public record HistoryItem(float time, String playMode)
 	{
-		public final float time;
-		public final String playMode;
-
-		public HistoryItem(float time, String playMode)
-		{
-			this.time = time;
-			this.playMode = playMode;
-		}
 	}
 
 	// Measurements and Rules
