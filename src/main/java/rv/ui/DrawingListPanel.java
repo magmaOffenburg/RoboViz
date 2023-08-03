@@ -123,7 +123,7 @@ public class DrawingListPanel extends FramePanelBase implements ShapeListListene
 			{
 				// TODO: try/catch really needed?
 				try {
-					JList list = (JList) event.getSource();
+					JList<?> list = (JList<?>) event.getSource();
 					int index = list.locationToIndex(event.getPoint());
 					CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
 					item.setSelected(!item.isSelected());
