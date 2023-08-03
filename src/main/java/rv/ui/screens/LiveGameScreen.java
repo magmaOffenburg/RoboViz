@@ -126,8 +126,7 @@ public class LiveGameScreen extends ViewerScreenBase implements ServerComm.Serve
 		if (selected instanceof Ball) {
 			serverPos.z = Renderer.world.getGameState().getBallRadius();
 			Renderer.netManager.getServer().moveBall(serverPos);
-		} else if (selected instanceof Agent) {
-			Agent a = (Agent) selected;
+		} else if (selected instanceof Agent a) {
 			boolean leftTeam = a.getTeam().getID() == Team.LEFT;
 			Renderer.netManager.getServer().moveAgent(serverPos, leftTeam, a.getID());
 		}

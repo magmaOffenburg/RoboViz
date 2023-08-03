@@ -143,8 +143,7 @@ public class WorldModel
 				sgi.sceneGraphChanged(sceneGraph);
 		}
 
-		if (selectedObject instanceof Agent) {
-			Agent agent = (Agent) selectedObject;
+		if (selectedObject instanceof Agent agent) {
 			Agent newSelection;
 			if (agent.getTeam().getID() == Team.LEFT) {
 				newSelection = getLeftTeam().getAgentByID(agent.getID());

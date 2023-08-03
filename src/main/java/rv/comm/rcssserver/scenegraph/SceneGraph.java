@@ -83,8 +83,7 @@ public class SceneGraph
 	public StaticMeshNode findStaticMeshNode(Node node, String[] materials)
 	{
 		// check if current node is the node we're looking for
-		if (node instanceof StaticMeshNode) {
-			StaticMeshNode smn = (StaticMeshNode) node;
+		if (node instanceof StaticMeshNode smn) {
 			String[] nodeMats = smn.getMaterials();
 
 			// make sure each material in the list is in the node's materials

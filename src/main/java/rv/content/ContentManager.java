@@ -241,8 +241,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		// this is necessary for the shader to blend meshes that have textures
 		// for some parts and materials for others
 		for (MeshPart p : mesh.getParts()) {
-			if (p.getMaterial() instanceof ObjMaterial) {
-				ObjMaterial mat = (ObjMaterial) p.getMaterial();
+			if (p.getMaterial() instanceof ObjMaterial mat) {
 				if (mat.getTexture() == null)
 					mat.setTexture(whiteTexture, false);
 			}
@@ -277,8 +276,7 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 
 	private void checkForMeshes(Node node)
 	{
-		if (node instanceof StaticMeshNode) {
-			StaticMeshNode meshNode = (StaticMeshNode) node;
+		if (node instanceof StaticMeshNode meshNode) {
 			getModel(meshNode.getName());
 		}
 

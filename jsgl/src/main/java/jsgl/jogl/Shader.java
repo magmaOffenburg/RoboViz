@@ -157,10 +157,10 @@ public class Shader implements GLDisposable
 	@Override
 	public void dispose(GL gl)
 	{
-		if (gl instanceof GL2)
-			gl.getGL2().glDeleteShader(id);
-		else if (gl instanceof GL3)
-			gl.getGL3().glDeleteShader(id);
+		if (gl instanceof GL2 gl2)
+			gl2.glDeleteShader(id);
+		else if (gl instanceof GL3 gl3)
+			gl3.glDeleteShader(id);
 		disposed = true;
 	}
 
