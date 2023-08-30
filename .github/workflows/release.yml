@@ -27,21 +27,6 @@ jobs:
           tar czf RoboViz.tar.gz bin/
       - name: Create Release
         id: create-release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
-          asset_path: ./RoboViz.tar.gz
-          asset_name: RoboViz.tar.gz
-          asset_content_type: application/tar+gzip
+        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ./RoboViz.tar.gz
