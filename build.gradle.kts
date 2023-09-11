@@ -62,6 +62,13 @@ dependencies {
     implementation(project(":jsgl"))
 }
 
+tasks.jar {
+    manifest {
+        // We need to set Multi-Release to true so that log4j can determine the correct class names
+        attributes("Multi-Release" to "true")
+    }
+}
+
 tasks.withType<ShadowJar> {
     archiveFileName.set("${project.name}.jar")
 }
