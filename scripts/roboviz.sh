@@ -22,7 +22,7 @@ cd $DIR
 
 if [[ `uname -s` == "Darwin" ]];
 then
-	java -Xmx512m -Xdock:name="RoboViz" -jar RoboViz.jar "$@"
+	java -Xmx512m --add-exports=java.desktop/sun.awt=ALL-UNNAMED -Xdock:name="RoboViz" -jar RoboViz.jar "$@"
 else
-	java -Xmx512m -jar RoboViz.jar "$@"
+	java -Xmx512m --add-exports=java.desktop/sun.awt=ALL-UNNAMED -jar RoboViz.jar "$@"
 fi

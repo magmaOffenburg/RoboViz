@@ -9,6 +9,10 @@ group 'org.magmaoffenburg.roboviz'
 version '1.8.5'
 mainClassName = 'org.magmaoffenburg.roboviz.MainKt'
 
+application {
+    applicationDefaultJvmArgs = ['--add-exports=java.desktop/sun.awt=ALL-UNNAMED']
+}
+
 ext {
     jogl_version = '2.4.0'
     log4j_version = '2.20.0'
