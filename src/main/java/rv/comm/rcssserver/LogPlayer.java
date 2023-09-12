@@ -411,17 +411,29 @@ public class LogPlayer implements LogfileListener
 			logAnalyzer.abort();
 		}
 		logAnalyzer = new LogAnalyzerThread(file, new LogAnalyzerThread.ResultCallback() {
+			/*
+			  A reference to the logfile reader is stored locally in the beginning of each callback.
+			  This prevents a NullPointerException when logfile is suddenly set to null in another thread.
+			 */
 			@Override
 			public void stepSizeFound(float stepSize, int numFrames)
 			{
+				ILogfileReader logfileReader = logfile;
+				if (logfile == null) {
+					return;
+				}
 				foundStepSize = true;
 				SECONDS_PER_FRAME = stepSize;
-				logfile.setNumFrames(numFrames);
+				logfileReader.setNumFrames(numFrames);
 			}
 
 			@Override
 			public void goalFound(Goal goal)
 			{
+				ILogfileReader logfileReader = logfile;
+				if (logfile == null) {
+					return;
+				}
 				goals.add(goal);
 				analyzedFrames = goal.frame;
 				stateChanged();
@@ -430,8 +442,12 @@ public class LogPlayer implements LogfileListener
 			@Override
 			public void finished(int numFrames)
 			{
+				ILogfileReader logfileReader = logfile;
+				if (logfile == null) {
+					return;
+				}
 				LogPlayer.this.logAnalyzed = true;
-				logfile.setNumFrames(numFrames);
+				logfileReader.setNumFrames(numFrames);
 				analyzedFrames = numFrames;
 				stateChanged();
 			}
