@@ -88,6 +88,12 @@ public class LogAnalyzerThread extends Thread
 		processFrame();
 
 		callback.finished(logfile.getNumFrames());
+
+		try {
+			logfile.close();
+		} catch (IOException e) {
+			// Ignore exception
+		}
 	}
 
 	private void processFrame()

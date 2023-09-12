@@ -198,13 +198,6 @@ public class Logfile implements ILogfileReader
 	}
 
 	@Override
-	protected void finalize() throws Throwable
-	{
-		super.finalize();
-		close();
-	}
-
-	@Override
 	public File getFile()
 	{
 		return logsrc;
