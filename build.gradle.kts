@@ -72,3 +72,19 @@ tasks.jar {
 tasks.withType<ShadowJar> {
     archiveFileName.set("${project.name}.jar")
 }
+
+tasks.register<Copy>("binDir") {
+    dependsOn(tasks.withType<ShadowJar>())
+
+    val binPath = layout.projectDirectory.dir("bin")
+    from(
+        layout.buildDirectory.file("libs/${project.name}.jar"),
+        layout.projectDirectory.file("config.txt"),
+        layout.projectDirectory.file("scripts/roboviz.sh"),
+        layout.projectDirectory.file("scripts/roboviz.bat"),
+        layout.projectDirectory.file("LICENSE.md"),
+        layout.projectDirectory.file("NOTICE.md"),
+        layout.projectDirectory.file("CHANGELOG.md")
+    )
+    into(binPath)
+}
