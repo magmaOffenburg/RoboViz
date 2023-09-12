@@ -1,9 +1,10 @@
 package rv.comm.rcssserver;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
-public interface ILogfileReader
+public interface ILogfileReader extends Closeable
 {
 	interface LogfileListener
 	{
@@ -36,7 +37,7 @@ public interface ILogfileReader
 	 * Closes any open file streams. If the logfile is already closed, this method is ignored. While
 	 * closed, the logfile frames cannot be read.
 	 */
-	void close();
+	void close() throws IOException;
 
 	/**
 	 * Moves the current frame ahead by one frame.

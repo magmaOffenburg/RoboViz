@@ -154,12 +154,9 @@ public class Logfile implements ILogfileReader
 	}
 
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
-		try {
-			br.close();
-		} catch (Exception ex) {
-		}
+		br.close();
 	}
 
 	@Override

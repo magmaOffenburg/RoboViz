@@ -447,7 +447,11 @@ public class LogPlayer implements LogfileListener
 			logAnalyzer.abort();
 
 		if (logfile != null) {
-			logfile.close();
+			try {
+				logfile.close();
+			} catch (IOException e) {
+				// Ignore exception
+			}
 			logfile = null;
 			for (StateChangeListener l : listeners)
 				l.logfileChanged();
