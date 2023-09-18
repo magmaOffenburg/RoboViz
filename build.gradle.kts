@@ -94,29 +94,31 @@ tasks.register<Copy>("binDir") {
 tasks.register("macOSApp") {
     dependsOn(tasks.withType<ShadowJar>())
 
-    copy {
-        from(layout.projectDirectory.file("macos/Info.plist"))
-        into(layout.buildDirectory.dir("macos/${project.name}.app/Contents"))
-        filter(ReplaceTokens::class, "tokens" to mapOf(
-            "CFBundleExecutable" to "launcher",
-            "CFBundleIconFile" to "icon",
-            "CFBundleIdentifier" to group.toString(),
-            "CFBundleName" to project.name,
-            "CFBundleShortVersionString" to version.toString(),
-            "CFBundleVersion" to version.toString(),
-        ))
-    }
-    copy {
-        from(layout.projectDirectory.file("scripts/roboviz.sh"))
-        into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/MacOS"))
-        rename(".*", "launcher")
-    }
-    copy {
-        from(layout.projectDirectory.file("macos/icon.icns"))
-        into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/Resources"))
-    }
-    copy {
-        from(layout.buildDirectory.file("libs/${project.name}.jar"))
-        into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/MacOS"))
+    doLast {
+        copy {
+            from(layout.projectDirectory.file("macos/Info.plist"))
+            into(layout.buildDirectory.dir("macos/${project.name}.app/Contents"))
+            filter(ReplaceTokens::class, "tokens" to mapOf(
+                "CFBundleExecutable" to "launcher",
+                "CFBundleIconFile" to "icon",
+                "CFBundleIdentifier" to group.toString(),
+                "CFBundleName" to project.name,
+                "CFBundleShortVersionString" to version.toString(),
+                "CFBundleVersion" to version.toString(),
+            ))
+        }
+        copy {
+            from(layout.projectDirectory.file("scripts/roboviz.sh"))
+            into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/MacOS"))
+            rename(".*", "launcher")
+        }
+        copy {
+            from(layout.projectDirectory.file("macos/icon.icns"))
+            into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/Resources"))
+        }
+        copy {
+            from(layout.buildDirectory.file("libs/${project.name}.jar"))
+            into(layout.buildDirectory.dir("macos/${project.name}.app/Contents/MacOS"))
+        }
     }
 }
