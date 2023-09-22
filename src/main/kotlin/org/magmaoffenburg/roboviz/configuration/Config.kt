@@ -38,20 +38,20 @@ class Config(args: Array<String>) {
         var recordLogs = false
         var logfileDirectory = ""
         var logReplayFile = ""
-        var lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel"
+        var lookAndFeel = "system"
         var drawingFilter = ".*"
     }
 
     object Graphics {
-        var useBloom = false
-        var usePhong = false
-        var useShadows = false
-        var useSoftShadows = false
+        var useBloom = true
+        var usePhong = true
+        var useShadows = true
+        var useSoftShadows = true
         var shadowResolution = 1024
         var useStereo = false
-        var useVsync = true
-        var useFsaa = false
-        var fsaaSamples = 4
+        var useVsync = false
+        var useFsaa = true
+        var fsaaSamples = 8
         var targetFPS = 60
         var firstPersonFOV = 120
         var thirdPersonFOV = 80
@@ -85,9 +85,9 @@ class Config(args: Array<String>) {
     object OverlayVisibility {
         var serverSpeed = true
         var foulOverlay = true
-        var fieldOverlay = false
-        var numberOfPlayers = false
-        var playerIDs = false
+        var fieldOverlay = true
+        var numberOfPlayers = true
+        var playerIDs = true
     }
 
     object TeamColors {
