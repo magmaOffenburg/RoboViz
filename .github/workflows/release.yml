@@ -29,4 +29,4 @@ jobs:
         id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ./RoboViz.tar.gz ./RoboViz-macOS.zip
+        run: gh release create ${{ github.ref }} --title ${{ github.ref_name }} ./RoboViz.tar.gz ./RoboViz-macOS.zip
