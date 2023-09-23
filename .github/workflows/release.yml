@@ -23,8 +23,9 @@ jobs:
         run:  |
           ./gradlew binDir macOSApp
           tar czf RoboViz.tar.gz bin/
+          zip -r -9 RoboViz-macOS.zip build/macOS/RoboViz.app
       - name: Create Release
         id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ./RoboViz.tar.gz
+        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ./RoboViz.tar.gz ./RoboViz-macOS.zip
