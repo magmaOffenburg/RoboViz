@@ -23,7 +23,8 @@ jobs:
         run:  |
           ./gradlew binDir macOSApp
           tar czf RoboViz.tar.gz bin/
-          zip -r -9 RoboViz-macOS.zip build/macOS/RoboViz.app
+          mv build/macos/RoboViz.app .
+          zip -r -9 RoboViz-macOS.zip RoboViz.app
       - name: Create Release
         id: create-release
         env:
