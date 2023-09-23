@@ -244,7 +244,7 @@ public class Logfile implements ILogfileReader
 				ByteBuffer buf = ByteBuffer.wrap(drawCmdBytes);
 
 				while (buf.hasRemaining()) {
-					Command cmd = null;
+					Command cmd;
 					try {
 						cmd = Command.parse(buf);
 						if (cmd != null) {
