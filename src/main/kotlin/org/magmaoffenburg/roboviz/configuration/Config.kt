@@ -19,13 +19,15 @@ class Config(args: Array<String>) {
     private val globalPath = System.getProperty("user.home") + "/.roboviz/config.txt"
 
     private val parser = ConfigParser()
-    private val filePath = if (File(globalPath).exists()) globalPath else localPath
+    val filePath = if (File(globalPath).exists() || !File(localPath).exists()) globalPath else localPath
 
     private val configChangeListeners = arrayListOf<ConfigChangeListener>()
 
     init {
         parser.parseArgs(args)
-        parser.parseFile(filePath)
+        if (filePathExists()) {
+            parser.parseFile(filePath)
+        }
 
         try {
             read()
@@ -33,6 +35,8 @@ class Config(args: Array<String>) {
             logger.error("Error reading parsed values. The configuration file might be corrupt or incompatible with this version of RoboViz, try resetting it.")
         }
     }
+
+    fun filePathExists() = File(filePath).exists()
 
     object General {
         var recordLogs = false
@@ -198,9 +202,10 @@ class Config(args: Array<String>) {
     }
 
     /**
-     *  set parser list to object variable values
+     *  set parser list to object variable values and write config to disk
+     *  @param initConfig whether to initialize the config file if it does not exist yet
      */
-    fun write() {
+    fun write(initConfig: Boolean = false) {
         // general
         parser.setValue("Record Logfiles", General.recordLogs.toString())
         parser.setValue("Logfile Directory", General.logfileDirectory)
@@ -251,12 +256,13 @@ class Config(args: Array<String>) {
             "Team Color",
             TeamColors.byTeamNames.map { Pair(it.key, "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}") })
 
-        try {
-            parser.writeFile(filePath)
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            logger.error("Error while trying to save the config.", e)
+        if (initConfig || filePathExists()) {
+            try {
+                parser.writeFile(filePath)
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                logger.error("Error while trying to save the config.", e)
+            }
         }
-
     }
 
     fun configChanged() {

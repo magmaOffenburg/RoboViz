@@ -1,14 +1,17 @@
 package org.magmaoffenburg.roboviz.gui.windows.config
 
 import org.magmaoffenburg.roboviz.Main
+import org.magmaoffenburg.roboviz.util.ConfirmResult
 import org.magmaoffenburg.roboviz.util.SwingUtils
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GridLayout
 import java.awt.Point
+import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
 
@@ -42,7 +45,20 @@ object ConfigWindow : JFrame() {
         }
         val saveButton = JButton("Save and Close")
         saveButton.addActionListener {
-            Main.config.write() // save to the config file
+            var initConfig = false
+            if (!Main.config.filePathExists()) {
+                val result = JOptionPane.showConfirmDialog(
+                    ConfigWindow,
+                    "A configuration file does not exist yet. Do you wish to create one at ${File(Main.config.filePath).absolutePath}?"
+                ).let { ConfirmResult.fromInt(it) }
+                initConfig = when (result) {
+                    ConfirmResult.YES -> true
+                    ConfirmResult.NO -> false
+                    ConfirmResult.CANCEL -> return@addActionListener
+                }
+            }
+
+            Main.config.write(initConfig) // save to the config file
             Main.config.configChanged()
 
             this.isVisible = false
