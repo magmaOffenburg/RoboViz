@@ -21,9 +21,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build
         run:  |
-          cd scripts
-          ./build.sh
-          cd ..
+          ./gradlew binDir macOSApp
           tar czf RoboViz.tar.gz bin/
       - name: Create Release
         id: create-release
