@@ -85,7 +85,14 @@ class ConfigParser {
             val firstIndex = rawFileList.indexOfFirst { matchKey(it, pairList.key) }
             rawFileList.removeIf { matchKey(it, pairList.key) }
             pairList.value.forEachIndexed { i, pair ->
-                rawFileList.add(firstIndex + i, "${pairList.key.padEnd(20)} : ${pair.first}:${pair.second}")
+                val updatedLine = "${pairList.key.padEnd(20)} : ${pair.first}:${pair.second}"
+                if (firstIndex == -1) {
+                    // Key not yet present in config file
+                    // Append new entries at the bottom of the file
+                    rawFileList.add(updatedLine)
+                } else {
+                    rawFileList.add(firstIndex + i, updatedLine)
+                }
             }
         }
 
