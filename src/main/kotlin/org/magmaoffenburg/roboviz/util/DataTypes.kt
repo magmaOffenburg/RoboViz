@@ -1,10 +1,5 @@
 package org.magmaoffenburg.roboviz.util
-
-class DataTypes {
-
-    enum class Mode {
-        LOG,
-        LIVE
-    }
-
+enum class Mode {
+    LOG,
+    LIVE
 }

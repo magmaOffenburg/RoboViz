@@ -7,7 +7,7 @@ import org.magmaoffenburg.roboviz.configuration.Config.General
 import org.magmaoffenburg.roboviz.etc.LookAndFeelController
 import org.magmaoffenburg.roboviz.gui.MainWindow
 import org.magmaoffenburg.roboviz.rendering.Renderer
-import org.magmaoffenburg.roboviz.util.DataTypes.Mode
+import org.magmaoffenburg.roboviz.util.Mode
 import java.awt.EventQueue
 
 class Main {

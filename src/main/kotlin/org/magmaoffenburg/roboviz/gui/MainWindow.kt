@@ -8,7 +8,7 @@ import org.magmaoffenburg.roboviz.configuration.Config.Graphics
 import org.magmaoffenburg.roboviz.gui.menus.*
 import org.magmaoffenburg.roboviz.gui.windows.LogPlayerControlsPanel
 import org.magmaoffenburg.roboviz.rendering.Renderer
-import org.magmaoffenburg.roboviz.util.DataTypes
+import org.magmaoffenburg.roboviz.util.Mode
 import org.magmaoffenburg.roboviz.util.SwingUtils
 import rv.comm.rcssserver.LogPlayer
 import rv.comm.rcssserver.ServerComm
@@ -49,7 +49,7 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
         isVisible = true // set visible after everything is initialized
         instance = this
 
-        if (Main.mode == DataTypes.Mode.LOG) {
+        if (Main.mode == Mode.LOG) {
             initializeLogPlayerControls()
         }
     }
@@ -83,8 +83,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
         jMenuBar.removeAll()
 
         when (Main.mode) {
-            DataTypes.Mode.LIVE -> initializeLiveMenu()
-            DataTypes.Mode.LOG -> initializeLogMenu()
+            Mode.LIVE -> initializeLiveMenu()
+            Mode.LOG -> initializeLogMenu()
         }
     }
 
@@ -165,8 +165,8 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
         SwingUtilities.updateComponentTreeUI(this)
 
         when (Main.mode) {
-            DataTypes.Mode.LOG -> initializeLogPlayerControls()
-            DataTypes.Mode.LIVE -> logPlayerControls?.dispose()
+            Mode.LOG -> initializeLogPlayerControls()
+            Mode.LIVE -> logPlayerControls?.dispose()
         }
     }
 
