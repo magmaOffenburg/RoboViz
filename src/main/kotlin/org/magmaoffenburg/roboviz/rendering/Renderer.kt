@@ -21,7 +21,7 @@ import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.configuration.Config.*
 import org.magmaoffenburg.roboviz.gui.MainWindow
-import org.magmaoffenburg.roboviz.util.DataTypes
+import org.magmaoffenburg.roboviz.util.Mode
 import rv.comm.NetworkManager
 import rv.comm.drawing.Drawings
 import rv.comm.rcssserver.LogPlayer
@@ -115,7 +115,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         // initialize all camera stuff
         cameraController = CameraController(drawable)
 
-        if (Main.mode == DataTypes.Mode.LIVE) {
+        if (Main.mode == Mode.LIVE) {
             netManager = NetworkManager()
             netManager.init()
             netManager.server.addChangeListener(world.gameState)
@@ -132,7 +132,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         if (activeScreenIsInitialized()) {
             activeScreen.setEnabled(MainWindow.glCanvas, false)
         }
-        activeScreen = if (Main.mode == DataTypes.Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
+        activeScreen = if (Main.mode == Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
         activeScreen.setEnabled(MainWindow.glCanvas, true)
 
         gl?.let { initEffects(gl) }
@@ -415,18 +415,18 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         cameraController.initPicker()
 
         when (Main.mode) {
-            DataTypes.Mode.LIVE -> {
+            Mode.LIVE -> {
                 netManager = NetworkManager()
                 netManager.init()
                 netManager.server.addChangeListener(world.gameState)
                 netManager.server.addChangeListener(MainWindow.instance)
             }
-            DataTypes.Mode.LOG -> {
+            Mode.LOG -> {
                 initLogPlayer()
             }
         }
 
-        activeScreen = if (Main.mode == DataTypes.Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
+        activeScreen = if (Main.mode == Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
         activeScreen.setEnabled(MainWindow.glCanvas, true)
     }
 

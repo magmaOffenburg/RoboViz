@@ -151,12 +151,9 @@ public class LogfileReaderRandomAccess implements ILogfileReader
 	}
 
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
-		try {
-			raf.close();
-		} catch (Exception ex) {
-		}
+		raf.close();
 	}
 
 	@Override

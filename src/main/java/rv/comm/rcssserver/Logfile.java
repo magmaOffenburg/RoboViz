@@ -154,12 +154,9 @@ public class Logfile implements ILogfileReader
 	}
 
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
-		try {
-			br.close();
-		} catch (Exception ex) {
-		}
+		br.close();
 	}
 
 	@Override
@@ -198,13 +195,6 @@ public class Logfile implements ILogfileReader
 			frame = 0;
 		}
 		setCurrentFrame(frame);
-	}
-
-	@Override
-	protected void finalize() throws Throwable
-	{
-		super.finalize();
-		close();
 	}
 
 	@Override
@@ -254,7 +244,7 @@ public class Logfile implements ILogfileReader
 				ByteBuffer buf = ByteBuffer.wrap(drawCmdBytes);
 
 				while (buf.hasRemaining()) {
-					Command cmd = null;
+					Command cmd;
 					try {
 						cmd = Command.parse(buf);
 						if (cmd != null) {

@@ -28,7 +28,7 @@ import jsgl.math.vector.Vec3f;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import org.magmaoffenburg.roboviz.rendering.CameraController;
-import org.magmaoffenburg.roboviz.util.DataTypes;
+import org.magmaoffenburg.roboviz.util.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ISceneGraphItem;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
@@ -184,7 +184,7 @@ public class WorldModel
 		return rightTeam;
 	}
 
-	public void init(GL glObj, ContentManager cm, DataTypes.Mode mode)
+	public void init(GL glObj, ContentManager cm, Mode mode)
 	{
 		this.cm = cm;
 		GL2 gl = glObj.getGL2();

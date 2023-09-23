@@ -2,13 +2,9 @@ package org.magmaoffenburg.roboviz.util
 
 import java.lang.IllegalStateException
 
-class DataTypes {
-
-    enum class Mode {
-        LOG,
-        LIVE
-    }
-
+enum class Mode {
+    LOG,
+    LIVE
 }
 
 enum class ConfirmResult {

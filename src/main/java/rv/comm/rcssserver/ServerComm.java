@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config.General;
 import org.magmaoffenburg.roboviz.configuration.Config.Networking;
-import org.magmaoffenburg.roboviz.util.DataTypes;
+import org.magmaoffenburg.roboviz.util.Mode;
 import rv.comm.drawing.DrawComm.DrawCommListener;
 import rv.world.WorldModel;
 
@@ -217,7 +217,7 @@ public class ServerComm implements DrawCommListener
 		logfileOutput.write("\n");
 	}
 
-	public ServerComm(WorldModel world, DataTypes.Mode viewerMode)
+	public ServerComm(WorldModel world, Mode viewerMode)
 	{
 		this.world = world;
 
@@ -235,7 +235,7 @@ public class ServerComm implements DrawCommListener
 			autoConnectTimer.start();
 		}
 
-		recordLogs = viewerMode != DataTypes.Mode.LOG && General.INSTANCE.getRecordLogs();
+		recordLogs = viewerMode != Mode.LOG && General.INSTANCE.getRecordLogs();
 		logfileDirectory = General.INSTANCE.getLogfileDirectory();
 	}
 

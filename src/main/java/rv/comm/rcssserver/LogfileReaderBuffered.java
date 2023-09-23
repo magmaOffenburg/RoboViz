@@ -143,7 +143,7 @@ public class LogfileReaderBuffered implements ILogfileReader
 	}
 
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
 		decoratee.close();
 		buffer = null;

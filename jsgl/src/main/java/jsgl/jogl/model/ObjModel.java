@@ -71,7 +71,7 @@ public class ObjModel implements GLDisposable
 				readVertexFormat(parts);
 			} else if (subparts.length == 2) {
 				readVertexTexCoordsFormat(parts);
-			} else if (subparts[1].equals("")) {
+			} else if (subparts[1].isEmpty()) {
 				readVertexNormalFormat(parts);
 			} else {
 				readVertexTexCoordsNormalFormat(parts);

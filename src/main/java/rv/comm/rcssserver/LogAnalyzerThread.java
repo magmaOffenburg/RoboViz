@@ -77,7 +77,15 @@ public class LogAnalyzerThread extends Thread
 		}
 		processFrame();
 
-		callback.finished(logfile.getNumFrames());
+		if (!aborted) {
+			callback.finished(logfile.getNumFrames());
+		}
+
+		try {
+			logfile.close();
+		} catch (IOException e) {
+			// Ignore exception
+		}
 	}
 
 	private void processFrame()
@@ -111,7 +119,9 @@ public class LogAnalyzerThread extends Thread
 			int frame = logfile.getCurrentFrame();
 			int goalWindowFrames = Math.round((1 / stepSize) * LogPlayer.GOAL_WINDOW_SECONDS);
 			int viewFrame = Math.max(0, frame - goalWindowFrames);
-			callback.goalFound(new Goal(frame, viewFrame, scoringTeam));
+			if (!aborted) {
+				callback.goalFound(new Goal(frame, viewFrame, scoringTeam));
+			}
 		}
 
 		lastScoreLeft = scoreLeft;
@@ -139,7 +149,9 @@ public class LogAnalyzerThread extends Thread
 				// estimate total number of frames
 				float halfTime = world.getGameState().getHalfTime();
 				int numFrames = Math.round(((1 / stepSize) * halfTime) + numPauseFrames);
-				callback.stepSizeFound(stepSize, numFrames);
+				if (!aborted) {
+					callback.stepSizeFound(stepSize, numFrames);
+				}
 				this.stepSize = stepSize;
 			}
 
