@@ -46,6 +46,7 @@ class GeneralPanel: JPanel() {
         setDefaultRenderer(Color::class.java, ColorRenderer())
         setDefaultEditor(Color::class.java, ColorEditor())
         columnModel.getColumn(1).maxWidth = 30
+        tableHeader = null
     }
     private val addColorButton = JButton("Add")
     private val removeColorButton = JButton("Remove")
@@ -69,6 +70,8 @@ class GeneralPanel: JPanel() {
         }
         this.layout = layout
 
+        val teamColorScrollPanel = JScrollPane(teamColorTable)
+
         layout.setHorizontalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.LEADING)
 
@@ -89,7 +92,7 @@ class GeneralPanel: JPanel() {
                         .addComponent(teamColorsLabel, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(teamColorsSeparator, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                 )
-                .addComponent(teamColorTable, GroupLayout.Alignment.CENTER, 0, 150, GroupLayout.PREFERRED_SIZE)
+                .addComponent(teamColorScrollPanel, GroupLayout.Alignment.CENTER, 0, 200, GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(addColorButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
                         .addComponent(removeColorButton, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE.toInt())
@@ -114,7 +117,7 @@ class GeneralPanel: JPanel() {
                         .addComponent(teamColorsLabel)
                         .addComponent(teamColorsSeparator)
                 )
-                .addComponent(teamColorTable)
+                .addComponent(teamColorScrollPanel)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(addColorButton)
                         .addComponent(removeColorButton)
