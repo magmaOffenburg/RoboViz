@@ -1,3 +1,17 @@
+2.0.0 (October 6, 2023)
+------------------------------
+* update minimum required Java version to 17
+* require strings sent via the drawing protocol to be UTF-8 encoded
+* update JOGL to 2.4.0 (adds support for macOS Ventura)
+* move entire build logic to Gradle (use `./gradlew binDir` instead of
+  the old build script)
+* add a build task to generate a macOS application bundle
+  (`./gradlew macOSApp`)
+* support running without a present config file
+* make the team color table in the configuration window scrollable
+* fix a NullPointerException when stopping the log player
+* fix an IndexOutOfBoundsException when the connection ends unexpectedly
+
 1.8.5 (July 2, 2023)
 ------------------------------
 * add timer for penalties in RCSSServer3D 0.7.6

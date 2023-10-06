@@ -13,7 +13,7 @@ import java.awt.EventQueue
 class Main {
     companion object {
         const val name = "RoboViz"
-        const val version = "2.0.0-SNAPSHOT"
+        const val version = "2.0.0"
 
         var mode = Mode.LIVE
         lateinit var config: Config // TODO maybe Config should be a Object
