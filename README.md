@@ -5,7 +5,7 @@
 
 RoboViz is a monitor and visualization tool for the [RoboCup 3D Soccer Simulation League](https://ssim.robocup.org/3d-simulation/). This is a fork of the original version by Justin Stoecker [hosted on SourceForge](https://sourceforge.net/projects/rcroboviz/). Compared to the original version, major improvements have been made as can be seen in detail in the [changelog](CHANGELOG.md).
 
-Java 1.8 is required to build and run RoboViz. Pre-built binaries for Windows, Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using [`scripts/build.sh`](scripts/build.sh) or [`scripts/build.bat`](scripts/build.bat).
+Java 17 is required to build and run RoboViz. Pre-built binaries for Windows, Linux and Mac are available [here](https://github.com/magmaOffenburg/RoboViz/releases). You can also build it from source using [`scripts/build.sh`](scripts/build.sh) or [`scripts/build.bat`](scripts/build.bat).
 
 ![](images/video.gif)
 

@@ -81,8 +81,7 @@ public class SExp
 	private void printExpression(int depth, StringBuilder sb)
 	{
 		// indentation
-		for (int i = 0; i < depth; i++)
-			sb.append("--");
+		sb.append("--".repeat(Math.max(0, depth)));
 
 		// print atoms
 		sb.append("[");

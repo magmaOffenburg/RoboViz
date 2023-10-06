@@ -57,9 +57,7 @@ public class TessCallback implements GLUtessellatorCallback
 	@Override
 	public void vertex(Object vertexData)
 	{
-		double[] pointer;
-		if (vertexData instanceof double[]) {
-			pointer = (double[]) vertexData;
+		if (vertexData instanceof double[] pointer) {
 			if (pointer.length == 6)
 				gl.glColor3dv(pointer, 3);
 			gl.glVertex3dv(pointer, 0);

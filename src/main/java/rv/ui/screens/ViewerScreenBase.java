@@ -270,8 +270,8 @@ public abstract class ViewerScreenBase
 			result = rightTeam.get(0);
 
 		ISelectable selection = Renderer.world.getSelectedObject();
-		if (selection instanceof Agent)
-			result = (Agent) selection;
+		if (selection instanceof Agent agent)
+			result = agent;
 
 		// players usually beam right after they connect, avoid camera jumps
 		if (result != null && result.getAge() < 50) {

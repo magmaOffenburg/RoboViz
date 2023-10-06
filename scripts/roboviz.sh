@@ -1,28 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
-args=""
-while [ $# -gt 0 ]
-do
-    if [[ $1 == --logFile=* ]];
-    then
-        logFileName=${1#*=}
-        DIR_LOGFILE="$( eval cd "$( dirname "$logFileName" )" && pwd )"
-        LOGFILE=$DIR_LOGFILE/$(basename $logFileName)
-        args="$args --logFile=$LOGFILE"
-    else
-        args="$args $1"
-    fi
-    shift 1
-done
+DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-set -- $args
-
-DIR="$( cd "$( dirname "$0" )" && pwd )" 
-cd $DIR
-
-if [[ `uname -s` == "Darwin" ]];
+VM_ARGS="-Xmx512m --add-exports=java.desktop/sun.awt=ALL-UNNAMED"
+if [ `uname -s` = "Darwin" ];
 then
-	java -Xmx512m -Xdock:name="RoboViz" -jar RoboViz.jar "$@"
-else
-	java -Xmx512m -jar RoboViz.jar "$@"
+	VM_ARGS="$VM_ARGS -Xdock:name=RoboViz"
+	if [ -f "$DIR/../Resources/icon.icns" ];
+	then
+	  VM_ARGS="$VM_ARGS -Xdock:icon=$DIR/../Resources/icon.icns"
+	fi
 fi
+
+java $VM_ARGS -jar "$DIR/RoboViz.jar" "$@"

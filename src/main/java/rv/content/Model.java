@@ -92,8 +92,7 @@ public class Model
 		// this is necessary for the shader to blend meshes that have
 		// textures for some parts and only color materials for others
 		for (MeshPart p : mesh.getParts()) {
-			if (p.getMaterial() instanceof ObjMaterial) {
-				ObjMaterial mat = (ObjMaterial) p.getMaterial();
+			if (p.getMaterial() instanceof ObjMaterial mat) {
 				if (mat.getTexture() == null && mat.getTextureSource() == null) {
 					mat.setTexture(cm.getWhiteTexture(), false);
 				}

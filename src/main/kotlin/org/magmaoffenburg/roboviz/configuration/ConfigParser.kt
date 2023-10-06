@@ -2,6 +2,7 @@ package org.magmaoffenburg.roboviz.configuration
 
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
+import java.io.FileNotFoundException
 
 class ConfigParser {
     private val logger = logger()
@@ -66,7 +67,12 @@ class ConfigParser {
         val configFile = File(path)
 
         // read raw file
-        val rawFileList = configFile.readLines().toMutableList()
+        val rawFileList = try {
+            configFile.readLines().toMutableList()
+        } catch (e: FileNotFoundException) {
+            // File doesn't exist yet
+            mutableListOf()
+        }
 
         val matchKey = { line: String, key: String -> line.substringBefore(":").trim() == key }
 
@@ -85,7 +91,14 @@ class ConfigParser {
             val firstIndex = rawFileList.indexOfFirst { matchKey(it, pairList.key) }
             rawFileList.removeIf { matchKey(it, pairList.key) }
             pairList.value.forEachIndexed { i, pair ->
-                rawFileList.add(firstIndex + i, "${pairList.key.padEnd(20)} : ${pair.first}:${pair.second}")
+                val updatedLine = "${pairList.key.padEnd(20)} : ${pair.first}:${pair.second}"
+                if (firstIndex == -1) {
+                    // Key not yet present in config file
+                    // Append new entries at the bottom of the file
+                    rawFileList.add(updatedLine)
+                } else {
+                    rawFileList.add(firstIndex + i, updatedLine)
+                }
             }
         }
 
@@ -95,6 +108,7 @@ class ConfigParser {
             sb.append(line)
             sb.append("\n")
         }
+        configFile.absoluteFile.parentFile.mkdir()
         configFile.writeText(sb.toString())
     }
 

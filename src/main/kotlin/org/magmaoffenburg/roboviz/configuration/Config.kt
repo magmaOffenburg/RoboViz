@@ -19,13 +19,15 @@ class Config(args: Array<String>) {
     private val globalPath = System.getProperty("user.home") + "/.roboviz/config.txt"
 
     private val parser = ConfigParser()
-    private val filePath = if (File(globalPath).exists()) globalPath else localPath
+    val filePath = if (File(globalPath).exists() || !File(localPath).exists()) globalPath else localPath
 
     private val configChangeListeners = arrayListOf<ConfigChangeListener>()
 
     init {
         parser.parseArgs(args)
-        parser.parseFile(filePath)
+        if (filePathExists()) {
+            parser.parseFile(filePath)
+        }
 
         try {
             read()
@@ -34,24 +36,26 @@ class Config(args: Array<String>) {
         }
     }
 
+    fun filePathExists() = File(filePath).exists()
+
     object General {
         var recordLogs = false
         var logfileDirectory = ""
         var logReplayFile = ""
-        var lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel"
+        var lookAndFeel = "system"
         var drawingFilter = ".*"
     }
 
     object Graphics {
-        var useBloom = false
-        var usePhong = false
-        var useShadows = false
-        var useSoftShadows = false
+        var useBloom = true
+        var usePhong = true
+        var useShadows = true
+        var useSoftShadows = true
         var shadowResolution = 1024
         var useStereo = false
-        var useVsync = true
-        var useFsaa = false
-        var fsaaSamples = 4
+        var useVsync = false
+        var useFsaa = true
+        var fsaaSamples = 8
         var targetFPS = 60
         var firstPersonFOV = 120
         var thirdPersonFOV = 80
@@ -85,9 +89,9 @@ class Config(args: Array<String>) {
     object OverlayVisibility {
         var serverSpeed = true
         var foulOverlay = true
-        var fieldOverlay = false
-        var numberOfPlayers = false
-        var playerIDs = false
+        var fieldOverlay = true
+        var numberOfPlayers = true
+        var playerIDs = true
     }
 
     object TeamColors {
@@ -198,9 +202,10 @@ class Config(args: Array<String>) {
     }
 
     /**
-     *  set parser list to object variable values
+     *  set parser list to object variable values and write config to disk
+     *  @param initConfig whether to initialize the config file if it does not exist yet
      */
-    fun write() {
+    fun write(initConfig: Boolean = false) {
         // general
         parser.setValue("Record Logfiles", General.recordLogs.toString())
         parser.setValue("Logfile Directory", General.logfileDirectory)
@@ -251,12 +256,13 @@ class Config(args: Array<String>) {
             "Team Color",
             TeamColors.byTeamNames.map { Pair(it.key, "0x${Integer.toHexString(it.value.rgb and 0xFFFFFF)}") })
 
-        try {
-            parser.writeFile(filePath)
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            logger.error("Error while trying to save the config.", e)
+        if (initConfig || filePathExists()) {
+            try {
+                parser.writeFile(filePath)
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                logger.error("Error while trying to save the config.", e)
+            }
         }
-
     }
 
     fun configChanged() {

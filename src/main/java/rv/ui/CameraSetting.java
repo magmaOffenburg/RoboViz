@@ -19,24 +19,6 @@ package rv.ui;
 import jsgl.math.vector.Vec2f;
 import jsgl.math.vector.Vec3f;
 
-public class CameraSetting
+public record CameraSetting(Vec3f position, Vec2f rotation)
 {
-	private final Vec3f position;
-	private final Vec2f rotation;
-
-	public Vec3f getPosition()
-	{
-		return position;
-	}
-
-	public Vec2f getRotation()
-	{
-		return rotation;
-	}
-
-	public CameraSetting(Vec3f position, Vec2f rotation)
-	{
-		this.position = position;
-		this.rotation = rotation;
-	}
 }

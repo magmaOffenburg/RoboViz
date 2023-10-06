@@ -118,8 +118,8 @@ public class SimsparkController implements ICameraController, GameStateChangeLis
 			return;
 
 		FPCamera camera = CameraController.fpCamera;
-		camera.setPosition(cameras[i].getPosition().clone());
-		camera.setRotation(cameras[i].getRotation().clone());
+		camera.setPosition(cameras[i].position().clone());
+		camera.setRotation(cameras[i].rotation().clone());
 	}
 
 	/** Initialize saved camera positions */
