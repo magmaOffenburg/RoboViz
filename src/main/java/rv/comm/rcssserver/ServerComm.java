@@ -152,8 +152,14 @@ public class ServerComm implements DrawCommListener
 			// read from stream until all bytes in message are read
 			byte[] buf = new byte[length];
 			int bytesRead = 0;
-			while (bytesRead < length)
-				bytesRead += in.read(buf, bytesRead, length - bytesRead);
+			while (bytesRead < length) {
+				int tmp = in.read(buf, bytesRead, length - bytesRead);
+				if (tmp < 0) {
+					// Unexpected EOF
+					return null;
+				}
+				bytesRead += tmp;
+			}
 
 			return new String(buf);
 		}
