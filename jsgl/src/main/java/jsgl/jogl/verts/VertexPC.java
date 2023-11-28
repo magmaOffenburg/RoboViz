@@ -27,15 +27,30 @@ import com.jogamp.opengl.fixedfunc.GLPointerFunc;
  */
 public class VertexPC extends Vertex
 {
-	public static final int STRIDE = Float.SIZE / 8 * 6;
+	private static final int STRIDE = Float.SIZE / 8 * 6;
 
-	public final float[] position = new float[3];
-	public final float[] color = new float[3];
+	private final float[] position = new float[3];
+	private final float[] color = new float[3];
 
 	public VertexPC(float[] position, float[] color)
 	{
 		System.arraycopy(position, 0, this.position, 0, 3);
 		System.arraycopy(color, 0, this.color, 0, 3);
+	}
+
+	public int getStride()
+	{
+		return STRIDE;
+	}
+
+	public float[] getPosition()
+	{
+		return position.clone(); // Returning a copy to ensure immutability
+	}
+
+	public float[] getColor()
+	{
+		return color.clone(); // Returning a copy to ensure immutability
 	}
 
 	@Override

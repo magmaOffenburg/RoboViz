@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 /**
  * Records a camera's movement and orientation over time. While the state is set
- * to recording, the camera position and orientation is periodically saved. When
+ * to recording, the camera position and orientation are periodically saved. When
  * the state is set to playing, the list of recorded camera positions is
- * traversed in order. The position and rotation of the camera is interpolated
+ * traversed in order. The position and rotation of the camera are interpolated
  * between key frames, and the most current values are exposed to other classes.
  *
  * @author Justin Stoecker
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class StateRecorder
 {
 	/**
-	 * Interface for a set of a values that are recorded and interpolated. Make
+	 * Interface for a set of values that are recorded and interpolated. Make
 	 * sure any class that implements this has a default constructor. upon
 	 * playback
 	 */
@@ -52,19 +52,6 @@ public class StateRecorder
 		String getValues();
 	}
 
-	/** A snapshot of data */
-	public static class KeyFrame
-	{
-		public FrameData data;
-		public float transitionTime; // time to transition to frame (in ms)
-
-		public KeyFrame(FrameData data, float transitionTime)
-		{
-			this.data = data;
-			this.transitionTime = transitionTime;
-		}
-	}
-
 	/** Possible states of the camcorder */
 	public enum State
 	{
@@ -73,7 +60,6 @@ public class StateRecorder
 		Idle,
 		FinishedPlaying
 	}
-	;
 
 	private final int MAX_FRAMES;
 	private ArrayList<KeyFrame> keyFrames;
@@ -235,5 +221,20 @@ public class StateRecorder
 				bw.write('\n');
 		}
 		bw.close();
+	}
+
+	/**
+	 * Represents a snapshot of data for a key frame.
+	 */
+	private static class KeyFrame
+	{
+		public FrameData data;
+		public float transitionTime; // time to transition to frame (in ms)
+
+		public KeyFrame(FrameData data, float transitionTime)
+		{
+			this.data = data;
+			this.transitionTime = transitionTime;
+		}
 	}
 }

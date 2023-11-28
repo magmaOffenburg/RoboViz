@@ -65,6 +65,62 @@ public class Texture2D implements GLDisposable
 		this.h = h;
 	}
 
+	public static class Texture2DBuilder 
+	{
+		private int level;
+		private int internalFormat;
+		private int width;
+		private int height;
+		private int border;
+		private int format;
+		private int type;
+		private Buffer data;
+
+		public Texture2DBuilder level(int level) {
+			this.level = level;
+			return this;
+		}
+
+		public Texture2DBuilder internalFormat(int internalFormat) {
+			this.internalFormat = internalFormat;
+			return this;
+		}
+
+		public Texture2DBuilder width(int width) {
+			this.width = width;
+			return this;
+		}
+
+		public Texture2DBuilder height(int height) {
+			this.height = height;
+			return this;
+		}
+
+		public Texture2DBuilder border(int border) {
+			this.border = border;
+			return this;
+		}
+
+		public Texture2DBuilder format(int format) {
+			this.format = format;
+			return this;
+		}
+
+		public Texture2DBuilder type(int type) {
+			this.type = type;
+			return this;
+		}
+
+		public Texture2DBuilder data(Buffer data) {
+			this.data = data;
+			return this;
+		}
+
+		public void build(GL gl, Texture2D texture) {
+			texture.texImage(gl, level, internalFormat, width, height, border, format, type, data);
+		}
+	}
+
 	/**
 	 * Generates a texture object with a unique ID. This is equivalent to
 	 * calling glGenTextures(1, &id) and storing the result in the returned
@@ -147,14 +203,9 @@ public class Texture2D implements GLDisposable
 	 * Equivalent to glTexImage2D(GL_TEXTURE_2D, level, internalFormat, width,
 	 * height, border, format, type, data).
 	 */
-	public void texImage(
-			GL gl, int level, int internalFormat, int width, int height, int border, int format, int type, Buffer data)
-	{
-		this.w = width;
-		this.h = height;
-
-		gl.glTexImage2D(GL.GL_TEXTURE_2D, level, internalFormat, width, height, border, format, type, data);
-	}
+	public void texImage(GL gl, Texture2DBuilder builder) {
+        builder.build(gl, this);
+    }
 
 	/**
 	 * Sets a parameter of actively bound texture. Equivalent to using

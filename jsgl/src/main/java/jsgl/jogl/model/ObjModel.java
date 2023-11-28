@@ -152,7 +152,7 @@ public class ObjModel implements GLDisposable
 	 * specified in the file. The render mode for this is not optimized, and the
 	 * preferred method is loading as a mesh. This is left for debug purposes.
 	 */
-	public static ObjModel load(File file) throws IOException
+	public static ObjModel load(File file) throws IOException 
 	{
 		ObjModel model = new ObjModel();
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -166,52 +166,29 @@ public class ObjModel implements GLDisposable
 
 		while ((line = br.readLine()) != null) {
 			line = line.trim();
-			if (line.startsWith("v ")) {
-				float[] vert = readFloatValues(line);
-				if (vert.length > 2) {
-					if (vert[0] > max.x)
-						max.x = vert[0];
-					if (vert[1] > max.y)
-						max.y = vert[1];
-					if (vert[2] > max.z)
-						max.z = vert[2];
-					if (vert[0] < min.x)
-						min.x = vert[0];
-					if (vert[1] < min.y)
-						min.y = vert[1];
-					if (vert[2] < min.z)
-						min.z = vert[2];
-				}
-				model.verts.add(vert);
-			} else if (line.startsWith("vn ")) {
-				model.normals.add(readFloatValues(line));
-			} else if (line.startsWith("vt ")) {
-				model.texCoords.add(readFloatValues(line));
-			} else if (line.startsWith("f ")) {
-				if (currentGroup == null)
-					currentGroup = new ObjGroup("Unnamed Default Group");
-				currentGroup.faces.add(new Face(line, currentMaterial));
-			} else if (line.startsWith("mtllib ")) {
-				File f = new File(file.getParent(), line.split("\\s+")[1]);
-				if (model.mtllib == null)
-					model.mtllib = new ObjMaterialLibrary();
-				BufferedReader br2 = new BufferedReader(new FileReader(f));
-				file.getParentFile();
-				model.mtllib.load(br2, file.getParent(), null);
-				// TODO: can files have multiple material libraries?
-			} else if (line.startsWith("usemtl ")) {
-				String requestedMaterial = line.split("\\s+")[1];
-				for (ObjMaterial mat : model.mtllib.materials)
-					if (mat.name.equals(requestedMaterial))
-						currentMaterial = mat;
-			} else if (line.startsWith("o ")) {
-				// TODO
-			} else if (line.startsWith("g ")) {
-				if (currentGroup != null)
-					model.groups.add(currentGroup);
-				currentGroup = new ObjGroup(line.split("\\s+")[1]);
-			} else if (line.startsWith("s ")) {
-				// TODO
+			LineType lineType = getLineType(line);
+			switch (lineType) {
+				case VERTEX:
+					processVertexLine(line, model, min, max);
+					break;
+				case NORMAL:
+					model.normals.add(readFloatValues(line));
+					break;
+				case TEX_COORD:
+					model.texCoords.add(readFloatValues(line));
+					break;
+				case FACE:
+					processFaceLine(line, currentGroup, currentMaterial, model);
+					break;
+				case MATERIAL_LIBRARY:
+					processMaterialLibrary(line, file, model);
+					break;
+				case USE_MATERIAL:
+					processUseMaterial(line, model);
+					break;
+				case GROUP:
+					currentGroup = processGroup(line, model, currentGroup);
+					break;
 			}
 		}
 		br.close();
@@ -221,6 +198,28 @@ public class ObjModel implements GLDisposable
 		model.bounds = new BoundingBox(min, max);
 
 		return model;
+	}
+
+	private static LineType getLineType(String line) {
+		if (line.startsWith("v ")) return LineType.VERTEX;
+		if (line.startsWith("vn ")) return LineType.NORMAL;
+		if (line.startsWith("vt ")) return LineType.TEX_COORD;
+		if (line.startsWith("f ")) return LineType.FACE;
+		if (line.startsWith("mtllib ")) return LineType.MATERIAL_LIBRARY;
+		if (line.startsWith("usemtl ")) return LineType.USE_MATERIAL;
+		if (line.startsWith("g ")) return LineType.GROUP;
+		return LineType.UNKNOWN;
+	}
+
+	private enum LineType {
+		VERTEX,
+		NORMAL,
+		TEX_COORD,
+		FACE,
+		MATERIAL_LIBRARY,
+		USE_MATERIAL,
+		GROUP,
+		UNKNOWN
 	}
 
 	protected static float[] readFloatValues(String line)

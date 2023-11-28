@@ -27,17 +27,37 @@ import com.jogamp.opengl.fixedfunc.GLPointerFunc;
  */
 public class VertexPNT extends Vertex
 {
-	public static final int STRIDE = Float.SIZE / 8 * 8;
+	private static final int STRIDE = Float.SIZE / 8 * 8;
 
-	public final float[] position = new float[3];
-	public final float[] normal = new float[3];
-	public final float[] texcoords = new float[2];
+	private final float[] position = new float[3];
+	private final float[] normal = new float[3];
+	private final float[] texcoords = new float[2];
 
 	public VertexPNT(float[] position, float[] normal, float[] texcoords)
 	{
 		System.arraycopy(position, 0, this.position, 0, 3);
 		System.arraycopy(normal, 0, this.normal, 0, 3);
 		System.arraycopy(texcoords, 0, this.texcoords, 0, 2);
+	}
+
+	public int getStride()
+	{
+		return STRIDE;
+	}
+
+	public float[] getPosition()
+	{
+		return position.clone(); // Returning a copy to ensure immutability
+	}
+
+	public float[] getNormal()
+	{
+		return normal.clone(); // Returning a copy to ensure immutability
+	}
+
+	public float[] getTexCoords()
+	{
+		return texcoords.clone(); // Returning a copy to ensure immutability
 	}
 
 	@Override

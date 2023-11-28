@@ -37,45 +37,89 @@ public class ObjMaterialLibrary
 		return materials;
 	}
 
-	public void load(BufferedReader br, String texturePath, ClassLoader cl) throws IOException
+	public void load(BufferedReader br, String texturePath, ClassLoader cl) throws IOException 
 	{
 		ObjMaterial currentMaterial = null;
-
 		String line;
+
 		while ((line = br.readLine()) != null) {
 			line = line.trim();
-			if (line.startsWith("newmtl ")) {
-				// new material definition, so current material is finished
-				if (currentMaterial != null)
-					materials.add(currentMaterial);
-				currentMaterial = new ObjMaterial(line.trim().split("\\s+")[1]);
-			} else if (line.startsWith("Ka ")) {
-				currentMaterial.readAmbientColor(line);
-			} else if (line.startsWith("Kd ")) {
-				currentMaterial.readDiffuseColor(line);
-			} else if (line.startsWith("Ks ")) {
-				currentMaterial.readSpecularColor(line);
-			} else if (line.startsWith("Ns ")) {
-				currentMaterial.readShininess(line);
-			} else if (line.startsWith("d ") || line.startsWith("Tr ")) {
-				currentMaterial.readAlpha(line);
-			} else if (line.startsWith("illum ")) {
-				currentMaterial.readIlluminationModel(line);
-			} else if (line.startsWith("map_Kd ")) {
-				String textureName = line.split("\\s+")[1];
-				InputStream is = null;
-				if (cl != null) {
-					is = cl.getResourceAsStream(texturePath + textureName);
-				} else {
-					is = new FileInputStream(new File("/" + texturePath, textureName));
-				}
-
-				currentMaterial.readTextureMap(is);
-			}
+			LineType lineType = getLineType(line);
+			processLine(lineType, line, texturePath, cl, currentMaterial);
 		}
 
 		// end of file, so add current material to list
 		if (currentMaterial != null)
 			materials.add(currentMaterial);
+	}
+
+	private LineType getLineType(String line) {
+		if (line.startsWith("newmtl ")) return LineType.NEW_MATERIAL;
+		if (line.startsWith("Ka ")) return LineType.AMBIENT_COLOR;
+		if (line.startsWith("Kd ")) return LineType.DIFFUSE_COLOR;
+		if (line.startsWith("Ks ")) return LineType.SPECULAR_COLOR;
+		if (line.startsWith("Ns ")) return LineType.SHININESS;
+		if (line.startsWith("d ") || line.startsWith("Tr ")) return LineType.ALPHA;
+		if (line.startsWith("illum ")) return LineType.ILLUMINATION_MODEL;
+		if (line.startsWith("map_Kd ")) return LineType.TEXTURE_MAP;
+		return LineType.UNKNOWN;
+	}
+
+	private void processLine(LineType lineType, String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) {
+		switch (lineType) {
+			case NEW_MATERIAL:
+				// new material definition, so current material is finished
+				if (currentMaterial != null)
+					materials.add(currentMaterial);
+				currentMaterial = new ObjMaterial(line.trim().split("\\s+")[1]);
+				break;
+			case AMBIENT_COLOR:
+				currentMaterial.readAmbientColor(line);
+				break;
+			case DIFFUSE_COLOR:
+				currentMaterial.readDiffuseColor(line);
+				break;
+			case SPECULAR_COLOR:
+				currentMaterial.readSpecularColor(line);
+				break;
+			case SHININESS:
+				currentMaterial.readShininess(line);
+				break;
+			case ALPHA:
+				currentMaterial.readAlpha(line);
+				break;
+			case ILLUMINATION_MODEL:
+				currentMaterial.readIlluminationModel(line);
+				break;
+			case TEXTURE_MAP:
+				processTextureMap(line, texturePath, cl, currentMaterial);
+				break;
+			case UNKNOWN:
+				// Handle unknown line type if needed
+				break;
+		}
+	}
+
+	private void processTextureMap(String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) {
+		String textureName = line.split("\\s+")[1];
+		InputStream is = null;
+		if (cl != null) {
+			is = cl.getResourceAsStream(texturePath + textureName);
+		} else {
+			is = new FileInputStream(new File("/" + texturePath, textureName));
+		}
+		currentMaterial.readTextureMap(is);
+	}
+
+	enum LineType {
+		NEW_MATERIAL,
+		AMBIENT_COLOR,
+		DIFFUSE_COLOR,
+		SPECULAR_COLOR,
+		SHININESS,
+		ALPHA,
+		ILLUMINATION_MODEL,
+		TEXTURE_MAP,
+		UNKNOWN
 	}
 }

@@ -32,35 +32,14 @@ public class Line
 	/** Intersects infinite line with a plane */
 	public Vec3f intersect(Plane p)
 	{
-		Vec3f n = p.getNormal();
-		Vec3f d = b.minus(a);
-
-		// ray's direction is parallel to surface of the plane
-		float nDotD = n.dot(d);
-		if (nDotD == 0)
-			return null;
-
-		float t = (n.dot(p.getPoint()) - n.dot(a)) / nDotD;
-
-		return a.plus(d.times(t));
+		Vec3f intersection = Vec3f.intersectInfiniteLineWithPlane(a, b, p);
+		return intersection;
 	}
 
 	/** Intersects line segment defined by this line's two points and a plane */
 	public Vec3f intersectSegment(Plane p)
 	{
-		Vec3f n = p.getNormal();
-		Vec3f d = b.minus(a);
-
-		// ray's direction is parallel to surface of the plane
-		float nDotD = n.dot(d);
-		if (nDotD == 0)
-			return null;
-
-		float t = (n.dot(p.getPoint()) - n.dot(a)) / nDotD;
-
-		if (t >= 0 && t <= 1)
-			return a.plus(d.times(t));
-
-		return null;
+		Vec3f intersection = Vec3f.intersectLineSegmentWithPlane(a, b, p);
+		return intersection;
 	}
 }
