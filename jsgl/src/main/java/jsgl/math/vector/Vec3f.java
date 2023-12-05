@@ -17,6 +17,8 @@
 package jsgl.math.vector;
 
 import java.nio.FloatBuffer;
+
+import jsgl.math.Plane;
 import jsgl.math.Tuplef;
 
 /**
@@ -70,6 +72,37 @@ public class Vec3f implements Tuplef
 		this.x = v;
 		this.y = v;
 		this.z = v;
+	}
+
+	public static Vec3f intersectInfiniteLineWithPlane(Vec3f a, Vec3f b, Plane p) {
+		Vec3f n = p.getNormal();
+		Vec3f d = b.minus(a);
+
+		// ray's direction is parallel to surface of the plane
+		float nDotD = n.dot(d);
+		if (nDotD == 0)
+			return null;
+
+		float t = (n.dot(p.getPoint()) - n.dot(a)) / nDotD;
+
+		return a.plus(d.times(t));
+	}
+
+	public static Vec3f intersectLineSegmentWithPlane(Vec3f a, Vec3f b, Plane p) {
+		Vec3f n = p.getNormal();
+		Vec3f d = b.minus(a);
+
+		// ray's direction is parallel to surface of the plane
+		float nDotD = n.dot(d);
+		if (nDotD == 0)
+			return null;
+
+		float t = (n.dot(p.getPoint()) - n.dot(a)) / nDotD;
+
+		if (t >= 0 && t <= 1)
+			return a.plus(d.times(t));
+
+		return null;
 	}
 
 	/**

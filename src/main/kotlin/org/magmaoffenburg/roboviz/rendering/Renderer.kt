@@ -308,9 +308,9 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     private fun genFBO(gl: GL2, vp: Viewport) {
         if (numSamples > 0) {
             msSceneFBO = FrameBufferObject.create(gl, vp.w, vp.h, GL.GL_RGBA, numSamples)
-            sceneFBO = FrameBufferObject.createNoDepth(gl, vp.w, vp.h, GL.GL_RGB8)
+            sceneFBO = FrameBufferObject.createNoDepth(gl, vp.w, vp.h, GL.GL_RGB8, null);
         } else {
-            sceneFBO = FrameBufferObject.create(gl, vp.w, vp.h, GL.GL_RGB)
+            sceneFBO = FrameBufferObject.create(gl, vp.w, vp.h, GL.GL_RGB, null);
         }
     }
 

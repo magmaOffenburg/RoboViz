@@ -133,7 +133,7 @@ public class ShadowMapRenderer implements SceneRenderer
 		Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
 		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
-		tex.texImage(gl, 0, TEX_FORMAT, texWidth, texHeight, 0, GL2.GL_RGBA, GL2.GL_FLOAT, null);
+		tex.texImage(gl, new Texture2D.Texture2DBuilder());
 		Texture2D.unbind(gl);
 
 		return tex;

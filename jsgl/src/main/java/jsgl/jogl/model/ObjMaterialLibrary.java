@@ -16,11 +16,7 @@
 
 package jsgl.jogl.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -65,7 +61,7 @@ public class ObjMaterialLibrary
 		return LineType.UNKNOWN;
 	}
 
-	private void processLine(LineType lineType, String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) {
+	private void processLine(LineType lineType, String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) throws IOException {
 		switch (lineType) {
 			case NEW_MATERIAL:
 				// new material definition, so current material is finished
@@ -95,12 +91,11 @@ public class ObjMaterialLibrary
 				processTextureMap(line, texturePath, cl, currentMaterial);
 				break;
 			case UNKNOWN:
-				// Handle unknown line type if needed
 				break;
 		}
 	}
 
-	private void processTextureMap(String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) {
+	private void processTextureMap(String line, String texturePath, ClassLoader cl, ObjMaterial currentMaterial) throws IOException {
 		String textureName = line.split("\\s+")[1];
 		InputStream is = null;
 		if (cl != null) {

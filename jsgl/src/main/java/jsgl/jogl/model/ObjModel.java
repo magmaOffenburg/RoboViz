@@ -18,10 +18,8 @@ package jsgl.jogl.model;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.ArrayList;
 import jsgl.jogl.GLDisposable;
 import jsgl.math.BoundingBox;
@@ -198,6 +196,49 @@ public class ObjModel implements GLDisposable
 		model.bounds = new BoundingBox(min, max);
 
 		return model;
+	}
+
+	private static ObjGroup processGroup(String line, ObjModel model, ObjGroup currentGroup) {
+		if (currentGroup != null) model.groups.add(currentGroup);
+		return new ObjGroup(line.split("\\s+")[1]);
+	}
+
+
+	private static void processUseMaterial(String line, ObjModel model) {
+		String requestedMaterial = line.split("\\s+")[1];
+		ObjMaterial currentMaterial;
+		for (ObjMaterial mat : model.mtllib.materials)
+			if (mat.name.equals(requestedMaterial))
+				currentMaterial = mat;
+	}
+
+	private static void processMaterialLibrary(String line, File file, ObjModel model) throws IOException {
+		File f = new File(file.getParent(), line.split("\\s+")[1]);
+		if (model.mtllib == null) model.mtllib = new ObjMaterialLibrary();
+		BufferedReader br2 = new BufferedReader(new FileReader(f));
+		file.getParentFile();
+		model.mtllib.load(br2, file.getParent(), null);
+		// TODO: can files have multiple material libraries?
+	}
+
+
+	private static void processFaceLine(String line, ObjGroup currentGroup, ObjMaterial currentMaterial, ObjModel model) {
+		if (currentGroup == null) currentGroup = new ObjGroup("Unnamed Default Group");
+		currentGroup.faces.add(new Face(line, currentMaterial));
+	}
+
+
+	private static void processVertexLine(String line, ObjModel model, Vec3f min, Vec3f max) {
+		float[] vert = readFloatValues(line);
+		if (vert.length > 2) {
+			if (vert[0] > max.x) max.x = vert[0];
+			if (vert[1] > max.y) max.y = vert[1];
+			if (vert[2] > max.z) max.z = vert[2];
+			if (vert[0] < min.x) min.x = vert[0];
+			if (vert[1] < min.y) min.y = vert[1];
+			if (vert[2] < min.z) min.z = vert[2];
+		}
+		model.verts.add(vert);
 	}
 
 	private static LineType getLineType(String line) {

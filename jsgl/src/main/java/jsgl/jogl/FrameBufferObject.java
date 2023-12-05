@@ -30,8 +30,8 @@ import org.apache.logging.log4j.Logger;
  * an FBO, it must be bound as the current Framebuffer.
  *
  * @author Justin Stoecker
- * @see http://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt
- * @see http://www.songho.ca/opengl/gl_fbo.html
+ * @see <a href="http://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt">...</a>
+ * @see <a href="http://www.songho.ca/opengl/gl_fbo.html">...</a>
  */
 public class FrameBufferObject implements GLDisposable
 {
@@ -44,6 +44,10 @@ public class FrameBufferObject implements GLDisposable
 	private List<GLDisposable> disposables = new ArrayList<>();
 	private int texWidth;
 	private int texHeight;
+
+	public static FrameBufferObject create(GL2 gl, int w, int h, int glRgb) {
+		return null;
+	}
 
 	public int getID()
 	{
@@ -91,15 +95,10 @@ public class FrameBufferObject implements GLDisposable
 	 * @param internalFormat -
 	 * @return Returns a Framebuffer Objects if successful; null otherwise
 	 */
-	public static FrameBufferObject create(GL gl, int w, int h, int internalFormat)
-	{
+	public static FrameBufferObject create(GL gl, int w, int h, int internalFormat, Texture2D.Texture2DBuilder colorTexBuilder) {
 		Texture2D colorTex = Texture2D.generate(gl);
 		colorTex.bind(gl);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
-		colorTex.texImage(gl, 0, internalFormat, w, h, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
+		colorTexBuilder.build(gl, colorTex);
 		Texture2D.unbind(gl);
 
 		RenderBuffer depthBuffer = RenderBuffer.createDepthBuffer(gl, w, h);
@@ -120,16 +119,12 @@ public class FrameBufferObject implements GLDisposable
 		return fbo;
 	}
 
+
 	/** Creates an FBO with a color texture attachment and no depth attachment */
-	public static FrameBufferObject createNoDepth(GL gl, int w, int h, int internalFormat)
-	{
+	public static FrameBufferObject createNoDepth(GL gl, int w, int h, int internalFormat, Texture2D.Texture2DBuilder colorTexBuilder) {
 		Texture2D colorTex = Texture2D.generate(gl);
 		colorTex.bind(gl);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
-		Texture2D.setParameter(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
-		colorTex.texImage(gl, 0, internalFormat, w, h, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
+		colorTexBuilder.build(gl, colorTex);
 		Texture2D.unbind(gl);
 
 		FrameBufferObject fbo = FrameBufferObject.generate(gl);
@@ -147,6 +142,7 @@ public class FrameBufferObject implements GLDisposable
 
 		return fbo;
 	}
+
 
 	/**
 	 * Creates a Framebuffer Object that can be used for offscreen rendering to

@@ -117,7 +117,7 @@ public class Texture2D implements GLDisposable
 		}
 
 		public void build(GL gl, Texture2D texture) {
-			texture.texImage(gl, level, internalFormat, width, height, border, format, type, data);
+			texture.texImage(gl, this);
 		}
 	}
 
