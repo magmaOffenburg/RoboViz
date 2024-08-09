@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.magmaoffenburg.roboviz.util.ArchiveUtilKt;
 import rv.comm.drawing.commands.Command;
 
 /**
@@ -79,7 +80,12 @@ public class Logfile implements ILogfileReader
 	 */
 	private void open() throws IOException
 	{
-		br = TarBz2ZipUtil.createBufferedReader(logsrc);
+		try {
+			br = ArchiveUtilKt.createBufferedReader(logsrc);
+		} catch (Exception e) {
+			LOGGER.error("Unable to open file", e);
+			br = null;
+		}
 		if (br != null) {
 			curFrameMsg = br.readLine();
 			if (curFrameMsg != null && curFrameMsg.startsWith("[")) {
