@@ -24,7 +24,7 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven(url = "https://www.jogamp.org/deployment/maven/")
+        maven(url = "https://jogamp.org/deployment/maven/")
     }
 
     java {
@@ -46,7 +46,7 @@ kotlin {
 
 repositories {
     mavenCentral()
-    maven(url = "https://www.jogamp.org/deployment/maven/")
+    maven(url = "https://jogamp.org/deployment/maven/")
 }
 
 dependencies {
