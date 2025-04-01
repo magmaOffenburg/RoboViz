@@ -21,6 +21,7 @@ import org.apache.logging.log4j.kotlin.logger
 import org.magmaoffenburg.roboviz.Main
 import org.magmaoffenburg.roboviz.configuration.Config.*
 import org.magmaoffenburg.roboviz.gui.MainWindow
+import org.magmaoffenburg.roboviz.util.DeferredMethodCall
 import org.magmaoffenburg.roboviz.util.Mode
 import rv.comm.NetworkManager
 import rv.comm.drawing.Drawings
@@ -53,6 +54,8 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     private var sceneFBO: FrameBufferObject? = null
     private var msSceneFBO: FrameBufferObject? = null
     private var sceneRenderer: SceneRenderer? = null
+
+    private val deferredModeUpdate = DeferredMethodCall(::updateAfterModeChange)
 
     companion object {
         lateinit var instance: Renderer
@@ -133,6 +136,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
             activeScreen.setEnabled(MainWindow.glCanvas, false)
         }
         activeScreen = if (Main.mode == Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
+        activeScreen.init(gl.gL2)
         activeScreen.setEnabled(MainWindow.glCanvas, true)
 
         gl?.let { initEffects(gl) }
@@ -170,6 +174,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         if (!isInitialized) return
 
         val gl2 = gl?.gL2
+        deferredModeUpdate.update()
         contentManager.update(gl2)
         cameraController.update(elapsedMS)
         world.update(gl2, elapsedMS)
@@ -397,6 +402,10 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     fun onModeChange() {
+        deferredModeUpdate.callRequested = true
+    }
+
+    fun updateAfterModeChange() {
         // shut down old stuff
         activeScreen.setEnabled(MainWindow.glCanvas, false)
         activeScreen.stop()
@@ -427,6 +436,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
         }
 
         activeScreen = if (Main.mode == Mode.LIVE) LiveGameScreen() else LogfileModeScreen()
+        activeScreen.init(drawable?.gl?.gL2)
         activeScreen.setEnabled(MainWindow.glCanvas, true)
     }
 

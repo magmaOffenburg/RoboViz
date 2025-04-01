@@ -42,9 +42,9 @@ public class GameStateOverlay extends ScreenBase
 		/** the time a player has to execute a single penalty shot */
 		private static final float PENALTY_SHOT_TIME = 25.0f;
 
-		private final TextRenderer tr1;
-		private final TextRenderer tr2;
-		private final TextRenderer tr3;
+		private TextRenderer tr1;
+		private TextRenderer tr2;
+		private TextRenderer tr3;
 
 		private final int x;
 
@@ -56,6 +56,10 @@ public class GameStateOverlay extends ScreenBase
 		{
 			this.x = x;
 			this.y = y;
+		}
+
+		public void init(GL2 gl)
+		{
 			tr1 = new TextRenderer(new Font("Arial", Font.PLAIN, 22), true, false);
 			tr2 = new TextRenderer(new Font("Arial", Font.PLAIN, 16), true, false);
 			tr3 = new TextRenderer(new Font("Arial", Font.BOLD, 16), true, false);
@@ -194,6 +198,12 @@ public class GameStateOverlay extends ScreenBase
 	public GameStateOverlay()
 	{
 		gsBar = new GameStateBar(20, 20);
+	}
+
+	public void init(GL2 gl)
+	{
+		super.init(gl);
+		gsBar.init(gl);
 	}
 
 	/**

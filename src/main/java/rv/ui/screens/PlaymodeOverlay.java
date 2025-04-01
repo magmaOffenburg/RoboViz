@@ -46,14 +46,20 @@ public class PlaymodeOverlay extends ScreenBase implements KeyListener
 	String caret = CARET;
 	int caretTimer = 0;
 	boolean justCreated = true;
-	final TextRenderer tr;
+	TextRenderer tr;
 	private final LiveGameScreen masterScreen;
 
 	public PlaymodeOverlay(LiveGameScreen masterScreen)
 	{
 		this.masterScreen = masterScreen;
-		tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
 		visible = false;
+	}
+
+	@Override
+	public void init(GL2 gl)
+	{
+		super.init(gl);
+		tr = new TextRenderer(new Font("Calibri", Font.BOLD, 18), true, true);
 	}
 
 	@Override

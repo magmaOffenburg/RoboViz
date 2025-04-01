@@ -1,11 +1,17 @@
 package rv.ui.screens;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import rv.util.WindowResizeEvent;
 
 public abstract class ScreenBase implements Screen
 {
 	protected boolean visible = true;
+
+	@Override
+	public void init(GL2 gl)
+	{
+	}
 
 	@Override
 	public boolean isVisible()

@@ -40,9 +40,10 @@ public class FoulListOverlay extends ScreenBase
 	private static final int TOP_SCREEN_OFFSET = 17;
 	private static final int SIDE_SCREEN_OFFSET = 17;
 
-	private final TextRenderer tr;
+	private TextRenderer tr;
 
-	public FoulListOverlay()
+	@Override
+	public void init(GL2 gl)
 	{
 		tr = new TextRenderer(new Font("Arial", Font.PLAIN, 20), true, false);
 	}

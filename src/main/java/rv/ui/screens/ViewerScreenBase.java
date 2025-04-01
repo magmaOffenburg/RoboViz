@@ -69,7 +69,7 @@ public abstract class ViewerScreenBase
 	private final FoulListOverlay foulListOverlay;
 	protected final List<Screen> overlays = new ArrayList<>();
 
-	protected final BorderTextRenderer overlayTextRenderer;
+	protected BorderTextRenderer overlayTextRenderer;
 	private final List<TextOverlay> textOverlays = new ArrayList<>();
 
 	private RobotVantageBase robotVantage = null;
@@ -78,7 +78,7 @@ public abstract class ViewerScreenBase
 	private int thirdPersonFOV;
 
 	private AgentOverheadType agentOverheadType = AgentOverheadType.ANNOTATIONS;
-	protected final BorderTextRenderer tr;
+	protected BorderTextRenderer tr;
 
 	private TrackerCameraType trackerCameraType = TrackerCameraType.NONE;
 
@@ -94,10 +94,6 @@ public abstract class ViewerScreenBase
 		overlays.add(fieldOverlay);
 		foulListOverlay = new FoulListOverlay();
 		overlays.add(foulListOverlay);
-
-		overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
-		Font font = new Font("Arial", Font.BOLD, 16);
-		tr = new BorderTextRenderer(font, true, false);
 
 		Graphics config = Graphics.INSTANCE;
 		firstPersonFOV = config.getFirstPersonFOV();
@@ -117,6 +113,18 @@ public abstract class ViewerScreenBase
 		setShowNumPlayers(OverlayVisibility.INSTANCE.getNumberOfPlayers());
 		if (OverlayVisibility.INSTANCE.getPlayerIDs())
 			agentOverheadType = AgentOverheadType.IDS;
+	}
+
+	@Override
+	public void init(GL2 gl)
+	{
+		super.init(gl);
+		overlayTextRenderer = new BorderTextRenderer(new Font("Arial", Font.PLAIN, 48), true, false);
+		Font font = new Font("Arial", Font.BOLD, 16);
+		tr = new BorderTextRenderer(font, true, false);
+		for (var overlay : overlays) {
+			overlay.init(gl);
+		}
 	}
 
 	private void renderAnnotations()

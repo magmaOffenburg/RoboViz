@@ -18,3 +18,13 @@ enum class ConfirmResult {
             }
     }
 }
+
+class DeferredMethodCall(private val f: () -> Unit, var callRequested: Boolean = false) {
+    fun update() {
+        if (!callRequested) {
+            return
+        }
+        f()
+        callRequested = false
+    }
+}
