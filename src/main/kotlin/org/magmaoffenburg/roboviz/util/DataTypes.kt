@@ -1,7 +1,5 @@
 package org.magmaoffenburg.roboviz.util
 
-import java.lang.IllegalStateException
-
 enum class Mode {
     LOG,
     LIVE
