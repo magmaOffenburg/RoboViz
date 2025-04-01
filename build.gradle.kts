@@ -16,7 +16,7 @@ application {
 }
 
 val javaVersion by extra(17)
-val joglVersion by extra("2.4.0")
+val joglVersion by extra("2.5.0")
 val log4jVersion by extra("2.20.0")
 
 subprojects {
