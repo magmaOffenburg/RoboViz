@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     java
@@ -28,20 +29,20 @@ subprojects {
     }
 
     java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(javaVersion))
-        }
+        sourceCompatibility = JavaVersion.toVersion(javaVersion)
+        targetCompatibility = JavaVersion.toVersion(javaVersion)
     }
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(javaVersion))
-    }
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
 }
 
 kotlin {
-    jvmToolchain(javaVersion)
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget(javaVersion.toString())
+    }
 }
 
 repositories {
