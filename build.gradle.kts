@@ -6,7 +6,7 @@ plugins {
     java
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.1.20"
 }
 
 group = "org.magmaoffenburg.roboviz"

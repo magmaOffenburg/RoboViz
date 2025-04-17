@@ -6,6 +6,7 @@ roboviz.bat
 *.TMP
 *.java-*
 *.class
+.kotlin
 
 #Intelij
 *.iml
