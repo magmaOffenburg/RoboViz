@@ -57,7 +57,7 @@ dependencies {
     implementation("org.jogamp.jogl:jogl-all-main:$joglVersion")
     implementation("org.jogamp.gluegen:gluegen-rt-main:$joglVersion")
     implementation("org.apache.commons:commons-compress:1.27.0")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.2.0")
+    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.5.0")
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
 
