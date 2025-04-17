@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "org.magmaoffenburg.roboviz"
-version = "2.0.0"
+version = "2.0.1"
 application {
     mainClass.set("org.magmaoffenburg.roboviz.MainKt")
     applicationDefaultJvmArgs = listOf("--add-exports=java.desktop/sun.awt=ALL-UNNAMED")

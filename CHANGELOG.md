@@ -1,3 +1,9 @@
+2.0.1 (April 17, 2025)
+------------------------------
+* add support for reading log files with a .tgz or .tbz2 suffix
+* fix reading logs from zip files
+* fix "Step back" and "Step forward" buttons in the log player
+
 2.0.0 (October 6, 2023)
 ------------------------------
 * update minimum required Java version to 17
