@@ -128,8 +128,7 @@ public class SceneGraph
 	private StaticMeshNode findStaticMeshNode(Node parent, String name)
 	{
 		// check if current node is the node we're looking for
-		if (parent instanceof StaticMeshNode) {
-			StaticMeshNode smn = (StaticMeshNode) parent;
+		if (parent instanceof StaticMeshNode smn) {
 			if (smn.name.endsWith(name))
 				return smn;
 		}
