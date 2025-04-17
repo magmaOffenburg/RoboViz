@@ -101,7 +101,7 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     }
 
     private fun previousFrame() {
-        if (logPlayer.isPlaying) logPlayer.stepBackward()
+        if (!logPlayer.isPlaying) logPlayer.stepBackward()
     }
 
     private fun togglePlayPause() {
@@ -121,7 +121,7 @@ class LogPlayerControlsPanel : JFrame(), LogPlayer.StateChangeListener {
     }
 
     private fun nextFrame() {
-        if (logPlayer.isPlaying) logPlayer.stepBackward()
+        if (!logPlayer.isPlaying) logPlayer.stepForward()
     }
 
     private fun previousGoal() {
