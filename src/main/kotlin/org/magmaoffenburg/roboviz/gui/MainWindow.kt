@@ -16,12 +16,16 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
 import java.awt.Point
+import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.imageio.ImageIO
+import javax.swing.AbstractAction
+import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JMenuBar
+import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
 
 /**
@@ -75,6 +79,17 @@ class MainWindow : JFrame(), ServerComm.ServerChangeListener, LogPlayer.StateCha
 
                 Main.config.write()
                 Renderer.instance.dispose(glCanvas)
+            }
+        })
+
+        // Exit application on Ctrl-Q
+        val exitActionName = "ExitRoboViz"
+        getRootPane()
+            .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK), exitActionName)
+        getRootPane().actionMap.put(exitActionName, object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent?) {
+                dispatchEvent(WindowEvent(this@MainWindow, WindowEvent.WINDOW_CLOSING))
             }
         })
     }
