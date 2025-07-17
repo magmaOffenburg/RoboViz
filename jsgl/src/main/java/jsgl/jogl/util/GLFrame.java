@@ -60,6 +60,7 @@ public abstract class GLFrame implements GLEventListener
 	private double fpsTimer = 0;
 	private double fpsCheckTimeMS = 1000;
 	private double fps = 0;
+	private int targetFps = 60;
 
 	public double getElapsedTimeMS()
 	{
@@ -101,6 +102,11 @@ public abstract class GLFrame implements GLEventListener
 		return glu;
 	}
 
+	public void setTargetFps(int targetFps)
+	{
+		this.targetFps = targetFps;
+	}
+
 	public GLFrame(String name, int w, int h, GLCapabilities caps, int fps)
 	{
 		this.glCaps = caps;
@@ -117,7 +123,7 @@ public abstract class GLFrame implements GLEventListener
 		frame.add(canvas);
 		frame.setSize(w, h);
 		frame.setLocationRelativeTo(null);
-		animator = new FPSAnimator(canvas, fps);
+		animator = new FPSAnimator(canvas, targetFps);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowevent)
 			{

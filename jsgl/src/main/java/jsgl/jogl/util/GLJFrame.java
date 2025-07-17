@@ -44,7 +44,7 @@ public abstract class GLJFrame implements GLEventListener
 	public final GLUT glut = new GLUT();
 	public final GLU glu = new GLU();
 
-	private static final int TARGET_FPS = 60;
+	private int targetFps = 60;
 	protected final GLCapabilities glCaps;
 	private final FPSAnimator animator;
 	protected JFrame frame;
@@ -79,6 +79,11 @@ public abstract class GLJFrame implements GLEventListener
 	public Viewport getScreen()
 	{
 		return screen;
+	}
+
+	public void setTargetFps(int targetFps)
+	{
+		this.targetFps = targetFps;
 	}
 
 	public GLJFrame(String name, int w, int h)
@@ -121,7 +126,7 @@ public abstract class GLJFrame implements GLEventListener
 		});
 
 		frame.setVisible(true);
-		animator = new FPSAnimator(canvas, TARGET_FPS);
+		animator = new FPSAnimator(canvas, targetFps);
 		animator.start();
 		canvas.requestFocus();
 	}

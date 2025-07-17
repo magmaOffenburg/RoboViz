@@ -10,8 +10,7 @@ import jsgl.jogl.view.Viewport;
 
 public abstract class GLProgram implements GLEventListener
 {
-	private static final int TARGET_FPS = 60;
-
+	private int targetFps = 60;
 	protected GLAutoDrawable drawable;
 	protected FPSAnimator animator;
 	protected Viewport screen;
@@ -41,6 +40,11 @@ public abstract class GLProgram implements GLEventListener
 		return screen;
 	}
 
+	public void setTargetFps(int targetFps)
+	{
+		this.targetFps = targetFps;
+	}
+
 	public GLProgram(int w, int h)
 	{
 		screen = new Viewport(0, 0, w, h);
@@ -50,7 +54,7 @@ public abstract class GLProgram implements GLEventListener
 	{
 		this.drawable = drawable;
 		drawable.addGLEventListener(this);
-		animator = new FPSAnimator(drawable, TARGET_FPS);
+		animator = new FPSAnimator(drawable, targetFps);
 		animator.start();
 	}
 

@@ -83,6 +83,7 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     init {
+        setTargetFps(Graphics.targetFPS)
         attachDrawableAndStart(MainWindow.glCanvas)
         instance = this
     }
