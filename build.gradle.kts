@@ -53,7 +53,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.github.weisj:darklaf-core:3.1.0")
+    implementation("com.github.weisj:darklaf-core:3.1.1")
     implementation("org.jogamp.jogl:jogl-all-main:$joglVersion")
     implementation("org.jogamp.gluegen:gluegen-rt-main:$joglVersion")
     implementation("org.apache.commons:commons-compress:1.28.0")
