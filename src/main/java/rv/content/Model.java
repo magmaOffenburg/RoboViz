@@ -18,11 +18,10 @@ package rv.content;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import jsgl.jogl.model.Mesh;
+import jsgl.jogl.model.MeshImporter;
 import jsgl.jogl.model.MeshPart;
 import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMeshImporter;
@@ -72,7 +71,7 @@ public class Model
 
 	public void readMeshData(ContentManager cm)
 	{
-		ObjMeshImporter importer = new ObjMeshImporter(
+		MeshImporter importer = new ObjMeshImporter(
 				ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
@@ -84,7 +83,7 @@ public class Model
 		}
 		mesh = null;
 		try {
-			mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
+			mesh = importer.loadMesh(is);
 		} catch (IOException e) {
 			failureMessage();
 		}
