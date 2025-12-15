@@ -25,6 +25,7 @@ import jsgl.jogl.model.MeshImporter;
 import jsgl.jogl.model.MeshPart;
 import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMeshImporter;
+import jsgl.jogl.model.StlImporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,8 +72,14 @@ public class Model
 
 	public void readMeshData(ContentManager cm)
 	{
-		MeshImporter importer = new ObjMeshImporter(
-				ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
+		MeshImporter importer;
+		if (name.toLowerCase().endsWith(".stl")) {
+			importer = new StlImporter(ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT);
+		} else {
+			importer = new ObjMeshImporter(
+					ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
+		}
+
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
 
