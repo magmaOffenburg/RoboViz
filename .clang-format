@@ -21,3 +21,4 @@ BreakAfterJavaFieldAnnotations: true
 AllowShortFunctionsOnASingleLine: false
 KeepEmptyLinesAtTheStartOfBlocks: false
 AlignAfterOpenBracket: DontAlign
+BreakStringLiterals: false
