@@ -42,7 +42,7 @@ public class Pixel
 		a = (intARGB >> 24) & 255;
 		r = (intARGB >> 16) & 255;
 		g = (intARGB >> 8) & 255;
-		b = (intARGB) &255;
+		b = (intARGB) & 255;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class Pixel
 
 	public static int[] unpack(int argb)
 	{
-		return new int[] {(argb >> 24) & 255, (argb >> 16) & 255, (argb >> 8) & 255, (argb) &255};
+		return new int[] {(argb >> 24) & 255, (argb >> 16) & 255, (argb >> 8) & 255, (argb) & 255};
 	}
 
 	public static int pack(int r, int g, int b, int a)

@@ -210,7 +210,7 @@ public class Texture2D implements GLDisposable
 				int pixel = img.getRGB(x, h - y - 1);
 				data.put((byte) ((pixel >> 16) & 0xFF));
 				data.put((byte) ((pixel >> 8) & 0xFF));
-				data.put((byte) ((pixel) &0xFF));
+				data.put((byte) ((pixel) & 0xFF));
 				if (alpha)
 					data.put((byte) ((pixel >> 24) & 0xFF));
 			}
