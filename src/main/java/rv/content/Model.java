@@ -79,6 +79,7 @@ public class Model
 			importer = new ObjMeshImporter(
 					ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
 		}
+		// TODO: support loading standard meshes: StdUnitBox, StdUnitCylinder, ...
 
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
