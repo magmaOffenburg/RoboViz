@@ -148,6 +148,16 @@ public class ObjMaterial extends MeshMaterial
 		illum = (int) parseValues(line)[0];
 	}
 
+	public int getIlluminationModel()
+	{
+		return illum;
+	}
+
+	public void setIlluminationModel(int illum)
+	{
+		this.illum = illum;
+	}
+
 	public void readTextureMap(InputStream texSrc)
 	{
 		// map_Ka filename

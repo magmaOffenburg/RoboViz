@@ -126,6 +126,7 @@ public class Model
 				mat.setDiffuse(src.getDiffuse());
 				mat.setSpecular(src.getSpecular());
 				mat.setShininess(src.getShininess());
+				mat.setIlluminationModel(src.getIlluminationModel());
 				return;
 			}
 		}
