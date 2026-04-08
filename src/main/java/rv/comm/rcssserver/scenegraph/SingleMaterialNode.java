@@ -19,30 +19,23 @@ package rv.comm.rcssserver.scenegraph;
 import rv.comm.rcssserver.SExp;
 
 /**
- * Predefined mesh type using standard shapes
+ * Static mesh with only a single material
  *
  * @author Justin Stoecker
  */
-public class StandardMeshNode extends GeometryNode
+public class SingleMaterialNode extends StaticMeshNode
 {
 	/** Abbreviation declaring this node type in an s-expression */
 	public static final String EXP_ABRV = "SMN";
 
-	public StandardMeshNode(Node parent, SExp exp)
+	public SingleMaterialNode(Node parent, SExp exp)
 	{
 		super(parent, exp);
-
-		// TODO: currently this type of mesh isn't used
-
-		// (nd SMN (load StdUnitBox) (sSc 1 31 1) (sMat matGrey))
-		// (nd SMN (load StdUnitCylinder 0.015 0.08) (sSc 1 1 1) (sMat
-		// matDarkGrey))
 	}
 
 	@Override
-	protected void load(SExp exp)
+	public String toString()
 	{
-		// TODO Auto-generated method stub
-		name = exp.getAtoms()[1];
+		return SingleMaterialNode.class.getName() + ": " + s;
 	}
 }

@@ -36,16 +36,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Justin Stoecker
  */
-public class ObjMeshImporter
+public class ObjMeshImporter extends MeshImporter
 {
 	private static final Logger LOGGER = LogManager.getLogger();
-
-	// Locations where files may be found. If classLoader is set, the files
-	// are loaded from the class loader; otherwise, files are located on disk
-	private String materialPath;
-	private String texturePath;
-	private String modelPath;
-	private ClassLoader classLoader;
 
 	// While reading keep track of the min/max vertex position values to
 	// determine the bounding box for the mesh
@@ -68,26 +61,25 @@ public class ObjMeshImporter
 	private MeshMaterial curMeshMaterial;
 	private MeshPart curMeshPart;
 
-	public void setClassLoader(ClassLoader cl)
-	{
-		this.classLoader = cl;
-	}
-
 	public ObjMeshImporter(String modelPath)
 	{
-		this.modelPath = modelPath;
+		super(modelPath);
 	}
 
 	public ObjMeshImporter(String modelPath, String materialPath)
 	{
-		this(modelPath);
-		this.materialPath = materialPath;
+		super(modelPath, materialPath);
 	}
 
 	public ObjMeshImporter(String modelPath, String materialPath, String texturePath)
 	{
-		this(modelPath, materialPath);
-		this.texturePath = texturePath;
+		super(modelPath, materialPath, texturePath);
+	}
+
+	@Override
+	public Mesh loadMesh(InputStream is) throws IOException
+	{
+		return loadMesh(new BufferedReader(new InputStreamReader(is)));
 	}
 
 	public Mesh loadMesh(BufferedReader br) throws IOException

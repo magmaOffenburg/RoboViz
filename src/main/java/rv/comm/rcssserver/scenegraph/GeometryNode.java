@@ -88,6 +88,10 @@ public abstract class GeometryNode extends Node
 				materials = new String[e.getAtoms().length - 1];
 				System.arraycopy(e.getAtoms(), 1, materials, 0, materials.length);
 				break;
+			case "sMat":
+				materials = new String[1];
+				materials[0] = e.getAtoms()[1];
+				break;
 			case "setTransparent":
 				transparent = true;
 				break;

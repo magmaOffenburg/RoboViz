@@ -221,8 +221,8 @@ public class SceneGraph
 				case StaticMeshNode.EXP_ABRV:
 					node = new StaticMeshNode(parent, e);
 					break;
-				case StandardMeshNode.EXP_ABRV:
-					node = new StandardMeshNode(parent, exp);
+				case SingleMaterialNode.EXP_ABRV:
+					node = new SingleMaterialNode(parent, e);
 					break;
 				}
 

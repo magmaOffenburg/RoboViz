@@ -18,14 +18,14 @@ package rv.content;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import jsgl.jogl.model.Mesh;
+import jsgl.jogl.model.MeshImporter;
 import jsgl.jogl.model.MeshPart;
 import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMeshImporter;
+import jsgl.jogl.model.StlImporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,8 +72,15 @@ public class Model
 
 	public void readMeshData(ContentManager cm)
 	{
-		ObjMeshImporter importer = new ObjMeshImporter(
-				ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
+		MeshImporter importer;
+		if (name.toLowerCase().endsWith(".stl")) {
+			importer = new StlImporter(ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT);
+		} else {
+			importer = new ObjMeshImporter(
+					ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
+		}
+		// TODO: support loading standard meshes: StdUnitBox, StdUnitCylinder, ...
+
 		ClassLoader cl = this.getClass().getClassLoader();
 		importer.setClassLoader(cl);
 
@@ -84,7 +91,7 @@ public class Model
 		}
 		mesh = null;
 		try {
-			mesh = importer.loadMesh(new BufferedReader(new InputStreamReader(is)));
+			mesh = importer.loadMesh(is);
 		} catch (IOException e) {
 			failureMessage();
 		}
