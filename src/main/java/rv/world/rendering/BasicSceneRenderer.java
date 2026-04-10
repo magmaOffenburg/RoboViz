@@ -80,6 +80,9 @@ public class BasicSceneRenderer implements SceneRenderer
 
 	private void renderSceneGraphNode(GL2 gl, StaticMeshNode node, ContentManager content)
 	{
+		if (!node.isHierarchyVisible())
+			return;
+
 		Model model = content.getModel(node.getName());
 		if (model.isLoaded()) {
 			// NOTE: this is a hack to avoid rendering certain meshes that are replaced by

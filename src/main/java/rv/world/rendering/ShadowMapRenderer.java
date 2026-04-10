@@ -222,6 +222,8 @@ public class ShadowMapRenderer implements SceneRenderer
 		List<StaticMeshNode> transparentNodes = new ArrayList<>();
 		List<StaticMeshNode> nodes = world.getSceneGraph().getAllMeshNodes();
 		for (StaticMeshNode node : nodes) {
+			if (!node.isHierarchyVisible())
+				continue;
 			if (node.isTransparent())
 				transparentNodes.add(node);
 			else {

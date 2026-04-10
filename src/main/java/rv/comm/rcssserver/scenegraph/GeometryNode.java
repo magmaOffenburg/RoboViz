@@ -39,6 +39,19 @@ public abstract class GeometryNode extends Node
 		return visible;
 	}
 
+	public boolean isHierarchyVisible()
+	{
+		if (!visible)
+			return false;
+		var parent = this.parent;
+		while (parent != null) {
+			if (parent instanceof GeometryNode gn && !gn.isHierarchyVisible())
+				return false;
+			parent = parent.getParent();
+		}
+		return true;
+	}
+
 	public boolean isTransparent()
 	{
 		return transparent;
