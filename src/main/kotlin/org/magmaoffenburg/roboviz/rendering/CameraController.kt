@@ -63,7 +63,7 @@ class CameraController(private val drawable: GLAutoDrawable) {
     fun update(elapsedMS: Double) {
         fpCamera.update(elapsedMS)
         cameraController.update(elapsedMS)
-        trackerCamera.update(Renderer.instance.screen)
+        trackerCamera.update(Renderer.instance.screen, elapsedMS.toFloat())
     }
 
 }

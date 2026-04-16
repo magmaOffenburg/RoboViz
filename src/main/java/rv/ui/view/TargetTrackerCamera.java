@@ -67,7 +67,7 @@ public class TargetTrackerCamera
 		lastScreenPos = null;
 	}
 
-	public void update(Viewport screen)
+	public void update(Viewport screen, float elapsedMS)
 	{
 		if (!enabled || target == null || target.getPosition() == null)
 			return;
@@ -76,7 +76,7 @@ public class TargetTrackerCamera
 		if (target instanceof Agent) {
 			scale = 0.95f;
 		} else {
-			scale = scaleWithBallSpeed(screen, scale);
+			scale = scaleWithBallSpeed(screen, scale, elapsedMS);
 		}
 
 		Vec3f cameraTarget = offsetTargetPosition(target.getPosition());
@@ -85,7 +85,7 @@ public class TargetTrackerCamera
 		camera.setRotation(new Vec2f(-30, 180));
 	}
 
-	private float scaleWithBallSpeed(Viewport screen, float scale)
+	private float scaleWithBallSpeed(Viewport screen, float scale, float elapsedMS)
 	{
 		// Get position of target relative to screen
 		Vec3f screenPos = camera.project(target.getPosition(), screen);
@@ -95,7 +95,7 @@ public class TargetTrackerCamera
 		}
 
 		// Maximum factor that velocity can increase scale by
-		float VEL_SCALE_FACTOR_MAX = 12.0f;
+		float VEL_SCALE_FACTOR_MAX = elapsedMS * 0.42f;
 
 		// Amount that screen velocity is multiplied by when determining scale
 		float VEL_SCALE_FACTOR = 0.003f;
