@@ -24,6 +24,7 @@ import jsgl.math.vector.Matrix;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.rendering.Renderer;
 import rv.comm.drawing.Drawings;
+import rv.comm.rcssserver.scenegraph.SingleMaterialNode;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
 import rv.content.ContentManager;
 import rv.content.Model;
@@ -48,6 +49,15 @@ public class BasicSceneRenderer implements SceneRenderer
 		suppressedMeshes.add("skybox.obj");
 
 		return true;
+	}
+
+	public static void applySingleMat(Model model, StaticMeshNode node, ContentManager content)
+	{
+		if (node instanceof SingleMaterialNode && node.getMaterials().length > 0) {
+			var mat = content.getMaterial(node.getMaterials()[0]);
+			if (mat != null)
+				model.replaceMaterial("Default", mat);
+		}
 	}
 
 	public static void applyAgentMats(Model model, StaticMeshNode node, ContentManager content)
@@ -91,6 +101,7 @@ public class BasicSceneRenderer implements SceneRenderer
 				if (node.getName().endsWith(s))
 					return;
 
+			applySingleMat(model, node, content);
 			applyAgentMats(model, node, content);
 
 			Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());

@@ -83,6 +83,7 @@ public class PhongWorldRenderer implements SceneRenderer
 				if (node.getName().endsWith(s))
 					return;
 
+			BasicSceneRenderer.applySingleMat(model, node, content);
 			BasicSceneRenderer.applyAgentMats(model, node, content);
 
 			Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
