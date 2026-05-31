@@ -18,12 +18,14 @@ package rv.comm.rcssserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
 import rv.ui.screens.FoulListOverlay;
-import rv.world.WorldModel;
 
 /**
  * Contains soccer game state information collected from rcssserver: teams, scores, play mode, time,
@@ -154,6 +156,8 @@ public class GameState implements ServerChangeListener
 	// Foul
 	public static final String FOUL = "foul";
 
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private boolean initialized;
 	private float fieldLength;
 	private float fieldWidth;
@@ -179,7 +183,7 @@ public class GameState implements ServerChangeListener
 	private String teamRight;
 	private int scoreLeft;
 	private int scoreRight;
-	private String playMode = "<Play Mode>";
+	private int playModeIndex = -1;
 	private boolean playModeJustChanged;
 	private List<HistoryItem> playModeHistory = new CopyOnWriteArrayList<>();
 	private float time;
@@ -189,6 +193,10 @@ public class GameState implements ServerChangeListener
 	private boolean penaltyShootout = false;
 
 	private Float penaltyShotStartTime = null;
+
+	private int measureOrRuleChanges = 0;
+	private int timeChanges = 0;
+	private int playStateChanges = 0;
 
 	private final List<GameStateChangeListener> listeners = new CopyOnWriteArrayList<>();
 
@@ -325,7 +333,9 @@ public class GameState implements ServerChangeListener
 
 	public String getPlayMode()
 	{
-		return playMode;
+		if (playModeIndex < 0 || playModes == null)
+			return null;
+		return playModes[playModeIndex];
 	}
 
 	public boolean hasPlayModeJustChanged()
@@ -390,7 +400,7 @@ public class GameState implements ServerChangeListener
 		teamRight = null;
 		scoreLeft = 0;
 		scoreRight = 0;
-		playMode = null;
+		playModeIndex = -1;
 		playModeJustChanged = false;
 		playModeHistory = new ArrayList<>();
 		time = 0;
@@ -407,6 +417,7 @@ public class GameState implements ServerChangeListener
 
 	private boolean isTimeStopped()
 	{
+		var playMode = getPlayMode();
 		return BEFORE_KICK_OFF.equals(playMode) || GAME_OVER.equals(playMode);
 	}
 
@@ -448,28 +459,25 @@ public class GameState implements ServerChangeListener
 		}
 	}
 
+	public void parse(List<SExp> exp, ProtocolVersion version)
+	{
+		if (!version.supports(1, 0)) {
+			LOGGER.error("unsupported game state version: {}", version);
+		}
+		parse(exp);
+	}
+
 	/**
 	 * Parses expression and updates state
 	 */
-	public void parse(SExp exp, WorldModel world)
+	public void parse(List<SExp> exp)
 	{
-		if (exp.getChildren() == null)
+		if (exp == null)
 			return;
 
-		for (ServerMessageReceivedListener l : smListeners) {
-			l.gsServerMessageReceived(this);
-		}
+		String previousPlayMode = getPlayMode();
 
-		int measureOrRuleChanges = 0;
-		int timeChanges = 0;
-		int playStateChanges = 0;
-		String previousPlayMode = playMode;
-
-		removeExpiredFouls();
-		passModeScoreWaitLeft = 0;
-		passModeScoreWaitRight = 0;
-
-		for (SExp se : exp.getChildren()) {
+		for (SExp se : exp) {
 			String[] atoms = se.getAtoms();
 
 			if (atoms != null) {
@@ -556,8 +564,7 @@ public class GameState implements ServerChangeListener
 					timeChanges++;
 					break;
 				case PLAY_MODE:
-					int mode = Integer.parseInt(atoms[1]);
-					playMode = playModes[mode];
+					playModeIndex = Integer.parseInt(atoms[1]);
 					playStateChanges++;
 					break;
 				case TEAM_LEFT:
@@ -600,14 +607,14 @@ public class GameState implements ServerChangeListener
 			}
 		}
 
-		playModeJustChanged = previousPlayMode == null || !previousPlayMode.equals(playMode);
+		playModeJustChanged = !Objects.equals(previousPlayMode, getPlayMode());
 		if (playModeJustChanged) {
-			playModeHistory.add(new HistoryItem(time, playMode));
+			playModeHistory.add(new HistoryItem(time, getPlayMode()));
 			while (playModeHistory.size() > 2) {
 				playModeHistory.remove(0);
 			}
 
-			switch (playMode) {
+			switch (getPlayMode()) {
 			case KICK_OFF_LEFT:
 			case KICK_OFF_RIGHT:
 				penaltyShotStartTime = time;
@@ -619,7 +626,24 @@ public class GameState implements ServerChangeListener
 				break;
 			}
 		}
+	}
 
+	public void startParseStep()
+	{
+		for (ServerMessageReceivedListener l : smListeners)
+			l.gsServerMessageReceived(this);
+
+		removeExpiredFouls();
+		passModeScoreWaitLeft = 0;
+		passModeScoreWaitRight = 0;
+
+		measureOrRuleChanges = 0;
+		timeChanges = 0;
+		playStateChanges = 0;
+	}
+
+	public void finishParseStep()
+	{
 		initialized = true;
 
 		for (ServerMessageReceivedListener l : smListeners)

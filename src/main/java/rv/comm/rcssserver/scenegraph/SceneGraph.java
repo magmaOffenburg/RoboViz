@@ -18,6 +18,8 @@ package rv.comm.rcssserver.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import rv.comm.rcssserver.SExp;
 
 /**
@@ -34,7 +36,16 @@ public class SceneGraph
 		void updatedSceneGraph(SceneGraph sg);
 	}
 
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final boolean generatedFromRSMP;
+
 	private final Node root;
+
+	public boolean isGeneratedFromRSMP()
+	{
+		return generatedFromRSMP;
+	}
 
 	public Node getRoot()
 	{
@@ -180,8 +191,9 @@ public class SceneGraph
 	/**
 	 * Creates a new scene graph by parsing nodes contained in s-expression
 	 */
-	public SceneGraph(SExp exp)
+	public SceneGraph(List<SExp> exp, boolean rsmp)
 	{
+		this.generatedFromRSMP = rsmp;
 		root = new BaseNode();
 		readNodes(root, exp);
 	}
@@ -189,23 +201,21 @@ public class SceneGraph
 	/**
 	 * Updates scene graph with new information. The structure of the scene graph remains unchanged.
 	 */
-	public void update(SExp exp)
+	public void update(List<SExp> exp)
 	{
+		if (exp == null)
+			return;
 		root.update(exp);
 	}
 
 	/**
 	 * Recursive method that reads nodes from expression and adds them to parent
 	 */
-	private void readNodes(Node parent, SExp exp)
+	private void readNodes(Node parent, List<SExp> exp)
 	{
-		// if there are no children expressions, the parent node must be a leaf
-		ArrayList<SExp> subExpressions = exp.getChildren();
-		if (subExpressions == null)
+		if (exp == null)
 			return;
-
-		// otherwise, there may be nodes to parse and add to the parent node
-		for (SExp e : subExpressions) {
+		for (SExp e : exp) {
 			// each node declaration starts with "nd" followed by its type
 			String[] atoms = e.getAtoms();
 			if (atoms[0].equals(Node.DECL_ABRV)) {
@@ -224,6 +234,9 @@ public class SceneGraph
 				case SingleMaterialNode.EXP_ABRV:
 					node = new SingleMaterialNode(parent, e);
 					break;
+				case DescriptionNode.EXP_ABRV:
+					node = new DescriptionNode(parent, e);
+					break;
 				}
 
 				if (node != null) {
@@ -232,7 +245,7 @@ public class SceneGraph
 					parent.children.add(node);
 
 					// keep reading child's branch of nodes recursively
-					readNodes(node, e);
+					readNodes(node, e.getChildren());
 				}
 			}
 		}

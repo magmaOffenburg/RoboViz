@@ -16,6 +16,7 @@
 
 package rv.comm.rcssserver.scenegraph;
 
+import java.util.List;
 import jsgl.math.vector.Matrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,10 +64,10 @@ public class TransformNode extends Node
 	}
 
 	@Override
-	public void update(SExp exp)
+	public void update(List<SExp> exp)
 	{
-		if (exp.getChildren() != null) {
-			setMatrix(exp.getChildren().get(0).getAtoms());
+		if (exp != null) {
+			setMatrix(exp.get(0).getAtoms());
 		}
 		super.update(exp);
 	}

@@ -53,10 +53,20 @@ public class BasicSceneRenderer implements SceneRenderer
 
 	public static void applySingleMat(Model model, StaticMeshNode node, ContentManager content)
 	{
-		if (node instanceof SingleMaterialNode && node.getMaterials().length > 0) {
-			var mat = content.getMaterial(node.getMaterials()[0]);
-			if (mat != null)
-				model.replaceMaterial("Default", mat);
+		if (node instanceof SingleMaterialNode) {
+			if (node.getMaterials().length > 0) {
+				final String matName = node.getMaterials()[0];
+				var mat = content.getMaterial(matName);
+				if (mat != null) {
+					model.replaceMaterial("Default", mat);
+					return;
+				}
+			}
+
+			var rgba = node.getRGBA();
+			if (rgba != null) {
+				model.setRGBA(rgba);
+			}
 		}
 	}
 

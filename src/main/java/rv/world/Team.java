@@ -25,6 +25,7 @@ import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.comm.rcssserver.ISceneGraphItem;
+import rv.comm.rcssserver.scenegraph.DescriptionNode;
 import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
@@ -161,6 +162,9 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 		String matTeamID = id == Team.LEFT ? "matLeft" : "matRight";
 		String[] materials = {matAgentID, matTeamID};
 
+		if (sg.isGeneratedFromRSMP())
+			return findRSMPAgent(sg.getRoot(), agentID);
+
 		// see if a node can be found with these materials
 		StaticMeshNode leaf = sg.findStaticMeshNode(sg.getRoot(), materials);
 		if (leaf == null)
@@ -175,6 +179,29 @@ public class Team implements ISceneGraphItem, GameStateChangeListener
 			root = root.getParent();
 		}
 		return root;
+	}
+
+	private Node findRSMPAgent(Node n, int agentID)
+	{
+		if (n.getChildren() == null || n.getChildren().isEmpty())
+			return null;
+
+		if (n instanceof DescriptionNode dsc) {
+			for (var d : dsc.getDescriptions()) {
+				if (d.length == 3 && d[0].equals("agent")) {
+					if (d[1].equals(name) && d[2].equals(Integer.toString(agentID))) {
+						return n.getChildren().get(0);
+					} else
+						return null; // this is the wrong agent
+				}
+			}
+		}
+		for (var child : n.getChildren()) {
+			final var root = findRSMPAgent(child, agentID);
+			if (root != null)
+				return root;
+		}
+		return null;
 	}
 
 	@Override

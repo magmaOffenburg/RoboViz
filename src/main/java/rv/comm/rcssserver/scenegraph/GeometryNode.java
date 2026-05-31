@@ -16,6 +16,7 @@
 
 package rv.comm.rcssserver.scenegraph;
 
+import java.util.List;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.SExp;
@@ -32,7 +33,8 @@ public abstract class GeometryNode extends Node
 	protected boolean visible = false;
 	protected Matrix scale = Matrix.createIdentity();
 	protected String name;
-	protected String[] materials;
+	protected String[] materials = new String[0];
+	protected float[] rgba;
 
 	public boolean isVisible()
 	{
@@ -77,19 +79,35 @@ public abstract class GeometryNode extends Node
 		return materials;
 	}
 
-	public GeometryNode(Node parent, SExp exp)
+	public float[] getRGBA()
+	{
+		return rgba;
+	}
+
+	public GeometryNode(Node parent, List<SExp> exp)
 	{
 		super(parent);
 		applyOperations(exp);
 	}
 
-	private void applyOperations(SExp exp)
+	private void applyOperations(List<SExp> exp)
 	{
-		for (SExp e : exp.getChildren()) {
+		boolean ballHack = false;
+		for (SExp e : exp) {
 			String operation = e.getAtoms()[0];
 			switch (operation) {
 			case "load":
 				load(e);
+				if (parent != null && parent.parent != null && parent.parent instanceof DescriptionNode dn &&
+						dn.getDescriptions().get(0)[0].equals("ball")) {
+					// TODO terrible hack, use the StdUnitSphere instead and use a suitable ball texture.
+					name = "models/soccerball.obj";
+					materials = new String[0];
+					visible = true;
+					transparent = false;
+					rgba = null;
+					ballHack = true;
+				}
 				break;
 			case "sSc":
 				setScale(e);
@@ -98,12 +116,23 @@ public abstract class GeometryNode extends Node
 				visible = e.getAtoms()[1].equals("1");
 				break;
 			case "resetMaterials":
+				if (ballHack)
+					break;
 				materials = new String[e.getAtoms().length - 1];
 				System.arraycopy(e.getAtoms(), 1, materials, 0, materials.length);
 				break;
 			case "sMat":
+				if (ballHack)
+					break;
 				materials = new String[1];
 				materials[0] = e.getAtoms()[1];
+				break;
+			case "rgba":
+				if (ballHack)
+					break;
+				var atoms = e.getAtoms();
+				rgba = new float[] {Float.parseFloat(atoms[1]), Float.parseFloat(atoms[2]), Float.parseFloat(atoms[3]),
+						Float.parseFloat(atoms[4])};
 				break;
 			case "setTransparent":
 				transparent = true;
@@ -120,10 +149,7 @@ public abstract class GeometryNode extends Node
 		for (int i = 0; i < 3; i++)
 			xyz[i] = Float.parseFloat(exp.getAtoms()[i + 1]);
 		scale = Matrix.createScale(new Vec3f(xyz));
-		if (localTransform != null)
-			localTransform = localTransform.times(scale);
-		else
-			localTransform = scale;
+		localTransform = scale;
 	}
 
 	public boolean containsMaterial(String name)
@@ -135,9 +161,9 @@ public abstract class GeometryNode extends Node
 	}
 
 	@Override
-	public void update(SExp exp)
+	public void update(List<SExp> exp)
 	{
-		if (exp.getChildren() != null) {
+		if (exp != null) {
 			applyOperations(exp);
 		}
 		super.update(exp);

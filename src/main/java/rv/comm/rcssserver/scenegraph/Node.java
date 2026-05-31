@@ -17,6 +17,7 @@
 package rv.comm.rcssserver.scenegraph;
 
 import java.util.ArrayList;
+import java.util.List;
 import jsgl.math.vector.Matrix;
 import rv.comm.rcssserver.SExp;
 
@@ -86,20 +87,38 @@ public abstract class Node
 		this.parent = parent;
 	}
 
-	protected void update(SExp exp)
+	protected void update(List<SExp> exp)
 	{
-		if (exp.getChildren() == null || children == null)
+		if (exp == null || children == null)
 			return;
 
 		// updates in expression should follow same structure as the
 		// original scene graph, so children are traversed in same order
 		int childIndex = 0;
 		int size = children.size();
-		for (SExp e : exp.getChildren()) {
+		for (SExp e : exp) {
 			if (e.getAtoms()[0].equals(Node.DECL_ABRV) && childIndex < size) {
 				Node child = children.get(childIndex++);
-				child.update(e);
+				child.update(e.getChildren());
 			}
 		}
+	}
+
+	/**
+	 * Finds a child node with the supplied type
+	 * @param recursive whether to recursively search for the node
+	 */
+	public <T extends Node> T findNodeWithType(Class<T> nodeClass, boolean recursive)
+	{
+		for (var child : children) {
+			if (nodeClass.isInstance(child))
+				return nodeClass.cast(child);
+			else if (recursive) {
+				var result = child.findNodeWithType(nodeClass, recursive);
+				if (result != null)
+					return result;
+			}
+		}
+		return null;
 	}
 }

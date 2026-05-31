@@ -25,12 +25,15 @@ import jsgl.jogl.light.DirLight;
 import jsgl.jogl.light.LightModel;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.magmaoffenburg.roboviz.configuration.Config;
 import org.magmaoffenburg.roboviz.configuration.Config.TeamColors;
 import org.magmaoffenburg.roboviz.rendering.CameraController;
 import org.magmaoffenburg.roboviz.util.Mode;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.ISceneGraphItem;
+import rv.comm.rcssserver.ProtocolVersion;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.SceneGraph.SceneGraphListener;
 import rv.content.ContentManager;
@@ -51,11 +54,19 @@ public class WorldModel
 		void selectionChanged(ISelectable newSelection);
 	}
 
+	public interface GlobalTimeListener
+	{
+		void globalTimeChanged(float newGlobalTime);
+	}
+
 	/** Transforms SimSpark coordinates to RoboViz coordinates (and reverse) */
 	public static final Matrix COORD_TFN = new Matrix(new double[] {-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1});
 
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	private final GameState gameState = new GameState();
 	private SceneGraph sceneGraph = null;
+	private float globalTime;
 	private ContentManager cm;
 
 	private final ArrayList<ISceneGraphItem> sgItems = new ArrayList<>();
@@ -71,6 +82,7 @@ public class WorldModel
 	private float ballCircleTimeLeft;
 	private float ballCircleTime;
 
+	private final ArrayList<GlobalTimeListener> gtListeners = new ArrayList<>();
 	private final ArrayList<SceneGraphListener> sgListeners = new ArrayList<>();
 	private final ArrayList<SelectionChangeListener> selListeners = new ArrayList<>();
 
@@ -92,6 +104,16 @@ public class WorldModel
 	public void removeSelectionChangeListener(SelectionChangeListener sl)
 	{
 		selListeners.remove(sl);
+	}
+
+	public void addGlobalTimeListener(GlobalTimeListener gtl)
+	{
+		gtListeners.add(gtl);
+	}
+
+	public void removeGlobalTimeListener(GlobalTimeListener gtl)
+	{
+		gtListeners.remove(gtl);
 	}
 
 	public ISelectable getSelectedObject()
@@ -152,6 +174,22 @@ public class WorldModel
 			}
 			setSelectedObject(newSelection);
 		}
+	}
+
+	public float getGlobalTime()
+	{
+		return globalTime;
+	}
+
+	public void updateGlobalTime(String[] sexp, ProtocolVersion version)
+	{
+		if (!version.supports(1, 0)) {
+			LOGGER.error("unsupported global time version: {}", version);
+			return;
+		}
+		this.globalTime = Integer.parseInt(sexp[0]);
+		for (GlobalTimeListener gtl : gtListeners)
+			gtl.globalTimeChanged(this.globalTime);
 	}
 
 	public LightModel getLighting()
@@ -325,5 +363,6 @@ public class WorldModel
 		if (cm != null)
 			initTeams();
 		setSceneGraph(null);
+		globalTime = 0;
 	}
 }

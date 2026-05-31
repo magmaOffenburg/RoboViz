@@ -25,6 +25,7 @@ import jsgl.jogl.model.MeshImporter;
 import jsgl.jogl.model.MeshPart;
 import jsgl.jogl.model.ObjMaterial;
 import jsgl.jogl.model.ObjMeshImporter;
+import jsgl.jogl.model.StdMeshImporter;
 import jsgl.jogl.model.StlImporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,28 +73,30 @@ public class Model
 
 	public void readMeshData(ContentManager cm)
 	{
-		MeshImporter importer;
-		if (name.toLowerCase().endsWith(".stl")) {
-			importer = new StlImporter(ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT);
-		} else {
-			importer = new ObjMeshImporter(
-					ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
-		}
-		// TODO: support loading standard meshes: StdUnitBox, StdUnitCylinder, ...
+		mesh = StdMeshImporter.generate(name);
+		if (mesh == null) {
+			MeshImporter importer;
+			if (name.toLowerCase().endsWith(".stl")) {
+				importer = new StlImporter(ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT);
+			} else {
+				importer = new ObjMeshImporter(
+						ContentManager.MODEL_ROOT, ContentManager.MATERIAL_ROOT, ContentManager.TEXTURE_ROOT);
+			}
 
-		ClassLoader cl = this.getClass().getClassLoader();
-		importer.setClassLoader(cl);
+			ClassLoader cl = this.getClass().getClassLoader();
+			importer.setClassLoader(cl);
 
-		InputStream is = cl.getResourceAsStream(name);
-		if (is == null) {
-			failureMessage();
-			return;
-		}
-		mesh = null;
-		try {
-			mesh = importer.loadMesh(is);
-		} catch (IOException e) {
-			failureMessage();
+			InputStream is = cl.getResourceAsStream(name);
+			if (is == null) {
+				failureMessage();
+				return;
+			}
+
+			try {
+				mesh = importer.loadMesh(is);
+			} catch (IOException e) {
+				failureMessage();
+			}
 		}
 
 		// this is necessary for the shader to blend meshes that have
@@ -128,6 +131,18 @@ public class Model
 				mat.setShininess(src.getShininess());
 				mat.setIlluminationModel(src.getIlluminationModel());
 				return;
+			}
+		}
+	}
+
+	/** Copies the simplified rgba material into all materials of this model */
+	public void setRGBA(float[] rgba)
+	{
+		for (MeshPart part : mesh.getParts()) {
+			if (part.getMaterial() instanceof ObjMaterial mat) {
+				mat.setAmbient(rgba);
+				mat.setDiffuse(rgba);
+				mat.setIlluminationModel(2);
 			}
 		}
 	}

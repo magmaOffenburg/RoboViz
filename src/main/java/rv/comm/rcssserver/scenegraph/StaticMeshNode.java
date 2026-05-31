@@ -32,7 +32,7 @@ public class StaticMeshNode extends GeometryNode
 
 	public StaticMeshNode(Node parent, SExp exp)
 	{
-		super(parent, exp);
+		super(parent, exp.getChildren());
 		s = exp.toString();
 		// (nd StaticMesh (load <model>) (sSc <x> <y> <z>) (setVisible 1)
 		// (setTransparent) (resetMaterials <material-list>))

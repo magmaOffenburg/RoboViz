@@ -168,6 +168,19 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		Texture2D.unbind(gl);
 	}
 
+	private void loadMaterials(String path)
+	{
+		ClassLoader cl = getClass().getClassLoader();
+		InputStream is = getClass().getResourceAsStream(path);
+		assert is != null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		try {
+			naoMaterialLib.load(br, "textures/", cl);
+		} catch (IOException e) {
+			LOGGER.error("Unable to load {} material library: {}", path, e);
+		}
+	}
+
 	public boolean init(GLAutoDrawable drawable, GLInfo glInfo)
 	{
 		// use VBOs if they are supported
@@ -190,16 +203,10 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 		if (selectionTextureThin == null)
 			return false;
 
-		// load nao materials
+		// load materials
 		naoMaterialLib = new ObjMaterialLibrary();
-		ClassLoader cl = getClass().getClassLoader();
-		InputStream is = getClass().getResourceAsStream("/materials/nao.mtl");
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		try {
-			naoMaterialLib.load(br, "textures/", cl);
-		} catch (IOException e) {
-			LOGGER.error("Unable to load Nao material library", e);
-		}
+		loadMaterials("/materials/nao.mtl");
+		loadMaterials("/materials/rcssservermj_default.mtl");
 
 		for (ObjMaterial m : naoMaterialLib.getMaterials())
 			m.init(drawable.getGL().getGL2());

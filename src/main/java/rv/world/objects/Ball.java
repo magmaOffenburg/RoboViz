@@ -21,6 +21,8 @@ import jsgl.math.BoundingBox;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
 import rv.comm.rcssserver.ISceneGraphItem;
+import rv.comm.rcssserver.scenegraph.DescriptionNode;
+import rv.comm.rcssserver.scenegraph.Node;
 import rv.comm.rcssserver.scenegraph.SceneGraph;
 import rv.comm.rcssserver.scenegraph.StaticMeshNode;
 import rv.content.ContentManager;
@@ -43,7 +45,31 @@ public class Ball implements ISelectable, ISceneGraphItem
 	@Override
 	public void sceneGraphChanged(SceneGraph sg)
 	{
-		node = sg.findStaticMeshNode("soccerball.obj");
+		if (sg.isGeneratedFromRSMP()) {
+			node = findBall(sg.getRoot());
+		} else {
+			node = sg.findStaticMeshNode("soccerball.obj");
+		}
+	}
+
+	private static StaticMeshNode findBall(Node n)
+	{
+		if (n.getChildren() == null || n.getChildren().isEmpty())
+			return null;
+
+		if (n instanceof DescriptionNode dsc) {
+			for (var d : dsc.getDescriptions()) {
+				if (d.length == 1 && d[0].equals("ball")) {
+					return n.findNodeWithType(StaticMeshNode.class, true);
+				}
+			}
+		}
+		for (var child : n.getChildren()) {
+			final var ballNode = findBall(child);
+			if (ballNode != null)
+				return ballNode;
+		}
+		return null;
 	}
 
 	@Override

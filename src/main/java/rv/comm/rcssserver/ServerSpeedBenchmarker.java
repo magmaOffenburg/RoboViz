@@ -20,13 +20,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import rv.comm.rcssserver.GameState.ServerMessageReceivedListener;
 import rv.comm.rcssserver.ServerComm.ServerChangeListener;
+import rv.world.WorldModel.GlobalTimeListener;
 
 /**
  * Estimates the speed of the server
  *
  * @author Patrick MacAlpine
  */
-public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, ServerChangeListener
+public class ServerSpeedBenchmarker implements GlobalTimeListener, ServerMessageReceivedListener, ServerChangeListener
 {
 	private static final boolean USE_NANOS = false;
 	private long msgTime;
@@ -35,6 +36,10 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 	private float serverSpeed = -1;
 	private TreeMap<Long, Float> serverMsgDeltas = new TreeMap<>();
 	private float accumulatedServerTime;
+
+	private float globalTime = 0.0f;
+	private float prevGlobalTime = 0.0f;
+	private boolean haveGlobalTime = false;
 
 	public String getServerSpeed()
 	{
@@ -55,8 +60,6 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 		}
 		final float DEFAULT_MSG_TIME_DELTA = 0.04f;
 
-		float time = gs.getTime();
-
 		// Add message time info to map
 		if (serverMsgDeltas.isEmpty()) {
 			serverMsgDeltas.put(msgTime, -1.0f);
@@ -65,9 +68,11 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 			long lastMsgTime = serverMsgDeltas.lastKey();
 
 			float serverTimeDelta;
-			if (time - lastGameTime > 0) {
+			if (haveGlobalTime) {
+				serverTimeDelta = globalTime - prevGlobalTime;
+			} else if (gs != null && gs.getTime() - lastGameTime > 0) {
 				// We have a game time change for the amount of time passed
-				serverTimeDelta = time - lastGameTime;
+				serverTimeDelta = gs.getTime() - lastGameTime;
 			} else {
 				// The game is paused so use DEFAULT_MSG_TIME_DELTA for amount of time passed
 				serverTimeDelta = DEFAULT_MSG_TIME_DELTA;
@@ -126,7 +131,8 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 	@Override
 	public void gsServerMessageProcessed(GameState gs)
 	{
-		updateServerSpeed(gs);
+		if (!haveGlobalTime)
+			updateServerSpeed(gs);
 	}
 
 	@Override
@@ -135,5 +141,14 @@ public class ServerSpeedBenchmarker implements ServerMessageReceivedListener, Se
 		if (server.isConnected()) {
 			serverMsgDeltas.clear();
 		}
+	}
+
+	@Override
+	public void globalTimeChanged(float newGlobalTime)
+	{
+		haveGlobalTime = true;
+		prevGlobalTime = globalTime;
+		globalTime = newGlobalTime;
+		updateServerSpeed(null);
 	}
 }
