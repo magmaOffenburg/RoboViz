@@ -187,7 +187,7 @@ public class WorldModel
 			LOGGER.error("unsupported global time version: {}", version);
 			return;
 		}
-		this.globalTime = Integer.parseInt(sexp[0]);
+		this.globalTime = Float.parseFloat(sexp[0]);
 		for (GlobalTimeListener gtl : gtListeners)
 			gtl.globalTimeChanged(this.globalTime);
 	}
