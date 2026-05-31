@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     java
     application
-    id("com.gradleup.shadow") version "9.0.1"
-    kotlin("jvm") version "2.1.20"
+    id("com.gradleup.shadow") version "9.4.2"
+    kotlin("jvm") version "2.3.21"
 }
 
 group = "org.magmaoffenburg.roboviz"
@@ -18,7 +18,7 @@ application {
 
 val javaVersion by extra(17)
 val joglVersion by extra("2.4.0")
-val log4jVersion by extra("2.24.3")
+val log4jVersion by extra("2.26.0")
 
 subprojects {
     apply(plugin = "java")
