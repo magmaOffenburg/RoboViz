@@ -106,6 +106,13 @@ public class GameState implements ServerChangeListener
 	public static final String GOAL_DEPTH = "GoalDepth";
 	public static final String GOAL_HEIGHT = "GoalHeight";
 	public static final String FREE_KICK_DST = "FreeKickDistance";
+	public static final String CENTER_CIRCLE_RADIUS = "CenterCircleRadius";
+	public static final String CORNER_AREA_RADIUS = "CornerAreaRadius";
+	public static final String PENALTY_SPOT_DISTANCE = "PenaltySpotDistance";
+	public static final String PENALTY_AREA_LENGTH = "PenaltyAreaLength";
+	public static final String PENALTY_AREA_WIDTH = "PenaltyAreaWidth";
+	public static final String GOALIE_AREA_LENGTH = "GoalieAreaLength";
+	public static final String GOALIE_AREA_WIDTH = "GoalieAreaWidth";
 	public static final String WAIT_BEFORE_KO = "WaitBeforeKickOff";
 	public static final String AGENT_RADIUS = "AgentRadius";
 	public static final String BALL_RADIUS = "BallRadius";
@@ -166,6 +173,13 @@ public class GameState implements ServerChangeListener
 	private float goalDepth;
 	private float goalHeight;
 	private float freeKickDist;
+	private float centerCircleRadius;
+	private float cornerAreaRadius;
+	private float penaltySpotDistance;
+	private float penaltyAreaLength;
+	private float penaltyAreaWidth;
+	private float goalieAreaLength;
+	private float goalieAreaWidth;
 	private float waitBeforeKickoff;
 	private float agentRadius;
 	private float ballRadius;
@@ -240,6 +254,41 @@ public class GameState implements ServerChangeListener
 	public float getFreeKickDistance()
 	{
 		return freeKickDist;
+	}
+
+	public float getCenterCircleRadius()
+	{
+		return centerCircleRadius > 0.0f ? centerCircleRadius : freeKickDist;
+	}
+
+	public float getCornerAreaRadius()
+	{
+		return cornerAreaRadius;
+	}
+
+	public float getPenaltySpotDistance()
+	{
+		return penaltySpotDistance;
+	}
+
+	public Optional<Float> getPenaltyAreaLength()
+	{
+		return penaltyAreaLength > 0 ? Optional.of(penaltyAreaLength) : Optional.empty();
+	}
+
+	public Optional<Float> getPenaltyAreaWidth()
+	{
+		return penaltyAreaWidth > 0 ? Optional.of(penaltyAreaWidth) : Optional.empty();
+	}
+
+	public float getGoalieAreaLength()
+	{
+		return goalieAreaLength;
+	}
+
+	public float getGoalieAreaWidth()
+	{
+		return goalieAreaWidth;
 	}
 
 	public float getWaitBeforeKickOff()
@@ -407,6 +456,16 @@ public class GameState implements ServerChangeListener
 		half = 0;
 		fouls = new CopyOnWriteArrayList<>();
 
+		// Resetting these values is required for keeping backwards compatibility with SimSpark
+		centerCircleRadius = 0;
+		cornerAreaRadius = 0;
+		penaltySpotDistance = 0;
+		goalieAreaLength = 0;
+		goalieAreaWidth = 0;
+
+		penaltyAreaLength = 0;
+		penaltyAreaWidth = 0;
+
 		// For support of rcssserver3d versions <= 0.7.2
 		passModeMinOppBallDist = 1;
 		passModeDuration = 4;
@@ -510,6 +569,34 @@ public class GameState implements ServerChangeListener
 					break;
 				case FREE_KICK_DST:
 					freeKickDist = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case CENTER_CIRCLE_RADIUS:
+					centerCircleRadius = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case CORNER_AREA_RADIUS:
+					cornerAreaRadius = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case PENALTY_SPOT_DISTANCE:
+					penaltySpotDistance = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case PENALTY_AREA_LENGTH:
+					penaltyAreaLength = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case PENALTY_AREA_WIDTH:
+					penaltyAreaWidth = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case GOALIE_AREA_LENGTH:
+					goalieAreaLength = Float.parseFloat(atoms[1]);
+					measureOrRuleChanges++;
+					break;
+				case GOALIE_AREA_WIDTH:
+					goalieAreaWidth = Float.parseFloat(atoms[1]);
 					measureOrRuleChanges++;
 					break;
 				case WAIT_BEFORE_KO:

@@ -23,6 +23,7 @@ import jsgl.jogl.Texture2D;
 import jsgl.jogl.light.Material;
 import jsgl.math.vector.Matrix;
 import jsgl.math.vector.Vec3f;
+import org.apache.commons.lang3.ArrayUtils;
 import rv.comm.rcssserver.GameState;
 import rv.comm.rcssserver.GameState.GameStateChangeListener;
 import rv.content.ContentManager;
@@ -70,8 +71,20 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 		float hfw = gs.getFieldWidth() / 2.0f;
 		float goalWidth = GOAL_BOX_WIDTH + PENALTY_WIDTH;
 		float goalLength = GOAL_BOX_LENGTH + PENALTY_LENGTH;
+		if (gs.getGoalieAreaLength() > 0) {
+			goalWidth = gs.getGoalieAreaWidth();
+			goalLength = gs.getGoalieAreaLength();
+		}
 		float hgw = goalWidth / 2.0f;
 		float hgl = goalLength / 2.0f;
+		float penaltyAreaWidth = 0;
+		float penaltyAreaLength = 0;
+		if (gs.getPenaltyAreaLength().isPresent()) {
+			penaltyAreaWidth = gs.getPenaltyAreaWidth().get();
+			penaltyAreaLength = gs.getPenaltyAreaLength().get();
+		}
+		final float hpw = penaltyAreaWidth / 2.0f;
+		final float hpl = penaltyAreaLength / 2.0f;
 
 		lineVerts = new float[][] {
 				// border lines
@@ -109,14 +122,39 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 				{hfl, 0, -hgw - LINE_THICKNESS},
 				{hfl - hgl - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
 				{hfl - hgl - LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
+
+				// right penalty area
+				{-hfl, 0, hpw + LINE_THICKNESS},
+				{-hfl, 0, hpw - LINE_THICKNESS},
+				{-hfl + hpl - LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
+				{-hfl + hpl - LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
+				{-hfl, 0, -hpw + LINE_THICKNESS},
+				{-hfl, 0, -hpw - LINE_THICKNESS},
+				{-hfl + hpl + LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
+				{-hfl + hpl + LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
+
+				// left penalty area
+				{hfl, 0, hpw + LINE_THICKNESS},
+				{hfl, 0, hpw - LINE_THICKNESS},
+				{hfl - hpl + LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
+				{hfl - hpl + LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
+				{hfl, 0, -hpw + LINE_THICKNESS},
+				{hfl, 0, -hpw - LINE_THICKNESS},
+				{hfl - hpl - LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
+				{hfl - hpl - LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
 		};
 
 		lineIndices =
 				new int[][] {{0, 1, 5, 4}, {1, 2, 6, 5}, {2, 3, 7, 6}, {3, 0, 4, 7}, {8, 9, 10, 11}, {12, 13, 14, 19},
 						{19, 14, 15, 18}, {15, 16, 17, 18}, {20, 21, 22, 27}, {27, 22, 23, 26}, {23, 24, 25, 26}};
+		if (gs.getPenaltyAreaLength().isPresent()) {
+			lineIndices =
+					ArrayUtils.addAll(lineIndices, new int[][] {{28, 29, 30, 35}, {35, 30, 31, 34}, {31, 32, 33, 34},
+														   {36, 37, 38, 43}, {43, 38, 39, 42}, {39, 40, 41, 42}});
+		}
 
 		// center circle
-		float radius = gs.getFreeKickDistance();
+		float radius = gs.getCenterCircleRadius();
 		circleVerts = new float[CIRCLE_SEGMENTS * 2][3];
 		double angleInc = Math.PI * 2.0 / CIRCLE_SEGMENTS;
 		int j = 0;
