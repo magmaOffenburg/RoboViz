@@ -126,6 +126,12 @@ public abstract class GeometryNode extends Node
 					break;
 				materials = new String[1];
 				materials[0] = e.getAtoms()[1];
+				if (materials[0].equals("jersey_mat")) {
+					// TODO this is a hack to hide jersey boxes
+					// I cannot use the suppressed meshes for this because they match on the model name, not the
+					// material name.
+					visible = false;
+				}
 				break;
 			case "rgba":
 				if (ballHack)
