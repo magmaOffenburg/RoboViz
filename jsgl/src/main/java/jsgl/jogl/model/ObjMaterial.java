@@ -41,6 +41,7 @@ public class ObjMaterial extends MeshMaterial
 	protected int illum = 1;
 	protected Texture2D texture = null;
 	private InputStream textureSource = null;
+	private BufferedImage textureImage = null;
 	private boolean autoDisposeTexture = true;
 	private boolean useMipMaps = false;
 
@@ -78,11 +79,14 @@ public class ObjMaterial extends MeshMaterial
 	@Override
 	public void init(GL2 gl)
 	{
-		if (textureSource == null)
+		if (textureSource == null && textureImage == null)
 			return;
 
 		try {
-			BufferedImage img = ImageIO.read(textureSource);
+			BufferedImage img = textureImage;
+			if (img == null) {
+				img = ImageIO.read(textureSource);
+			}
 			if (img != null) {
 				if (useMipMaps)
 					texture = Texture2D.loadTexMipmaps(gl, new GLU(), img);
@@ -162,6 +166,11 @@ public class ObjMaterial extends MeshMaterial
 	{
 		// map_Ka filename
 		textureSource = texSrc;
+	}
+
+	public void setTextureImage(BufferedImage textureImage)
+	{
+		this.textureImage = textureImage;
 	}
 
 	@Override

@@ -71,6 +71,18 @@ public class Model
 		this.name = name;
 	}
 
+	/**
+	 * Creates a new model
+	 *
+	 * @param name model name
+	 * @param mesh the mesh of the model
+	 */
+	public Model(String name, Mesh mesh)
+	{
+		this.name = name;
+		this.mesh = mesh;
+	}
+
 	public void readMeshData(ContentManager cm)
 	{
 		mesh = StdMeshImporter.generate(name);

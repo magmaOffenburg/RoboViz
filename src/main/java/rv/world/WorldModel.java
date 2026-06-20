@@ -227,7 +227,7 @@ public class WorldModel
 		this.cm = cm;
 		GL2 gl = glObj.getGL2();
 
-		field = new Field(cm.getModel("models/newfield.obj"), cm);
+		field = new Field(cm, gameState.getFieldLength(), gameState.getFieldWidth());
 		gameState.addListener(field);
 		gameState.addListener(cm);
 

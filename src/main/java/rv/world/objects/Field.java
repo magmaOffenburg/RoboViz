@@ -18,10 +18,20 @@ package rv.world.objects;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import jsgl.jogl.GLDisposable;
 import jsgl.jogl.Texture2D;
 import jsgl.jogl.light.Material;
+import jsgl.jogl.model.Mesh;
+import jsgl.jogl.model.MeshFace;
+import jsgl.jogl.model.MeshPart;
+import jsgl.jogl.model.MeshVertex;
+import jsgl.jogl.model.ObjMaterial;
+import jsgl.math.BoundingBox;
+import jsgl.math.PerlinNoise;
 import jsgl.math.vector.Matrix;
+import jsgl.math.vector.Vec2f;
 import jsgl.math.vector.Vec3f;
 import org.apache.commons.lang3.ArrayUtils;
 import rv.comm.rcssserver.GameState;
@@ -49,19 +59,102 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 	private static final float GOAL_BOX_LENGTH = 1.8f;
 	private static final float LINE_THICKNESS = 0.02f;
 
+	protected ContentManager contentManager;
+
 	private final Material lineMaterial = new Material();
 	private float[][] circleVerts;
 	private float[][] lineVerts;
 	private int[][] lineIndices;
 	private boolean geometryUpdated = false;
+	private Vec2f fieldDimensions;
+	private Model newModel;
 	private int linesDisplayList;
 	private boolean disposed = false;
 	private Texture2D lineTexture;
 
-	public Field(Model model, ContentManager cm)
+	public Field(ContentManager cm, float l, float w)
 	{
-		super(model);
+		super(generateFieldModel(cm, l, w));
+		contentManager = cm;
 		lineTexture = cm.getWhiteTexture();
+		fieldDimensions = new Vec2f(l, w);
+	}
+
+	private static Model generateFieldModel(ContentManager cm, float l, float w)
+	{
+		final Mesh mesh = new Mesh();
+		final MeshPart part = new MeshPart();
+
+		final float hl = l / 2;
+		final float hw = w / 2;
+
+		final var n = new float[] {0, 1, 0};
+
+		final var v1 = new MeshVertex(new float[] {-hl - 2, 0, hw + 2}, n, new float[] {0, 0, 0});
+		final var v2 = new MeshVertex(new float[] {hl + 2, 0, hw + 2}, n, new float[] {1, 0, 0});
+		final var v3 = new MeshVertex(new float[] {hl + 2, 0, -hw - 2}, n, new float[] {1, 1, 0});
+		final var v4 = new MeshVertex(new float[] {-hl - 2, 0, -hw - 2}, n, new float[] {0, 1, 0});
+
+		mesh.addVertex(v1);
+		mesh.addVertex(v2);
+		mesh.addVertex(v3);
+		mesh.addVertex(v4);
+
+		part.addFace(new MeshFace(new int[] {0, 2, 3}));
+		part.addFace(new MeshFace(new int[] {0, 1, 2}));
+
+		var name = "field-" + l + "-" + w;
+		var material = new ObjMaterial(name);
+		material.setTextureImage(generateTexture(l, w));
+		part.setMaterial(material);
+
+		mesh.addPart(part);
+		mesh.setBounds(new BoundingBox(new Vec3f(-hl - 2, 0, -hw - 2), new Vec3f(hl + 2, 0, hw + 2)));
+
+		var model = new Model(name, mesh);
+		cm.requestModelInitialization(model);
+		return model;
+	}
+
+	private static BufferedImage generateTexture(float l, float w)
+	{
+		// Add field border
+		l += 4;
+		w += 4;
+
+		final int width = Math.round(2000 / w * l);
+		final int height = 2000;
+
+		var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				float xReal = (float) x / width * l;
+				float yReal = (float) y / height * w;
+				float noise = PerlinNoise.noise3(xReal, yReal, 0, 0, 0, 0);
+				int r;
+				int g;
+				int b;
+				if (xReal < 2 || xReal > l - 2 || yReal < 2 || yReal > w - 2) {
+					// Border
+					r = (int) (160 + noise * 20);
+					g = (int) (220 + noise * 25);
+					b = (int) (80 + noise * 20);
+				} else if ((int) xReal % 2 == 1) {
+					// Stripe 2
+					r = (int) (90 + noise * 25);
+					g = (int) (180 + noise * 35);
+					b = (int) (45 + noise * 20);
+				} else {
+					// Stripe 1
+					r = (int) (120 + noise * 25);
+					g = (int) (210 + noise * 35);
+					b = (int) (45 + noise * 20);
+				}
+				pixels[width * y + x] = (r << 16) | (g << 8) | b;
+			}
+		}
+		return img;
 	}
 
 	/** Creates the field lines based on dimensions in game state */
@@ -192,6 +285,13 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 
 	public void render(GL2 gl)
 	{
+		if (newModel != null) {
+			model.dispose(gl);
+			model = newModel;
+			newModel = null;
+			model.init(gl, contentManager.getMeshRenderMode());
+		}
+
 		super.render(gl);
 
 		if (geometryUpdated) {
@@ -208,9 +308,19 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 		gl.glCallList(linesDisplayList);
 	}
 
+	private void updateModel(GameState gs)
+	{
+		var newDimensions = new Vec2f(gs.getFieldLength(), gs.getFieldWidth());
+		if (newDimensions.x != fieldDimensions.x || newDimensions.y != fieldDimensions.y) {
+			fieldDimensions = newDimensions;
+			newModel = generateFieldModel(contentManager, fieldDimensions.x, fieldDimensions.y);
+		}
+	}
+
 	@Override
 	public void gsMeasuresAndRulesChanged(GameState gs)
 	{
+		updateModel(gs);
 		calculateLineGeometry(gs);
 	}
 
@@ -228,6 +338,7 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 	public void dispose(GL gl)
 	{
 		gl.getGL2().glDeleteLists(linesDisplayList, 1);
+		model.dispose(gl);
 		disposed = true;
 	}
 

@@ -363,4 +363,9 @@ public class ContentManager implements SceneGraphListener, GameState.GameStateCh
 	public void gsTimeChanged(GameState gs)
 	{
 	}
+
+	public synchronized void requestModelInitialization(Model model)
+	{
+		modelsToInitialize.add(model);
+	}
 }
