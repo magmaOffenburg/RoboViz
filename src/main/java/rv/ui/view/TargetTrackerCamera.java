@@ -118,15 +118,16 @@ public class TargetTrackerCamera
 		float halfLength = gs.getFieldLength() / 2;
 		float halfWidth = gs.getFieldWidth() / 2;
 
-		float zoom = target instanceof Ball ? 1 : 4;
+		boolean isBall = target instanceof Ball;
+		float zoom = isBall ? 1 : 4;
 
-		float xOffset = 4 * fuzzyValue(targetPos.x, -halfLength, halfLength);
-		float baseZOffset = -8 / zoom;
-		float zOffset = baseZOffset + 3 * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
+		float xOffset = 0.35f * halfLength * fuzzyValue(targetPos.x, -halfLength, halfLength);
+		float baseZOffset = -0.8f * halfWidth / zoom;
+		float zOffset = baseZOffset + 0.3f * halfWidth * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
 
 		Vec3f offsetPos = targetPos.clone();
 		offsetPos.add(Vec3f.unitX().times(xOffset));
-		offsetPos.add(Vec3f.unitY().times(4 / zoom));
+		offsetPos.add(Vec3f.unitY().times(0.4f * halfWidth / zoom));
 		offsetPos.add(Vec3f.unitZ().times(zOffset));
 		return offsetPos;
 	}
