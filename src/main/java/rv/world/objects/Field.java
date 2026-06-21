@@ -142,8 +142,8 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 					b = (int) (80 + noise * 20);
 				} else if ((int) xReal % 2 == 1) {
 					// Stripe 2
-					r = (int) (90 + noise * 25);
-					g = (int) (180 + noise * 35);
+					r = (int) (100 + noise * 25);
+					g = (int) (190 + noise * 35);
 					b = (int) (45 + noise * 20);
 				} else {
 					// Stripe 1
