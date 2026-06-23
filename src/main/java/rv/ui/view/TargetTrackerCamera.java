@@ -121,7 +121,7 @@ public class TargetTrackerCamera
 		boolean isBall = target instanceof Ball;
 		float zoom = isBall ? 1 : 4;
 
-		float xOffset = 0.35f * halfLength * fuzzyValue(targetPos.x, -halfLength, halfLength);
+		float xOffset = 0.2f * halfLength * fuzzyValue(targetPos.x, -halfLength, halfLength);
 		float baseZOffset = -0.8f * halfWidth / zoom;
 		float zOffset = baseZOffset + 0.3f * halfWidth * fuzzyValue(targetPos.z, -halfWidth, halfWidth);
 
