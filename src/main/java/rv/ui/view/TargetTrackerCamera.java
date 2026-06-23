@@ -137,7 +137,7 @@ public class TargetTrackerCamera
 		if (value <= lower)
 			return 1;
 		if (value >= upper)
-			return 0;
+			return -1;
 		return weight(1 - ((value - lower) / (upper - lower)));
 	}
 
