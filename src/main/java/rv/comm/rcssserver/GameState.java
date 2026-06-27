@@ -67,7 +67,9 @@ public class GameState implements ServerChangeListener
 		KICKOFF(5, "illegal kickoff"),
 		CHARGING(6, "charging"),
 		SELF_COLLISION(7, "self collision"),
-		BALL_HOLDING(8, "ball holding");
+		BALL_HOLDING(8, "ball holding"),
+		DOUBLE_TOUCH(9, "double touching"),
+		HAND_FOUL(10, "hand foul");
 
 		private int index;
 		private String name;
@@ -673,10 +675,16 @@ public class GameState implements ServerChangeListener
 				case FOUL:
 					Foul foul = new Foul();
 					foul.time = time;
-					foul.index = Integer.parseInt(atoms[1]);
-					foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[2])];
-					foul.team = Integer.parseInt(atoms[3]);
-					foul.agentID = Integer.parseInt(atoms[4]);
+					if (atoms.length == 5) {
+						foul.index = Integer.parseInt(atoms[1]);
+						foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[2])];
+						foul.team = Integer.parseInt(atoms[3]);
+						foul.agentID = Integer.parseInt(atoms[4]);
+					} else {
+						foul.type = GameState.FoulType.values()[Integer.parseInt(atoms[1])];
+						foul.team = Integer.parseInt(atoms[2]);
+						foul.agentID = Integer.parseInt(atoms[3]);
+					}
 					foul.receivedTime = System.currentTimeMillis();
 					addFoul(foul);
 					break;
