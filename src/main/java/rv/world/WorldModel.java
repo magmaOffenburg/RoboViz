@@ -292,9 +292,13 @@ public class WorldModel
 
 	public void renderBallCircle(GL2 gl)
 	{
+		var playMode = gameState.getPlayMode();
+		if (playMode == null)
+			return;
+
 		if (gameState.hasPlayModeJustChanged()) {
 			// just switched
-			switch (gameState.getPlayMode()) {
+			switch (playMode) {
 			case GameState.PASS_LEFT:
 			case GameState.PASS_RIGHT:
 				ballCircleTime = ballCircleTimeLeft = gameState.getPassModeDuration();
@@ -311,7 +315,7 @@ public class WorldModel
 		}
 
 		Color color = null;
-		switch (gameState.getPlayMode()) {
+		switch (playMode) {
 		case GameState.PASS_LEFT:
 		case GameState.KICK_IN_LEFT:
 		case GameState.CORNER_KICK_LEFT:
@@ -327,7 +331,7 @@ public class WorldModel
 		}
 
 		float radius = 0;
-		switch (gameState.getPlayMode()) {
+		switch (playMode) {
 		case GameState.PASS_LEFT:
 		case GameState.PASS_RIGHT:
 			radius = gameState.getPassModeMinOppBallDist();
