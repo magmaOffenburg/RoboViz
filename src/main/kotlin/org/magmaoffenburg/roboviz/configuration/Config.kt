@@ -77,7 +77,7 @@ class Config(args: Array<String>) {
 
         var servers = arrayListOf<Pair<String, Int>>()
         var defaultServerHost = "localhost"
-        var defaultServerPort = 3200
+        var defaultServerPort = 60001
 
         var currentHost = defaultServerHost
         var currentPort = defaultServerPort

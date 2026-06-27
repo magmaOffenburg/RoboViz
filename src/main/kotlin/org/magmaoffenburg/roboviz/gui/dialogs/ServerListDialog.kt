@@ -74,7 +74,7 @@ object ServerListDialog : JDialog() {
 
     private fun initializeActions() {
         addButton.addActionListener {
-            tableModel.addRow(arrayOf<Any>("localhost", 3200))
+            tableModel.addRow(arrayOf<Any>("localhost", 60001))
             pack()
         }
         removeButton.addActionListener {
@@ -93,7 +93,7 @@ object ServerListDialog : JDialog() {
                 val port = when (val portAny = tableModel.getValueAt(i, 1)) {
                     is String -> portAny.toString().replace(Regex("[^\\d]"), "").toInt()
                     is Int -> portAny
-                    else -> 3200
+                    else -> 60001
                 }
 
                 Networking.servers.add(Pair(key, port))
