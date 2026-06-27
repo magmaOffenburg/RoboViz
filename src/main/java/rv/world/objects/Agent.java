@@ -136,6 +136,13 @@ public class Agent implements ISelectable
 		}
 	}
 
+	private enum RobotType
+	{
+		NAO,
+		T1,
+		K1
+	}
+
 	/**
 	 * Grabs model matrices from scene graph and updates bounding box
 	 */
@@ -145,21 +152,38 @@ public class Agent implements ISelectable
 		Vec3f max = new Vec3f(Float.NEGATIVE_INFINITY);
 
 		for (StaticMeshNode node : meshNodes) {
-			Model model = content.getModel(node.getName());
+			var nodeName = node.getName();
+			var robotType = RobotType.NAO;
+			if (nodeName.contains("T1/"))
+				robotType = RobotType.T1;
+			else if (nodeName.contains("K1/"))
+				robotType = RobotType.K1;
+
+			Model model = content.getModel(nodeName);
 			if (model.isLoaded()) {
 				Vec3f[] corners = model.getMesh().getBounds().getCorners();
 				Matrix modelMat = WorldModel.COORD_TFN.times(node.getWorldTransform());
 
 				// store head transformation for "robot perspective" camera mode
-				if (node.getName().endsWith("head.obj")) {
+				if (nodeName.endsWith("head.obj") || (robotType == RobotType.T1 && nodeName.endsWith("H2.STL")) ||
+						(robotType == RobotType.K1 && nodeName.contains("Head_2"))) {
 					headTransform = modelMat;
 					headCenter = headTransform.transform(new Vec3f(0));
-					headDirection = headTransform.transform(new Vec3f(0, 0, 1)).minus(headCenter).normalize();
-				} else if (node.getName().matches(".*body.*[.]obj$")) {
+					headDirection = headTransform
+											.transform(robotType == Agent.RobotType.NAO ? new Vec3f(0, 0, 1)
+																						: new Vec3f(1, 0, 0))
+											.minus(headCenter)
+											.normalize();
+				} else if (nodeName.matches(".*body.*[.]obj$") ||
+						   ((robotType == RobotType.T1 || robotType == RobotType.K1) &&
+								   nodeName.endsWith("Trunk.STL"))) {
 					// Store body direction for third person view
 					Matrix bodyRot = modelMat;
 					Vec3f bodyCenter = bodyRot.transform(new Vec3f(0));
-					torsoDirection = bodyRot.transform(new Vec3f(0, 0, 1)).minus(bodyCenter).normalize();
+					torsoDirection = bodyRot.transform(robotType == Agent.RobotType.NAO ? new Vec3f(0, 0, 1)
+																						: new Vec3f(1, 0, 0))
+											 .minus(bodyCenter)
+											 .normalize();
 				}
 
 				for (int j = 0; j < 8; j++) {
