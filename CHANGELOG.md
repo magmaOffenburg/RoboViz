@@ -1,3 +1,15 @@
+2.1.0 (June 28, 2026)
+------------------------------
+* add compatibility for rcssservermj (newly supported robots: T1, K1)
+* use a new procedurally generated field texture
+* add support for loading STL models
+* exit application on ctrl-Q
+* fix requested target FPS value from config being ignored
+* make ball tracking speed independent of FPS
+* respect setVisible attribute of geometry nodes
+* apply correct material for SingleMaterialNodes
+* update default monitor port to 60001
+
 2.0.1 (April 17, 2025)
 ------------------------------
 * add support for reading log files with a .tgz or .tbz2 suffix
