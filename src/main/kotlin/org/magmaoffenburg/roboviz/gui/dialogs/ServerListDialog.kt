@@ -91,7 +91,7 @@ object ServerListDialog : JDialog() {
             for (i in 0 until tableModel.rowCount) {
                 val key = tableModel.getValueAt(i, 0).toString()
                 val port = when (val portAny = tableModel.getValueAt(i, 1)) {
-                    is String -> portAny.toString().replace(Regex("[^\\d]"), "").toInt()
+                    is String -> portAny.replace(Regex("[^\\d]"), "").toInt()
                     is Int -> portAny
                     else -> 60001
                 }
