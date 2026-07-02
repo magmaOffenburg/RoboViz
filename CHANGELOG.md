@@ -1,3 +1,8 @@
+2.1.1 (July 2, 2026)
+------------------------------
+* fix rendering of penalty/goalie area lines
+* fix ball circle rendering to also work with rcssservermj
+
 2.1.0 (June 28, 2026)
 ------------------------------
 * add compatibility for rcssservermj (newly supported robots: T1, K1)
