@@ -163,13 +163,12 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 		float hfl = gs.getFieldLength() / 2.0f;
 		float hfw = gs.getFieldWidth() / 2.0f;
 		float goalWidth = GOAL_BOX_WIDTH + PENALTY_WIDTH;
-		float goalLength = GOAL_BOX_LENGTH + PENALTY_LENGTH;
+		float goalLength = PENALTY_LENGTH;
 		if (gs.getGoalieAreaLength() > 0) {
 			goalWidth = gs.getGoalieAreaWidth();
 			goalLength = gs.getGoalieAreaLength();
 		}
 		float hgw = goalWidth / 2.0f;
-		float hgl = goalLength / 2.0f;
 		float penaltyAreaWidth = 0;
 		float penaltyAreaLength = 0;
 		if (gs.getPenaltyAreaLength().isPresent()) {
@@ -177,7 +176,6 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 			penaltyAreaLength = gs.getPenaltyAreaLength().get();
 		}
 		final float hpw = penaltyAreaWidth / 2.0f;
-		final float hpl = penaltyAreaLength / 2.0f;
 
 		lineVerts = new float[][] {
 				// border lines
@@ -199,42 +197,42 @@ public class Field extends ModelObject implements GameStateChangeListener, GLDis
 				// right goal box
 				{-hfl, 0, hgw + LINE_THICKNESS},
 				{-hfl, 0, hgw - LINE_THICKNESS},
-				{-hfl + hgl - LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
-				{-hfl + hgl - LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
+				{-hfl + goalLength - LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
+				{-hfl + goalLength - LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
 				{-hfl, 0, -hgw + LINE_THICKNESS},
 				{-hfl, 0, -hgw - LINE_THICKNESS},
-				{-hfl + hgl + LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
-				{-hfl + hgl + LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
+				{-hfl + goalLength + LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
+				{-hfl + goalLength + LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
 
 				// left goal box
 				{hfl, 0, hgw + LINE_THICKNESS},
 				{hfl, 0, hgw - LINE_THICKNESS},
-				{hfl - hgl + LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
-				{hfl - hgl + LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
+				{hfl - goalLength + LINE_THICKNESS, 0, hgw - LINE_THICKNESS},
+				{hfl - goalLength + LINE_THICKNESS, 0, -hgw + LINE_THICKNESS},
 				{hfl, 0, -hgw + LINE_THICKNESS},
 				{hfl, 0, -hgw - LINE_THICKNESS},
-				{hfl - hgl - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
-				{hfl - hgl - LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
+				{hfl - goalLength - LINE_THICKNESS, 0, -hgw - LINE_THICKNESS},
+				{hfl - goalLength - LINE_THICKNESS, 0, hgw + LINE_THICKNESS},
 
 				// right penalty area
 				{-hfl, 0, hpw + LINE_THICKNESS},
 				{-hfl, 0, hpw - LINE_THICKNESS},
-				{-hfl + hpl - LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
-				{-hfl + hpl - LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
+				{-hfl + penaltyAreaLength - LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
+				{-hfl + penaltyAreaLength - LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
 				{-hfl, 0, -hpw + LINE_THICKNESS},
 				{-hfl, 0, -hpw - LINE_THICKNESS},
-				{-hfl + hpl + LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
-				{-hfl + hpl + LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
+				{-hfl + penaltyAreaLength + LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
+				{-hfl + penaltyAreaLength + LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
 
 				// left penalty area
 				{hfl, 0, hpw + LINE_THICKNESS},
 				{hfl, 0, hpw - LINE_THICKNESS},
-				{hfl - hpl + LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
-				{hfl - hpl + LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
+				{hfl - penaltyAreaLength + LINE_THICKNESS, 0, hpw - LINE_THICKNESS},
+				{hfl - penaltyAreaLength + LINE_THICKNESS, 0, -hpw + LINE_THICKNESS},
 				{hfl, 0, -hpw + LINE_THICKNESS},
 				{hfl, 0, -hpw - LINE_THICKNESS},
-				{hfl - hpl - LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
-				{hfl - hpl - LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
+				{hfl - penaltyAreaLength - LINE_THICKNESS, 0, -hpw - LINE_THICKNESS},
+				{hfl - penaltyAreaLength - LINE_THICKNESS, 0, hpw + LINE_THICKNESS},
 		};
 
 		lineIndices =
