@@ -342,7 +342,7 @@ public class WorldModel
 		case GameState.CORNER_KICK_RIGHT:
 		case GameState.FREE_KICK_LEFT:
 		case GameState.FREE_KICK_RIGHT:
-			radius = 2.2f;
+			radius = gameState.getFreeKickDistance();
 			break;
 		}
 

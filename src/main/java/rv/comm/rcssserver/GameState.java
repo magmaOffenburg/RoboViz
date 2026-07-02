@@ -255,7 +255,7 @@ public class GameState implements ServerChangeListener
 
 	public float getFreeKickDistance()
 	{
-		return freeKickDist;
+		return freeKickDist > 0.0f ? freeKickDist : centerCircleRadius;
 	}
 
 	public float getCenterCircleRadius()
@@ -459,6 +459,7 @@ public class GameState implements ServerChangeListener
 		fouls = new CopyOnWriteArrayList<>();
 
 		// Resetting these values is required for keeping backwards compatibility with SimSpark
+		freeKickDist = 0;
 		centerCircleRadius = 0;
 		cornerAreaRadius = 0;
 		penaltySpotDistance = 0;
