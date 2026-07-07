@@ -119,8 +119,6 @@ public class StateRecorder
 	/**
 	 * Creates a new camcorder that can record a camera's movement
 	 *
-	 * @param camera
-	 *           - the camera used for recording
 	 * @param msPerFrame
 	 *           - interval at which keyframes are recorded
 	 * @param maxFrames
