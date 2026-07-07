@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 /**
@@ -204,13 +205,15 @@ public class StateRecorder
 	 * Loads a recording from a specified file with a given FrameData class type
 	 */
 	public void load(File f, Class<?> frameDataClass) throws IOException, InstantiationException, IllegalAccessException
+															 ,
+															 NoSuchMethodException, InvocationTargetException
 	{
 		keyFrames.clear();
 		FileReader fr = new FileReader(f);
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		while ((line = br.readLine()) != null) {
-			FrameData data = (FrameData) frameDataClass.newInstance();
+			FrameData data = (FrameData) frameDataClass.getDeclaredConstructor().newInstance();
 			String[] vals = line.split(" ");
 			data.parseValues(vals);
 			float transitionTime = Float.parseFloat(vals[vals.length - 1]);
