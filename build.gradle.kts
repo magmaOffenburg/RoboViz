@@ -16,9 +16,11 @@ application {
     applicationDefaultJvmArgs = listOf("--add-exports=java.desktop/sun.awt=ALL-UNNAMED")
 }
 
-val javaVersion by extra(17)
-val joglVersion by extra("2.4.0")
-val log4jVersion by extra("2.26.0")
+val javaVersion = 17
+val joglVersion = "2.4.0"
+extra.set("joglVersion", joglVersion)
+val log4jVersion = "2.26.0"
+extra.set("log4jVersion", log4jVersion)
 
 subprojects {
     apply(plugin = "java")
