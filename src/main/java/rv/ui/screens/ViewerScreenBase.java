@@ -383,7 +383,12 @@ public abstract class ViewerScreenBase
 		if (robotVantage != null || e.getButton() != MouseEvent.BUTTON1)
 			return;
 
-		CameraController.objectPicker.updatePickRay(Renderer.instance.getScreen(), e.getX(), e.getY());
+		// mouse coordinates are in AWT units, the viewport in native pixels (differs on HiDPI displays)
+		Viewport screen = Renderer.instance.getScreen();
+		double scaleX = screen.getW() / (double) Math.max(1, MainWindow.glCanvas.getWidth());
+		double scaleY = screen.getH() / (double) Math.max(1, MainWindow.glCanvas.getHeight());
+		CameraController.objectPicker.updatePickRay(
+				screen, (int) Math.round(e.getX() * scaleX), (int) Math.round(e.getY() * scaleY));
 		if (e.isAltDown()) {
 			altClick(e);
 		} else {

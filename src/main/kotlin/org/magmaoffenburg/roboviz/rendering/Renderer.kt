@@ -230,7 +230,16 @@ class Renderer : GLProgram(MainWindow.instance.width, MainWindow.instance.height
     }
 
     override fun reshape(drawable: GLAutoDrawable?, x: Int, y: Int, width: Int, height: Int) {
-        super.reshape(drawable, x, y, width, height)
+        // JOGL 2.4 on Windows does not apply the OS display scaling (e.g. 200% on 4K) to the surface, so the
+        // reported size is in scaled "logical" units while the native framebuffer is larger. Compensate with the
+        // scale factor reported by AWT, unless JOGL already scaled the surface itself.
+        val joglScale = MainWindow.glCanvas.getCurrentSurfaceScale(FloatArray(2))[0]
+        val awtScale = MainWindow.glCanvas.graphicsConfiguration?.defaultTransform?.scaleX ?: 1.0
+        val factor = if (joglScale > 1f) 1.0 else awtScale
+        val pixelWidth = Math.round(width * factor).toInt()
+        val pixelHeight = Math.round(height * factor).toInt()
+
+        super.reshape(drawable, x, y, pixelWidth, pixelHeight)
 
         if (Graphics.useBloom || Graphics.useShadows) {
             sceneFBO?.dispose(drawable!!.gl)
